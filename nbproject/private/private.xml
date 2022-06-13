@@ -3,10 +3,12 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/var/www/html/ism/academico/backend/views/kids-experiencia/index1.php</file>
-            <file>file:/var/www/html/ism/academico/backend/views/kids-experiencia/plan-experiencia.php</file>
-            <file>file:/var/www/html/ism/academico/backend/models/kids/micro/PlanExperiencia.php</file>
-            <file>file:/var/www/html/ism/academico/backend/controllers/KidsExperienciaController.php</file>
+            <file>file:/var/www/html/ism/academico/backend/views/kids-pca/index.php</file>
+            <file>file:/var/www/html/ism/academico/backend/web/css/coloresPersonalizados.css</file>
+            <file>file:/var/www/html/ism/academico/backend/models/kids/PcaPdf.php</file>
+            <file>file:/var/www/html/ism/academico/backend/controllers/KidsPcaController.php</file>
+            <file>file:/var/www/html/ism/academico/backend/models/pudpai/Pdf.php</file>
+            <file>file:/var/www/html/ism/academico/backend/controllers/PcaController.php</file>
         </group>
     </open-files>
 </project-private>

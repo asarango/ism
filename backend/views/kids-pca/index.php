@@ -5,6 +5,7 @@ use yii\grid\GridView;
 
 $this->title = 'Kids Pca';
 $this->params['breadcrumbs'][] = $this->title;
+
 ?>
 <div class="kids-pca-index">
 
@@ -29,6 +30,15 @@ $this->params['breadcrumbs'][] = $this->title;
                                     '<span class="badge rounded-pill" style="background-color: #0a1f8f"><i class="fa fa-briefcase" aria-hidden="true"></i> Planificaciones</span>',
                                     [
                                         'kids-menu/index1'
+                                    ]
+                            );
+                            ?>    
+                            |
+                            <?=
+                            Html::a(
+                                    '<span class="badge rounded-pill" style="background-color: #ab0a3d"><i class="fas fa-file-pdf"></i> PDF</span>',
+                                    [
+                                        'pdf', 'id' => $model->id
                                     ]
                             );
                             ?>    

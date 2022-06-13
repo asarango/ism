@@ -30,7 +30,7 @@ class ScriptsKids extends ActiveRecord{
                             inner join op_section sec on sec.id = cur.section 
                     where sc.idprofesor = $idTeacher 
                             and ipm.scholaris_periodo_id = $periodId
-                            and sec.code = 'PRES'
+                            --and sec.code = 'PRES'
                     group by iam.id,  cur.name, sec.code, im.nombre
                     order by cur.name, im.nombre;";
 

@@ -173,4 +173,10 @@ class KidsPcaController extends Controller
 
         throw new NotFoundHttpException('The requested page does not exist.');
     }
+    
+    public function actionPdf(){
+        $id = $_GET['id'];
+        $pdf = new \backend\models\kids\PcaPdf($id);
+        
+    }
 }

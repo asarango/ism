@@ -85,6 +85,7 @@ class ScholarisAsistenciaProfesorController extends Controller {
 
         $i = 0;
         $j = 0;
+        
         foreach($clases as $mo){
             if($mo['code'] == 'PRES'){
                 $i++;

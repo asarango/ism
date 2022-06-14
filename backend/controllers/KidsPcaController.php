@@ -46,6 +46,8 @@ class KidsPcaController extends Controller
         $modelPca = KidsPca::find()->where(['ism_area_materia_id' => $ismAreaMallaId])->one();       
 
         $modelIsmAreaMateria = IsmAreaMateria::findOne($ismAreaMallaId);        
+        
+        $modelMicro = new KidsUnidadMicro();
 
 
         if($modelPca){
@@ -60,8 +62,6 @@ class KidsPcaController extends Controller
             $microcurriculares = KidsUnidadMicro::find()->where([//inicio de microcurriculares
                 'pca_id' => $model->id
             ])->all();//fin de microcurriculares
-
-            $modelMicro = new KidsUnidadMicro();
             
             if( $modelMicro->load(Yii::$app->request->post()) && $modelMicro->save() ){
             return $this->redirect(['index1', 'ism_area_materia_id' => $ismAreaMallaId]);
@@ -71,7 +71,6 @@ class KidsPcaController extends Controller
             $model = new KidsPca();
             $bitacora = '';
             $microcurriculares = new KidsUnidadMicro();
-            $modelMicro = '';
         }
 
        
@@ -79,8 +78,6 @@ class KidsPcaController extends Controller
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['index1', 'ism_area_materia_id' => $ismAreaMallaId]);
         }
-
-        
 
         return $this->render('index',[
             'model' => $model,

@@ -39,6 +39,9 @@ $this->params['breadcrumbs'][] = $this->title;
                                     '<span class="badge rounded-pill" style="background-color: #ab0a3d"><i class="fas fa-file-pdf"></i> PDF</span>',
                                     [
                                         'pdf', 'id' => $model->id
+                                    ],
+                                    [
+                                        'target' => '_blank'
                                     ]
                             );
                             ?>    

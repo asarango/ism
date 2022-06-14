@@ -1,6 +1,7 @@
 <?php
 namespace backend\models\helpers;
 
+use backend\models\PlanificacionOpciones;
 use DateTime;
 use Yii;
 use yii\db\ActiveRecord;
@@ -10,6 +11,8 @@ use yii\filters\VerbFilter;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\ActiveForm;
+
+
 
 class Scripts extends ActiveRecord{
     
@@ -153,6 +156,101 @@ where hor.clase_id in
         $res = $con->createCommand($query)->queryAll();
         return $res;
     }
+
+    public function pud_dip_consultar_lenguaje_y_aprendizaje_ckeck($planVertDiplId){
+        //consulta los los tdc que han sido marcados con check, mas los que aun no estan marcados
+       $con = Yii::$app->db;
+       $query = "select p.categoria ,p.opcion,pr.id as pvd_tdc_id ,p.id as tdc_id, 
+                case 
+                when p.id is not null then true else false
+                end as es_seleccionado
+                from planificacion_opciones p, planificacion_vertical_diploma_relacion_tdc pr,
+                planificacion_vertical_diploma pvd 
+                where p.tipo='LENGUAJE_Y_CONOCIMIENTO'  and pvd.id =$planVertDiplId 
+                and pr.vertical_diploma_id = pvd.id   
+                and pr.relacion_tdc_id  = p.id
+                union all 
+                select p.categoria ,p.opcion,0 as pvd_tdc_id,p.id tdc_id, 
+                case 
+                when null is not null then true else false
+                end as es_seleccionado
+                from planificacion_opciones p
+                where p.tipo='LENGUAJE_Y_CONOCIMIENTO'
+                and p.id not in 
+                ( select relacion_tdc_id  from planificacion_vertical_diploma_relacion_tdc 
+                where vertical_diploma_id = $planVertDiplId)
+                order by opcion;
+                ";
+        $resultado = $con->createCommand($query)->queryAll();
+       return $resultado;;
+    }
+
+     //metodo usado para 5.6.- llamada a Conexion CAS
+     public function pud_dip_consultar_conexion_cas_ckeck($planVertDiplId) 
+     {
+         //consulta los los tdc que han sido marcados con check, mas los que aun no estan marcados
+        $con = Yii::$app->db;
+        $query = "select p.categoria ,p.opcion,pr.id as pvd_tdc_id ,p.id as tdc_id, 
+                 case 
+                 when p.id is not null then true else false
+                 end as es_seleccionado
+                 from planificacion_opciones p, planificacion_vertical_diploma_relacion_tdc pr,
+                 planificacion_vertical_diploma pvd 
+                 where p.tipo='CONEXION_CAS'  and pvd.id =$planVertDiplId 
+                 and pr.vertical_diploma_id = pvd.id   
+                 and pr.relacion_tdc_id  = p.id
+                 union all 
+                 select p.categoria ,p.opcion,0 as pvd_tdc_id,p.id tdc_id, 
+                 case 
+                 when null is not null then true else false
+                 end as es_seleccionado
+                 from planificacion_opciones p
+                 where p.tipo='CONEXION_CAS'
+                 and p.id not in 
+                 ( select relacion_tdc_id  from planificacion_vertical_diploma_relacion_tdc 
+                 where vertical_diploma_id = $planVertDiplId)
+                 order by opcion;
+                 ";
+         $resultado = $con->createCommand($query)->queryAll();         
+         return $resultado;
+     } 
+
+     //consulta para extraer el porcentaje de avance del PUD DIPLOMA
+     public function pud_dip_porcentaje_avance($planVertDiplId,$planBloqueUniId) 
+     {
+        $con = Yii::$app->db;
+        $modelOpciones = PlanificacionOpciones::find()
+        ->where(['tipo'=>'PUD_NUM_CART_VALIDACION'])
+        ->one();
+        $minimoCaracteres = $modelOpciones->categoria;   
+
+        $query = "select  round(
+            (((5)/*SE SUMA 5 POR DATOS EN DEFAULT (1.1 / 3.1 / 4.1 / 5.3 / 5.5)*/+
+            (select case when LENGTH(descripcion_texto_unidad) /*2.1*/ > $minimoCaracteres then 1 else 0 END from planificacion_vertical_diploma pvd where planificacion_bloque_unidad_id = $planBloqueUniId)+
+            (select case when LENGTH(habilidades) /*5.1*/ > $minimoCaracteres then 1 else 0 END from planificacion_vertical_diploma pvd where planificacion_bloque_unidad_id = $planBloqueUniId)+
+            (select case when LENGTH(proceso_aprendizaje) /*5.2*/> $minimoCaracteres then 1 else 0 END from planificacion_vertical_diploma pvd where planificacion_bloque_unidad_id = $planBloqueUniId)+
+            (select case when LENGTH(recurso) /*6.1*/ > $minimoCaracteres then 1 else 0 END from planificacion_vertical_diploma pvd where planificacion_bloque_unidad_id = $planBloqueUniId)+
+            (select case when LENGTH(reflexion_funciono) /*7.1*/ > $minimoCaracteres then 1 else 0 END from planificacion_vertical_diploma pvd where planificacion_bloque_unidad_id = $planBloqueUniId)+
+            (select case when LENGTH(reflexion_no_funciono) /*7.2*/> $minimoCaracteres then 1 else 0 END from planificacion_vertical_diploma pvd where planificacion_bloque_unidad_id = $planBloqueUniId)+
+            (select case when LENGTH(reflexion_observacion) /*7.3*/> $minimoCaracteres then 1 else 0 END from planificacion_vertical_diploma pvd where planificacion_bloque_unidad_id = $planBloqueUniId)+
+            (select case when count(p.categoria) /*5.4*/ > 0 then 1 else 0 end 
+                             from planificacion_opciones p, planificacion_vertical_diploma_relacion_tdc pr,
+                             planificacion_vertical_diploma pvd 
+                             where p.tipo='CONEXION_CAS'  and pvd.id =$planVertDiplId 
+                             and pr.vertical_diploma_id = pvd.id   
+                             and pr.relacion_tdc_id  = p.id)+
+            (select case when count(p.categoria) /*5.6*/ > 0 then 1 else 0 end 
+                            from planificacion_opciones p, planificacion_vertical_diploma_relacion_tdc pr,
+                            planificacion_vertical_diploma pvd 
+                            where p.tipo='LENGUAJE_Y_CONOCIMIENTO'  and pvd.id =$planVertDiplId 
+                            and pr.vertical_diploma_id = pvd.id   
+                            and pr.relacion_tdc_id  = p.id) ) * 100 )/ 
+                            (select cast(categoria as numeric(18,2))from planificacion_opciones where tipo='PUD_CONTEO_PORCENTAJE'and seccion = 'DIP')
+                           ,0) as porcentaje;
+                 ";
+         $resultado = $con->createCommand($query)->queryOne();         
+         return $resultado;
+     } 
     
 }
 

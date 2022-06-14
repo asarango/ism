@@ -8,7 +8,10 @@ use backend\models\PlanificacionBloquesUnidadSubtitulo;
 use backend\models\PlanificacionBloquesUnidadSubtitulo2;
 use backend\models\PlanificacionVerticalDiplomaRelacionTdc;
 use backend\models\puddip\Pdf;
+use backend\models\helpers;
+use backend\models\helpers\Scripts;
 use backend\models\puddip\DatosInformativos;
+use Codeception\Lib\Generator\Helper;
 use Yii;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -137,28 +140,47 @@ class PudDipController extends Controller{
         }    
         return  $respuesta;      
     }
-    
+    /*** Actualiza porcentaje de avance deL PUD del DIP */
+    private function pud_dip_actualiza_porcentaje_avance($modelPlanVertDipl)
+    {
+        $modelPlanBloqUni = PlanificacionBloquesUnidad::findOne($modelPlanVertDipl->planificacion_bloque_unidad_id);
+        //consulta para extraer el porcentaje de avance del PUD DIPLOMA
+         
+        $obj2 = new Scripts();                                                                              
+        $pud_dip_porc_avance = $obj2->pud_dip_porcentaje_avance($modelPlanVertDipl->id,$modelPlanVertDipl->planificacion_bloque_unidad_id);
+      
+        $modelPlanBloqUni->avance_porcentaje = $pud_dip_porc_avance['porcentaje'];
+        $modelPlanBloqUni->save(); 
+    }
     //2.1.- Descripcion y Texto de una Unidad
-    public function actionUpdateDescriTextUni(){                                 
+    public function actionUpdateDescriTextUni()
+    {                                 
         $idPlanVertDip = $_GET['id_plani_vert_dip'];
         $contenido   = $_GET['contenido']; 
+        
         $model = PlanificacionVerticalDiploma::find()->where([
             'id' => $idPlanVertDip
-        ])->one();               
+        ])->one();          
 
         $model->descripcion_texto_unidad = $contenido;
-        $model->save();        
-    }
+        $model->save();  
+        
+        //guarda el porcentaje de avance del pud dip
+        $this->pud_dip_actualiza_porcentaje_avance($model);
+    }    
     //5.1.- Contenido, Habilidades y conceptos
     public function actionUpdateHabilidades(){             
         $idPlanVertDip = $_GET['id_plani_vert_dip'];
         $contenido   = $_GET['contenido']; 
         $model = PlanificacionVerticalDiploma::find()->where([
             'id' => $idPlanVertDip
-        ])->one();               
+        ])->one(); 
 
         $model->habilidades = $contenido;
-        $model->save();        
+        $model->save();  
+        
+        //guarda el porcentaje de avance del pud dip
+        $this->pud_dip_actualiza_porcentaje_avance($model);
     }
     //5.2.- Proceso de Aprendizaje
     public function actionUpdateProcesoAprendizaje(){             
@@ -166,10 +188,13 @@ class PudDipController extends Controller{
         $contenido   = $_GET['contenido']; 
         $model = PlanificacionVerticalDiploma::find()->where([
             'id' => $idPlanVertDip
-        ])->one();               
+        ])->one();   
 
         $model->proceso_aprendizaje = $contenido;
-        $model->save();        
+        $model->save();  
+        
+        //guarda el porcentaje de avance del pud dip
+        $this->pud_dip_actualiza_porcentaje_avance($model);
     }
     
     //5.4.- Lenguaje de Aprendizaje
@@ -178,10 +203,11 @@ class PudDipController extends Controller{
         $contenido   = $_GET['contenido']; 
         $model = PlanificacionVerticalDiploma::find()->where([
             'id' => $idPlanVertDip
-        ])->one();               
+        ])->one();          
                 
         $model->detalle_len_y_aprendizaje = $contenido;
-        $model->save();        
+        $model->save();
+       
     }
     //5.4.1.- Conexion CAS
     public function actionUpdateLenguajeAprendizajeCheck(){ 
@@ -191,6 +217,11 @@ class PudDipController extends Controller{
         $tipoProc   = $_GET['tipo_proceso'];
 
         $this->insertUpdateConexionCas($idPvd, $idPvd_Op,$tipoProc);
+        //guarda el porcentaje de avance del pud dip
+        $model = PlanificacionVerticalDiploma::find()->where([
+            'id' => $idPvd
+        ])->one(); 
+        $this->pud_dip_actualiza_porcentaje_avance($model);
     }
     //5.5.- Conexion TDC
     public function actionUpdateConexionTdc(){             
@@ -198,10 +229,14 @@ class PudDipController extends Controller{
         $contenido   = $_GET['contenido']; 
         $model = PlanificacionVerticalDiploma::find()->where([
             'id' => $idPlanVertDip
-        ])->one();               
+        ])->one();         
+        
 
         $model->conexion_tdc = $contenido;
-        $model->save();        
+        $model->save();  
+        
+        //guarda el porcentaje de avance del pud dip
+        $this->pud_dip_actualiza_porcentaje_avance($model);
     }
     //5.6.- Conexion CAS
     public function actionUpdateConexionCas(){             
@@ -209,10 +244,12 @@ class PudDipController extends Controller{
         $contenido   = $_GET['contenido']; 
         $model = PlanificacionVerticalDiploma::find()->where([
             'id' => $idPlanVertDip
-        ])->one();               
+        ])->one();        
+        
 
         $model->detalle_cas = $contenido;
-        $model->save();        
+        $model->save(); 
+        
     }
     //5.6.1.- Conexion CAS
     public function actionUpdateConexionCasCheck(){ 
@@ -222,6 +259,11 @@ class PudDipController extends Controller{
         $tipoProc   = $_GET['tipo_proceso'];
 
         $this->insertUpdateConexionCas($idPvd, $idPvd_Op,$tipoProc);
+        //guarda el porcentaje de avance del pud dip
+        $model = PlanificacionVerticalDiploma::find()->where([
+            'id' => $idPvd
+        ])->one(); 
+        $this->pud_dip_actualiza_porcentaje_avance($model);
     }
     private function insertUpdateConexionCas($idPvd, $idPvd_Op,$tipo_proceso) 
     { 
@@ -252,10 +294,14 @@ class PudDipController extends Controller{
         $contenido   = $_GET['contenido']; 
         $model = PlanificacionVerticalDiploma::find()->where([
             'id' => $idPlanVertDip
-        ])->one();               
+        ])->one();       
+        
 
         $model->recurso = $contenido;
-        $model->save();        
+        $model->save();    
+
+        //guarda el porcentaje de avance del pud dip
+        $this->pud_dip_actualiza_porcentaje_avance($model);    
     }
     //7.1.- funciono
     public function actionUpdateFunciono(){             
@@ -263,10 +309,13 @@ class PudDipController extends Controller{
         $contenido   = $_GET['contenido']; 
         $model = PlanificacionVerticalDiploma::find()->where([
             'id' => $idPlanVertDip
-        ])->one();               
+        ])->one();    
 
         $model->reflexion_funciono = $contenido;
-        $model->save();        
+        $model->save();    
+        
+        //guarda el porcentaje de avance del pud dip
+        $this->pud_dip_actualiza_porcentaje_avance($model);
     }
     //7.2.- no funciono
     public function actionUpdateNoFunciono(){             
@@ -274,10 +323,13 @@ class PudDipController extends Controller{
         $contenido   = $_GET['contenido']; 
         $model = PlanificacionVerticalDiploma::find()->where([
             'id' => $idPlanVertDip
-        ])->one();               
+        ])->one();
 
         $model->reflexion_no_funciono = $contenido;
-        $model->save();        
+        $model->save();  
+        
+        //guarda el porcentaje de avance del pud dip
+        $this->pud_dip_actualiza_porcentaje_avance($model);
     }
     //7.3.- no funciono
     public function actionUpdateObservacion(){             
@@ -285,10 +337,13 @@ class PudDipController extends Controller{
         $contenido   = $_GET['contenido']; 
         $model = PlanificacionVerticalDiploma::find()->where([
             'id' => $idPlanVertDip
-        ])->one();               
+        ])->one(); 
 
         $model->reflexion_observacion= $contenido;
         $model->save();        
+
+        //guarda el porcentaje de avance del pud dip
+        $this->pud_dip_actualiza_porcentaje_avance($model);
     }
     //generador pdf, pud dip
     public function actionPdfPudDip()
@@ -811,58 +866,18 @@ class PudDipController extends Controller{
     {
         //consulta los los tdc que han sido marcados con check, mas los que aun no estan marcados
        $con = Yii::$app->db;
-       $query = "select p.categoria ,p.opcion,pr.id as pvd_tdc_id ,p.id as tdc_id, 
-                case 
-                when p.id is not null then true else false
-                end as es_seleccionado
-                from planificacion_opciones p, planificacion_vertical_diploma_relacion_tdc pr,
-                planificacion_vertical_diploma pvd 
-                where p.tipo='CONEXION_CAS'  and pvd.id =$planVertDiplId 
-                and pr.vertical_diploma_id = pvd.id   
-                and pr.relacion_tdc_id  = p.id
-                union all 
-                select p.categoria ,p.opcion,0 as pvd_tdc_id,p.id tdc_id, 
-                case 
-                when null is not null then true else false
-                end as es_seleccionado
-                from planificacion_opciones p
-                where p.tipo='CONEXION_CAS'
-                and p.id not in 
-                ( select relacion_tdc_id  from planificacion_vertical_diploma_relacion_tdc 
-                where vertical_diploma_id = $planVertDiplId)
-                order by opcion;
-                ";
-        $resultado = $con->createCommand($query)->queryAll();
-        return $resultado;
+       $obj = new Scripts();
+       $resultado = $obj->pud_dip_consultar_conexion_cas_ckeck($planVertDiplId);        
+       return $resultado;
     } 
     //metodo usado para 5.4.- llamada a lenguaje y aprendizaje
     private function consultar_lenguaje_y_aprendizaje_ckeck($planVertDiplId) 
     {
         //consulta los los tdc que han sido marcados con check, mas los que aun no estan marcados
        $con = Yii::$app->db;
-       $query = "select p.categoria ,p.opcion,pr.id as pvd_tdc_id ,p.id as tdc_id, 
-                case 
-                when p.id is not null then true else false
-                end as es_seleccionado
-                from planificacion_opciones p, planificacion_vertical_diploma_relacion_tdc pr,
-                planificacion_vertical_diploma pvd 
-                where p.tipo='LENGUAJE_Y_CONOCIMIENTO'  and pvd.id =$planVertDiplId 
-                and pr.vertical_diploma_id = pvd.id   
-                and pr.relacion_tdc_id  = p.id
-                union all 
-                select p.categoria ,p.opcion,0 as pvd_tdc_id,p.id tdc_id, 
-                case 
-                when null is not null then true else false
-                end as es_seleccionado
-                from planificacion_opciones p
-                where p.tipo='LENGUAJE_Y_CONOCIMIENTO'
-                and p.id not in 
-                ( select relacion_tdc_id  from planificacion_vertical_diploma_relacion_tdc 
-                where vertical_diploma_id = $planVertDiplId)
-                order by opcion;
-                ";
-        $resultado = $con->createCommand($query)->queryAll();
-        return $resultado;
+       $obj = new Scripts();  
+       $resultado = $obj->pud_dip_consultar_lenguaje_y_aprendizaje_ckeck($planVertDiplId);
+       return $resultado;
     } 
     
 

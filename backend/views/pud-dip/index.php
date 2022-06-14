@@ -5,6 +5,7 @@ $pudPep;-->
 
 use backend\models\PlanificacionDesagregacionCriteriosEvaluacion;
 use backend\controllers\PudPepController;
+use backend\models\PlanificacionVerticalDiploma;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use kartik\grid\GridView;
@@ -18,9 +19,22 @@ use yii\helpers\ArrayHelper;
 
 $this->title = 'PUD - ' . $planUnidad->curriculoBloque->last_name . ' - ' . $planUnidad->unit_title;
 $this->params['breadcrumbs'][] = $this->title;
-//echo '<pre>';
-//print_r($arrayAcciones);
-//die();
+
+$modelPVD = PlanificacionVerticalDiploma::find()
+->where(['planificacion_bloque_unidad_id'=>$planUnidad->id])
+->one();
+
+$pud_dip_porc_avance = pud_dip_porcentaje_avance($modelPVD->id,$planUnidad->id);
+//consulta para extraer el porcentaje de avance del PUD DIPLOMA
+function pud_dip_porcentaje_avance($planVertDiplId,$planBloqueUniId) 
+{
+   $pud_dip_porc_avance = 0;
+   //consulta los los tdc que han sido marcados con check, mas los que aun no estan marcados    
+   $obj2 = new backend\models\helpers\Scripts();  
+   $pud_dip_porc_avance = $obj2->pud_dip_porcentaje_avance($planVertDiplId,$planBloqueUniId);
+   
+   return $pud_dip_porc_avance; 
+} 
 
 ?>
 <!--Scripts para que funcionen AJAX'S-->
@@ -69,8 +83,8 @@ $this->params['breadcrumbs'][] = $this->title;
                         ['class' => 'link']
                     );
                     ?>
-
                     |
+                    <?=  "Porcentaje de Avance: ".$pud_dip_porc_avance['porcentaje']."%"?>
                 </div> <!-- fin de menu cabecera izquierda -->
 
                 <!-- inicio de menu cabecera derecha -->
@@ -127,6 +141,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 beforeSend: function() {},
                 success: function() {
                     ver_detalle(accion_update);
+                    location.reload();
                 }
             });
 

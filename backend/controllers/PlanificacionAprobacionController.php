@@ -317,7 +317,7 @@ class PlanificacionAprobacionController extends Controller{
         $model->save();
 
         //INICIA APROBAR TODOS LOS PLANES DE LA CABECERA
-        $this->actualiza_estados_pud($cabeceraId);
+        //$this->actualiza_estados_pud($cabeceraId);
         //TERMINA APROBAR TODOS LOS PLANES DE LA CABECERA
 
         return $this->redirect(['detalle', 'cabecera_id' => $cabeceraId]);

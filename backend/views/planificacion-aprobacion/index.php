@@ -56,30 +56,38 @@ $this->params['breadcrumbs'][] = $this->title;
             <div class="row" style="margin-top: 10px; margin-left: 60px">
 
                 <!--<div class="col-12 col-md-12 border">-->
-
-                <div class="col-lg-12 col-md-12" style="text-align: center">
-                    <h6>-- Indicadores --</h6>
-                    <span class="badge rounded-pill bg-success">Aprobados</span>
-                    <span class="badge rounded-pill bg-primary">Devueltos</span>
-                    <span class="badge rounded-pill bg-warning text-dark">Por Revisar</span>
-                    <span class="badge rounded-pill bg-danger">Faltan</span>
+                
+                <div class="row">
+                    <div class="col-lg-12 col-md-12" style="text-align: center">
+                        <h6>-- Indicadores --</h6>
+                        <span class="badge rounded-pill bg-success">Aprobados</span>
+                        <span class="badge rounded-pill bg-primary">Devueltos</span>
+                        <span class="badge rounded-pill bg-warning text-dark">Por Revisar</span>
+                        <span class="badge rounded-pill bg-danger">Faltan</span>
+                    </div>
                 </div>
-                <br>
 
+                
+                
+                <div class="row">
                 <?php
+                
+//                echo '<pre>';
+//                print_r($detalle);
+//                //die();
+                
                 foreach ($detalle as $curso) {
                     ?>
-                    <div class="card mb-3 zoom" style="width: auto; margin: 3px;background-color: #898b8d; color: white">
+                    
+                    <div class="card  zoom" style="width: 30%; margin: 3px;background-color: #ccc; color: white">
                         <div class="row g-0">
-                            <div class="col-md-4" style="">
-                                <img src="ISM/main/images/submenu/papeles.png" class="img-fluid rounded-start" alt="...">
-                            </div>
-                            <div class="col-md-8">
+                            
+                            <div class="col-md-12">
                                 <div class="card-body" >
                                     <h6 class="card-title">
                                         <strong>
                                             <?php 
-                                            echo Html::a(
+                                            echo Html::a('<img src="ISM/main/images/submenu/papeles.png" width="30px" class="img-fluid rounded-start" alt="..."> '.
                                                 $curso['curso'],
                                                 ['asignaturas',
                                                     'template_id' => $curso['x_template_id']
@@ -95,30 +103,40 @@ $this->params['breadcrumbs'][] = $this->title;
 
                                 </div>
                                 <div class="card-footer">
-                                    <?php
-                                    foreach ($curso['totales'] as $total) {
-                                        if ($total['estado'] == 'EN_COORDINACION') {
+                                    <b>Anuales -> </b>
+                                        <?php
+                                            foreach ($curso['totales'] as $total) {
+                                                if ($total['estado'] == 'EN_COORDINACION') {
+                                                    ?>
+                                                    <span class="badge rounded-pill bg-warning text-dark"><?= $total['total'] ?></span>
+                                                    <?php
+                                                }
+                                                if ($total['estado'] == 'INICIANDO') {
+                                                    ?>
+                                                    <span class="badge rounded-pill bg-danger"><?= $total['total'] ?></span>
+                                                    <?php
+                                                }
+                                                if ($total['estado'] == 'DEVUELTO') {
+                                                    ?>
+                                                    <span class="badge rounded-pill bg-primary"><?= $total['total'] ?></span>
+                                                    <?php
+                                                }
+                                                if ($total['estado'] == 'APROBADO') {
+                                                    ?>
+                                                    <span class="badge rounded-pill bg-success"><?= $total['total'] ?></span>
+                                                    <?php
+                                                }
+                                            }
+                                            ?>       
+                                                    
+                                        <hr>
+                                        <div class="row">
+                                            <?=
+                                                Html::a('<b style="color: #0a1f8f">Aprobaciones Planes de Unidades</b>',['pud-aprobacion/index1',
+                                                        'template_id' => $curso['x_template_id']
+                                                    ]);
                                             ?>
-                                            <span class="badge rounded-pill bg-warning text-dark"><?= $total['total'] ?></span>
-                                            <?php
-                                        }
-                                        if ($total['estado'] == 'INICIANDO') {
-                                            ?>
-                                            <span class="badge rounded-pill bg-danger"><?= $total['total'] ?></span>
-                                            <?php
-                                        }
-                                        if ($total['estado'] == 'DEVUELTO') {
-                                            ?>
-                                            <span class="badge rounded-pill bg-primary"><?= $total['total'] ?></span>
-                                            <?php
-                                        }
-                                        if ($total['estado'] == 'APROBADO') {
-                                            ?>
-                                            <span class="badge rounded-pill bg-success"><?= $total['total'] ?></span>
-                                            <?php
-                                        }
-                                    }
-                                    ?>
+                                        </div>
                                 </div>
                             </div>
                         </div>
@@ -129,7 +147,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 ?>
 
 
-                <!--</div>-->
+                </div>
 
             </div>
             <!-- fin cuerpo de card -->

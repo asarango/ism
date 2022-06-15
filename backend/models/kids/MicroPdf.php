@@ -16,18 +16,16 @@ use backend\models\PlanificacionDesagregacionCabecera;
 
 use backend\models\pca\Pca;
 
-class PcaPdf extends \yii\db\ActiveRecord{
+class MicroPdf extends \yii\db\ActiveRecord{
 
-    private $pcaId;
-    private $modelPca;
-    private $opCourseTemplateId;
-    public $html;
+    private $experienciaId;
+    private $experiencia;
+    public  $html;
 
-    public function __construct($pcaId){
-        $this->pcaId = $pcaId;
+    public function __construct($experienciaId){
+        $this->experienciaId = $experienciaId;
         $this->html = '';       
-        $this->modelPca = \backend\models\KidsPca::findOne($this->pcaId);    
-        $this->opCourseTemplateId = $this->modelPca->ismAreaMateria->mallaArea->periodoMalla->malla->opCourseTemplate->id;
+        $this->experiencia = \backend\models\KidsUnidadMicro::findOne($experienciaId);
         $this->genera_pfd();       
     }
 
@@ -51,17 +49,11 @@ class PcaPdf extends \yii\db\ActiveRecord{
         $mpdf->SetHtmlHeader($cabecera);
         $mpdf->showImageErrors = true;
 
-        //foreach ($modelAlmunos as $data) {
-
         $html = $this->cuerpo();
-//
         $mpdf->WriteHTML($html);
-        // $mpdf->addPage();
-        //}
-//        $mpdf->addPage();
         $mpdf->SetFooter($pie);
 
-        $mpdf->Output('Libreta' . "curso" . '.pdf', 'D');
+        $mpdf->Output('Plan-Micro' . "curso" . '.pdf', 'D');
         exit;
     }
     
@@ -142,7 +134,7 @@ class PcaPdf extends \yii\db\ActiveRecord{
         $html .= '<td class="border" align="center"><b>ISM</b> <br> International Scholastic Model</td>';
         $html .= '</tr>';
         $html .= '<tr>';
-        $html .= '<td class="border" align="center"><b>PLANIFICACIÓN CURRÍCULAR ANUAL</b> <br> AÑO ESCOLAR ' . $periodo->codigo . '</td>';
+        $html .= '<td class="border" align="center"><b>PLANIFICACIÓN MICROCURRÍCULAR DE EDUCACIÒN PRESCOLAR</b> <br> AÑO ESCOLAR ' . $periodo->codigo . '</td>';
         $html .= '</tr>';
         $html .= '<tr>';
         $html .= '<td class="border" style="background-color: #eee"><b>1.- DATOS INFORMATIVOS</b></td>';
@@ -150,13 +142,13 @@ class PcaPdf extends \yii\db\ActiveRecord{
         $html .= '</table>';
         
         $html .= $this->uno();
-        $html .= $this->dos();
-        $html .= $this->tres();
-        $html .= $this->cuatro();
-        $html .= $this->cinco();
-        $html .= $this->seis();
-        $html .= $this->siete();
-        $html .= $this->firmas();
+//        $html .= $this->dos();
+//        $html .= $this->tres();
+//        $html .= $this->cuatro();
+//        $html .= $this->cinco();
+//        $html .= $this->seis();
+//        $html .= $this->siete();
+//        $html .= $this->firmas();
 
         return $html;
     }
@@ -166,12 +158,19 @@ class PcaPdf extends \yii\db\ActiveRecord{
         $html = '';
         $html .= '<table width="100%" cellspacing="0" cellpadding="10">';
         $html .= '<tr>';
-        $html .= '<td width="50%" class="border"><b>AREA (NIVEL ACADÉMICO):</b> ';
-        $html .= 'PREBÁSICA';
+        $html .= '<td width="" class="border"><b>DOCENTES:</b> ';
         $html .= '</td>';
             
-        $html .= '<td width="50%" class="border"><b>ASIGNATURA:</b> ';
-        $html .= $this->modelPca->ismAreaMateria->materia->nombre;
+        $html .= '<td width="" class="border"><b>FECHA DE COMIENZO DE LA EXPERIENCIA:</b> ';
+        $html .= $this->experiencia->fecha_inicia;
+        $html .= '</td>';
+        
+        $html .= '<td width="" class="border"><b>FECHA QUE TERMINA LA EXPERIENCIA:</b> ';
+        $html .= $this->experiencia->fecha_termina;
+        $html .= '</td>';
+        
+        $html .= '<td width="" class="border"><b>GRADO:</b> ';
+        $html .= $this->experiencia->pca->ismAreaMateria->mallaArea->periodoMalla->malla->opCourseTemplate->name;
         $html .= '</td>';
         
         $html .= '</tr>';

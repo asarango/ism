@@ -1,6 +1,7 @@
 <?php
 
 use backend\models\PlanificacionDesagregacionCriteriosEvaluacion;
+use backend\models\PlanificacionBloquesUnidad;
 use yii\helpers\Html;
 use yii\helpers\Url;
 
@@ -14,6 +15,17 @@ $this->params['breadcrumbs'][] = $this->title;
 
 //echo($seccion);
 //echo($perfil);
+
+//consulta para extraer el porcentaje de avance del PUD DIPLOMA
+function pud_dip_porcentaje_avance($planVertDiplId,$planBloqueUniId) 
+{
+   $pud_dip_porc_avance = 0;
+   //consulta los los tdc que han sido marcados con check, mas los que aun no estan marcados    
+   $obj2 = new backend\models\helpers\Scripts();  
+   $pud_dip_porc_avance = $obj2->pud_dip_porcentaje_avance($planVertDiplId,$planBloqueUniId);
+   
+   return $pud_dip_porc_avance; 
+} 
 ?>
 <div class="planificacion-desagregacion-cabecera-index">
 
@@ -21,7 +33,7 @@ $this->params['breadcrumbs'][] = $this->title;
         <div class="card shadow col-lg-8 col-md-8">
             <div class=" row align-items-center p-2">
                 <div class="col-lg-1">
-                    <h4><img src="ISM/main/images/submenu/herramientas-para-reparar.png" width="64px" style="" class="img-thumbnail"></h4>
+                    <h4><img src="ISM/main/images/submenu/herramientas-para-reparar.png" width="64px" class="img-thumbnail"></h4>
                 </div>
                 <div class="col-lg-11">
                     <h4><?= Html::encode($this->title) ?></h4>
@@ -127,8 +139,12 @@ $this->params['breadcrumbs'][] = $this->title;
                                 <tr>
                                     <td class="text-center"><?= $unidad->curriculoBloque->last_name ?></td>
                                     <td class="text-center"><?= $unidad->unit_title ?></td>
+                                    <!-- Columna del PUD -->
                                     <td class="text-center">
                                         <?php
+                                        $model = PlanificacionBloquesUnidad::findOne($unidad->id);
+                                       
+                                        echo 'Avance: '.$model->avance_porcentaje.'% | &nbsp';
                                         if ($seccion == 'BAS') {
                                             if ($unidad->pud_status == 1) {
                                                 echo Html::a(
@@ -159,12 +175,14 @@ $this->params['breadcrumbs'][] = $this->title;
                                             }
                                         } elseif ($seccion == 'DIPL') {
                                             if ($unidad->pud_status == 1) {
+                                                
                                                 echo Html::a(
                                                         '<i class="fas fa-check" title="PUD CREADO"></i>',
                                                         ['pud-dip/index1', 'plan_bloque_unidad_id' => $unidad->id],
                                                         ['style' => 'color: #0a1f8f']
                                                 );
                                             } else {
+                                               
                                                 echo Html::a(
                                                         '<i class="fas fa-times" title="PLANIFICAR PUD"></i>',
                                                         ['pud-dip/index1', 'plan_bloque_unidad_id' => $unidad->id],
@@ -174,6 +192,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                         }
                                         ?>
                                     </td>
+                                    <!-- fin Columna del PUD -->
                                     <td class="text-center"><?= $unidad->settings_status ?></td>
                                     <td class="text-center">
                                         <!--Si usuario es administrador puede mover "Es Abierto"-->

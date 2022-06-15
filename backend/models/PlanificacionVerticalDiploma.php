@@ -53,7 +53,7 @@ class PlanificacionVerticalDiploma extends \yii\db\ActiveRecord
             [['planificacion_bloque_unidad_id'], 'integer'],
             [['objetivo_asignatura', 'concepto_clave', 'objetivo_evaluacion', 'intrumentos', 'descripcion_texto_unidad', 'habilidades', 'proceso_aprendizaje', 'detalle_cas', 'detalle_len_y_aprendizaje', 'conexion_tdc', 'recurso', 'reflexion_funciono', 'reflexion_no_funciono', 'reflexion_observacion'], 'string'],
             [['created_at', 'updated_at'], 'safe'],
-            [['created', 'updated'], 'string', 'max' => 200],
+            [['created', 'updated','ultima_seccion'], 'string', 'max' => 200],
             [['planificacion_bloque_unidad_id'], 'exist', 'skipOnError' => true, 'targetClass' => PlanificacionBloquesUnidad::className(), 'targetAttribute' => ['planificacion_bloque_unidad_id' => 'id']],
         ];
     }
@@ -84,6 +84,7 @@ class PlanificacionVerticalDiploma extends \yii\db\ActiveRecord
             'reflexion_funciono' => 'Reflexion Funciono',
             'reflexion_no_funciono' => 'Reflexion No Funciono',
             'reflexion_observacion' => 'Reflexion Observacion',
+            'ultima_seccion'=>'Ultima Seccion Revisada',
         ];
     }
 

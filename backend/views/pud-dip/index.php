@@ -5,6 +5,7 @@ $pudPep;-->
 
 use backend\models\PlanificacionDesagregacionCriteriosEvaluacion;
 use backend\controllers\PudPepController;
+use backend\models\PlanificacionVerticalDiploma;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use kartik\grid\GridView;
@@ -18,9 +19,22 @@ use yii\helpers\ArrayHelper;
 
 $this->title = 'PUD - ' . $planUnidad->curriculoBloque->last_name . ' - ' . $planUnidad->unit_title;
 $this->params['breadcrumbs'][] = $this->title;
-//echo '<pre>';
-//print_r($arrayAcciones);
-//die();
+
+$modelPVD = PlanificacionVerticalDiploma::find()
+    ->where(['planificacion_bloque_unidad_id' => $planUnidad->id])
+    ->one();
+
+$pud_dip_porc_avance = pud_dip_porcentaje_avance($modelPVD->id, $planUnidad->id);
+//consulta para extraer el porcentaje de avance del PUD DIPLOMA
+function pud_dip_porcentaje_avance($planVertDiplId, $planBloqueUniId)
+{
+    $pud_dip_porc_avance = 0;
+    //consulta los los tdc que han sido marcados con check, mas los que aun no estan marcados    
+    $obj2 = new backend\models\helpers\Scripts();
+    $pud_dip_porc_avance = $obj2->pud_dip_porcentaje_avance($planVertDiplId, $planBloqueUniId);
+
+    return $pud_dip_porc_avance;
+}
 
 ?>
 <!--Scripts para que funcionen AJAX'S-->
@@ -69,8 +83,8 @@ $this->params['breadcrumbs'][] = $this->title;
                         ['class' => 'link']
                     );
                     ?>
-
                     |
+                    <?= "Porcentaje de Avance: " . $pud_dip_porc_avance['porcentaje'] . "%" ?>
                 </div> <!-- fin de menu cabecera izquierda -->
 
                 <!-- inicio de menu cabecera derecha -->
@@ -81,7 +95,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         ['pud-dip/pdf-pud-dip', 'planificacion_unidad_bloque_id' => $planUnidad->id],
                         ['class' => 'link', 'target' => '_blank']
                     );
-                    ?> 
+                    ?>
                     |
                 </div>
                 <!-- fin de menu cabecera derecha -->
@@ -93,7 +107,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <!-- comienza menu de pud-->
                 <div class="col-lg-3 col-md-3" style="overflow-y: scroll; height: 650px; border-top: solid 1px #ccc;">
                     <?= $this->render('menu', [
-                        'planUnidad' => $planUnidad
+                        'planUnidad' => $planUnidad,                        
                     ]); ?>
                 </div>
                 <!-- termina menu de pud -->
@@ -111,14 +125,16 @@ $this->params['breadcrumbs'][] = $this->title;
     <!--<script src="https://code.jquery.com/jquery-2.2.4.js" integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI=" crossorigin="anonymous"></script>-->
 
     <script>
+       
         /** FUNCION PARA MODIFICACION DE TEXTO PARA CAMPOS SIMPLES */
-        function update_campo_simple_pud_dip(id, accion_update) 
-        {
-            var contenido = CKEDITOR.instances['editor-text-unidad'].getData();            
+        function update_campo_simple_pud_dip(id, accion_update) {
+            var contenido = CKEDITOR.instances['editor-text-unidad'].getData();
             var url = buscar_url(accion_update);
+            var control = "#"+accion_update;
             params = {
                 id_plani_vert_dip: id,
-                contenido: contenido
+                contenido: contenido,
+                accion : accion_update
             }
             $.ajax({
                 data: params,
@@ -126,36 +142,47 @@ $this->params['breadcrumbs'][] = $this->title;
                 type: 'GET',
                 beforeSend: function() {},
                 success: function() {
-                    ver_detalle(accion_update);
+                  /*if (contenido.length>50)
+                    {
+                        $(control).css({'color':'green'});
+                       
+                    }else{                       
+                       $(control).css({'color':'red'});
+                    }*/                   
+                    //ver_detalle(accion_update);
+                    location.reload();
+
                 }
             });
 
         }
-        function update_campos_check(id_pvd,idPvd_Op, accion_update_op,tipoProceso) 
-        {
+
+        function update_campos_check(id_pvd, idPvd_Op, accion_update_op, tipoProceso) {
             //idPvd_Op: esta variable toma dos valores de id's, de dos tablas diferentes
             // tablas: planificacion vertical diploma relacion tdc, cuando elimina
             // tablas: planificacion opciones, cuando agrega
-            var url = buscar_url(accion_update_op);   
+            var url = buscar_url(accion_update_op);
             params = {
                 id_plani_vert_dip: id_pvd,
                 id_pvd_op: idPvd_Op,
-                tipo_proceso : tipoProceso
-            }            
+                tipo_proceso: tipoProceso,
+                accion : accion_update_op
+            }
             $.ajax({
                 data: params,
                 url: url,
                 type: 'GET',
                 beforeSend: function() {},
                 success: function() {
-                    ver_detalle(accion_update_op);
+                    //ver_detalle(accion_update_op);
+                    location.reload();
                 }
             });
         }
 
         function buscar_url(accion_update) {
             var respuesta = '';
-            switch (accion_update) {                
+            switch (accion_update) {
                 case '2.1.-':
                     respuesta = '<?= Url::to(['pud-dip/update-descri-text-uni']) ?>';
                     break;
@@ -194,7 +221,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     break;
             }
             return respuesta;
-        }       
+        }
 
         //// FIN PARA PERFILES BI
     </script>

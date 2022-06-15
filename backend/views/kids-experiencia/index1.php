@@ -67,6 +67,15 @@ if(!isset($pestana)){
                             );
                             ?>    
                             |
+                            <?=
+                            Html::a(
+                                    '<span class="badge rounded-pill" style="background-color: #ab0a3d"><i class="fas fa-file-pdf"></i> Pdf</span>',
+                                    [
+                                        'pdf', 'experiencia_id' => $micro->id
+                                    ]
+                            );
+                            ?>    
+                            |
                         </p>
                     </div>
                 </div>

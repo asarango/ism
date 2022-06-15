@@ -10,12 +10,11 @@ use yii\helpers\Url;
 
 $this->title = 'Aprobaciondes de planificaciones de unidad';
 $this->params['breadcrumbs'][] = $this->title;
-
 ?>
 <!-- Jquery AJAX -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 
-
+<script src="https://cdn.ckeditor.com/4.17.1/standard/ckeditor.js"></script>
 
 <div class="pud-aprobacion-detalle">
 
@@ -27,7 +26,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 </div>
                 <div class="col-lg-10">
                     <h4><?= Html::encode($this->title) ?></h4>
-                    <small><?= $dataMateria['curso'].' | '.$dataMateria['materia'].' | '.$dataMateria['last_name'] ?></small>
+                    <small><?= $dataMateria['curso'] . ' | ' . $dataMateria['materia'] . ' | ' . $dataMateria['last_name'] ?></small>
                 </div>
             </div><!-- FIN DE CABECERA -->
 
@@ -60,23 +59,98 @@ $this->params['breadcrumbs'][] = $this->title;
 
                 <div class="col-lg-6 col-md-6" style="text-align: right;">
                     <!-- inicio de menu derecha -->
-                   
+
                 </div>
                 <!-- fin de menu derecha -->
             </div>
             <!-- finaliza menu menu  -->
 
             <!-- inicia cuerpo de card -->
-            
+
             <div class="row" style="margin-top: 20px">
-                <div class="col-lg-8 col-md-8"></div>
-                <div class="col-lg-4 col-md-4"></div>
+                <div class="col-lg-8 col-md-8">                    
+                    <iframe width="100%"
+                            height="600"
+                            src="<?= Url::toRoute(['pud-dip/pdf-pud-dip', 'planificacion_unidad_bloque_id' => $dataMateria['id']]) ?>">
+                    </iframe>
+                </div>
+
+
+                <div class="col-lg-4 col-md-4">
+
+                    <?php                    
+                    $form = ActiveForm::begin([
+                                'action' => Url::to(['detalle', 'unidad_id' => $dataMateria['id']]),
+                                'method' => 'post'
+                    ]);
+                    ?>
+
+                    <!--CKEDITOR-->
+                    <!--EDITOR DE TEXTO KARTIK-->
+                    <textarea name="" id="editor">
+                        <?= $cabecera->revision_coordinacion_observaciones ?>
+                    </textarea>
+                    <script>
+                        CKEDITOR.replace('editor', {
+                            customConfig: '/ckeditor_settings/config.js'
+                        })
+                    </script>
+
+
+                    <?php
+                    if ($cabecera->estado == 'APROBADO') {
+                        ?>
+                        <div class="alert alert-success" role="alert" style="text-align:center" >
+                            ¡Usted aprobó Planificaciones <i class="fas fa-thumbs-up"></i>! 
+                        </div>
+                        <?php
+                    } elseif ($cabecera->estado == 'EN_COORDINACION') {
+                        ?>
+                        <br>
+                        <div class="row" style="text-align: center; padding-left: 30px;padding-right: 30px;">
+                            <?=
+                            Html::submitButton('Devolver Planificación',
+                                    [
+                                        'class' => 'btn btn-danger my-text-medium'
+                                    ])
+                            ?>
+                            <hr>
+                            <i class="far fa-hand-point-down" style="font-size: 20px;color: #0a1f8f"></i> 
+                            <?=
+                            Html::a(
+                                    '<i class="fas fa-check-circle"> Aprobar Planificación</i>',
+                                    ['aprobacion', 'cabecera_id' => $cabecera->id],
+                                    ['class' => 'btn btn-success my-text-medium']
+                            );
+                            ?> 
+                        </div>
+                        <?php
+                    } elseif ($cabecera->estado == 'DEVUELTO') {
+                        ?>
+                        <div class="alert alert-warning" role="alert" style="text-align:center" >
+                            ¡Se ha enviado a modificar al profesor!
+                        </div>
+                        <?php
+                    } elseif ($cabecera->estado == 'INICIANDO') {
+                        ?>
+                        <div class="alert alert-info" role="alert" style="text-align:center" >
+                            ¡El profesor está iniciando su planificación!
+                        </div>
+                        <?php
+                    }
+                    ?>
+
+                </div>
+
+                <?php ActiveForm::end(); ?>
+
             </div>
-                 
-            
-            <!-- fin cuerpo de card -->
         </div>
+
+
+        <!-- fin cuerpo de card -->
     </div>
+</div>
 
 </div>
 

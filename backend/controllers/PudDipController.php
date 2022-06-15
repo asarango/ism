@@ -152,17 +152,25 @@ class PudDipController extends Controller{
         $modelPlanBloqUni->avance_porcentaje = $pud_dip_porc_avance['porcentaje'];
         $modelPlanBloqUni->save(); 
     }
+    //Retorna el Modelo de Plan Vertical Diploma
+    private function retornoModelPlanVarticalDiploma($idPlanVertDip)
+    {
+        $model = PlanificacionVerticalDiploma::find()->where([
+            'id' => $idPlanVertDip
+        ])->one(); 
+        return $model;
+    }
     //2.1.- Descripcion y Texto de una Unidad
     public function actionUpdateDescriTextUni()
     {                                 
         $idPlanVertDip = $_GET['id_plani_vert_dip'];
         $contenido   = $_GET['contenido']; 
-        
-        $model = PlanificacionVerticalDiploma::find()->where([
-            'id' => $idPlanVertDip
-        ])->one();          
+        $accion_update = $_GET['accion'];
 
-        $model->descripcion_texto_unidad = $contenido;
+        $model  = $this->retornoModelPlanVarticalDiploma($idPlanVertDip);
+        $model->ultima_seccion = $accion_update;
+        $model->descripcion_texto_unidad = $contenido;        
+
         $model->save();  
         
         //guarda el porcentaje de avance del pud dip
@@ -172,9 +180,10 @@ class PudDipController extends Controller{
     public function actionUpdateHabilidades(){             
         $idPlanVertDip = $_GET['id_plani_vert_dip'];
         $contenido   = $_GET['contenido']; 
-        $model = PlanificacionVerticalDiploma::find()->where([
-            'id' => $idPlanVertDip
-        ])->one(); 
+        $accion_update = $_GET['accion'];
+
+        $model  = $this->retornoModelPlanVarticalDiploma($idPlanVertDip);
+        $model->ultima_seccion = $accion_update;
 
         $model->habilidades = $contenido;
         $model->save();  
@@ -186,9 +195,10 @@ class PudDipController extends Controller{
     public function actionUpdateProcesoAprendizaje(){             
         $idPlanVertDip = $_GET['id_plani_vert_dip'];
         $contenido   = $_GET['contenido']; 
-        $model = PlanificacionVerticalDiploma::find()->where([
-            'id' => $idPlanVertDip
-        ])->one();   
+        $accion_update = $_GET['accion'];
+
+        $model  = $this->retornoModelPlanVarticalDiploma($idPlanVertDip);
+        $model->ultima_seccion = $accion_update;  
 
         $model->proceso_aprendizaje = $contenido;
         $model->save();  
@@ -201,9 +211,10 @@ class PudDipController extends Controller{
     public function actionUpdateLenguajeAprendizaje(){             
         $idPlanVertDip = $_GET['id_plani_vert_dip'];
         $contenido   = $_GET['contenido']; 
-        $model = PlanificacionVerticalDiploma::find()->where([
-            'id' => $idPlanVertDip
-        ])->one();          
+        $accion_update = $_GET['accion'];
+
+        $model  = $this->retornoModelPlanVarticalDiploma($idPlanVertDip);
+        $model->ultima_seccion = $accion_update;       
                 
         $model->detalle_len_y_aprendizaje = $contenido;
         $model->save();
@@ -215,22 +226,25 @@ class PudDipController extends Controller{
         $idPvd = $_GET['id_plani_vert_dip'];
         $idPvd_Op = $_GET['id_pvd_op'];
         $tipoProc   = $_GET['tipo_proceso'];
+        $accion_update = $_GET['accion'];
 
         $this->insertUpdateConexionCas($idPvd, $idPvd_Op,$tipoProc);
         //guarda el porcentaje de avance del pud dip
         $model = PlanificacionVerticalDiploma::find()->where([
             'id' => $idPvd
         ])->one(); 
+        $model->ultima_seccion = $accion_update;
+        $model->save();
         $this->pud_dip_actualiza_porcentaje_avance($model);
     }
     //5.5.- Conexion TDC
     public function actionUpdateConexionTdc(){             
         $idPlanVertDip = $_GET['id_plani_vert_dip'];
         $contenido   = $_GET['contenido']; 
-        $model = PlanificacionVerticalDiploma::find()->where([
-            'id' => $idPlanVertDip
-        ])->one();         
-        
+        $accion_update = $_GET['accion'];
+
+        $model  = $this->retornoModelPlanVarticalDiploma($idPlanVertDip);
+        $model->ultima_seccion = $accion_update;  
 
         $model->conexion_tdc = $contenido;
         $model->save();  
@@ -242,10 +256,10 @@ class PudDipController extends Controller{
     public function actionUpdateConexionCas(){             
         $idPlanVertDip = $_GET['id_plani_vert_dip'];
         $contenido   = $_GET['contenido']; 
-        $model = PlanificacionVerticalDiploma::find()->where([
-            'id' => $idPlanVertDip
-        ])->one();        
-        
+        $accion_update = $_GET['accion'];
+
+        $model  = $this->retornoModelPlanVarticalDiploma($idPlanVertDip);
+        $model->ultima_seccion = $accion_update; 
 
         $model->detalle_cas = $contenido;
         $model->save(); 
@@ -257,12 +271,16 @@ class PudDipController extends Controller{
         $idPvd = $_GET['id_plani_vert_dip'];
         $idPvd_Op = $_GET['id_pvd_op'];
         $tipoProc   = $_GET['tipo_proceso'];
+        $accion_update = $_GET['accion'];
+
 
         $this->insertUpdateConexionCas($idPvd, $idPvd_Op,$tipoProc);
         //guarda el porcentaje de avance del pud dip
         $model = PlanificacionVerticalDiploma::find()->where([
             'id' => $idPvd
         ])->one(); 
+        $model->ultima_seccion = $accion_update;
+        $model->save();
         $this->pud_dip_actualiza_porcentaje_avance($model);
     }
     private function insertUpdateConexionCas($idPvd, $idPvd_Op,$tipo_proceso) 
@@ -292,10 +310,10 @@ class PudDipController extends Controller{
     public function actionUpdateRecursos(){             
         $idPlanVertDip = $_GET['id_plani_vert_dip'];
         $contenido   = $_GET['contenido']; 
-        $model = PlanificacionVerticalDiploma::find()->where([
-            'id' => $idPlanVertDip
-        ])->one();       
-        
+        $accion_update = $_GET['accion'];
+
+        $model  = $this->retornoModelPlanVarticalDiploma($idPlanVertDip);
+        $model->ultima_seccion = $accion_update;  
 
         $model->recurso = $contenido;
         $model->save();    
@@ -307,9 +325,10 @@ class PudDipController extends Controller{
     public function actionUpdateFunciono(){             
         $idPlanVertDip = $_GET['id_plani_vert_dip'];
         $contenido   = $_GET['contenido']; 
-        $model = PlanificacionVerticalDiploma::find()->where([
-            'id' => $idPlanVertDip
-        ])->one();    
+        $accion_update = $_GET['accion'];
+
+        $model  = $this->retornoModelPlanVarticalDiploma($idPlanVertDip);
+        $model->ultima_seccion = $accion_update;    
 
         $model->reflexion_funciono = $contenido;
         $model->save();    
@@ -321,9 +340,10 @@ class PudDipController extends Controller{
     public function actionUpdateNoFunciono(){             
         $idPlanVertDip = $_GET['id_plani_vert_dip'];
         $contenido   = $_GET['contenido']; 
-        $model = PlanificacionVerticalDiploma::find()->where([
-            'id' => $idPlanVertDip
-        ])->one();
+        $accion_update = $_GET['accion'];
+
+        $model  = $this->retornoModelPlanVarticalDiploma($idPlanVertDip);
+        $model->ultima_seccion = $accion_update; 
 
         $model->reflexion_no_funciono = $contenido;
         $model->save();  
@@ -335,9 +355,10 @@ class PudDipController extends Controller{
     public function actionUpdateObservacion(){             
         $idPlanVertDip = $_GET['id_plani_vert_dip'];
         $contenido   = $_GET['contenido']; 
-        $model = PlanificacionVerticalDiploma::find()->where([
-            'id' => $idPlanVertDip
-        ])->one(); 
+        $accion_update = $_GET['accion'];
+
+        $model  = $this->retornoModelPlanVarticalDiploma($idPlanVertDip);
+        $model->ultima_seccion = $accion_update; 
 
         $model->reflexion_observacion= $contenido;
         $model->save();        

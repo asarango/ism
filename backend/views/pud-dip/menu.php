@@ -18,6 +18,7 @@ $modelPVD = PlanificacionVerticalDiploma::find()
 ->where(['planificacion_bloque_unidad_id'=>$planUnidad->id])
 ->one();
 
+$opcion=$modelPVD->ultima_seccion;
 $iconoOk = 'fas fa-check';
 $colorOk = 'green';
 $colorNotOk = 'red';
@@ -69,8 +70,8 @@ function contador_de_consultar_lenguaje_y_aprendizaje_ckeck($planVertDiplId)
         
         <b>1.- DATOS INFORMATIVOS</b> 
         <ul>
-            <li class="zoom"><a href="#" onclick="ver_detalle('1.1.-');">1.1.- Ver Datos
-            <i class="<?=$iconoOk;?>" title="DATOS INGRESADOS" style="color: <?=$colorOk;?>;"></i>
+            <li class="zoom"><a  href="#" onclick="ver_detalle('1.1.-');">1.1.- Ver Datos
+            <i id="1.1.-" class="<?=$iconoOk;?>" title="DATOS INGRESADOS" style="color: <?=$colorOk;?>;"></i>
             </a>
             </li>
             
@@ -80,7 +81,7 @@ function contador_de_consultar_lenguaje_y_aprendizaje_ckeck($planVertDiplId)
     <li>
         <b>2.- DESCRIPCIÓN Y TEXTOS DE LA UNIDAD</b>
         <ul>
-            <li class="zoom"><a href="#" onclick="ver_detalle('2.1.-');">2.1.- Descripción y Texto de la Unidad
+            <li class="zoom"><a  href="#" onclick="ver_detalle('2.1.-');">2.1.- Descripción y Texto de la Unidad
             <?php
 
              if (strlen($modelPVD->descripcion_texto_unidad)<$numCaracteresOk)
@@ -88,7 +89,7 @@ function contador_de_consultar_lenguaje_y_aprendizaje_ckeck($planVertDiplId)
              else
              { $iconoColor = $colorOk;}
             ?>
-            <i class="<?=$iconoOk;?>" title="FALTA INGRESAR DATOS" style="color: <?=$iconoColor;?>;"></i>
+            <i id="i" class="<?=$iconoOk;?>" title="FALTA INGRESAR DATOS" style="color: <?=$iconoColor;?>;"></i>
             </a>            
             </li>
         </ul>
@@ -228,7 +229,15 @@ function contador_de_consultar_lenguaje_y_aprendizaje_ckeck($planVertDiplId)
     </li>   
 </ul>
 
+
 <script>
+  
+    // despues del código  
+   document.body.onload = function() {
+        ver_detalle( '<?= $opcion?>')
+    }
+     
+
     function ver_detalle( pestana ){
         var planUnidadId = '<?= $planUnidad->id ?>';   
         

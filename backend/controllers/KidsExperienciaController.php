@@ -367,6 +367,15 @@ class KidsExperienciaController extends Controller {
         $res = $con->createCommand($query)->queryAll();
         return $res;
     }
+    
+    
+    /**
+     * MÉTODO PARA GENERAR PDF 
+     */
+    public function actionPdf(){
+        $experienciaId = $_GET['experiencia_id'];
+        new \backend\models\kids\MicroPdf($experienciaId);
+    }
 
 
 }

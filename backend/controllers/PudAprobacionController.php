@@ -155,4 +155,6 @@ class PudAprobacionController extends Controller{
         $res = $con->createCommand($query)->queryOne();
         return $res;
     }
+    
+    
 }

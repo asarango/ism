@@ -124,13 +124,42 @@ class PudAprobacionController extends Controller{
         $curriculoBloqueId  = $_GET['bloque_id'];
         
         $dataMateria = $this->get_materia($ismAreaMateriaId, $curriculoBloqueId);
+        $unidadId = $dataMateria['id'];
+        
+        $bitacora = \backend\models\PudAprobacionBitacora::find()->where([
+            'unidad_id' => $dataMateria['id']
+        ])->all();
+        
+        if($this->get_bitacora($unidadId)){
+            $modelBitacora = $this->get_bitacora($unidadId);
+        }else{
+            $modelBitacora = false;
+        }
+        
+        
         
         return $this->render('detalle',[
-            'dataMateria' => $dataMateria
+            'dataMateria' => $dataMateria,
+            'modelBitacora' => $modelBitacora,
+            'bitacora' => $bitacora
         ]);
         
         
     }
+    
+    
+    private function get_bitacora($unidadId){
+        $con = Yii::$app->db;
+        $query = "select 	b.id, b.unidad_id, b.notificacion, b.usuario_notifica, 
+                                b.fecha_notifica, b.respuesta, b.usuario_responde, 
+                                b.fecha_responde, b.estado_jefe_coordinador 
+                    from 	pud_aprobacion_bitacora b
+                    where 	b.id = (select max(id) from pud_aprobacion_bitacora where unidad_id = b.unidad_id)
+                                    and b.unidad_id = $unidadId;";
+        $res = $con->createCommand($query)->queryOne();
+        return $res;
+    }
+    
     
     private function get_materia($ismAreaMateriaId, $curriculoBloqueId){
         $con = Yii::$app->db;
@@ -141,6 +170,7 @@ class PudAprobacionController extends Controller{
                                     ,u.avance_porcentaje 
                                     ,u.pud_status 
                                     ,u.is_open 
+                                    ,cab.id as pud_id
                     from	planificacion_desagregacion_cabecera cab
                                     inner join planificacion_bloques_unidad u on u.plan_cabecera_id = cab.id 
                                     inner join curriculo_mec_bloque b on b.id = u.curriculo_bloque_id 
@@ -156,5 +186,26 @@ class PudAprobacionController extends Controller{
         return $res;
     }
     
+    
+    public function actionDevuelveAprueba(){
+        $bitacoraId = $_POST['id'];
+        $devolucion = $_POST['devolucion'];
+        $estado = $_POST['estado'];
+                
+        $user = \Yii::$app->user->identity->usuario;
+        $hoy = date('Y-m-d H:i:s');
+        
+        $model = \backend\models\PudAprobacionBitacora::findOne($bitacoraId);
+        $model->respuesta = $devolucion;
+        $model->usuario_responde = $user;
+        $model->fecha_responde = $hoy;
+        $model->estado_jefe_coordinador = $estado;
+        $model->save();
+        
+        $bloqueId           = $model->unidad->curriculo_bloque_id;
+        $ismAreaMateriaId   = $model->unidad->planCabecera->ism_area_materia_id;
+        
+        return $this->redirect(['detalle', 'bloque_id' => $bloqueId, 'ism_area_materia_id' => $ismAreaMateriaId]);
+    }
     
 }

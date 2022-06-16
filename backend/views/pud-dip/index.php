@@ -6,6 +6,7 @@ $pudPep;-->
 use backend\models\PlanificacionDesagregacionCriteriosEvaluacion;
 use backend\controllers\PudPepController;
 use backend\models\PlanificacionVerticalDiploma;
+use backend\models\PudAprobacionBitacora;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use kartik\grid\GridView;
@@ -35,6 +36,11 @@ function pud_dip_porcentaje_avance($planVertDiplId, $planBloqueUniId)
 
     return $pud_dip_porc_avance;
 }
+//consulta para extraer los mensajes del coordinador cuando se halla enviado el PUD
+$modelPudBitacora = PudAprobacionBitacora::find()
+    ->where(['unidad_id' => $planUnidad->id])
+    ->orderBy(['fecha_notifica' => SORT_DESC])
+    ->one();
 
 ?>
 <!--Scripts para que funcionen AJAX'S-->
@@ -84,7 +90,33 @@ function pud_dip_porcentaje_avance($planVertDiplId, $planBloqueUniId)
                     );
                     ?>
                     |
-                    <?= "Porcentaje de Avance: " . $pud_dip_porc_avance['porcentaje'] . "%" ?>
+                    <?php
+                    if ($pud_dip_porc_avance['porcentaje'] == '100') {
+                        if ($modelPudBitacora == false) {
+                            echo Html::a(
+                                '<span class="badge rounded-pill" style="background-color: blue"><i class="fa fa-briefcase" aria-hidden="true"></i>Enviar Aprobación</span>',
+                                ['planificacion-bloques-unidad/envio-aprobacion', 'modelPlanBloqUnidad' => $planUnidad->id],
+                                ['class' => 'link']
+                            );
+                        } elseif ($modelPudBitacora->estado_jefe_coordinador == 'ENVIADO') {
+                            echo '<span class="badge rounded-pill" style="background-color: orange"><i class="fa fa-briefcase" aria-hidden="true"></i>Esperando Respuesta</span>';
+                        } elseif ($modelPudBitacora->estado_jefe_coordinador == 'DEVUELTO') {
+
+                            echo Html::a(
+                                '<span class="badge rounded-pill" style="background-color: purple"><i class="fa fa-briefcase" aria-hidden="true"></i>Reenviar</span>',
+                                ['planificacion-bloques-unidad/envio-aprobacion', 'modelPlanBloqUnidad' => $planUnidad->id],
+                                ['class' => 'link']
+                            );
+                        } elseif ($modelPudBitacora->estado_jefe_coordinador == 'APROBADO') {
+                            echo '<span class="badge rounded-pill" style="background-color: green"><i class="fa fa-briefcase" aria-hidden="true"></i>Aprobado</span>';
+                        }
+
+                        echo '|';
+                    }
+
+                    ?>
+
+                    <?= " Avance: " . $pud_dip_porc_avance['porcentaje'] . "%" ?>
                 </div> <!-- fin de menu cabecera izquierda -->
 
                 <!-- inicio de menu cabecera derecha -->
@@ -107,15 +139,39 @@ function pud_dip_porcentaje_avance($planVertDiplId, $planBloqueUniId)
                 <!-- comienza menu de pud-->
                 <div class="col-lg-3 col-md-3" style="overflow-y: scroll; height: 650px; border-top: solid 1px #ccc;">
                     <?= $this->render('menu', [
-                        'planUnidad' => $planUnidad,                        
+                        'planUnidad' => $planUnidad,
                     ]); ?>
                 </div>
                 <!-- termina menu de pud -->
 
                 <!-- comienza detalle -->
-                <div id="div-detalle" class="col-lg-9 col-md-9" style="border-top: solid 1px #ccc;">
+                <?php
+                if ($modelPudBitacora == false || $modelPudBitacora->estado_jefe_coordinador == 'APROBADO') { ?>                    
+                    <div id="div-detalle" class="col-lg-9 col-md-9" style="border-top: solid 1px #ccc;" >
 
-                </div>
+                    </div>
+                <?php } elseif ($modelPudBitacora->estado_jefe_coordinador == 'ENVIADO' || $modelPudBitacora->estado_jefe_coordinador == 'DEVUELTO') { ?>                    
+                    <div id="div-detalle"  class="col-lg-5 col-md-5" style="border-top: solid 1px #ccc; " >
+
+                    </div>
+                    <div id="div-novedades" class="col-lg-4 col-md-4 " style="border-top: solid 1px #ccc; ">
+                        <div class="" style="align-items: center; display: flex; justify-content: center;">
+                            <div class="card" style="width: 100%; margin-top:20px">
+                                <div class="card-header">
+                                    <div class="row">
+                                        <P style="color:red">AQUI PODRA VISUALIZAR LAS NOVEDADES ENVIADAS POR EL COORDINADOR </p>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row" style="overflow-y: scroll; overflow-x: scroll;">
+                                        <?=$modelPudBitacora->respuesta ?>                                       
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>                            
+                    </div>
+                <?php } ?>
                 <!-- termina detalle -->
             </div>
             <!-- fin cuerpo de card -->
@@ -124,17 +180,18 @@ function pud_dip_porcentaje_avance($planVertDiplId, $planBloqueUniId)
 
     <!--<script src="https://code.jquery.com/jquery-2.2.4.js" integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI=" crossorigin="anonymous"></script>-->
 
-    <script>
+ 
+   <script>         
        
         /** FUNCION PARA MODIFICACION DE TEXTO PARA CAMPOS SIMPLES */
         function update_campo_simple_pud_dip(id, accion_update) {
             var contenido = CKEDITOR.instances['editor-text-unidad'].getData();
             var url = buscar_url(accion_update);
-            var control = "#"+accion_update;
+            var control = "#" + accion_update;
             params = {
                 id_plani_vert_dip: id,
                 contenido: contenido,
-                accion : accion_update
+                accion: accion_update
             }
             $.ajax({
                 data: params,
@@ -142,13 +199,13 @@ function pud_dip_porcentaje_avance($planVertDiplId, $planBloqueUniId)
                 type: 'GET',
                 beforeSend: function() {},
                 success: function() {
-                  /*if (contenido.length>50)
-                    {
-                        $(control).css({'color':'green'});
-                       
-                    }else{                       
-                       $(control).css({'color':'red'});
-                    }*/                   
+                    /*if (contenido.length>50)
+                      {
+                          $(control).css({'color':'green'});
+                         
+                      }else{                       
+                         $(control).css({'color':'red'});
+                      }*/
                     //ver_detalle(accion_update);
                     location.reload();
 
@@ -166,7 +223,7 @@ function pud_dip_porcentaje_avance($planVertDiplId, $planBloqueUniId)
                 id_plani_vert_dip: id_pvd,
                 id_pvd_op: idPvd_Op,
                 tipo_proceso: tipoProceso,
-                accion : accion_update_op
+                accion: accion_update_op
             }
             $.ajax({
                 data: params,

@@ -16,6 +16,9 @@ use backend\models\PlanificacionBloquesUnidad;
 use backend\models\PlanificacionBloquesUnidadSubtitulo;
 use backend\models\PlanificacionBloquesUnidadSubtitulo2;
 use backend\models\diplomaphpv\Pdf;
+use backend\models\PlanificacionVerticalDiploma;
+use backend\models\PlanificacionVerticalPaiOpciones;
+use backend\models\PudAprobacionBitacora;
 use backend\models\pudpai\Pdf as PudpaiPdf;
 use backend\models\Usuario;
 use yii\web\Controller;
@@ -292,5 +295,24 @@ class PlanificacionBloquesUnidadController extends Controller{
         new Pdf($cabeceraId);
     }
     /****FIN PARA GENERAR PDF DE PLAN HORIZONTAL DE DIPLOMA */
+
+    /**METODO PARA EL ENVIO DE LA APROBACION DEL PUD DIP */
+    public function actionEnvioAprobacion(){
+        $mensaje ="PUD CONCLUIDO, POR FAVOR SU REVISIÓN";
+        $planBloqUnidadId = $_GET['modelPlanBloqUnidad'];
+
+        $modelPlanBloqUnidad = PlanificacionBloquesUnidad::findOne($planBloqUnidadId); 
+
+        $hoy = date('Y-m-d H:i:s');
+        $modelAprobBitacoraPud = new PudAprobacionBitacora();
+        $modelAprobBitacoraPud->unidad_id = $planBloqUnidadId;
+        $modelAprobBitacoraPud->notificacion=$mensaje;
+        $modelAprobBitacoraPud->usuario_notifica=Yii::$app->user->identity->usuario;
+        $modelAprobBitacoraPud->fecha_notifica = $hoy;
+        $modelAprobBitacoraPud->estado_jefe_coordinador = 'ENVIADO';    
+        $modelAprobBitacoraPud->save();    
+        
+        return $this->redirect(['index1', 'id' =>  $modelPlanBloqUnidad->plan_cabecera_id]);
+    }
 
 }

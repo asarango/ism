@@ -8,7 +8,7 @@ use Yii;
  * This is the model class for table "pud_aprobacion_bitacora".
  *
  * @property int $id
- * @property int $pud_id
+ * @property int $unidad_id
  * @property string $notificacion
  * @property string $usuario_notifica
  * @property string $fecha_notifica
@@ -35,14 +35,14 @@ class PudAprobacionBitacora extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['pud_id', 'estado_jefe_coordinador'], 'required'],
-            [['pud_id'], 'default', 'value' => null],
-            [['pud_id'], 'integer'],
+            [['unidad_id', 'estado_jefe_coordinador'], 'required'],
+            [['unidad_id'], 'default', 'value' => null],
+            [['unidad_id'], 'integer'],
             [['notificacion', 'respuesta'], 'string'],
             [['fecha_notifica', 'fecha_responde'], 'safe'],
             [['usuario_notifica', 'usuario_responde'], 'string', 'max' => 200],
             [['estado_jefe_coordinador'], 'string', 'max' => 50],
-            [['pud_id'], 'exist', 'skipOnError' => true, 'targetClass' => PlanificacionDesagregacionCabecera::className(), 'targetAttribute' => ['pud_id' => 'id']],
+            [['unidad_id'], 'exist', 'skipOnError' => true, 'targetClass' => PlanificacionBloquesUnidad::className(), 'targetAttribute' => ['unidad_id' => 'id']],
         ];
     }
 
@@ -53,7 +53,7 @@ class PudAprobacionBitacora extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'pud_id' => 'Pud ID',
+            'unidad_id' => 'Pud ID',
             'notificacion' => 'Notificacion',
             'usuario_notifica' => 'Usuario Notifica',
             'fecha_notifica' => 'Fecha Notifica',
@@ -69,6 +69,6 @@ class PudAprobacionBitacora extends \yii\db\ActiveRecord
      */
     public function getPud()
     {
-        return $this->hasOne(PlanificacionDesagregacionCabecera::className(), ['id' => 'pud_id']);
+        return $this->hasOne(PlanificacionBloquesUnidad::className(), ['id' => 'unidad_id']);
     }
 }

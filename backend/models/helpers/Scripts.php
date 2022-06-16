@@ -1,6 +1,7 @@
 <?php
 namespace backend\models\helpers;
 
+use backend\models\PlanificacionBloquesUnidad;
 use backend\models\PlanificacionOpciones;
 use DateTime;
 use Yii;
@@ -215,7 +216,7 @@ where hor.clase_id in
          return $resultado;
      } 
 
-     //consulta para extraer el porcentaje de avance del PUD DIPLOMA
+     //consulta para extraer el porcentaje de avance del PUD DIPLOMA, para guardar en BLOQUE UNIDAD
      public function pud_dip_porcentaje_avance($planVertDiplId,$planBloqueUniId) 
      {
         $con = Yii::$app->db;
@@ -250,7 +251,7 @@ where hor.clase_id in
                  ";
          $resultado = $con->createCommand($query)->queryOne();         
          return $resultado;
-     } 
+     }      
     
 }
 

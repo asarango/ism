@@ -34,7 +34,7 @@ $hoy = date('Y-m-d H:i:s');
                 </div>
 
                 <div class="col-lg-5 col-md-5" style="text-align: right;">
-                    <img src="imagenes/iso/iso.png" class="img-thumbnail" width="50px" /> <b> ISMR20-10</b>
+                    <img src="imagenes/iso/iso.png" class="img-thumbnail" width="50px" /> <b> <?= $docIso ?></b>
                 </div>
             </div><!-- FIN DE CABECERA -->
 
@@ -76,11 +76,32 @@ $hoy = date('Y-m-d H:i:s');
             <!-- inicia cuerpo de card -->
 
             <div class="row" style="margin-top: 20px">
-                <div class="col-lg-8 col-md-8">                    
-                    <iframe width="100%"
-                            height="600"
-                            src="<?= Url::toRoute(['pud-dip/pdf-pud-dip', 'planificacion_unidad_bloque_id' => $dataMateria['id']]) ?>">
-                    </iframe>
+                <div class="col-lg-8 col-md-8">       
+                    <?php
+                        if($seccionCode == 'DIPL'){
+                            ?>
+                            <iframe width="100%"
+                                    height="600"
+                                    src="<?= Url::toRoute(['pud-dip/pdf-pud-dip', 'planificacion_unidad_bloque_id' => $dataMateria['id']]) ?>">
+                            </iframe>
+                        <?php
+                        }elseif($seccionCode == 'PAI'){
+                            ?>
+                            <iframe width="100%"
+                                    height="600"
+                                    src="<?= Url::toRoute(['pud-pai/genera-pdf', 'planificacion_unidad_bloque_id' => $dataMateria['id']]) ?>">
+                            </iframe>
+                            <?php
+                        }elseif($seccionCode == 'BAS'){
+                            ?>
+                            <iframe width="100%"
+                                    height="600"
+                                    src="<?= Url::toRoute(['pud-pep/genera-pdf', 'planificacion_unidad_bloque_id' => $dataMateria['id']]) ?>">
+                            </iframe>
+                            <?php
+                        }                 
+                    ?>
+                    
                 </div>
 
 

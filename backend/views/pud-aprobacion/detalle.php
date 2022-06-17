@@ -3,6 +3,7 @@
 use backend\models\PlanificacionDesagregacionCriteriosEvaluacion;
 use yii\helpers\Html;
 use yii\helpers\Url;
+use yii\widgets\ActiveForm;
 
 /* @var $this yii\web\View */
 /* @var $searchModel backend\models\PlanificacionDesagregacionCabeceraSearch */
@@ -10,6 +11,9 @@ use yii\helpers\Url;
 
 $this->title = 'Aprobaciondes de planificaciones de unidad';
 $this->params['breadcrumbs'][] = $this->title;
+
+$user = Yii::$app->user->identity->usuario;
+$hoy = date('Y-m-d H:i:s');
 ?>
 <!-- Jquery AJAX -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
@@ -24,9 +28,13 @@ $this->params['breadcrumbs'][] = $this->title;
                 <div class="col-lg-1">
                     <h4><img src="ISM/main/images/submenu/herramientas-para-reparar.png" width="64px" style="" class="img-thumbnail"></h4>
                 </div>
-                <div class="col-lg-10">
+                <div class="col-lg-6">
                     <h4><?= Html::encode($this->title) ?></h4>
                     <small><?= $dataMateria['curso'] . ' | ' . $dataMateria['materia'] . ' | ' . $dataMateria['last_name'] ?></small>
+                </div>
+
+                <div class="col-lg-5 col-md-5" style="text-align: right;">
+                    <img src="imagenes/iso/iso.png" class="img-thumbnail" width="50px" /> <b> ISMR20-10</b>
                 </div>
             </div><!-- FIN DE CABECERA -->
 
@@ -78,72 +86,127 @@ $this->params['breadcrumbs'][] = $this->title;
 
                 <div class="col-lg-4 col-md-4">
 
-                    <?php                    
-                    $form = ActiveForm::begin([
-                                'action' => Url::to(['detalle', 'unidad_id' => $dataMateria['id']]),
-                                'method' => 'post'
-                    ]);
-                    ?>
+                    <div class="row">
+                        <p>
+                            El avance de la planificación es del 
+                            <b style="border:solid 1px #ccc; border-radius: 50%; padding: 10px">
+                                <?= $dataMateria['avance_porcentaje'] ?>%
+                            </b>
+                        </p>
+                    </div>
 
-                    <!--CKEDITOR-->
-                    <!--EDITOR DE TEXTO KARTIK-->
-                    <textarea name="" id="editor">
-                        <?= $cabecera->revision_coordinacion_observaciones ?>
-                    </textarea>
-                    <script>
-                        CKEDITOR.replace('editor', {
-                            customConfig: '/ckeditor_settings/config.js'
-                        })
-                    </script>
-
-
-                    <?php
-                    if ($cabecera->estado == 'APROBADO') {
-                        ?>
-                        <div class="alert alert-success" role="alert" style="text-align:center" >
-                            ¡Usted aprobó Planificaciones <i class="fas fa-thumbs-up"></i>! 
-                        </div>
+                    <div class="row">
                         <?php
-                    } elseif ($cabecera->estado == 'EN_COORDINACION') {
+                        if ($modelBitacora) {
+                            if ($modelBitacora['estado_jefe_coordinador'] == 'ENVIADO') {
+                                echo '<div class="alert alert-primary" role="alert" style="text-align:center">';
+                                echo '<i class="fas fa-envelope"></i> ' . $modelBitacora['estado_jefe_coordinador'] . '<hr>';
+                                echo $modelBitacora['notificacion'];
+                                echo '</div>';
+                            } elseif ($modelBitacora['estado_jefe_coordinador'] == 'APROBADO') {
+                                echo '<div class="alert alert-success" role="alert" style="text-align:center">';
+                                echo '<i class="fas fa-envelope"></i> ' . $modelBitacora['estado_jefe_coordinador'] . '<hr>';
+                                echo $modelBitacora['notificacion'];
+                                echo '</div>';
+                            } elseif ($modelBitacora['estado_jefe_coordinador'] == 'DEVUELTO') {
+                                echo '<div class="alert alert-warning" role="alert" style="text-align:center">';
+                                echo '<i class="fas fa-envelope"></i> ' . $modelBitacora['estado_jefe_coordinador'] . '<hr>';
+                                echo $modelBitacora['respuesta'];
+                                echo '</div>';
+                            }
+                        } else {
+                            echo '<div class="alert alert-danger" role="alert" style="text-align:center">';
+                            echo '<i class="fas fa-envelope"></i> No presenta<hr>';
+                            echo 'El grupo de docentes de esta asignatura todavía no envía la planificación';
+                            echo '</div>';
+                        }
                         ?>
-                        <br>
-                        <div class="row" style="text-align: center; padding-left: 30px;padding-right: 30px;">
-                            <?=
-                            Html::submitButton('Devolver Planificación',
-                                    [
-                                        'class' => 'btn btn-danger my-text-medium'
-                                    ])
+                    </div>
+
+                    <?php if ($modelBitacora) { ?>
+                        <?php if ($modelBitacora['estado_jefe_coordinador'] == 'ENVIADO') { ?>
+                            <?php
+                            $form = ActiveForm::begin([
+                                        'action' => Url::to(['devuelve-aprueba', 'bitacora_id' => $modelBitacora['id']]),
+                                        'method' => 'post'
+                            ]);
                             ?>
-                            <hr>
-                            <i class="far fa-hand-point-down" style="font-size: 20px;color: #0a1f8f"></i> 
-                            <?=
-                            Html::a(
-                                    '<i class="fas fa-check-circle"> Aprobar Planificación</i>',
-                                    ['aprobacion', 'cabecera_id' => $cabecera->id],
-                                    ['class' => 'btn btn-success my-text-medium']
-                            );
-                            ?> 
-                        </div>
-                        <?php
-                    } elseif ($cabecera->estado == 'DEVUELTO') {
-                        ?>
-                        <div class="alert alert-warning" role="alert" style="text-align:center" >
-                            ¡Se ha enviado a modificar al profesor!
-                        </div>
-                        <?php
-                    } elseif ($cabecera->estado == 'INICIANDO') {
-                        ?>
-                        <div class="alert alert-info" role="alert" style="text-align:center" >
-                            ¡El profesor está iniciando su planificación!
-                        </div>
-                        <?php
-                    }
-                    ?>
 
+                            <!--CKEDITOR-->
+                            <!--EDITOR DE TEXTO KARTIK-->
+                            <textarea name="devolucion" id="editor">
+                                                                
+                            </textarea>
+                            <script>
+                                CKEDITOR.replace('editor', {
+                                    customConfig: '/ckeditor_settings/config.js'
+                                })
+                            </script>
+
+                            <input type="radio" id="huey" name="estado" value="DEVUELTO"
+                                   checked>
+                            <label for="huey">DEVOLVER</label>
+
+
+
+                            <input type="radio" id="dewey" name="estado" value="APROBADO">
+                            <label for="dewey">APROBAR</label>
+
+
+
+                            <input type="hidden" name="id" value="<?= $modelBitacora['id'] ?>">
+                            <br />
+                            <br />
+
+                            <?= Html::submitButton('Registrar', ['class' => 'btn btn-outline-primary btn-block']) ?>
+
+                        </div>
+
+                        <?php ActiveForm::end(); ?>
+                    <?php } ?>
+                <?php } ?>
+
+            </div> 
+            <!--fin de retroalimentacion-->
+            
+            
+            <div class="row">
+                <div class="col-lg-2 col-md-2"></div>
+                <div class="col-lg-8 col-md-8 text-center">
+                    <b><u>BITÁCORA</u></b>
+                    <div class="table table-responsive">
+                        <table class="table table-condensed">
+                            <thead>
+                                <tr>
+                                    <th>NOTIFICADO</th>
+                                    <th>DOCENTE</th>
+                                    <th>DOCENTE-NOTA</th>
+                                    <th>RESPONDIDO</th>
+                                    <th>JEFE/COORDINADOR</th>
+                                    <th>NOTA</th>
+                                    <th>ESTADO</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php
+                                    foreach ($bitacora as $bita){
+                                        echo '<tr>';
+                                        echo '<td>'.$bita->fecha_notifica.'</td>';
+                                        echo '<td>'.$bita->usuario_notifica.'</td>';
+                                        echo '<td>'.$bita->notificacion.'</td>';
+                                        
+                                        echo '<td>'.$bita->fecha_responde.'</td>';
+                                        echo '<td>'.$bita->usuario_responde.'</td>';
+                                        echo '<td>'.$bita->respuesta.'</td>';                                                                                
+                                        echo '<td>'.$bita->estado_jefe_coordinador.'</td>';                                                                                
+                                        echo '</tr>';
+                                    }
+                                ?>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
-
-                <?php ActiveForm::end(); ?>
-
+                <div class="col-lg-2 col-md-2"></div>
             </div>
         </div>
 
@@ -152,7 +215,6 @@ $this->params['breadcrumbs'][] = $this->title;
     </div>
 </div>
 
-</div>
 
 
 

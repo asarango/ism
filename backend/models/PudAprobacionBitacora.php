@@ -17,7 +17,7 @@ use Yii;
  * @property string $fecha_responde
  * @property string $estado_jefe_coordinador
  *
- * @property PlanificacionDesagregacionCabecera $pud
+ * @property PlanificacionBloquesUnidad $unidad
  */
 class PudAprobacionBitacora extends \yii\db\ActiveRecord
 {
@@ -54,6 +54,7 @@ class PudAprobacionBitacora extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'unidad_id' => 'Pud ID',
+            'unidad_id' => 'Unidad ID',
             'notificacion' => 'Notificacion',
             'usuario_notifica' => 'Usuario Notifica',
             'fecha_notifica' => 'Fecha Notifica',
@@ -67,7 +68,7 @@ class PudAprobacionBitacora extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getPud()
+    public function getUnidad()
     {
         return $this->hasOne(PlanificacionBloquesUnidad::className(), ['id' => 'unidad_id']);
     }

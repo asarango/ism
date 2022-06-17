@@ -25,11 +25,11 @@ $this->title = 'Actividad #: '.$modelActividad->id.' | '. $modelActividad->title
                     <h4><?= Html::encode($this->title) ?></h4>
                     <p>(
                         <?=
-                        ' <small>' . $modelActividad->clase->materia->name .
+                        ' <small>' . $modelActividad->clase->ismAreaMateria->materia->nombre .
                             ' - ' .
                             'Clase #:' . $modelActividad->clase->id .
                             ' - ' .
-                            $modelActividad->clase->curso->name . ' - ' . $modelActividad->clase->paralelo->name . ' / ' .
+                            $modelActividad->clase->paralelo->course->name . ' - ' . $modelActividad->clase->paralelo->name . ' / ' .
                             $modelActividad->clase->profesor->last_name . ' ' . $modelActividad->clase->profesor->x_first_name . ' / ' .
                             'Es calificado: ' . $modelActividad->calificado . ' / ' .
                             'Tipo de actividad: ' . $modelActividad->tipo_calificacion .

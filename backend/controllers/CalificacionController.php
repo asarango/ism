@@ -79,6 +79,9 @@ class CalificacionController extends Controller {
         $siguiente = $this->get_siguiente($claseId, $periodoId, $nombre);
         $anterior = $this->get_anterior($claseId, $periodoId, $nombre);
         
+//        print_r($anterior);
+//        die();
+        
         $modelMinimo = \backend\models\ScholarisParametrosOpciones::find()
             ->where(['codigo' => 'califminima'])
             ->one();
@@ -152,18 +155,16 @@ class CalificacionController extends Controller {
     
     private function get_anterior($claseId, $periodoId, $nombre){
         $con = \Yii::$app->db;
-        $query = "select 	s.id as student_id
-                                    ,concat(s.last_name, ' ', s.first_name, ' ', s.middle_name) as student 
-                                    ,g.id as grupo_id
-                    from 	scholaris_grupo_alumno_clase g
-                                    inner join op_student s on s.id = g.estudiante_id 
-                                    inner join op_student_inscription i on i.student_id = s.id 
-                                    inner join scholaris_op_period_periodo_scholaris sop on sop.op_id = i.period_id 
-                    where	g.clase_id  = $claseId
-                                    and sop.scholaris_id = $periodoId
-                                    and concat(s.last_name, ' ', s.first_name, ' ', s.middle_name) < '$nombre'
-                    order by 3 desc
+        $query = "select s.id as student_id ,concat(s.last_name, ' ', s.first_name, ' ', s.middle_name) as student ,g.id as grupo_id 
+                    from scholaris_grupo_alumno_clase g 
+                    inner join op_student s on s.id = g.estudiante_id inner join op_student_inscription i on i.student_id = s.id 
+                    inner join scholaris_op_period_periodo_scholaris sop on sop.op_id = i.period_id 
+                    where g.clase_id = $claseId 
+                    and sop.scholaris_id = $periodoId
+                    and concat(s.last_name, ' ', s.first_name, ' ', s.middle_name) < '$nombre' 
+                    order by 2 desc  
                     limit 1;";
+        //echo $query;
         $res = $con->createCommand($query)->queryOne();
         return $res;
     }

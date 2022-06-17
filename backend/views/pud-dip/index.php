@@ -24,15 +24,20 @@ $this->params['breadcrumbs'][] = $this->title;
 $modelPVD = PlanificacionVerticalDiploma::find()
     ->where(['planificacion_bloque_unidad_id' => $planUnidad->id])
     ->one();
+$pud_dip_porc_avance = array( "porcentaje" => 0);
 
-$pud_dip_porc_avance = pud_dip_porcentaje_avance($modelPVD->id, $planUnidad->id);
+if($modelPVD)
+{
+    $pud_dip_porc_avance = pud_dip_porcentaje_avance($modelPVD->id, $planUnidad->id);
+}   
+
 //consulta para extraer el porcentaje de avance del PUD DIPLOMA
 function pud_dip_porcentaje_avance($planVertDiplId, $planBloqueUniId)
 {
     $pud_dip_porc_avance = 0;
     //consulta los los tdc que han sido marcados con check, mas los que aun no estan marcados    
     $obj2 = new backend\models\helpers\Scripts();
-    $pud_dip_porc_avance = $obj2->pud_dip_porcentaje_avance($planVertDiplId, $planBloqueUniId);
+    $pud_dip_porc_avance = $obj2->pud_dip_porcentaje_avance($planVertDiplId, $planBloqueUniId);  
 
     return $pud_dip_porc_avance;
 }

@@ -2,6 +2,7 @@
 
 use backend\models\PlanificacionDesagregacionCriteriosEvaluacion;
 use backend\models\PlanificacionBloquesUnidad;
+use backend\models\PudAprobacionBitacora;
 use yii\helpers\Html;
 use yii\helpers\Url;
 
@@ -143,53 +144,46 @@ function pud_dip_porcentaje_avance($planVertDiplId,$planBloqueUniId)
                                     <td class="text-center">
                                         <?php
                                         $model = PlanificacionBloquesUnidad::findOne($unidad->id);
+                                        $modelPudAprBit = PudAprobacionBitacora::find()
+                                        ->where(['unidad_id'=>$model->id])
+                                        ->one();
+
+                                        // echo '<pre>';
+                                        // print_r($modelPudAprBit);
+                                        // die();
+
+
+                                       
+                                        $icono = '<i class="fas fa-times"  title="PUD PENDIENTE" ></i>';                                       
+                                        $style='color: red';
+                                        $actionController = '';
                                        
                                         echo 'Avance: '.$model->avance_porcentaje.'% | &nbsp';
+
                                         if ($seccion == 'BAS') {
-                                            if ($unidad->pud_status == 1) {
-                                                echo Html::a(
-                                                        '<i class="fas fa-check" title="PUD CREADO"></i>',
-                                                        ['pud-pep/index1', 'plan_bloque_unidad_id' => $unidad->id],
-                                                        ['style' => 'color: #0a1f8f']
-                                                );
-                                            } else {
-                                                echo Html::a(
-                                                        '<i class="fas fa-times" title="PLANIFICAR PUD"></i>',
-                                                        ['pud-pep/index1', 'plan_bloque_unidad_id' => $unidad->id],
-                                                        ['style' => 'color: #ab0a3d']
-                                                );
-                                            }
+                                            $actionController = 'pud-pep/index1';                                          
                                         } elseif ($seccion == 'PAI') {
-                                            if ($unidad->pud_status == 1) {
-                                                echo Html::a(
-                                                        '<i class="fas fa-check" title="PUD CREADO"></i>',
-                                                        ['pud-pai/index1', 'plan_bloque_unidad_id' => $unidad->id],
-                                                        ['style' => 'color: #0a1f8f']
-                                                );
-                                            } else {
-                                                echo Html::a(
-                                                        '<i class="fas fa-times" title="PLANIFICAR PUD"></i>',
-                                                        ['pud-pai/index1', 'plan_bloque_unidad_id' => $unidad->id],
-                                                        ['style' => 'color: #ab0a3d']
-                                                );
-                                            }
+                                            $actionController = 'pud-pai/index1';                                            
                                         } elseif ($seccion == 'DIPL') {
-                                            if ($unidad->pud_status == 1) {
-                                                
-                                                echo Html::a(
-                                                        '<i class="fas fa-check" title="PUD CREADO"></i>',
-                                                        ['pud-dip/index1', 'plan_bloque_unidad_id' => $unidad->id],
-                                                        ['style' => 'color: #0a1f8f']
-                                                );
-                                            } else {
-                                               
-                                                echo Html::a(
-                                                        '<i class="fas fa-times" title="PLANIFICAR PUD"></i>',
-                                                        ['pud-dip/index1', 'plan_bloque_unidad_id' => $unidad->id],
-                                                        ['style' => 'color: #ab0a3d']
-                                                );
-                                            }
+                                            $actionController = 'pud-dip/index1';                                        
                                         }
+                                        if($modelPudAprBit)
+                                        {
+                                            if($modelPudAprBit->estado_jefe_coordinador=='ENVIADO'){
+                                                $icono = '<i class="fas fa-user-clock"  title="PUD EN REVISION" ></i>';                                           
+                                                $style='color: blue';
+                                            }elseif($modelPudAprBit->estado_jefe_coordinador=='DEVUELTO'){
+                                                $icono = '<i class="fas fa-user-clock"  title="PUD DEVUELTO" ></i>';                                           
+                                                $style='color: red';
+                                            }elseif ($unidad->pud_status == 1) {
+                                                $icono = '<i class="fas fa-check"  title="PUD APROBADO" ></i>';                                           
+                                                $style='color: green';
+                                            }                                           
+                                        }
+                                        echo Html::a( $icono ,
+                                            [$actionController, 'plan_bloque_unidad_id' => $unidad->id],
+                                            ['style' => $style]
+                                        );
                                         ?>
                                     </td>
                                     <!-- fin Columna del PUD -->

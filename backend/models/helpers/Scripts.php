@@ -225,7 +225,7 @@ where hor.clase_id in
         ->one();
         $minimoCaracteres = $modelOpciones->categoria;   
 
-        $query = "select  round(
+        $query = "select  coalesce(round(
             (((5)/*SE SUMA 5 POR DATOS EN DEFAULT (1.1 / 3.1 / 4.1 / 5.3 / 5.5)*/+
             (select case when LENGTH(descripcion_texto_unidad) /*2.1*/ > $minimoCaracteres then 1 else 0 END from planificacion_vertical_diploma pvd where planificacion_bloque_unidad_id = $planBloqueUniId)+
             (select case when LENGTH(habilidades) /*5.1*/ > $minimoCaracteres then 1 else 0 END from planificacion_vertical_diploma pvd where planificacion_bloque_unidad_id = $planBloqueUniId)+
@@ -247,8 +247,9 @@ where hor.clase_id in
                             and pr.vertical_diploma_id = pvd.id   
                             and pr.relacion_tdc_id  = p.id) ) * 100 )/ 
                             (select cast(categoria as numeric(18,2))from planificacion_opciones where tipo='PUD_CONTEO_PORCENTAJE'and seccion = 'DIP')
-                           ,0) as porcentaje;
+                           ,0),0) as porcentaje;
                  ";
+                 
          $resultado = $con->createCommand($query)->queryOne();         
          return $resultado;
      }      

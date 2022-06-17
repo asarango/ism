@@ -53,6 +53,7 @@ class PudAprobacionBitacora extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
+            'unidad_id' => 'Pud ID',
             'unidad_id' => 'Unidad ID',
             'notificacion' => 'Notificacion',
             'usuario_notifica' => 'Usuario Notifica',

@@ -10,6 +10,7 @@ use backend\models\PlanificacionVerticalDiplomaRelacionTdc;
 use backend\models\puddip\Pdf;
 use backend\models\helpers;
 use backend\models\helpers\Scripts;
+use backend\models\PudAprobacionBitacora;
 use backend\models\puddip\DatosInformativos;
 use Codeception\Lib\Generator\Helper;
 use Yii;
@@ -87,6 +88,8 @@ class PudDipController extends Controller{
         $planUnidadId = $_GET['plan_unidad_id'];
         $pestana   = $_GET['pestana'];   
         $respuesta =   '';
+
+        
 
         switch ($pestana) {
             case '1.1.-':
@@ -755,9 +758,22 @@ class PudDipController extends Controller{
                 $itemConexionCas.='<td>';
                 $itemConexionCas.='<font size="3"><u><b>♠ '.$tdc['opcion'].'</b></u></font>';
                 $itemConexionCas.='</td>';
-                $itemConexionCas.='<td>';
-                $itemConexionCas.='<a href="#"   class="far fa-thumbs-up" style="color: #0a1f8f" onclick="update_campos_check('.$planifVertDipl->id.','.$idPvdOp.',\''.$accion_update_op.'\',\''.$quitar.'\')"></a>';
-                $itemConexionCas.='</td>';
+
+                $activarEnlace= $this->consultaRespuestaEnvio($planifVertDipl->id);
+                if ($activarEnlace==1){
+                    $itemConexionCas.='<td>';
+                    $itemConexionCas.='<a href="#"   class="far fa-thumbs-up" style="color: #0a1f8f" onclick="update_campos_check('.$planifVertDipl->id.','.$idPvdOp.',\''.$accion_update_op.'\',\''.$quitar.'\')"></a>';
+                    $itemConexionCas.='</td>';
+                }
+                else
+                {
+                    $itemConexionCas.='<td>';
+                    $itemConexionCas.='<i class="far fa-thumbs-up" style="color: #0a1f8f"></i>';
+                    $itemConexionCas.='</td>';
+                }
+
+               
+                
                 $itemConexionCas.='</tr>';                             
             }
             else
@@ -767,9 +783,19 @@ class PudDipController extends Controller{
                 $itemConexionCas.='<td>';
                 $itemConexionCas.='<font size="3"><b>♠ '.$tdc['opcion'].'</b></font>';
                 $itemConexionCas.='</td>';
-                $itemConexionCas.='<td>';
-                $itemConexionCas.='<a href="#" class="fas fa-thumbs-down" style="color: #ab0a3d" onclick="update_campos_check('.$planifVertDipl->id.','.$idPvdOp.',\''.$accion_update_op.'\',\''.$agregar.'\')"></a>';
-                $itemConexionCas.='</td>';
+
+                $activarEnlace= $this->consultaRespuestaEnvio($planifVertDipl->id);
+                if ($activarEnlace){
+                    $itemConexionCas.='<td>';
+                    $itemConexionCas.='<a href="#" class="fas fa-thumbs-down" style="color: #ab0a3d" onclick="update_campos_check('.$planifVertDipl->id.','.$idPvdOp.',\''.$accion_update_op.'\',\''.$agregar.'\')"></a>';
+                    $itemConexionCas.='</td>';
+                }
+                else
+                {
+                    $itemConexionCas.='<td>';
+                    $itemConexionCas.='<i class="fas fa-thumbs-down" style="color: #ab0a3d"></i>';
+                    $itemConexionCas.='</td>';
+                }
                 $itemConexionCas.='</tr>';             
                 
             }
@@ -901,28 +927,59 @@ class PudDipController extends Controller{
        return $resultado;
     } 
     
+    //metodo para consultar en la bitacora de PUD , si envio o tiene respuesta el profesor
+    private function consultaRespuestaEnvio($idPlanifVertDipl)
+    {
+        $modelPlanVer = PlanificacionVerticalDiploma::findOne($idPlanifVertDipl);           
+        $modelPudAprBit = PudAprobacionBitacora::find()
+        ->where(['unidad_id'=>$modelPlanVer->planificacion_bloque_unidad_id])
+        ->orderBy(['fecha_notifica'=>SORT_DESC])
+        ->one();   
+        
+        $activar = true;        
 
+        if($modelPudAprBit){            
+            if($modelPudAprBit->estado_jefe_coordinador=='ENVIADO' || $modelPudAprBit->estado_jefe_coordinador=='APROBADO')
+            {
+                $activar = false;
+            }
+        } 
+        //    echo '<pre>';
+        //    print_r($activarModalGenerico);
+        //    die();
+        
+        return $activar;
+    }
     // metodos genericos
-    private function mostrar_campo_simple($idPlanifVertDipl,$texto_a_mostrar,$titulo,$accion_update,$text_intro_cab ){
+    private function mostrar_campo_simple($idPlanifVertDipl,$texto_a_mostrar,$titulo,$accion_update,$text_intro_cab )
+    {        
+        $activarModalGenerico= $this->consultaRespuestaEnvio($idPlanifVertDipl);
+
+    //     echo '<pre>';
+    //    print_r($activarModalGenerico);
+    //    die();
+
         $html ='';      
         $html .= '<div class="" style="align-items: center; display: flex; justify-content: center;">';
-            $html .= '<div class="card" style="width: 70%; margin-top:20px">';             
+            $html .= '<div class="card" style="width: 100%; margin-top:20px">';             
                 $html .= '<div class="card-header">';
                 $html .= '<div class="row">';
                     $html .= '<h5 class=""><b>'.$titulo.'</b></h5>';
                     $html .= '</div>'; 
                 $html .= '</div>';                
-                $html .= '<div class="card-body">';
+                $html .= '<div class="card-body" >';
                     // inicia row
                    $html .= '<small style="color: #65b2e8">
                                 <font size="2">
                                 ' . $text_intro_cab . ' 
-                                </font>
-                            '.$this->modal_generico($idPlanifVertDipl, $texto_a_mostrar,$titulo,$accion_update).'
-                            <font size="2"><u>EDITAR</u></font>
-                            <hr></small>';                    
-                    $html .= '<div class="row">';                    
-                        $html .= '<div class="col">'.$texto_a_mostrar.'</div>';                
+                                </font>';
+                    if($activarModalGenerico){
+                        $html .= $this->modal_generico($idPlanifVertDipl, $texto_a_mostrar,$titulo,$accion_update);
+                        $html .='<font size="2"><u>EDITAR</u></font>'; 
+                    }  
+                    $html.=  '<hr></small>';                 
+                    $html .= '<div class="row" style="overflow-x: scroll; overflow-y: scroll;" >';                    
+                        $html .= '<div class="col" >'.$texto_a_mostrar.'</div>';                
                         $html .= '</div>';
                     $html .= '</div>';               
                     //******finaliza row
@@ -936,7 +993,7 @@ class PudDipController extends Controller{
     {
         $html ='';      
         $html .= '<div class="" style="align-items: center; display: flex; justify-content: center;">';
-            $html .= '<div class="card" style="width: 70%; margin-top:20px">';             
+            $html .= '<div class="card" style="width: 100%; margin-top:20px">';             
                 $html .= '<div class="card-header">';
                 $html .= '<div class="row">';
                     $html .= '<h5 class=""><b>'.$titulo.'</b></h5>';

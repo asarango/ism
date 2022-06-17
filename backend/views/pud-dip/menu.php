@@ -18,16 +18,42 @@ $modelPVD = PlanificacionVerticalDiploma::find()
 ->where(['planificacion_bloque_unidad_id'=>$planUnidad->id])
 ->one();
 
-$opcion=$modelPVD->ultima_seccion;
+$contador_5_4 = 0;
+$contador_5_6 = 0;
+$opcion = '1.1.-';
+
+if($modelPVD)
+{    $opcion=$modelPVD->ultima_seccion;
+    $pud_dip_porc_avance = pud_dip_porcentaje_avance($modelPVD->id,$planUnidad->id);
+    $contador_5_4 = contador_de_consultar_lenguaje_y_aprendizaje_ckeck($modelPVD->id);
+    $contador_5_6 = consultar_conexion_cas_ckeck($modelPVD->id);
+   
+}else{
+    $modelPVD = new PlanificacionVerticalDiploma();
+    $modelPVD->planificacion_bloque_unidad_id=-1;
+    $modelPVD->objetivo_asignatura = '';
+    $modelPVD->concepto_clave = '';
+    $modelPVD->objetivo_evaluacion = '';
+    $modelPVD->intrumentos = '';
+    $modelPVD->descripcion_texto_unidad = '';
+    $modelPVD->habilidades = '';
+    $modelPVD->proceso_aprendizaje = '';
+    $modelPVD->detalle_cas = '';
+    $modelPVD->detalle_len_y_aprendizaje='';
+    $modelPVD->conexion_tdc='';
+    $modelPVD->recurso='';
+    $modelPVD->reflexion_funciono ='';
+    $modelPVD->reflexion_no_funciono = '';
+    $modelPVD->reflexion_observacion = '';
+    $modelPVD->ultima_seccion='';
+}
+
 $iconoOk = 'fas fa-check';
 $colorOk = 'green';
 $colorNotOk = 'red';
 $numCaracteresOk = $modelOpciones->categoria;
 
-$pud_dip_porc_avance = pud_dip_porcentaje_avance($modelPVD->id,$planUnidad->id);
 
-$contador_5_4 = contador_de_consultar_lenguaje_y_aprendizaje_ckeck($modelPVD->id);
-$contador_5_6 = consultar_conexion_cas_ckeck($modelPVD->id);
 //metodo usado para 5.4.- llamada a lenguaje y aprendizaje
 function contador_de_consultar_lenguaje_y_aprendizaje_ckeck($planVertDiplId) 
 {
@@ -251,7 +277,8 @@ function contador_de_consultar_lenguaje_y_aprendizaje_ckeck($planVertDiplId)
             url     : url,
             type    : 'GET',
             beforeSend: function(){},
-            success : function(response){                
+            success : function(response){  
+
                 $("#div-detalle").html(response);      
                            
             }

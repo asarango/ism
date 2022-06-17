@@ -809,13 +809,15 @@ class PudDipController extends Controller{
     /** 6.1.- Recursos*/
     private function get_accion_recurso($planBloqueUnidad)
     {
+       
         $planBloqueUnidad   = PlanificacionBloquesUnidad::findOne($planBloqueUnidad);
         $accion_update = "6.1.-";
-        $titulo = "6.1.- RECURSOS";
+        $titulo = "6.1.- RECURSOS";  
         
         $planifVertDipl = PlanificacionVerticalDiploma::find()->where([
             'planificacion_bloque_unidad_id' => $planBloqueUnidad->id
-        ])->one();        
+        ])->one();  
+             
         return  $this->mostrar_campo_simple($planifVertDipl->id, $planifVertDipl->recurso, $titulo, $accion_update,"");
     }  
      /** 7.1.- REFLEXION, LO QUE FUNCINO*/
@@ -953,6 +955,7 @@ class PudDipController extends Controller{
     // metodos genericos
     private function mostrar_campo_simple($idPlanifVertDipl,$texto_a_mostrar,$titulo,$accion_update,$text_intro_cab )
     {        
+        
         $activarModalGenerico= $this->consultaRespuestaEnvio($idPlanifVertDipl);
 
     //     echo '<pre>';

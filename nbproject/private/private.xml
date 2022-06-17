@@ -3,8 +3,12 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
+            <file>file:/var/www/html/ism/academico/backend/models/PudAprobacionBitacora.php</file>
             <file>file:/var/www/html/ism/academico/backend/views/pud-aprobacion/index.php</file>
             <file>file:/var/www/html/ism/academico/backend/views/pud-aprobacion/detalle.php</file>
+            <file>file:/var/www/html/ism/academico/backend/models/PlanificacionBloquesUnidad.php</file>
+            <file>file:/var/www/html/ism/academico/backend/models/PlanificacionDesagregacionCabecera.php</file>
+            <file>file:/var/www/html/ism/academico/backend/views/planificacion-bloques-unidad/update.php</file>
             <file>file:/var/www/html/ism/academico/backend/controllers/PudAprobacionController.php</file>
         </group>
     </open-files>

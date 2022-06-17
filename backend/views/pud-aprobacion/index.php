@@ -102,8 +102,12 @@ $this->params['breadcrumbs'][] = $this->title;
                                         if(count($det['porcentajes'])>0){
                                             foreach ($det['porcentajes'] as $por){
                                                 if($por['id'] == $b->id){
-                                                    
-                                                    echo Html::a($por['avance_porcentaje'].' %',['detalle', 
+                                                    if($por['pud_status'] == 'APROBADO'){
+                                                        $iconoApro = '<i class="fas fa-check-circle" style="color: green"></i>';
+                                                    }else{
+                                                        $iconoApro = '<i class="fas fa-ban" style="color: #ab0a3d"></i>';
+                                                    }
+                                                    echo Html::a($iconoApro.' '.$por['avance_porcentaje'].' %',['detalle', 
                                                             'bloque_id'         => $b->id,
                                                             'ism_area_materia_id'  => $det['id']
                                                         ]);

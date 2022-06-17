@@ -107,7 +107,8 @@ class PudAprobacionController extends Controller{
     private function get_porcentajes($ismAreaMateriaId){
         $con = \Yii::$app->db;
         $query = "select 	b.id 
-                                    ,u.avance_porcentaje 
+                                    ,u.avance_porcentaje     
+                                    ,u.pud_status
                     from 	planificacion_bloques_unidad u
                                     inner join planificacion_desagregacion_cabecera c on c.id = u.plan_cabecera_id 
                                     inner join curriculo_mec_bloque b on b.id = u.curriculo_bloque_id 
@@ -123,8 +124,22 @@ class PudAprobacionController extends Controller{
         $ismAreaMateriaId   = $_GET['ism_area_materia_id'];
         $curriculoBloqueId  = $_GET['bloque_id'];
         
+        $periodoId = Yii::$app->user->identity->periodo_id;
+        
         $dataMateria = $this->get_materia($ismAreaMateriaId, $curriculoBloqueId);
         $unidadId = $dataMateria['id'];
+        
+        $seccionCode = $this->get_seccion($dataMateria['template_id'], $periodoId);      
+        
+        
+        if($seccionCode == 'DIPL'){
+            $docIso = 'ISMR20-10';
+        }elseif($seccionCode == 'PAI'){
+            $docIso = 'ISMR20-22';
+        }else{
+            $docIso = 'ISMR20-18';
+        }
+        
         
         $bitacora = \backend\models\PudAprobacionBitacora::find()->where([
             'unidad_id' => $dataMateria['id']
@@ -135,16 +150,30 @@ class PudAprobacionController extends Controller{
         }else{
             $modelBitacora = false;
         }
-        
-        
-        
+                        
         return $this->render('detalle',[
             'dataMateria' => $dataMateria,
             'modelBitacora' => $modelBitacora,
-            'bitacora' => $bitacora
+            'bitacora' => $bitacora,
+            'seccionCode' => $seccionCode,
+            'docIso' => $docIso
         ]);
         
         
+    }
+    
+    private function get_seccion($opCourseTemplateId, $periodoId){
+        $con = Yii::$app->db;
+        $query = "select 	s.id 
+                                    ,s.code 
+                    from 	op_course_template t
+                                    inner join op_course c on c.x_template_id = t.id 
+                                    inner join op_section s on s.id = c.section
+                                    inner join scholaris_op_period_periodo_scholaris sop on sop.op_id = s.period_id 
+                    where 	t.id = $opCourseTemplateId
+                                    and sop.scholaris_id = $periodoId";
+        $res = $con->createCommand($query)->queryOne();
+        return $res['code'];
     }
     
     
@@ -171,6 +200,7 @@ class PudAprobacionController extends Controller{
                                     ,u.pud_status 
                                     ,u.is_open 
                                     ,cab.id as pud_id
+                                    ,t.id as template_id
                     from	planificacion_desagregacion_cabecera cab
                                     inner join planificacion_bloques_unidad u on u.plan_cabecera_id = cab.id 
                                     inner join curriculo_mec_bloque b on b.id = u.curriculo_bloque_id 
@@ -200,12 +230,21 @@ class PudAprobacionController extends Controller{
         $model->usuario_responde = $user;
         $model->fecha_responde = $hoy;
         $model->estado_jefe_coordinador = $estado;
-        $model->save();
+        if($model->save()){
+            if($estado == 'APROBADO'){
+                $modelUnidad = \backend\models\PlanificacionBloquesUnidad::findOne($model->unidad_id);
+                $modelUnidad->is_open = false;
+                $modelUnidad->pud_status = true;
+                $modelUnidad->save();
+            }
+        };
         
         $bloqueId           = $model->unidad->curriculo_bloque_id;
         $ismAreaMateriaId   = $model->unidad->planCabecera->ism_area_materia_id;
         
         return $this->redirect(['detalle', 'bloque_id' => $bloqueId, 'ism_area_materia_id' => $ismAreaMateriaId]);
     }
+    
+    
     
 }

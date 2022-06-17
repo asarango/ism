@@ -51,7 +51,8 @@ class Pdf extends \yii\db\ActiveRecord{
 //        $mpdf->addPage();
         //$mpdf->SetFooter($pie);
 
-        $mpdf->Output('Planificacion-de-unidad' . "curso" . '.pdf', 'D');
+        //$mpdf->Output('Planificacion-de-unidad' . "curso" . '.pdf', 'D');
+        $mpdf->Output();
         exit;
     }
 

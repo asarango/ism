@@ -6,6 +6,11 @@ use yii\grid\GridView;
 $this->title = 'Kids Pca';
 $this->params['breadcrumbs'][] = $this->title;
 
+$curso = $modelPca->opCourse->name;
+// echo '<pre>';
+// print_r();
+// die();
+
 ?>
 <div class="kids-pca-index">
 
@@ -38,7 +43,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             Html::a(
                                     '<span class="badge rounded-pill" style="background-color: #ab0a3d"><i class="fas fa-file-pdf"></i> PDF</span>',
                                     [
-                                        'pdf', 'id' => $model->id
+                                        'pdf', 'id' => $modelPca->id
                                     ],
                                     [
                                         'target' => '_blank'
@@ -49,6 +54,11 @@ $this->params['breadcrumbs'][] = $this->title;
                         </p>
                         
                     </div>
+
+                    <div class="col-md-12 col-sm-12">
+                            <strong>CURSO: <?=$curso?></strong>
+                    </div>
+
                 </div>
                 <!-- Fin de encabezado -->
 
@@ -57,8 +67,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     <div class="col-md-12 col-sm-12 scroll-200">
                         <?=
                         $this->render('_form', [
-                            'model' => $model,
-                            'modelIsmAreaMateria' => $modelIsmAreaMateria,
+                            'modelPca' => $modelPca,                            
                             'userLog' => $userLog,
                             'today' => $today
                         ]);
@@ -76,11 +85,11 @@ $this->params['breadcrumbs'][] = $this->title;
                 </div>
                 <div class="row" id="body-microcurricular" style="background-color:#fff" >
                     <div class="col-md-12 col-sm-12">
-                        <?=
-                        $this->render('microcurriculares', [
+                        <?php
+                        echo $this->render('microcurriculares', [
                             'microcurriculares' => $microcurriculares,
                             'modelMicro' => $modelMicro,
-                            'pcaId' => $model->id,
+                            'pcaId' => $modelPca->id,
                             'userLog' => $userLog,
                             'today' => $today
                         ]);
@@ -100,25 +109,25 @@ $this->params['breadcrumbs'][] = $this->title;
 <script src="https://code.jquery.com/jquery-2.2.4.js" integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI=" crossorigin="anonymous"></script>
 <script>
 
-    muestra_curricular();
+muestra_curricular();
 
-    function muestra_curricular() {
+function muestra_curricular() {
 
-        if ('<?= $model->isNewRecord ?>') {
-            $("#titulo-microcurricular").hide();
-            $("#body-microcurricular").hide();
-        } else {
+    if ('<?= $modelPca->isNewRecord ?>') {
+        $("#titulo-microcurricular").hide();
+        $("#body-microcurricular").hide();
+    } else {
 //            alert('Ahora puede agregar contenido "Unidades Microcurriculares"');
-            $("#titulo-microcurricular").show();
-            $("#body-microcurricular").show();
+        $("#titulo-microcurricular").show();
+        $("#body-microcurricular").show();
 
 //            Scroll automatico
-            $("html, body").animate({
-                scrollTop: "300px"
-            });
-
-        }
+        $("html, body").animate({
+            scrollTop: "300px"
+        });
 
     }
+
+}
 
 </script>

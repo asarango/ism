@@ -18,6 +18,7 @@ use Yii;
  * @property int $asignatura_curriculo_id
  * @property int $curso_curriculo_id
  * @property int $orden
+ * @property int $ambito_id
  *
  * @property CurriculoMecAsignatutas $asignaturaCurriculo
  * @property CurriculoMecNiveles $cursoCurriculo
@@ -43,8 +44,8 @@ class IsmAreaMateria extends \yii\db\ActiveRecord
     {
         return [
             [['malla_area_id', 'materia_id'], 'required'],
-            [['malla_area_id', 'materia_id', 'asignatura_curriculo_id', 'curso_curriculo_id', 'orden'], 'default', 'value' => null],
-            [['malla_area_id', 'materia_id', 'asignatura_curriculo_id', 'curso_curriculo_id', 'orden'], 'integer'],
+            [['malla_area_id', 'materia_id', 'asignatura_curriculo_id', 'curso_curriculo_id', 'orden', 'ambito_id'], 'default', 'value' => null],
+            [['malla_area_id', 'materia_id', 'asignatura_curriculo_id', 'curso_curriculo_id', 'orden', 'ambito_id'], 'integer'],
             [['promedia', 'imprime_libreta', 'es_cuantitativa'], 'boolean'],
             [['porcentaje'], 'number'],
             [['tipo'], 'string', 'max' => 30],
@@ -72,6 +73,7 @@ class IsmAreaMateria extends \yii\db\ActiveRecord
             'asignatura_curriculo_id' => 'Asignatura Curriculo ID',
             'curso_curriculo_id' => 'Curso Curriculo ID',
             'orden' => 'Orden',
+            'ambito_id' => 'Ambito ID',
         ];
     }
 

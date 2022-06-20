@@ -8,7 +8,7 @@ use Yii;
  * This is the model class for table "kids_pca".
  *
  * @property int $id
- * @property int $ism_area_materia_id
+ * @property int $op_course_id
  * @property int $carga_horaria_semanal
  * @property int $numero_semanas_trabajo
  * @property int $imprevistos
@@ -21,7 +21,8 @@ use Yii;
  * @property string $updated_at
  * @property string $updated
  *
- * @property IsmAreaMateria $ismAreaMateria
+ * @property OpCourse $opCourse
+ * @property KidsUnidadMicro[] $kidsUnidadMicros
  */
 class KidsPca extends \yii\db\ActiveRecord
 {
@@ -39,14 +40,14 @@ class KidsPca extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['ism_area_materia_id', 'estado', 'created_at', 'created', 'updated_at', 'updated'], 'required'],
-            [['ism_area_materia_id', 'carga_horaria_semanal', 'numero_semanas_trabajo', 'imprevistos'], 'default', 'value' => null],
-            [['ism_area_materia_id', 'carga_horaria_semanal', 'numero_semanas_trabajo', 'imprevistos'], 'integer'],
+            [['op_course_id', 'estado', 'created_at', 'created', 'updated_at', 'updated'], 'required'],
+            [['op_course_id', 'carga_horaria_semanal', 'numero_semanas_trabajo', 'imprevistos'], 'default', 'value' => null],
+            [['op_course_id', 'carga_horaria_semanal', 'numero_semanas_trabajo', 'imprevistos'], 'integer'],
             [['objetivos', 'observaciones', 'bibliografia'], 'string'],
             [['created_at', 'updated_at'], 'safe'],
             [['estado'], 'string', 'max' => 20],
             [['created', 'updated'], 'string', 'max' => 200],
-            [['ism_area_materia_id'], 'exist', 'skipOnError' => true, 'targetClass' => IsmAreaMateria::className(), 'targetAttribute' => ['ism_area_materia_id' => 'id']],
+            [['op_course_id'], 'exist', 'skipOnError' => true, 'targetClass' => OpCourse::className(), 'targetAttribute' => ['op_course_id' => 'id']],
         ];
     }
 
@@ -57,7 +58,7 @@ class KidsPca extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'ism_area_materia_id' => 'Ism Area Materia ID',
+            'op_course_id' => 'Op Course ID',
             'carga_horaria_semanal' => 'Carga Horaria Semanal',
             'numero_semanas_trabajo' => 'Numero Semanas Trabajo',
             'imprevistos' => 'Imprevistos',
@@ -75,8 +76,16 @@ class KidsPca extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getIsmAreaMateria()
+    public function getOpCourse()
     {
-        return $this->hasOne(IsmAreaMateria::className(), ['id' => 'ism_area_materia_id']);
+        return $this->hasOne(OpCourse::className(), ['id' => 'op_course_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getKidsUnidadMicros()
+    {
+        return $this->hasMany(KidsUnidadMicro::className(), ['pca_id' => 'id']);
     }
 }

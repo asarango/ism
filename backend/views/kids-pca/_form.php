@@ -17,22 +17,22 @@ use yii\widgets\ActiveForm;
         'options' => ['style' => 'font-size: 10px']
     ]); ?>
 
-    <?= $form->field($model, 'ism_area_materia_id')->hiddenInput(['value' => $modelIsmAreaMateria->id])->label(false) ?>
+    <?= $form->field($modelPca, 'op_course_id')->hiddenInput(['value' => $modelPca->op_course_id])->label(false) ?>
     <div class="row">
         <div class="col-md-4 col-sm-4">
-            <?= $form->field($model, 'carga_horaria_semanal')->textInput([
+            <?= $form->field($modelPca, 'carga_horaria_semanal')->textInput([
                 'type' => 'number',
                 'style' => 'font-size: 10px'              
             ]) ?>
         </div>
         <div class="col-md-4 col-sm-4">
-            <?= $form->field($model, 'numero_semanas_trabajo')->textInput([
+            <?= $form->field($modelPca, 'numero_semanas_trabajo')->textInput([
                 'type' => 'number',
                 'style' => 'font-size: 10px'  
             ])->label('Nro. Semanas de trabajo') ?>
         </div>
         <div class="col-md-4 col-sm-4">
-            <?= $form->field($model, 'imprevistos')->textInput([
+            <?= $form->field($modelPca, 'imprevistos')->textInput([
                 'type' => 'number',
                 'style' => 'font-size: 10px'  
             ])->label('Nro. Imprevistos') ?>
@@ -40,27 +40,27 @@ use yii\widgets\ActiveForm;
     </div>
 
 
-    <?= $form->field($model, 'objetivos')->textarea(['rows' => 2, 'style' => 'font-size: 10px'  ]) ?>
+    <?= $form->field($modelPca, 'objetivos')->textarea(['rows' => 2, 'style' => 'font-size: 10px'  ]) ?>
 
-    <?= $form->field($model, 'observaciones')->textarea(['rows' => 2, 'style' => 'font-size: 10px'  ]) ?>
+    <?= $form->field($modelPca, 'observaciones')->textarea(['rows' => 2, 'style' => 'font-size: 10px'  ]) ?>
 
-    <?= $form->field($model, 'bibliografia')->textarea(['rows' => 2, 'style' => 'font-size: 10px'  ]) ?>
+    <?= $form->field($modelPca, 'bibliografia')->textarea(['rows' => 2, 'style' => 'font-size: 10px'  ]) ?>
 
     <?php
-    if ($model->isNewRecord) {
-        echo $form->field($model, 'estado')->hiddenInput(['maxlength' => true, 'value' => 'INICIANDO'])->label(false);
+    if ($modelPca->isNewRecord) {
+        echo $form->field($modelPca, 'estado')->hiddenInput(['maxlength' => true, 'value' => 'INICIANDO'])->label(false);
     } else {
-        echo $form->field($model, 'estado')->hiddenInput(['maxlength' => true])->label(false);
+        echo $form->field($modelPca, 'estado')->hiddenInput(['maxlength' => true])->label(false);
     }
     ?>
 
-    <?= $form->field($model, 'created_at')->hiddenInput(['value' => $today])->label(false) ?>
+    <?= $form->field($modelPca, 'created_at')->hiddenInput(['value' => $today])->label(false) ?>
 
-    <?= $form->field($model, 'created')->hiddenInput(['value' => $userLog])->label(false) ?>
+    <?= $form->field($modelPca, 'created')->hiddenInput(['value' => $userLog])->label(false) ?>
 
-    <?= $form->field($model, 'updated_at')->hiddenInput(['value' => $today])->label(false) ?>
+    <?= $form->field($modelPca, 'updated_at')->hiddenInput(['value' => $today])->label(false) ?>
 
-    <?= $form->field($model, 'updated')->hiddenInput(['value' => $userLog])->label(false) ?>
+    <?= $form->field($modelPca, 'updated')->hiddenInput(['value' => $userLog])->label(false) ?>
 
     <div class="form-group" style="margin-top:10px">
         <?= Html::submitButton('Guardar', ['class' => 'btn btn-success']) ?>

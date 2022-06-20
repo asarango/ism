@@ -20,6 +20,9 @@ use Yii;
  * @property string $updated_at
  * @property string $updated
  *
+ * @property KidsMicroDestreza[] $kidsMicroDestrezas
+ * @property KidsMicroObjetivos[] $kidsMicroObjetivos
+ * @property KidsMicroObservacion[] $kidsMicroObservacions
  * @property KidsPca $pca
  */
 class KidsUnidadMicro extends \yii\db\ActiveRecord
@@ -68,6 +71,30 @@ class KidsUnidadMicro extends \yii\db\ActiveRecord
             'updated_at' => 'Updated At',
             'updated' => 'Updated',
         ];
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getKidsMicroDestrezas()
+    {
+        return $this->hasMany(KidsMicroDestreza::className(), ['micro_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getKidsMicroObjetivos()
+    {
+        return $this->hasMany(KidsMicroObjetivos::className(), ['micro_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getKidsMicroObservacions()
+    {
+        return $this->hasMany(KidsMicroObservacion::className(), ['micro_id' => 'id']);
     }
 
     /**

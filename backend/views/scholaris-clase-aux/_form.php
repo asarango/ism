@@ -33,7 +33,12 @@
     </select>
     
     <label class="">Tipo bloque:</label>
-    <?php $mHorario = \backend\models\ScholarisBloqueComparte::findOne($model->tipo_usu_bloque); ?>
+    <?php 
+        // $mHorario = \backend\models\ScholarisBloqueComparte::findOne($model->tipo_usu_bloque); 
+        $mHorario = \backend\models\ScholarisBloqueComparte::find()
+            ->where(['valor' => $model->tipo_usu_bloque])
+            ->one(); 
+    ?>
     <select name="tipo_usu_bloque" class="form-control" required="">
         <option value="<?= $model->tipo_usu_bloque ?>"><?= $mHorario->nombre ?></option>
         <?php

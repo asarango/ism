@@ -52,14 +52,10 @@ $this->title = 'Menu Kids';
                         ?>
                     </div>
                 </div>
-                <div class="col-md-4">
-                    <div class="zoom" style="text-align:center; margin:15px">
-                        <img src="ISM/main/images/kids/planificador.png" width="20%">
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="zoom" style="text-align:center; margin:15px">
-                        <img src="ISM/main/images/kids/planificador.png" width="20%">
+
+                <div class="col-md-8">
+                    <div style="padding-top:20px; padding-left:40px; padding-right:40px " >
+                        <p>Aqui realizas planificación curricular anual (PCA) y planificación semanal</p>
                     </div>
                 </div>
 
@@ -74,19 +70,19 @@ $this->title = 'Menu Kids';
                             <thead>
                                 <tr>
                                     <th>ID</th>
-                                    <th>MATERIA</th>
                                     <th>CURSO</th>
-                                    <th colspan="" style="text-align: center">ACCIONES</th>
+                                    <th>Estado</th>
+                                    <th colspan="2" style="text-align: center">ACCIONES</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <?php
-                                foreach ($class as $clase) {
+                                foreach ($plans as $plan) {
                                     ?>
                                     <tr>
-                                        <td><?= $clase['id'] ?></td>
-                                        <td><?= $clase['nombre'] ?></td>
-                                        <td><?= $clase['curso'] ?></td>
+                                        <td><?= $plan['id'] ?></td>                                        
+                                        <td><?= $plan['curso'] ?></td>
+                                        <td><?= $plan['estado'] ?></td>
                                         <td style="width: 50px">
                                             <?=
                                             Html::a(
@@ -94,7 +90,19 @@ $this->title = 'Menu Kids';
                                                     <i class="fas fa-list" title="PCA" style="color:white"> 1.PCA</i>
                                                  </span>',
                                                     ['kids-pca/index1',
-                                                        'ism_area_materia_id' => $clase['id']
+                                                        'pca_id' => $plan['id']
+                                                    ]
+                                            );
+                                            ?>
+                                        </td>
+                                        <td style="width: 50px">
+                                            <?=
+                                            Html::a(
+                                                    '<span class="badge" style="background-color:#ff9e18">
+                                                    <i class="fas fa-list" title="Plan Semanal" style="color:white"> 2.PLAN SEMANAL</i>
+                                                 </span>',
+                                                    ['kids-pca/index1',
+                                                        'pca_id' => $plan['id']
                                                     ]
                                             );
                                             ?>

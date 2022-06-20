@@ -331,8 +331,16 @@ class KidsExperienciaController extends Controller {
     }
 
     private function plan($experienciaId) {
+
+        // echo $experienciaId;
+        // die();
+
         $html = '';
         $objPlan = new PlanExperiencia($experienciaId);
+
+        print_r($objPlan);
+        die();
+
         $plan = $objPlan->response;
 
         foreach ($plan['disponibles'] as $dis) {

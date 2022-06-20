@@ -41,52 +41,37 @@ class KidsPcaController extends Controller
         $userLog = Yii::$app->user->identity->usuario;
         $today = date('Y-m-d H:i:s');        
         
-        $ismAreaMallaId = $_GET['ism_area_materia_id'];        
+        $pcaId = $_GET['pca_id'];
+        //$ismAreaMallaId = $_GET['ism_area_materia_id'];        
         
-        $modelPca = KidsPca::find()->where(['ism_area_materia_id' => $ismAreaMallaId])->one();       
-
-        $modelIsmAreaMateria = IsmAreaMateria::findOne($ismAreaMallaId);        
+        $modelPca = KidsPca::findOne($pcaId);       
         
         $modelMicro = new KidsUnidadMicro();
 
-
-        if($modelPca){
-            $model = $modelPca;
-             //trae la bitácora
-            $bitacora = KidsPcaBitacora::find()->where([
-                    'pca_id' => $model->id
-                    ])->all();                    
-        //fin de la bitácora
-
-        
-            $microcurriculares = KidsUnidadMicro::find()->where([//inicio de microcurriculares
-                'pca_id' => $model->id
-            ])->all();//fin de microcurriculares
-            
-            if( $modelMicro->load(Yii::$app->request->post()) && $modelMicro->save() ){
-            return $this->redirect(['index1', 'ism_area_materia_id' => $ismAreaMallaId]);
-        }
-        
-        }else{
-            $model = new KidsPca();
-            $bitacora = '';
-            $microcurriculares = new KidsUnidadMicro();
+        if ($modelPca->load(Yii::$app->request->post())) {            
+            $modelPca->save();
+            return $this->redirect(['index1', 'pca_id' => $pcaId]);
         }
 
-       
-
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['index1', 'ism_area_materia_id' => $ismAreaMallaId]);
+        if ($modelMicro->load(Yii::$app->request->post())) {            
+            $modelMicro->save();
+            return $this->redirect(['index1', 'pca_id' => $pcaId]);
         }
+
+
+        $microcurriculares = KidsUnidadMicro::find()
+        ->where(['pca_id' => $pcaId])
+        ->orderBy('orden')
+        ->all();
+
+
 
         return $this->render('index',[
-            'model' => $model,
-            'modelIsmAreaMateria' => $modelIsmAreaMateria,
-            'bitacora' => $bitacora,
+            'modelPca' => $modelPca,            
             'userLog' => $userLog,
             'today' => $today,
-            'microcurriculares' => $microcurriculares,
-            'modelMicro' => $modelMicro
+            'modelMicro' => $modelMicro,
+            'microcurriculares' => $microcurriculares
         ]);
     }
 

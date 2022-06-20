@@ -17,8 +17,10 @@ use Yii;
  * @property string $created
  * @property string $updated_at
  * @property string $updated
+ * @property int $ism_area_materia_id
  *
  * @property CurCurriculoDestreza $destreza
+ * @property IsmAreaMateria $ismAreaMateria
  * @property KidsUnidadMicro $micro
  */
 class KidsMicroDestreza extends \yii\db\ActiveRecord
@@ -37,13 +39,14 @@ class KidsMicroDestreza extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['micro_id', 'destreza_id', 'actividades_aprendizaje', 'recursos', 'indicadores_evaluacion', 'created_at', 'created', 'updated_at', 'updated'], 'required'],
-            [['micro_id', 'destreza_id'], 'default', 'value' => null],
-            [['micro_id', 'destreza_id'], 'integer'],
+            [['micro_id', 'destreza_id', 'actividades_aprendizaje', 'recursos', 'indicadores_evaluacion', 'created_at', 'created', 'updated_at', 'updated', 'ism_area_materia_id'], 'required'],
+            [['micro_id', 'destreza_id', 'ism_area_materia_id'], 'default', 'value' => null],
+            [['micro_id', 'destreza_id', 'ism_area_materia_id'], 'integer'],
             [['actividades_aprendizaje', 'recursos', 'indicadores_evaluacion'], 'string'],
             [['created_at', 'updated_at'], 'safe'],
             [['created', 'updated'], 'string', 'max' => 200],
             [['destreza_id'], 'exist', 'skipOnError' => true, 'targetClass' => CurCurriculoDestreza::className(), 'targetAttribute' => ['destreza_id' => 'id']],
+            [['ism_area_materia_id'], 'exist', 'skipOnError' => true, 'targetClass' => IsmAreaMateria::className(), 'targetAttribute' => ['ism_area_materia_id' => 'id']],
             [['micro_id'], 'exist', 'skipOnError' => true, 'targetClass' => KidsUnidadMicro::className(), 'targetAttribute' => ['micro_id' => 'id']],
         ];
     }
@@ -64,6 +67,7 @@ class KidsMicroDestreza extends \yii\db\ActiveRecord
             'created' => 'Created',
             'updated_at' => 'Updated At',
             'updated' => 'Updated',
+            'ism_area_materia_id' => 'Ism Area Materia ID',
         ];
     }
 
@@ -73,6 +77,14 @@ class KidsMicroDestreza extends \yii\db\ActiveRecord
     public function getDestreza()
     {
         return $this->hasOne(CurCurriculoDestreza::className(), ['id' => 'destreza_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getIsmAreaMateria()
+    {
+        return $this->hasOne(IsmAreaMateria::className(), ['id' => 'ism_area_materia_id']);
     }
 
     /**

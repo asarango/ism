@@ -16,14 +16,14 @@ class Datos extends ActiveRecord{
 
     private $microId;
     private $micro;
-    private $ismAreaMateriaId;
+    private $opCourseId;
     public $response;
 
 
     public function __construct($microId){
         $this->microId = $microId;
         $this->micro = KidsUnidadMicro::findOne($this->microId);
-        $this->ismAreaMateriaId = $this->micro->pca->ism_area_materia_id;
+        $this->opCourseId = $this->micro->pca->op_course_id;
         
         $this->response();
     }
@@ -31,7 +31,7 @@ class Datos extends ActiveRecord{
     private function response(){
         $this->response = array(
             'docentes' => $this->get_docentes(),
-            'subnivel' => $this->micro->pca->ismAreaMateria->mallaArea->periodoMalla->malla->opCourseTemplate->code,
+            'subnivel' => $this->micro->pca->opCourse->section0->code,
             'objetivos_disponibles' => $this->get_objetivos_disponibles(),
             'objetivos_seleccionados' => KidsMicroObjetivos::find()
                                         ->where(['micro_id' => $this->microId])
@@ -42,9 +42,11 @@ class Datos extends ActiveRecord{
     private function get_docentes(){
         $con = Yii::$app->db;
         $query = "select 	concat(f.x_first_name,' ',f.last_name ) as docente
-        from 	scholaris_clase c
-                inner join op_faculty f on f.id = c.idprofesor 
-        where  	c.ism_area_materia_id = $this->ismAreaMateriaId;";
+                    from 	scholaris_clase c
+                            inner join op_faculty f on f.id = c.idprofesor
+                            inner join op_course_paralelo p on p.id = c.paralelo_id
+                    where  	p.course_id  = $this->opCourseId;";
+
         $res = $con->createCommand($query)->queryAll();
         return $res;
     }

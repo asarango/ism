@@ -145,7 +145,8 @@ function pud_dip_porcentaje_avance($planVertDiplId,$planBloqueUniId)
                                         <?php
                                         $model = PlanificacionBloquesUnidad::findOne($unidad->id);
                                         $modelPudAprBit = PudAprobacionBitacora::find()
-                                        ->where(['unidad_id'=>$model->id])
+                                        ->where(['unidad_id'=>$model->id]) 
+                                        ->orderBy(['fecha_notifica' => SORT_DESC])                                       
                                         ->one();
 
                                         // echo '<pre>';
@@ -168,7 +169,8 @@ function pud_dip_porcentaje_avance($planVertDiplId,$planBloqueUniId)
                                             $actionController = 'pud-dip/index1';                                        
                                         }
                                         if($modelPudAprBit)
-                                        {
+                                        {                                           
+
                                             if($modelPudAprBit->estado_jefe_coordinador=='ENVIADO'){
                                                 $icono = '<i class="fas fa-user-clock"  title="PUD EN REVISION" ></i>';                                           
                                                 $style='color: blue';

@@ -38,8 +38,6 @@ class KidsExperienciaController extends Controller {
         $observacionCoordinador = KidsMicroObservacion::find()->where([
             'micro_id' => $experienciaId
         ])->one();
-        // print_r($observacionCoordinador);
-        // die();
 
         if(!isset($_GET['pestana'])){
             $pestana = 'plan';

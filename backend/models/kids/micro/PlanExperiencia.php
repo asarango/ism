@@ -22,13 +22,7 @@ class PlanExperiencia extends ActiveRecord{
 
         $this->microId = $microId;
         $this->micro = KidsUnidadMicro::findOne($this->microId);
-
-        // print_r($this->micro);
-        // die();
-
-
-        // $this->opCourseTemplateId = $this->micro->pca->ismAreaMateria->mallaArea->periodoMalla->malla->op_course_template_id;
-        $this->opCourseTemplateId = $this->micro->pca;
+        $this->opCourseTemplateId = $this->micro->pca->op_course_id;    
         
         
         $this->response();

@@ -252,7 +252,25 @@ where hor.clase_id in
                  
          $resultado = $con->createCommand($query)->queryOne();         
          return $resultado;
-     }      
+     }  
+     
+     
+     public function firmar_documento($usuario, $fecha){
+         
+         $con = \Yii::$app->db;
+         $query = "select 	rp.name 
+                    from	res_users ru 
+                                    inner join res_partner rp on rp.id = ru.partner_id 
+                    where 	ru.login = '$usuario';";
+         
+         $res = $con->createCommand($query)->queryOne();
+         
+         return array(
+             'firmado_por' => $res['name'],
+             'firmado_el'  => $fecha
+         );
+         
+     }
     
 }
 

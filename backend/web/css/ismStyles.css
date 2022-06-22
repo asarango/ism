@@ -219,4 +219,15 @@ ESTILOS PARA SELECT 2
   transform: scale(1.1); /* (150% zoom - Note: if the zoom is too large, it will go outside of the viewport) */
 }
 
+
+.pagination li{
+    font-size: 10px;
+    border: solid 1px #eee;
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+.grid-view table{
+    font-size: 10px;
+}
   

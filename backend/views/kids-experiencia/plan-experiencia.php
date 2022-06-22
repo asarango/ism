@@ -69,8 +69,10 @@ use yii\helpers\Url;
                         <table class="table table-striped table-condensed table-hover" id="table-destrezas-disponibles">
                             <thead>
                                 <tr bgcolor="ff9e18" class="text-center">
+                                    <th>ÁMBITO</th>
                                     <th>CODIGO</th>
                                     <th>DESCRIPCION</th>
+                                    <th>ASIGNATURA</th>
                                     <th>ACCIONES</th>
                                 </tr>
                             </thead>
@@ -164,10 +166,12 @@ function inserta_destreza(bandera, id) {
     // alert(bandera);
     var url = "<?= Url::to(['kids-experiencia/micro']) ?>";
     var microId = "<?= $micro['id'] ?>";
+    var materiaId = $("#select-materia"+id).val();
     params = {
         bandera: bandera,
         destreza_id: id,
-        micro_id: microId
+        micro_id: microId,
+        materia_id: materiaId
     };
 
     $.ajax({
@@ -180,6 +184,7 @@ function inserta_destreza(bandera, id) {
 //                alert('si inserto');
                 muestra_destrezas_disponibles('plan');
                 destreza_seleccionada();
+                
                 //Scroll automatico
                 $("html, body").animate({
                     scrollTop: "400px"
@@ -211,27 +216,5 @@ function update_destreza(id){
 }
 
 // Data table destrezas disponibles (modal)
-$("#table-destrezas-disponibles").DataTable({
-    language: {
-        "decimal": "",
-        "emptyTable": "No hay información",
-        "info": "Mostrando _START_ a _END_ de _TOTAL_ Entradas",
-        "infoEmpty": "Mostrando 0 to 0 of 0 Entradas",
-        "infoFiltered": "(Filtrado de _MAX_ total entradas)",
-        "infoPostFix": "",
-        "thousands": ",",
-        "lengthMenu": "Mostrar _MENU_ Entradas",
-        "loadingRecords": "Cargando...",
-        "processing": "Procesando...",
-        "search": "Buscar:",
-        "zeroRecords": "Sin resultados encontrados",
-        "paginate": {
-            "first": "Primero",
-            "last": "Ultimo",
-            "next": "Siguiente",
-            "previous": "Anterior"
-        }
-    },
-
-});
+$("#table-destrezas-disponibles").DataTable();
 </script>

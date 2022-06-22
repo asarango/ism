@@ -156,7 +156,9 @@ class KidsExperienciaController extends Controller {
 
             $destrezaId = $_POST['destreza_id'];
             $microId = $_POST['micro_id'];
-            $this->insert_micro_destreza($microId, $destrezaId, $usuarioLog, $hoy);
+            $materiaId = $_POST['materia_id'];
+            
+            $this->insert_micro_destreza($microId, $destrezaId, $usuarioLog, $hoy, $materiaId);
             return true;
         } elseif ($_POST['bandera'] == 'Actualizar') {
 
@@ -320,32 +322,36 @@ class KidsExperienciaController extends Controller {
         return $con->createCommand($query)->execute() ? true : false;
     }
 
-    private function insert_micro_destreza($microId, $destrezaId, $usuarioLog, $hoy) {
+    private function insert_micro_destreza($microId, $destrezaId, $usuarioLog, $hoy, $ismAreaMateriaId) {
         $con = Yii::$app->db;
-        $query = "insert into kids_micro_destreza (micro_id, destreza_id, actividades_aprendizaje, recursos, indicadores_evaluacion, created_at, created, updated_at, updated) 
-        values($microId, $destrezaId, 'vacio', 'vacio', 'vacio', '$hoy', '$usuarioLog', '$hoy', '$usuarioLog');";
+        $query = "insert into kids_micro_destreza (micro_id, destreza_id, actividades_aprendizaje, recursos, indicadores_evaluacion, created_at, created, updated_at, updated, ism_area_materia_id) 
+        values($microId, $destrezaId, 'vacio', 'vacio', 'vacio', '$hoy', '$usuarioLog', '$hoy', '$usuarioLog', $ismAreaMateriaId);";
 
         $con->createCommand($query)->execute();
     }
 
     private function plan($experienciaId) {
 
-        // echo $experienciaId;
-        // die();
-
         $html = '';
         $objPlan = new PlanExperiencia($experienciaId);
-
-        print_r($objPlan);
-        die();
-
         $plan = $objPlan->response;
+        
+        $scripts = new \backend\models\helpers\Scripts();
+        $materias = $scripts->get_materias_kids_x_docente();
 
         foreach ($plan['disponibles'] as $dis) {
             $destrezaId = $dis['id'];
             $html .= '<tr>';
-            $html .= '<td>' . $dis['codigo'] . '</td>';
+            $html .= '<td>' . $dis['ambito'] . '</td>';
+            $html .= '<td>' . $dis['destreza_codigo'] . '</td>';
             $html .= '<td>' . $dis['destreza'] . '</td>';
+            $html .= '<td>';
+            $html .= '<select class="form-control" name="materia" id="select-materia'.$dis['id'].'">';
+            foreach ($materias as $mat){
+                $html .= '<option value="'.$mat['id'].'">'.$mat['nombre'].'</option>';
+            }
+            $html .= '</select>';
+            $html .= '</td>';
             $html .= '<td><a href="#" 
                         onclick="inserta_destreza(\'crear\', ' . $destrezaId . ')">Ingresar</a></td>';
         }

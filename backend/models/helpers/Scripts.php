@@ -271,6 +271,25 @@ where hor.clase_id in
          );
          
      }
+     
+     public function get_materias_kids_x_docente(){
+         $userLog = \Yii::$app->user->identity->usuario;
+         $periodoId = \Yii::$app->user->identity->periodo_id;
+         $con = \Yii::$app->db;
+         $query = "select 	iam.id 
+                                    ,m.nombre 
+                    from	scholaris_clase cla
+                                    inner join op_faculty fac on fac.id = cla.idprofesor 
+                                    inner join res_users use on use.partner_id = fac.partner_id
+                                    inner join ism_area_materia iam on iam.id = cla.ism_area_materia_id 
+                                    inner join ism_malla_area ima on ima.id = iam.malla_area_id 
+                                    inner join ism_periodo_malla ipm on ipm.id = ima.periodo_malla_id 
+                                    inner join ism_materia m on m.id = iam.materia_id 
+                    where 	use.login = '$userLog'
+                                    and ipm.scholaris_periodo_id = $periodoId;";
+        $res  = $con->createCommand($query)->queryAll();
+        return $res;
+     }
     
 }
 

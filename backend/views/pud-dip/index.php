@@ -22,31 +22,29 @@ $this->title = 'PUD - ' . $planUnidad->curriculoBloque->last_name . ' - ' . $pla
 $this->params['breadcrumbs'][] = $this->title;
 
 $modelPVD = PlanificacionVerticalDiploma::find()
-    ->where(['planificacion_bloque_unidad_id' => $planUnidad->id])
-    ->one();
-$pud_dip_porc_avance = array( "porcentaje" => 0);
+        ->where(['planificacion_bloque_unidad_id' => $planUnidad->id])
+        ->one();
+$pud_dip_porc_avance = array("porcentaje" => 0);
 
-if($modelPVD)
-{
+if ($modelPVD) {
     $pud_dip_porc_avance = pud_dip_porcentaje_avance($modelPVD->id, $planUnidad->id);
-}   
+}
 
 //consulta para extraer el porcentaje de avance del PUD DIPLOMA
-function pud_dip_porcentaje_avance($planVertDiplId, $planBloqueUniId)
-{
+function pud_dip_porcentaje_avance($planVertDiplId, $planBloqueUniId) {
     $pud_dip_porc_avance = 0;
     //consulta los los tdc que han sido marcados con check, mas los que aun no estan marcados    
     $obj2 = new backend\models\helpers\Scripts();
-    $pud_dip_porc_avance = $obj2->pud_dip_porcentaje_avance($planVertDiplId, $planBloqueUniId);  
+    $pud_dip_porc_avance = $obj2->pud_dip_porcentaje_avance($planVertDiplId, $planBloqueUniId);
 
     return $pud_dip_porc_avance;
 }
+
 //consulta para extraer los mensajes del coordinador cuando se halla enviado el PUD
 $modelPudBitacora = PudAprobacionBitacora::find()
-    ->where(['unidad_id' => $planUnidad->id])
-    ->orderBy(['fecha_notifica' => SORT_DESC])
-    ->one();
-
+        ->where(['unidad_id' => $planUnidad->id])
+        ->orderBy(['fecha_notifica' => SORT_DESC])
+        ->one();
 ?>
 <!--Scripts para que funcionen AJAX'S-->
 <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>-->
@@ -81,17 +79,17 @@ $modelPudBitacora = PudAprobacionBitacora::find()
                     |
                     <?=
                     Html::a(
-                        '<span class="badge rounded-pill" style="background-color: #9e28b5"><i class="fa fa-briefcase" aria-hidden="true"></i> Inicio</span>',
-                        ['site/index'],
-                        ['class' => 'link']
+                            '<span class="badge rounded-pill" style="background-color: #9e28b5"><i class="fa fa-briefcase" aria-hidden="true"></i> Inicio</span>',
+                            ['site/index'],
+                            ['class' => 'link']
                     );
                     ?>
                     |
                     <?=
                     Html::a(
-                        '<span class="badge rounded-pill" style="background-color: #65b2e8"><i class="fa fa-briefcase" aria-hidden="true"></i>Temas</span>',
-                        ['planificacion-bloques-unidad/index1', 'id' => $planUnidad->plan_cabecera_id],
-                        ['class' => 'link']
+                            '<span class="badge rounded-pill" style="background-color: #65b2e8"><i class="fa fa-briefcase" aria-hidden="true"></i>Temas</span>',
+                            ['planificacion-bloques-unidad/index1', 'id' => $planUnidad->plan_cabecera_id],
+                            ['class' => 'link']
                     );
                     ?>
                     |
@@ -99,18 +97,18 @@ $modelPudBitacora = PudAprobacionBitacora::find()
                     if ($pud_dip_porc_avance['porcentaje'] == '100') {
                         if ($modelPudBitacora == false) {
                             echo Html::a(
-                                '<span class="badge rounded-pill" style="background-color: blue"><i class="fa fa-briefcase" aria-hidden="true"></i>Enviar Aprobación</span>',
-                                ['planificacion-bloques-unidad/envio-aprobacion', 'modelPlanBloqUnidad' => $planUnidad->id],
-                                ['class' => 'link']
+                                    '<span class="badge rounded-pill" style="background-color: blue"><i class="fa fa-briefcase" aria-hidden="true"></i>Enviar Aprobación</span>',
+                                    ['planificacion-bloques-unidad/envio-aprobacion', 'modelPlanBloqUnidad' => $planUnidad->id],
+                                    ['class' => 'link']
                             );
                         } elseif ($modelPudBitacora->estado_jefe_coordinador == 'ENVIADO') {
                             echo '<span class="badge rounded-pill" style="background-color: orange"><i class="fa fa-briefcase" aria-hidden="true"></i>Esperando Respuesta</span>';
                         } elseif ($modelPudBitacora->estado_jefe_coordinador == 'DEVUELTO') {
 
                             echo Html::a(
-                                '<span class="badge rounded-pill" style="background-color: purple"><i class="fa fa-briefcase" aria-hidden="true"></i>Reenviar</span>',
-                                ['planificacion-bloques-unidad/envio-aprobacion', 'modelPlanBloqUnidad' => $planUnidad->id],
-                                ['class' => 'link']
+                                    '<span class="badge rounded-pill" style="background-color: purple"><i class="fa fa-briefcase" aria-hidden="true"></i>Reenviar</span>',
+                                    ['planificacion-bloques-unidad/envio-aprobacion', 'modelPlanBloqUnidad' => $planUnidad->id],
+                                    ['class' => 'link']
                             );
                         } elseif ($modelPudBitacora->estado_jefe_coordinador == 'APROBADO') {
                             echo '<span class="badge rounded-pill" style="background-color: green"><i class="fa fa-briefcase" aria-hidden="true"></i>Aprobado</span>';
@@ -118,24 +116,60 @@ $modelPudBitacora = PudAprobacionBitacora::find()
 
                         echo '|';
                     }
-
                     ?>
 
                     <?= " Avance: " . $pud_dip_porc_avance['porcentaje'] . "%" ?>
+                    <?php
+                    if ($pud_dip_porc_avance['porcentaje'] == '100') {
+                        if ($modelPudBitacora->estado_jefe_coordinador == 'APROBADO') {
+                            ?>
+                            <a href="" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                <span class="badge rounded-pill" style="background-color: gray"><i class="fas fa-file-signature"></i> Firmas</span>
+                            </a>
+                    
+                            <?php
+                        }
+                    }
+                    ?>
+
+
+
+
+
                 </div> <!-- fin de menu cabecera izquierda -->
 
                 <!-- inicio de menu cabecera derecha -->
                 <div class="col-lg-6 col-md-6" style="text-align: right;">
                     <?=
                     Html::a(
-                        '<span class="badge rounded-pill" style="background-color: #ab0a3d"><i class="fas fa-file-pdf"></i>  Generar Reporte PDF</span>',
-                        ['pud-dip/pdf-pud-dip', 'planificacion_unidad_bloque_id' => $planUnidad->id],
-                        ['class' => 'link', 'target' => '_blank']
+                            '<span class="badge rounded-pill" style="background-color: #ab0a3d"><i class="fas fa-file-pdf"></i>  Generar Reporte PDF</span>',
+                            ['pud-dip/pdf-pud-dip', 'planificacion_unidad_bloque_id' => $planUnidad->id],
+                            ['class' => 'link', 'target' => '_blank']
                     );
                     ?>
                     |
+
                 </div>
                 <!-- fin de menu cabecera derecha -->
+                <!-- Modal -->
+                            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="exampleModalLabel">Planificación Firmada</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <b>Firmado y Aprobado el : <b/><?= $firmaAprobado['firmado_el'] ?>, por <?= $firmaAprobado['firmado_por'] ?>
+                                                <hr />
+                                                <b>Firmado y Aprobado el : <b/><?= $firmaDocente['firmado_el'] ?>, por <?= $firmaDocente['firmado_por'] ?>
+                                        </div>
+                                        <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>                                            
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
             </div>
             <!-- finaliza menu cabecera  -->
 
@@ -143,15 +177,16 @@ $modelPudBitacora = PudAprobacionBitacora::find()
             <div class="row my-text-medium" style="margin-top: 25px; margin-bottom: 5px;">
                 <!-- comienza menu de pud-->
                 <div class="col-lg-3 col-md-3" style="overflow-y: scroll; height: 650px; border-top: solid 1px #ccc;">
-                    <?= $this->render('menu', [
+                    <?=
+                    $this->render('menu', [
                         'planUnidad' => $planUnidad,
-                    ]); ?>
+                    ]);
+                    ?>
                 </div>
                 <!-- termina menu de pud -->
 
                 <!-- comienza detalle -->
-                <?php
-                if ($modelPudBitacora == false || $modelPudBitacora->estado_jefe_coordinador == 'APROBADO') { ?>                    
+                <?php if ($modelPudBitacora == false || $modelPudBitacora->estado_jefe_coordinador == 'APROBADO') { ?>                    
                     <div id="div-detalle" class="col-lg-9 col-md-9" style="border-top: solid 1px #ccc;" >
 
                     </div>
@@ -169,7 +204,7 @@ $modelPudBitacora = PudAprobacionBitacora::find()
                                 </div>
                                 <div class="card-body">
                                     <div class="row" style="overflow-y: scroll; overflow-x: scroll;">
-                                        <?=$modelPudBitacora->respuesta ?>                                       
+                                        <?= $modelPudBitacora->respuesta ?>                                       
 
                                     </div>
                                 </div>
@@ -185,9 +220,9 @@ $modelPudBitacora = PudAprobacionBitacora::find()
 
     <!--<script src="https://code.jquery.com/jquery-2.2.4.js" integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI=" crossorigin="anonymous"></script>-->
 
- 
-   <script>         
-       
+
+    <script>
+
         /** FUNCION PARA MODIFICACION DE TEXTO PARA CAMPOS SIMPLES */
         function update_campo_simple_pud_dip(id, accion_update) {
             var contenido = CKEDITOR.instances['editor-text-unidad'].getData();
@@ -202,15 +237,15 @@ $modelPudBitacora = PudAprobacionBitacora::find()
                 data: params,
                 url: url,
                 type: 'GET',
-                beforeSend: function() {},
-                success: function() {
+                beforeSend: function () {},
+                success: function () {
                     /*if (contenido.length>50)
-                      {
-                          $(control).css({'color':'green'});
-                         
-                      }else{                       
-                         $(control).css({'color':'red'});
-                      }*/
+                     {
+                     $(control).css({'color':'green'});
+                     
+                     }else{                       
+                     $(control).css({'color':'red'});
+                     }*/
                     //ver_detalle(accion_update);
                     location.reload();
 
@@ -234,8 +269,8 @@ $modelPudBitacora = PudAprobacionBitacora::find()
                 data: params,
                 url: url,
                 type: 'GET',
-                beforeSend: function() {},
-                success: function() {
+                beforeSend: function () {},
+                success: function () {
                     //ver_detalle(accion_update_op);
                     location.reload();
                 }

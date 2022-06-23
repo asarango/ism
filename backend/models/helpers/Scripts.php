@@ -252,6 +252,7 @@ where hor.clase_id in
                  
          $resultado = $con->createCommand($query)->queryOne();         
          return $resultado;
+
      } 
      //consulta para extraer el porcentaje de avance del PUD PAI, para guardar en BLOQUE UNIDAD
      public function pud_pai_porcentaje_avance($planBloqueUniId) 
@@ -451,5 +452,106 @@ where hor.clase_id in
         $resultado = $con->createCommand($query)->queryOne();         
         return $resultado;
      }      
+
+     }  
+     
+     
+     public function firmar_documento($usuario, $fecha){
+         
+         $con = \Yii::$app->db;
+         $query = "select 	rp.name 
+                    from	res_users ru 
+                                    inner join res_partner rp on rp.id = ru.partner_id 
+                    where 	ru.login = '$usuario';";
+         
+         $res = $con->createCommand($query)->queryOne();
+         
+         return array(
+             'firmado_por' => $res['name'],
+             'firmado_el'  => $fecha
+         );
+         
+     }
+     
+     public function get_materias_kids_x_docente(){
+         $userLog = \Yii::$app->user->identity->usuario;
+         $periodoId = \Yii::$app->user->identity->periodo_id;
+         $con = \Yii::$app->db;
+         $query = "select 	iam.id 
+                                    ,m.nombre 
+                    from	scholaris_clase cla
+                                    inner join op_faculty fac on fac.id = cla.idprofesor 
+                                    inner join res_users use on use.partner_id = fac.partner_id
+                                    inner join ism_area_materia iam on iam.id = cla.ism_area_materia_id 
+                                    inner join ism_malla_area ima on ima.id = iam.malla_area_id 
+                                    inner join ism_periodo_malla ipm on ipm.id = ima.periodo_malla_id 
+                                    inner join ism_materia m on m.id = iam.materia_id 
+                    where 	use.login = '$userLog'
+                                    and ipm.scholaris_periodo_id = $periodoId;";
+        $res  = $con->createCommand($query)->queryAll();
+        return $res;
+     }
+     
+     public function convertir_mes($mesNumero){
+        
+         switch ($mesNumero){
+             case 1:
+                    $mes = 'Ene';
+                    break;
+             case 2:
+                    $mes = 'Feb';
+                    break;
+                
+             case 3:
+                    $mes = 'Mar';
+                    break;
+                
+             case 4:
+                    $mes = 'Abr';
+                    break;
+                
+             case 5:
+                    $mes = 'May';
+                    break;
+                
+             case 6:
+                    $mes = 'Jun';
+                    break;
+                
+             case 7:
+                    $mes = 'Jul';
+                    break;
+                
+             case 8:
+                    $mes = 'Ago';
+                    break;
+                
+             case 9:
+                    $mes = 'Sep';
+                    break;
+                
+             case 10:
+                    $mes = 'Oct';
+                    break;
+                
+             case 11:
+                    $mes = 'Nov';
+                    break;
+                
+             case 12:
+                    $mes = 'Dic';
+                    break;   
+             default:
+                 $mes = 'Sin mes';
+                 break;
+         }
+                   
+         return $mes;
+     }
+     
+     public function get_cursos_x_periodo(){
+         
+     }
+
     
 }

@@ -194,7 +194,7 @@ if (!Yii::$app->user->isGuest) {
         <script src="https://unpkg.com/ionicons@4.5.10-0/dist/ionicons.js"></script>
         
         <!--para arbol de opciones-->
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/jstree.min.js"></script> 
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/jstree.min.js"></script>                 
 
 
         <?php $this->endBody() ?>

@@ -162,7 +162,6 @@ if(!isset($pestana)){
 </div>
 
 <script>
-
   $("#nav-profile-tab").on("click",function(){
     //Scroll automatico
     $("html, body").animate({

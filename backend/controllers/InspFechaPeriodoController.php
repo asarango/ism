@@ -73,15 +73,64 @@ class InspFechaPeriodoController extends Controller
     {
         
         $periodoId = Yii::$app->user->identity->periodo_id;
-        $this->actualiza_fechas_anio_lectivo($periodoId);
+        $this->actualiza_fechas_anio_lectivo($periodoId);              
         
         $searchModel = new InspFechaPeriodoSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams, $periodoId);
 
         return $this->render('index', [
             'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
+            'dataProvider' => $dataProvider
         ]);
+    }
+    
+    public function actionAjaxLaborados(){
+        $periodoId = Yii::$app->user->identity->periodo_id;
+        $laborados = $this->get_dias_trabajados($periodoId);
+        
+        $scripts = new \backend\models\helpers\Scripts();
+        
+        $labMes = array();
+        $labTot = array();
+        
+        foreach ($laborados as $lab) {            
+            $mes = $scripts->convertir_mes($lab['mes']);
+            $tot = $lab['total'];            
+            
+            array_push($labMes, $mes);
+            array_push($labTot, $tot);
+        }
+        
+        $laborado = array(
+            'meses' => $labMes,
+            'totales' => $labTot
+        );      
+        
+        return json_encode($laborado);        
+    }
+    
+    public function actionAjaxNoJustificado(){
+        $periodoId = Yii::$app->user->identity->periodo_id;
+        
+        
+        
+    }
+    
+    
+    private function get_dias_trabajados($periodoId){
+        
+        $con = Yii::$app->db;
+        $query = "select 	count(EXTRACT(MONTH FROM fecha)) as total
+                                    ,EXTRACT(MONTH FROM fecha) as mes
+                                    ,EXTRACT(YEAR FROM fecha) as anio
+                    from 	insp_fecha_periodo
+                    where fecha > '2021-08-01'
+                                    and hay_asitencia = true
+                                    and periodo_id = $periodoId
+                    group by EXTRACT(MONTH FROM fecha), EXTRACT(YEAR FROM fecha)
+                    order by EXTRACT(YEAR FROM fecha), EXTRACT(MONTH FROM fecha);";
+        $res = $con->createCommand($query)->queryAll();
+        return $res;
     }
     
     

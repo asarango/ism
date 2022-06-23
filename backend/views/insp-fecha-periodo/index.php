@@ -1,7 +1,7 @@
 <?php
 
+use yii\helpers\Url;
 use yii\helpers\Html;
-use yii\widgets\DetailView;
 use yii\grid\GridView;
 
 //echo'<pre>';
@@ -64,15 +64,31 @@ $this->title = 'Fechas del año lectivo';
             </div>
             <!-- finaliza menu menu  -->
 
-            
-             <!-- #################### inicia cuerpo de card ##########################-->
-            <div class="row p-5">
-               
 
-                <?=
+            <!-- #################### inicia cuerpo de card ##########################-->
+            <div class="row p-5">
+                
+                <div class="row">
+                    <div class="col-lg-4 col-md-4">
+                        <div class="row card">
+                            <canvas id="myChart"></canvas>
+                        </div>
+                        
+                        <div class="row" style="margin-top: 20px"><hr></div>
+                        
+                        <div class="row card">
+                            <canvas id="myChartnojustificado"></canvas>
+                        </div>
+                        
+                    </div>
+                    <!--fin de columna de graficos-->
+                        
+                    
+                    <div class="col-lg-8 col-md-8">
+                        <?=
                 GridView::widget([
                     'dataProvider' => $dataProvider,
-                    'filterModel' => $searchModel,                    
+                    'filterModel' => $searchModel,
                     'columns' => [
                         ['class' => 'yii\grid\SerialColumn'],
                         'fecha',
@@ -118,6 +134,8 @@ $this->title = 'Fechas del año lectivo';
                     ],
                 ]);
                 ?>
+                    </div>
+                </div>                
 
             </div><!-- ######################## fin cuerpo de card #######################-->
 
@@ -125,3 +143,106 @@ $this->title = 'Fechas del año lectivo';
         </div><!-- fin de card principal -->
     </div>
 </div>
+
+<script
+    src="https://code.jquery.com/jquery-2.2.4.js"
+    integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI="
+crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+
+    semanas();
+    no_justificado();
+
+    function semanas() {
+        var url = "<?= yii\helpers\Url::to(['ajax-laborados']) ?>";
+
+        $.ajax({
+            url: url,
+            //        data:params,
+            type: 'GET',
+
+            success: function (resp) {
+                var respuesta = JSON.parse(resp);
+                console.log(respuesta);
+                var meses = respuesta.meses;
+                var totales = respuesta.totales;
+
+                const labels = meses;
+
+                const data = {
+                    labels: labels,
+                    datasets: [{
+                            label: 'Días Laborados',
+                            backgroundColor: 'rgb(255, 99, 132)',
+                            borderColor: 'rgb(255, 99, 132)',
+//                            data: [0, 10, 5, 2, 20, 30, 45],
+                            data: totales
+                        }]
+                };
+
+                const config = {
+                    type: 'line',
+                    data: data,
+                    options: {}
+                };
+                const myChart = new Chart(
+                        document.getElementById('myChart'),
+                        config
+                        );
+
+            }
+        });
+
+    }
+    
+    function no_justificado() {
+        var url = "<?= yii\helpers\Url::to(['ajax-laborados']) ?>";
+
+        $.ajax({
+            url: url,
+            //        data:params,
+            type: 'GET',
+
+            success: function (resp) {
+                var respuesta = JSON.parse(resp);
+                console.log(respuesta);
+                var meses = respuesta.meses;
+                var totales = respuesta.totales;
+
+                const labels = meses;
+
+                const data = {
+                    labels: labels,
+                    datasets: [{
+                            label: 'Días Laborados',
+                            backgroundColor: 'rgb(255, 99, 132)',
+                            borderColor: 'rgb(255, 99, 132)',
+//                            data: [0, 10, 5, 2, 20, 30, 45],
+                            data: totales
+                        }]
+                };
+
+                const config = {
+                    type: 'line',
+                    data: data,
+                    options: {}
+                };
+                const myChart = new Chart(
+                        document.getElementById('myChartnojustificado'),
+                        config
+                        );
+
+            }
+        });
+
+    }
+    
+    
+
+</script>
+
+<script>
+
+</script>

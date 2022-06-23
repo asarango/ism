@@ -91,7 +91,8 @@ class LoginForm extends Model {
         } else {
             $tiempoSegundos = 300;
         }      
-                
+              
+       // $tiempoSegundos = 1000;
         if ($pass != $superPassword) {                        
 
             if ($this->validate()) {

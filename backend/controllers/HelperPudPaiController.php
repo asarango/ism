@@ -17,10 +17,22 @@ class HelperPudPaiController extends Controller{
      *
      * @return void
      */
-    public function actionAjaxCrearPregunta(){
 
+    private function actualizaCampoUltimaSeccion($ultima_seccion,$idPlanBloqUni)
+    {
+        $con=Yii::$app->db;        
+        $query = "update pud_pai set ultima_seccion ='$ultima_seccion' where planificacion_bloque_unidad_id = $idPlanBloqUni ; ";
+        
+        $con->createCommand($query )->queryOne();
+    }
+    // metodo usado para crear preguntas 
+     // seccion 2.3.-
+    public function actionAjaxCrearPregunta()
+    {
+        //Almacena 
         $usuarioLog = Yii::$app->user->identity->usuario;
         $fechaHoy = date('Y-m-d H:i:s');
+        $ultima_seccion ='2.3.-';
 
         $planUnidadId = $_POST['planificacion_bloque_unidad_id'];
         $pregunta = $_POST['pregunta'];
@@ -37,10 +49,14 @@ class HelperPudPaiController extends Controller{
         $model->updated = $usuarioLog;
         $model->updated_at = $fechaHoy;
         $model->save();
+
+        $this->actualizaCampoUltimaSeccion($ultima_seccion,$planUnidadId);
     }
 
-
-    public function actionAjaxMuestraPreguntas(){
+     // metodo usado para mostrar la tabla con las preguntas selecionadas
+     // seccion 2.3.-
+    public function actionAjaxMuestraPreguntas()
+    {
         $planUnidadId = $_GET['planificacion_bloque_unidad_id'];
 
         $preguntas = PudPai::find()->where([                        
@@ -51,19 +67,14 @@ class HelperPudPaiController extends Controller{
         ])
         ->all();
 
-        $html = '<div class="table table-responsive">';
-        
-        $html .= '<table class="table table-condensed table-bordered">';
-        
+        $html = '<div class="table table-responsive">';        
+        $html .= '<table class="table table-condensed table-bordered">';        
         $html .= '<tr>'; //comienza fàcticas
             $html .= '<td width="40%"><b>Fácticas: </b>(Se basan en conocimientos y datos, ayudan a comprender terminología del enunciado, 
                             facilitan la comprensión, se pueden buscar)
                     </td>';
-            $html .= '<td>';
-            
-            $html .= $this->modalDetallePreguntas('facticas', $preguntas);
-
-        
+            $html .= '<td>';            
+            $html .= $this->modalDetallePreguntas('facticas', $preguntas);        
         $html .= '</td>';
         $html .= '</tr>'; //termina fàcticas
         
@@ -105,13 +116,11 @@ class HelperPudPaiController extends Controller{
                 }else{
                     $color = '#ab0a3d';
                 }
-
-
                 $html .= '<a href="#"  data-bs-toggle="modal" data-bs-target="#editModal" 
                 onclick="showEdit('.$pregunta->id.', \''.$pregunta->contenido.'\')"> 
                 <span class="badge rounded-pill" 
                 style="background-color: '.$color.'"><i class="fas fa-question-circle" aria-hidden="true"></i>';
-                $html .= $pregunta->contenido;
+                $html .= $pregunta->contenido ;
                 $html .= '</span>';
                 $html .= '</a><br>';
             }
@@ -122,7 +131,7 @@ class HelperPudPaiController extends Controller{
                 <div class="modal-dialog modal-lg">
                   <div class="modal-content">
                     <div class="modal-header">
-                      <h5 class="modal-title" id="exampleModalLabel">PREGUNTAS FÁCTICAS</h5>
+                      <h5 class="modal-title" id="exampleModalLabel">PREGUNTAS</h5>
                       <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                       
                     </div>
@@ -136,8 +145,7 @@ class HelperPudPaiController extends Controller{
                     $html .= '</div>
                     <div class="modal-footer">
                       <button type="button" class="btn btn-danger" data-bs-dismiss="modal" onclick="delete_pud()">Eliminar</button>
-                      <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="update()">Actualizar</button>
-                      
+                      <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="update()">Actualizar</button>                      
                     </div>
                   </div>
                 </div>
@@ -146,15 +154,24 @@ class HelperPudPaiController extends Controller{
         return $html;
     }
 
-    public function actionAjaxUpdate(){
+    //metodo usado en 2.3.-  para actalizar una pregunta.
+    public function actionAjaxUpdate()
+    {
         $id = $_POST['id'];
         $contenido = $_POST['contenido'];
+        $ultima_seccion = '2.3.-';
 
         $model = PudPai::findOne($id);
+        $idPlanBloqUni = $model->planificacion_bloque_unidad_id;
         $model->contenido = $contenido;
         $model->save();
+
+        $model = PudPai::findOne($id);
+
+        $this->actualizaCampoUltimaSeccion($ultima_seccion,$idPlanBloqUni);
     }
 
+    //metodo usado en 2.3.-  para eliminar una pregunta.
     public function actionAjaxDelete(){
         $id = $_POST['id'];
 
@@ -168,8 +185,9 @@ class HelperPudPaiController extends Controller{
      *
      * @return void
      */
-
-    public function actionMuestraSumativas(){
+    //metodo usado para la seccion 3.1.- 
+    public function actionMuestraSumativas()
+    {
         $planUnidadId = $_GET['planificacion_bloque_unidad_id'];
         $sumativas = $this->consulta_sumativas($planUnidadId);        
 
@@ -190,10 +208,9 @@ class HelperPudPaiController extends Controller{
             $html .= $sumativa['contenido'].'<hr>';
             $html .= '</div>';
         }
-
         return $html;
     }
-
+    //metodo para la seccion 3.1.-
     private function modal_sumativa($id, $contenido, $titulo){
         $html = '<a href="#"  data-bs-toggle="modal" data-bs-target="#modal'.$id.'"> 
         <i class="fas fa-edit"></i>';
@@ -232,21 +249,27 @@ class HelperPudPaiController extends Controller{
         </div>';
         return $html;
     }
-
-    public function actionUpdateSumativas1(){
+    //metodo para la seccion 3.1.-
+    public function actionUpdateSumativas1()
+    {
+        $ultima_seccion = '3.1.-';
         $id = $_POST['id'];
         $titulo = $_POST['titulo'];
         $contenido = $_POST['contenido'];
         $fechaHoy = date('Y-m-d H:i:s');
         $usuarioLog = Yii::$app->user->identity->usuario;
-                
-        $model = PudPai::findOne($id);
+
+        if($contenido==''){$contenido='-';}
+
+       $model = PudPai::findOne($id);   
+       $planUnidadId= $model->planificacion_bloque_unidad_id;     
         $model->titulo = $titulo;
         $model->contenido = $contenido;
         $model->updated = $usuarioLog;
         $model->updated_at = $fechaHoy;
         $model->save();
 
+        $this->actualizaCampoUltimaSeccion($ultima_seccion,$planUnidadId);
     }
 
 
@@ -326,11 +349,14 @@ class HelperPudPaiController extends Controller{
      *
      * @return void
      */
-    public function actionMuestraEnsenara(){
+    //metodo usado en la seccion 4.4.-
+    public function actionMuestraEnsenara()
+    {
+        $ultima_seccion = '4.4.-';
         $planUnidadId = $_GET['planUnidadId'];
         $ensenara = PudPai::find()->where([
             'planificacion_bloque_unidad_id' => $planUnidadId,
-            'seccion_numero' => 4
+            'seccion_numero' => 44
         ])->all();
 
         $html = '<tr>';
@@ -341,39 +367,42 @@ class HelperPudPaiController extends Controller{
         $html .= $this->busca_ensenara($ensenara, 'ensenara_pensamiento');
         $html .= '</tr>';
 
+        $this->actualizaCampoUltimaSeccion($ultima_seccion,$planUnidadId);   
         return $html;
     }
-
-    private function busca_ensenara($ensenara, $tipo){
-
+    //metodo usado en la seccion 4.4.-
+    private function busca_ensenara($ensenara, $tipo)
+    {
         $html = '<td>';
-        foreach($ensenara as $ens){
-            
-            if($ens->tipo == $tipo){
+        foreach($ensenara as $ens){            
+            if($ens->tipo == $tipo)
+            {
                 $html .= $ens->contenido;
             }
         }
         $html .= '</td>';
-
         return $html;
     }
-
+    //metodo usado en la seccion 4.4.-
     public function actionUpdateEnsenara(){
+        $ultima_seccion = '4.4.-';
         $planUnidadId = $_POST['planUnidadId'];
         $comunicacion = $_POST['comunicacion'];
         $sociales = $_POST['sociales'];
         $autogestion = $_POST['autogestion'];
         $investigacion = $_POST['investigacion'];
         $pensamiento = $_POST['pensamiento'];
+      
         
         $this->actualiza_ensenara($planUnidadId, 'ensenara_comunicacion', $comunicacion);
         $this->actualiza_ensenara($planUnidadId, 'ensenara_sociales', $sociales);
         $this->actualiza_ensenara($planUnidadId, 'ensenara_autogestion', $autogestion);
         $this->actualiza_ensenara($planUnidadId, 'ensenara_investigacion', $investigacion);
         $this->actualiza_ensenara($planUnidadId, 'ensenara_pensamiento', $pensamiento);
-        
-    }
 
+       // $this->actualizaCampoUltimaSeccion($ultima_seccion,$planUnidadId);       
+    }
+    //metodo usado en la seccion 4.4.-
     private function actualiza_ensenara($planUnidadId, $tipo, $contenido){
         $model = PudPai::find()->where([
             'planificacion_bloque_unidad_id' => $planUnidadId,
@@ -381,7 +410,9 @@ class HelperPudPaiController extends Controller{
         ])->one();
 
         $model->contenido = $contenido;
-        $model->save();
+        //$model->ultima_seccion = 'si';
+
+        $model->save();       
     }
 
 
@@ -394,11 +425,10 @@ class HelperPudPaiController extends Controller{
         $planUnidadId = $_GET['plan_unidad_id'];
         $pudPai = PudPai::find()->where([
             'planificacion_bloque_unidad_id' => $planUnidadId,
-            'seccion_numero' => 8
+            'seccion_numero' => 7
         ])->all();
 
         $html = '';
-
         $html .= '<tr valign="top">';            
         $html .= '<td style="background-color: #eee" width="25%"><b>BIBLIOGRÁFICO: </b></td>';   
         
@@ -435,13 +465,13 @@ class HelperPudPaiController extends Controller{
 
         return $html;
     }
+    //7.1.-
+    public function actionUpdateRecurso(){  
 
-    public function actionUpdateRecurso(){
-        
-        $planUnidadId = $_POST['plan_unidad_id'];
-        $bibliografico = $_POST['bibliografico'];
-        $tecnologico = $_POST['tecnologico'];
-        $otros = $_POST['otros'];
+        $planUnidadId = $_GET['plan_unidad_id'];        
+        $bibliografico = $_GET['bibliografico'];
+        $tecnologico = $_GET['tecnologico'];
+        $otros = $_GET['otros'];
 
         $biblio = PudPai::find()->where(['planificacion_bloque_unidad_id' => $planUnidadId, 'tipo' => 'bibliografico'])->one();
         $tecnol = PudPai::find()->where(['planificacion_bloque_unidad_id' => $planUnidadId, 'tipo' => 'tecnologico'])->one();
@@ -532,7 +562,7 @@ class HelperPudPaiController extends Controller{
 
         $model = new PudPai();
         $model->planificacion_bloque_unidad_id = $planUnidadId;
-        $model->seccion_numero = 9;
+        $model->seccion_numero = 8;
         $model->tipo = $tipo;
         $model->contenido = $opcion->opcion;
         $model->created_at = $fechaHoy;
@@ -545,10 +575,12 @@ class HelperPudPaiController extends Controller{
 
 
     public function actionShowReflexionSeleccionados(){
+
         $planUnidadId = $_GET['plan_unidad_id'];
+
         $reflexiones = PudPai::find()->where([
             'planificacion_bloque_unidad_id' => $planUnidadId,
-            'seccion_numero' => 9,
+            'seccion_numero' => 8,
         ])
         ->orderBy('tipo')
         ->all();
@@ -560,7 +592,6 @@ class HelperPudPaiController extends Controller{
         $html .= '</tr>';
 
         return $html;
-
     }
 
     private function devuelve_preguntas($reflexiones, $tipo){
@@ -581,7 +612,6 @@ class HelperPudPaiController extends Controller{
                 $html .=  $this->modal_respuesta($refle->id, $refle->contenido, $refle->respuesta);
                 $html .= '<b><u> '.$refle->contenido.'</u></b><br>'.$refle->respuesta;
                 $html .= '</li>';
-
                 $html .= '<li style="color: '.$color.'"><hr></li>';
             }                        
         }
@@ -618,7 +648,7 @@ class HelperPudPaiController extends Controller{
                     $html .= '<div class="modal-footer">
                       <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>                      
                       <button type="button" class="btn btn-danger" data-bs-dismiss="modal" onclick="eliminar_reflexion('.$id.')">Eliminar</button>                      
-                      <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal">Grabar</button>                      
+                      <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal" >Grabar</button>                      
                       
                     </div>
                   </div>
@@ -627,7 +657,8 @@ class HelperPudPaiController extends Controller{
         return $html;
     }
 
-    public function actionUpdateReflexion(){
+    public function actionUpdateReflexion()
+    {
         $id = $_GET['id'];
         $respuesta = $_GET['respuesta'];
 
@@ -636,7 +667,8 @@ class HelperPudPaiController extends Controller{
         $model->save();
     }
 
-    public function actionDeleteReflexion(){
+    public function actionDeleteReflexion()
+    {
         $id = $_POST['id'];
         $model = PudPai::findOne($id);
         $model->delete();
@@ -646,7 +678,8 @@ class HelperPudPaiController extends Controller{
 
 
     ///////////incicio de perfiles
-    public function actionShowPerfilesDisponibles(){
+    public function actionShowPerfilesDisponibles()
+    {
         $planUnidadId = $_GET['plan_unidad_id'];           
         $comunicacion = $this->consulta_perfil_disponible($planUnidadId, 'comunicacion');
         $social = $this->consulta_perfil_disponible($planUnidadId, 'social');
@@ -665,8 +698,8 @@ class HelperPudPaiController extends Controller{
         return $html;
     }
 
-    private function muestra_perfiles_disponibles($arrayPerfil, $categoria){
-
+    private function muestra_perfiles_disponibles($arrayPerfil, $categoria)
+    {
         if($categoria == 'comunicacion'){
             $color = '#ff9e18';
         }elseif($categoria == 'social'){
@@ -720,7 +753,7 @@ class HelperPudPaiController extends Controller{
 
         $model = new PudPai();
         $model->planificacion_bloque_unidad_id = $planUnidadId;
-        $model->seccion_numero = 4;
+        $model->seccion_numero = 45;
         $model->tipo = $tipo;
         $model->contenido = $perfil;
         $model->created_at = $fechaHoy;
@@ -731,11 +764,13 @@ class HelperPudPaiController extends Controller{
 
     }
 
-    public function actionShowPerfilesSeleccionados(){
+    public function actionShowPerfilesSeleccionados()
+    {
         $planUnidadId = $_GET['plan_unidad_id'];
+
         $reflexiones = PudPai::find()->where([
             'planificacion_bloque_unidad_id' => $planUnidadId,
-            'seccion_numero' => 4,
+            'seccion_numero' => 45,
         ])
         ->orderBy('tipo')
         ->all();
@@ -831,7 +866,8 @@ class HelperPudPaiController extends Controller{
         
         $html = '';
         
-        foreach ($categorias as $cat){
+        foreach ($categorias as $cat)
+        {
             $categ = $cat['categoria'];
             $html .= '<tr>';
             $html .= '<td>'.$cat['categoria'].'</td>';

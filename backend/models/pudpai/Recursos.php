@@ -22,6 +22,7 @@ class Recursos extends ActiveRecord{
     private $scholarisPeriodoId;
     private $institutoId;
     private $recursos;
+    private $seccion_numero;
     public $html;
 
 
@@ -32,16 +33,26 @@ class Recursos extends ActiveRecord{
         $this->institutoId = Yii::$app->user->identity->instituto_defecto;
 
         $this->html = '';
+        $this->seccion_numero = 7;
+        $this->actualizaCampoUltimaSeccion('7.1.-',$planUnidadId);
 
         $this->ingresa_recursos();
         $this->consulta_recursos();
         $this->get_accion();
     }
+    private function actualizaCampoUltimaSeccion($ultima_seccion,$idPlanBloqUni)
+    {
+        $con=Yii::$app->db;        
+        $query = "update pud_pai set ultima_seccion ='$ultima_seccion' where planificacion_bloque_unidad_id = $idPlanBloqUni ; ";
+        
+        $con->createCommand($query )->queryOne();
+    }
 
-    private function consulta_recursos(){
+    private function consulta_recursos()
+    {
         $this->recursos = PudPai::find()->where([
             'planificacion_bloque_unidad_id' => $this->planUnidadId,
-            'seccion_numero' => 8
+            'seccion_numero' => $this->seccion_numero
         ])->all();
     }
 
@@ -63,7 +74,7 @@ class Recursos extends ActiveRecord{
             $model = new PudPai();
             
             $model->planificacion_bloque_unidad_id = $this->planUnidadId;
-            $model->seccion_numero = 8;
+            $model->seccion_numero =$this->seccion_numero;
             $model->tipo = $tipo;
             $model->contenido = '-';
             $model->created_at = $fechaHoy;
@@ -75,19 +86,19 @@ class Recursos extends ActiveRecord{
     }
 
 
-    private function get_accion(){       
-        
-            $temas = PlanificacionBloquesUnidadSubtitulo::find()->where([
-                'plan_unidad_id' => $this->planUnidadId
-            ])
-            ->orderBy('orden')
-            ->all();
+    private function get_accion()
+    {      
+            // $temas = PlanificacionBloquesUnidadSubtitulo::find()->where([
+            //     'plan_unidad_id' => $this->planUnidadId
+            // ])
+            // ->orderBy('orden')
+            // ->all();
 
             $this->html .= '<div class="" style="align-items: center; display: flex; justify-content: center;">';
                 $this->html .= '<div class="card" style="width: 90%; margin-top:20px">';
                 
                     $this->html .= '<div class="card-header">';                    
-                        $this->html .= '<h5 class=""><b>5.- RECURSOS: </b></h5>';                        
+                        $this->html .= '<h5 class=""><b>7.1.- RECURSOS: </b></h5>';                        
                         $this->html .= '<small style="color: #65b2e8">En esta sección especificar claramente cada recurso que se utilizará. Podría mejorarse incluyendo recursos que pudieran utilizarse para llevar a cabo la diferenciación, así como también agregando, por ejemplo, oradores y entornos que pudieran generar mayor profundidad en el trabajo reflexivo sobre el enunciado de la unidad.</small>';
                     $this->html .= '</div>';
                         
@@ -96,16 +107,14 @@ class Recursos extends ActiveRecord{
                         $this->html .= $this->modal();
                         $this->html .= '<div class="table table-responsive">';     
 
-                        $this->html .= '<table class="table table-hover table-condensed table-bordered" id="table-recursos">';          
-                                               
+                        $this->html .= '<table class="table table-hover table-condensed table-bordered" id="table-recursos">';  
 
                         $this->html .= '</table>';            
                         $this->html .= '</div>';
 
                     $this->html .= '</div>';
                 $this->html .= '</div>';
-            $this->html .= '</div>';                        
-
+            $this->html .= '</div>';
     }
 
     private function modal(){

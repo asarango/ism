@@ -200,15 +200,7 @@ $modelPudBitacora = PudAprobacionBitacora::find()
 <!--<script src="https://code.jquery.com/jquery-2.2.4.js" integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI=" crossorigin="anonymous"></script>-->
 
 <script>
-     // despues del código  
-//    document.body.onload = function() {
-//         ver_detalle( '<?= $opcion?>')
-//         var resp = '<?=$modelPudBitacora->estado_jefe_coordinador ?>';
-//         alert(resp);
-//         if(resp=='APROBADO' || resp=='ENVIADO' ){
-//             $("div *").disable();
-//         }
-//     }
+ 
     function recargar_pagina(){
         location.reload();      
         

@@ -451,10 +451,7 @@ where hor.clase_id in
 
         $resultado = $con->createCommand($query)->queryOne();         
         return $resultado;
-     }      
-
-     }  
-     
+     }
      
      public function firmar_documento($usuario, $fecha){
          

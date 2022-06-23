@@ -5,6 +5,10 @@ $pudPep;-->
 
 use backend\models\PlanificacionDesagregacionCriteriosEvaluacion;
 use backend\controllers\PudPepController;
+use backend\models\PlanificacionBloquesUnidad;
+use backend\models\PlanificacionVerticalDiploma;
+use backend\models\PudAprobacionBitacora;
+use backend\models\PudPai;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use kartik\grid\GridView;
@@ -18,11 +22,42 @@ use yii\helpers\ArrayHelper;
 
 $this->title = 'PUD - ' . $planUnidad->curriculoBloque->last_name . ' - ' . $planUnidad->unit_title;
 $this->params['breadcrumbs'][] = $this->title;
-//    echo '<pre>';
-//    print_r($planUnidad);
-//    print_r($seccion);
-//    die();
+
+$modelPudPai = PudPai::find()
+->where(['planificacion_bloque_unidad_id' => $planUnidad->id])
+->one();
+
+$pud_dip_porc_avance = array( "porcentaje" => 0);
+
+
+if($modelPudPai)
+{
+    $pud_dip_porc_avance = pud_pai_porcentaje_avance( $planUnidad->id);    
+}
+
+//guarda el valor del porcentaje de avance en planificacion bloque unidad
+$modelPlanBloqUni = PlanificacionBloquesUnidad::findOne($planUnidad->id);
+$modelPlanBloqUni->avance_porcentaje = $pud_dip_porc_avance['porcentaje'];
+$modelPlanBloqUni->save();
+
+
+//consulta para extraer el porcentaje de avance del PUD PAI
+function pud_pai_porcentaje_avance( $planBloqueUniId)
+{
+    $pud_dip_porc_avance = 0;
+    //consulta los los tdc que han sido marcados con check, mas los que aun no estan marcados    
+    $obj2 = new backend\models\helpers\Scripts();
+    $pud_dip_porc_avance = $obj2->pud_pai_porcentaje_avance($planBloqueUniId);  
+
+    return $pud_dip_porc_avance;
+}
+//consulta para extraer los mensajes del coordinador cuando se halla enviado el PUD
+$modelPudBitacora = PudAprobacionBitacora::find()
+    ->where(['unidad_id' => $planUnidad->id])
+    ->orderBy(['fecha_notifica' => SORT_DESC])
+    ->one();
 ?>
+
 <!--Scripts para que funcionen AJAX'S-->
 <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>-->
 <script src="https://cdn.ckeditor.com/4.17.1/standard/ckeditor.js"></script>
@@ -33,9 +68,9 @@ $this->params['breadcrumbs'][] = $this->title;
         <div class="card shadow col-lg-12 col-md-12">
             <div class=" row align-items-center p-2">
                 <div class="col-lg-1">
-                    <h4><img src="ISM/main/images/submenu/herramientas-para-reparar.png" width="64px" style="" class="img-thumbnail"></h4>
+                    <h4><img src="ISM/main/images/submenu/herramientas-para-reparar.png" width="64px"  class="img-thumbnail"></h4>
                 </div>
-                <div class="col-lg-11">
+                <div class="col-lg-8">
                     <h4><?= Html::encode($this->title) ?></h4>
                     <small>
                         <h6>
@@ -63,9 +98,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             ['class' => 'link']
                     );
                     ?>
-
                     |
-
                     <?=
                     Html::a(
                             '<span class="badge rounded-pill" style="background-color: #65b2e8"><i class="fa fa-briefcase" aria-hidden="true"></i>Temas</span>',
@@ -73,24 +106,46 @@ $this->params['breadcrumbs'][] = $this->title;
                             ['class' => 'link']
                     );
                     ?>
+                    |                    
+                    <?php
+                    //porcentaje de avance
+                    if ($pud_dip_porc_avance['porcentaje'] == '100') {
+                        if ($modelPudBitacora == false) {
+                            echo Html::a(
+                                '<span class="badge rounded-pill" style="background-color: blue"><i class="fa fa-briefcase" aria-hidden="true"></i>Enviar Aprobación</span>',
+                                ['planificacion-bloques-unidad/envio-aprobacion', 'modelPlanBloqUnidad' => $planUnidad->id],
+                                ['class' => 'link']
+                            );
+                        } elseif ($modelPudBitacora->estado_jefe_coordinador == 'ENVIADO') {
+                            echo '<span class="badge rounded-pill" style="background-color: orange"><i class="fa fa-briefcase" aria-hidden="true"></i>Esperando Respuesta</span>';
+                        } elseif ($modelPudBitacora->estado_jefe_coordinador == 'DEVUELTO') {
 
-                    |
+                            echo Html::a(
+                                '<span class="badge rounded-pill" style="background-color: purple"><i class="fa fa-briefcase" aria-hidden="true"></i>Reenviar</span>',
+                                ['planificacion-bloques-unidad/envio-aprobacion', 'modelPlanBloqUnidad' => $planUnidad->id],
+                                ['class' => 'link']
+                            );
+                        } elseif ($modelPudBitacora->estado_jefe_coordinador == 'APROBADO') {
+                            echo '<span class="badge rounded-pill" style="background-color: green"><i class="fa fa-briefcase" aria-hidden="true"></i>Aprobado</span>';
+                        }
+                        echo '|';
+                    }
+                    ?>
+
+                    <?= " Avance: " . $pud_dip_porc_avance['porcentaje'] . "%" ?>
                 </div> <!-- fin de menu izquierda -->
 
                 <!-- inicio de menu derecha -->
                 <div class="col-lg-6 col-md-6" style="text-align: right;">
                 |
-
-                    <?=
+                <?=
                     Html::a(
                             '<span class="badge rounded-pill" style="background-color: #ab0a3d"> Generar Reporte PDF <i class="fas fa-file-pdf"></i></span>',
                             ['genera-pdf', 'planificacion_unidad_bloque_id' => $planUnidad->id],
                             ['class' => 'link', 'target' => '_blank']
                     );
                     ?>
-
-                    |                
-
+                    |  
                 </div>
                 <!-- fin de menu derecha -->
             </div>
@@ -100,22 +155,41 @@ $this->params['breadcrumbs'][] = $this->title;
             <div class="row my-text-medium" style="margin-top: 25px; margin-bottom: 5px;">
 
                 <!-- comienza menu de pud-->
-                <div class="col-lg-2 col-md-2" style="overflow-y: scroll; height: 500px; border-top: solid 1px #ccc;">
+                <div class="col-lg-2 col-md-2" style="overflow-y: scroll; height: 650px; width: 300px; border-top: solid 1px #ccc;">
                     <?= $this->render('menu', [
                         'planUnidad' => $planUnidad
                     ]); ?>
-                                        
-
-
                 </div>
                 <!-- termina menu de pud -->
 
                 <!-- comienza detalle -->
-                <div class="col-lg-10 col-md-10" id="div-detalle" style="border-top: solid 1px #ccc;">
-                   
+                <?php
+                if ($modelPudBitacora == false || $modelPudBitacora->estado_jefe_coordinador == 'APROBADO') { ?>                    
+                    <div id="div-detalle" class="col-lg-9 col-md-9" style="border-top: solid 1px #ccc;" >
 
-                    
-                </div>
+                    </div>
+                <?php } elseif ($modelPudBitacora->estado_jefe_coordinador == 'ENVIADO' || $modelPudBitacora->estado_jefe_coordinador == 'DEVUELTO') { ?>                    
+                    <div id="div-detalle"  class="col-lg-5 col-md-5" style="border-top: solid 1px #ccc; " >
+
+                    </div>
+                    <div id="div-novedades" class="col-lg-4 col-md-4 " style="border-top: solid 1px #ccc; ">
+                        <div class="" style="align-items: center; display: flex; justify-content: center;">
+                            <div class="card" style="width: 100%; margin-top:20px">
+                                <div class="card-header">
+                                    <div class="row">
+                                        <P style="color:red">AQUI PODRA VISUALIZAR LAS NOVEDADES ENVIADAS POR EL COORDINADOR </p>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row" style="overflow-y: scroll; overflow-x: scroll;">
+                                        <?=$modelPudBitacora->respuesta ?>                                       
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>                            
+                    </div>
+                <?php } ?>
                 <!-- termina detalle -->
 
             </div>
@@ -126,6 +200,20 @@ $this->params['breadcrumbs'][] = $this->title;
 <!--<script src="https://code.jquery.com/jquery-2.2.4.js" integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI=" crossorigin="anonymous"></script>-->
 
 <script>
+     // despues del código  
+//    document.body.onload = function() {
+//         ver_detalle( '<?= $opcion?>')
+//         var resp = '<?=$modelPudBitacora->estado_jefe_coordinador ?>';
+//         alert(resp);
+//         if(resp=='APROBADO' || resp=='ENVIADO' ){
+//             $("div *").disable();
+//         }
+//     }
+    function recargar_pagina(){
+        location.reload();      
+        
+    }
+    //Metodo para la seccion 2.3.-
     function ingresar_pregunta(obj, tipo, seccion){
         var pregunta = obj.value;        
         var planUnidadId = '<?= $planUnidad->id ?>';
@@ -145,18 +233,19 @@ $this->params['breadcrumbs'][] = $this->title;
             beforeSend: function(){},
             success: function(){
                 muestra_preguntas();
+                //location.reload();
             }
         });
 
     }
-
+    //Metodo para la seccion 2.3.-
     function muestra_preguntas(){
         var planUnidadId = '<?= $planUnidad->id ?>';
-        var url = '<?= Url::to(['helper-pud-pai/ajax-muestra-preguntas']) ?>';
+        var url = '<?= Url::to(['helper-pud-pai/ajax-muestra-preguntas']) ?>';      
 
         params = {
             planificacion_bloque_unidad_id: planUnidadId
-        };
+        };        
 
         $.ajax({
             data: params,
@@ -168,16 +257,14 @@ $this->params['breadcrumbs'][] = $this->title;
             }
         });
     }
-
-
+    //Metodo para la seccion 2.3.-
     function showEdit(id, contenido){        
         $("#input-edit").val(contenido);
         $("#input-edit-id").val(id);        
     }
-
-
-    function update(){
-        //var contenido = obj.value;
+    //Metodo para la seccion 2.3.- /  para actualizar cualquier pregunta factica
+    function update()
+    {        
         var id = $("#input-edit-id").val();
         var contenido = $("#input-edit").val();
 
@@ -199,7 +286,7 @@ $this->params['breadcrumbs'][] = $this->title;
         });
 
     }
-
+    //Metodo para la seccion 2.3.- / para eliminar una pregunta
     function delete_pud(){
         var id = $("#input-edit-id").val();
         var url = '<?= Url::to(['helper-pud-pai/ajax-delete']) ?>';
@@ -214,11 +301,12 @@ $this->params['breadcrumbs'][] = $this->title;
             beforeSend: function(){},
             success: function(response){
                muestra_preguntas();
+               recargar_pagina();
             }
         });
     }
 
-
+    //3.1.-
     function show_sumativas_evaluaciones(){
         var planUnidadId = '<?= $planUnidad->id ?>';
         var url = '<?= Url::to(['helper-pud-pai/muestra-sumativas']) ?>';
@@ -237,7 +325,7 @@ $this->params['breadcrumbs'][] = $this->title;
             }
         });
     }
-
+    //3.1.-
     function show_sumativas_evaluaciones2(){
         var planUnidadId = '<?= $planUnidad->id ?>';
         var url = '<?= Url::to(['helper-pud-pai/muestra-sumativas2']) ?>';
@@ -256,7 +344,7 @@ $this->params['breadcrumbs'][] = $this->title;
             }
         });
     }
-
+    //metodo para seccion 3.1.-, para mostrar la actializacion 
     function update_sumativa1(id){
         var titulo      = $("#input-titulo-sumativa"+id).val();
         var contenido   = CKEDITOR.instances['editor-sumativa'+id].getData();
@@ -273,7 +361,9 @@ $this->params['breadcrumbs'][] = $this->title;
             type: 'POST',
             beforeSend: function(){},
             success: function(response){
-               show_sumativas_evaluaciones();
+               //show_sumativas_evaluaciones();
+               alert('esto es un aler');
+               location.reload();
             }
         });
 
@@ -295,13 +385,14 @@ $this->params['breadcrumbs'][] = $this->title;
             type: 'POST',
             beforeSend: function(){},
             success: function(response){
-               show_sumativas_evaluaciones();
-               show_sumativas_evaluaciones2();
+               //show_sumativas_evaluaciones();
+               //show_sumativas_evaluaciones2();
+               location.reload();
             }
         });
 
     }
-
+    //metodo para la seccion 4.4.-
     function show_ensenara(){
         var planUnidadId = '<?= $planUnidad->id ?>';
         var url = '<?= Url::to(['helper-pud-pai/muestra-ensenara']) ?>';
@@ -320,7 +411,7 @@ $this->params['breadcrumbs'][] = $this->title;
         });
     }
 
-
+    //metodo para la seccion 4.4.-
     function update_ensenara(){
         var planUnidadId = '<?= $planUnidad->id ?>';
         var url = '<?= Url::to(['helper-pud-pai/update-ensenara']) ?>';
@@ -329,6 +420,12 @@ $this->params['breadcrumbs'][] = $this->title;
         var autogestion = CKEDITOR.instances['editor-autogestion'].getData();
         var investigacion = CKEDITOR.instances['editor-investigacion'].getData();
         var pensamiento = CKEDITOR.instances['editor-pensamiento'].getData();
+
+        if(comunicacion==''){comunicacion='-';}
+        if(sociales==''){sociales='-';}
+        if(autogestion==''){autogestion='-';}
+        if(investigacion==''){investigacion='-';}
+        if(pensamiento==''){pensamiento='-';}
 
         var params = {
             comunicacion    :   comunicacion,
@@ -345,12 +442,13 @@ $this->params['breadcrumbs'][] = $this->title;
             type: 'POST',
             beforeSend: function(){},
             success: function(){
-                show_ensenara();
+                //show_ensenara();
+                recargar_pagina();
             }
         });
 
     }
-
+    ///7.1.-
     function show_recursos(){
         var planUnidadId = '<?= $planUnidad->id ?>';
         var url = '<?= Url::to(['helper-pud-pai/muestra-recursos']) ?>';
@@ -370,11 +468,16 @@ $this->params['breadcrumbs'][] = $this->title;
     }
 
     function update_recurso(){
+
         var planUnidadId = '<?= $planUnidad->id ?>';
         var url = '<?= Url::to(['helper-pud-pai/update-recurso']) ?>';
         var bibliografico = CKEDITOR.instances['editor-bibliografico'].getData();
         var tecnologico = CKEDITOR.instances['editor-tecnologico'].getData();
-        var otros = CKEDITOR.instances['editor-otros'].getData();
+        var otros = CKEDITOR.instances['editor-otros'].getData();      
+
+        if(bibliografico==''){bibliografico = '-';}
+        if(tecnologico==''){tecnologico = '-';}
+        if(otros==''){otros = '-';}
 
         var params = {
             plan_unidad_id: planUnidadId,
@@ -386,16 +489,17 @@ $this->params['breadcrumbs'][] = $this->title;
         $.ajax({
             data: params,
             url: url,
-            type: 'POST',
+            type: 'GET',
             beforeSend: function(){},
             success: function(response){
-                show_recursos();
+                //show_recursos();
+                recargar_pagina();
             }
         });
     }
 
 
-    ////para reflexion
+    ////para reflexion: 8.1.-
     function show_reflexion_seleccionados(){
         var planUnidadId = '<?= $planUnidad->id ?>';
         var url = '<?= Url::to(['helper-pud-pai/show-reflexion-seleccionados']) ?>';
@@ -415,7 +519,7 @@ $this->params['breadcrumbs'][] = $this->title;
         });
     }
 
-
+    //para reflexion: 8.1.-
     function show_reflexion_disponibles(){
         var planUnidadId = '<?= $planUnidad->id ?>';
         var url = '<?= Url::to(['helper-pud-pai/show-reflexion-disponibles']) ?>';
@@ -435,7 +539,7 @@ $this->params['breadcrumbs'][] = $this->title;
         });
     }
 
-
+    ////para reflexion: 8.1.-
     function inster_reflexion(id, categoria){
         var planUnidadId = '<?= $planUnidad->id ?>';
         var url = '<?= Url::to(['helper-pud-pai/insert-reflexion']) ?>';
@@ -458,7 +562,7 @@ $this->params['breadcrumbs'][] = $this->title;
             }
         });
     }
-
+     ////para reflexion: 8.1.-
     function update_reflexion(id){
         var respuesta = $('#textarea-respuesta-'+id).val();
         var url = '<?= Url::to(['helper-pud-pai/update-reflexion']) ?>';
@@ -479,7 +583,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
         });
     }
-
+    ////para reflexion: 8.1.-
     function eliminar_reflexion(id){
         var url = '<?= Url::to(['helper-pud-pai/delete-reflexion']) ?>';
         params = {
@@ -492,7 +596,8 @@ $this->params['breadcrumbs'][] = $this->title;
             type: 'POST',
             beforeSend: function(){},
             success: function(response){
-                show_reflexion_seleccionados();
+                //show_reflexion_seleccionados();
+                recargar_pagina();
             }
         });
     }
@@ -576,12 +681,14 @@ $this->params['breadcrumbs'][] = $this->title;
             beforeSend: function(){},
             success: function(response){
                 show_perfiles_seleccionados();
+                recargar_pagina();
             }
         });
     }
     //// FIN PARA PERFILES BI
 
     ////INICIO PARA SERVICIOS DE ACCION
+    //6.1.-
     function show_servicios_accion_seleccionadas(){
         var planUnidadId = '<?= $planUnidad->id ?>';
             var url = '<?= Url::to(['helper-pud-pai/show-servicio-accion-seleccionadas']) ?>';
@@ -600,7 +707,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 }
             });
     }
-    
+    //6.1.-
     function show_servicios_accion_disponibles(){
             var planUnidadId = '<?= $planUnidad->id ?>';
             var url = '<?= Url::to(['helper-pud-pai/show-servicio-accion-disponibles']) ?>';
@@ -640,7 +747,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     }
         });
     }
-    
+    //6.1.-
     function inserta_situacion(planUnidadId, categoria, opcion){
         var url = '<?= Url::to(['helper-pud-pai/inserta-situacion']) ?>';
         
@@ -657,10 +764,11 @@ $this->params['breadcrumbs'][] = $this->title;
             beforeSend: function () {},
             success: function () {
                         show_servicios_accion_seleccionadas();
+                        recargar_pagina();
                     }
         });
     }
-    
+    //6.1.-
     function elimina_situacion(id){
         var url = '<?= Url::to(['helper-pud-pai/elimina-situacion']) ?>';
         
@@ -675,6 +783,7 @@ $this->params['breadcrumbs'][] = $this->title;
             beforeSend: function () {},
             success: function () {
                 show_servicios_accion_seleccionadas();
+                recargar_pagina();
             }
         });
     }

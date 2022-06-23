@@ -56,7 +56,6 @@ class PudPaiController extends Controller{
         if (!parent::beforeAction($action)) {
             return false;
         }
-
         if (Yii::$app->user->identity) {
 
             //OBTENGO LA OPERACION ACTUAL
@@ -91,52 +90,49 @@ class PudPaiController extends Controller{
         $planUnidadId   = $_GET['plan_unidad_id'];
         $pestana        = $_GET['pestana'];
         
-        if($pestana == 'datos'){
+        if($pestana == '1.1.-'){
             $datos = new Datos($planUnidadId);
             return $datos->html;
-        }elseif($pestana == 'conceptos'){
+        }elseif($pestana == '2.1.-'){
             $indagacion = new Indagacion($planUnidadId);
             return $indagacion->html;
-        }elseif($pestana == 'preguntas'){
+        }elseif($pestana == '2.3.-'){
             $preguntas = new Preguntas($planUnidadId);
             return $preguntas->html;
-        }elseif($pestana == 'evaluacion'){
+        }elseif($pestana == '3.1.-'){
             $evaluacion = new Evaluacion($planUnidadId);
             $this->ingresa_eval_sumativa($planUnidadId);
             $this->ingresa_sumativa2($planUnidadId);
             return $evaluacion->html;
-        }elseif($pestana == 'grupo_habilidades'){
+        }elseif($pestana == '4.1.-'){
             $grupos = new GrupoHabilidades($planUnidadId);
             return $grupos->html;
-        }elseif($pestana == 'aspecto_objetivo'){
+        }elseif($pestana == '4.2.-'){
             $aspectos = new Aspecto($planUnidadId);
             return $aspectos->html;
-        }elseif($pestana == 'inidicador_habilidad'){
+        }elseif($pestana == '4.3.-'){
             $indicadores = new Indicadores($planUnidadId);
             return $indicadores->html;
-        }elseif($pestana == 'como_se_ensenara'){
+        }elseif($pestana == '4.4.-'){
             $ensenara = new Ensenara($planUnidadId);
             return $ensenara->html;
-        }elseif($pestana == 'perfil_bi'){
+        }elseif($pestana == '4.5.-'){
             $perfiles = new PerfilesBi($planUnidadId);
             return $perfiles->html;
-        }elseif($pestana == 'accion'){
+        }elseif($pestana == '5.1.-'){
             $accion = new Accion($planUnidadId);
             return $accion->html; 
-        }elseif($pestana == 'servicio_accion'){
+        }elseif($pestana == '6.1.-'){
             $servicio = new ServicioAccion($planUnidadId);
             return $servicio->html; 
-        }elseif($pestana == 'recursos'){
+        }elseif($pestana == '7.1.-'){
             $recursos = new Recursos($planUnidadId);
             return $recursos->html; 
-        }elseif($pestana == 'reflexion'){
+        }elseif($pestana == '8.1.-'){
             $reflexion = new Reflexion($planUnidadId);
             return $reflexion->html;
         }
     }
-
-
-
     private function ingresa_eval_sumativa($planUnidadId){
         $usuarioLog = Yii::$app->user->identity->usuario;
         $fechaHoy   = date('Y-m-d H:i:s');

@@ -101,7 +101,7 @@ $this->title = 'Menu Kids';
                                                     '<span class="badge" style="background-color:#ff9e18">
                                                     <i class="fas fa-list" title="Plan Semanal" style="color:white"> 2.PLAN SEMANAL</i>
                                                  </span>',
-                                                    ['kids-pca/index1',
+                                                    ['kids-plan-semanal/index',
                                                         'pca_id' => $plan['id']
                                                     ]
                                             );

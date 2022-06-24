@@ -171,7 +171,7 @@ order by s.last_name, s.first_name, s.middle_name ;";
         $odooService = new WebServicesUrls('odoo');
         $dataJson = $odooService->consumir_servicio($odooService->url.'/nee/'.$model->student_id);
         $student = json_decode($dataJson);
-				
+        				
         //fin obtenida desde el web service
 
         //Obteniendo las edades

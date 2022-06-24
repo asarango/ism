@@ -51,9 +51,13 @@ class KidsPlanSemanalController extends Controller
         ]);
     }
 
-    public function actionAjaxSemanas(){
-        $experienciaId  = $_POST['experiencia_id'];        
-        $opCourseId     = $_POST['op_course_id'];        
+    /**
+     * Muestra las semanas con las experiencia elejidas
+     */
+    public function actionAjaxSemanas(){ 
+
+        $experienciaId  = $_GET['experiencia_id'];        
+        $opCourseId     = $_GET['op_course_id'];        
 
         $planSemanal = $this->get_plan_semanal_cab($opCourseId);
 
@@ -82,5 +86,29 @@ class KidsPlanSemanalController extends Controller
                     order by s.semana_numero;";
         $res = $con->createCommand($query)->queryAll();
         return $res;
+    }
+
+
+
+    public function actionAjaxInsertExperiencia(){
+        
+        $kidsUnidadMicroId = $_POST['experiencia_id'];
+        $semanaId = $_POST['semana_id'];
+        $today = date('Y-m-d H:i:s');
+        $userLog = Yii::$app->user->identity->usuario;
+
+        $model = new KidsPlanSemanal();
+        $model->kids_unidad_micro_id = $kidsUnidadMicroId;
+        $model->semana_id = $semanaId;
+        $model->created_at = $today;
+        $model->created = $userLog;
+        $model->estado = 'INICIANDO';
+
+        if($model->save()){
+            return true;
+        }else{
+            return false;
+        }
+
     }
 }

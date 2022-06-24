@@ -74,16 +74,16 @@ $this->title = 'Plan Semanal';
                   </div>
                 </div>
 
-                <div class="row" style="margin-top:10px;background-color: #ccc; display:none" id="div-exp">
+                <div class="row" style="margin-top:10px;background-color: #ccc;" id="div-exp">
                     <div class="col-md-12 col-sm-12">
                         <div class="" style="padding:10px" >
-                            <h4 class="text-primero" id="title-exp"></h4> <!-- Muestra texto del select -->
+                            <h4 class="text-primero" id="title-exp">Seleccione una experiencia</h4> <!-- Muestra texto del select -->
                         </div>
                     </div>
                 </div>
 
                 <!-- Muestra contenido que viene del _ajax-semanas.php -->
-                <div id="resp-ajax1" ></div>
+                <div id="resp-ajax1"></div>
 
 
 
@@ -97,14 +97,22 @@ $this->title = 'Plan Semanal';
     </div>
 </div>
 
+
+<script src="https://code.jquery.com/jquery-2.2.4.js" integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI=" crossorigin="anonymous"></script>
 <script>
+$(function(){
+    semanas(0);
+    // $("#table-exp").dataTable();
+});
+
+
 //on change del select para mostrar texto en div
 function cambia_select(){
     var text = $('select[id="select-exp"] option:selected').text();
     var idExp = $('select[id="select-exp"] option:selected').val();
     // alert(idExp);
     $("#title-exp").html('Estás trabajando con : "'+text+'"');
-    $("#div-exp").show();
+    // $("#div-exp").show();
     semanas(idExp);
 };
 
@@ -113,14 +121,14 @@ function semanas(idExp){
     // alert(cursoId);
     var url = "<?=Url::to(['ajax-semanas']) ?>";
     var params = {
-        experiencia_id : idExp,
-        op_course_id : cursoId
+        op_course_id : cursoId,
+        experiencia_id: idExp
     }
 
     $.ajax({
         url:url,
         data:params,
-        type: 'POST',
+        type: 'GET',
         success: function(resp){
             $("#resp-ajax1").html(resp);
         }

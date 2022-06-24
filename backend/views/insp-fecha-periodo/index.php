@@ -78,6 +78,10 @@ $this->title = 'Fechas del año lectivo';
                         
                         <div class="row card">
                             <canvas id="myChartnojustificado"></canvas>
+                            <?=
+                              Html::a('<i class="fas fa-user-secret"> Ver alumnos injustificados</i>',
+                                      ['scholaris-asistencia-alumnos-novedades/index']);
+                            ?>
                         </div>
                         
                     </div>
@@ -198,7 +202,7 @@ crossorigin="anonymous"></script>
     }
     
     function no_justificado() {
-        var url = "<?= yii\helpers\Url::to(['ajax-laborados']) ?>";
+        var url = "<?= yii\helpers\Url::to(['ajax-no-justificado']) ?>";
 
         $.ajax({
             url: url,
@@ -208,16 +212,17 @@ crossorigin="anonymous"></script>
             success: function (resp) {
                 var respuesta = JSON.parse(resp);
                 console.log(respuesta);
-                var meses = respuesta.meses;
+                var cursos = respuesta.cursos;
                 var totales = respuesta.totales;
 
-                const labels = meses;
+                const labels = cursos;
 
                 const data = {
                     labels: labels,
                     datasets: [{
-                            label: 'Días Laborados',
-                            backgroundColor: 'rgb(255, 99, 132)',
+                            label: 'Total Alumnos Injustificados',
+//                            backgroundColor: 'rgb(255, 99, 132)',
+                            backgroundColor: 'rgb(178, 213, 249)',
                             borderColor: 'rgb(255, 99, 132)',
 //                            data: [0, 10, 5, 2, 20, 30, 45],
                             data: totales
@@ -225,7 +230,7 @@ crossorigin="anonymous"></script>
                 };
 
                 const config = {
-                    type: 'line',
+                    type: 'bar',
                     data: data,
                     options: {}
                 };

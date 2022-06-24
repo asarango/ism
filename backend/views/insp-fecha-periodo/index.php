@@ -80,7 +80,7 @@ $this->title = 'Fechas del año lectivo';
                             <canvas id="myChartnojustificado"></canvas>
                             <?=
                               Html::a('<i class="fas fa-user-secret"> Ver alumnos injustificados</i>',
-                                      ['scholaris-asistencia-alumnos-novedades/index']);
+                                      ['scholaris-asistencia-alumnos-novedades/index1']);
                             ?>
                         </div>
                         

@@ -111,10 +111,22 @@ class InspFechaPeriodoController extends Controller
     
     public function actionAjaxNoJustificado(){
         $periodoId = Yii::$app->user->identity->periodo_id;
-        $institutoId = Yii::$app->user->identity->instituto_defecto;
-        
+        $institutoId = Yii::$app->user->identity->instituto_defecto;        
         $comportamiento = $this->get_comportamiento_injustificado($periodoId, $institutoId);
+        $arrayCursos = array();
+        $arrayTotales = array();
         
+        foreach ($comportamiento as $com){
+            array_push($arrayCursos, $com['name']);
+            array_push($arrayTotales, $com['total']);
+        }
+        
+        $response = array(
+            'cursos' => $arrayCursos,
+            'totales' => $arrayTotales
+        );
+        
+        return json_encode($response);
     }
     
     
@@ -136,8 +148,8 @@ class InspFechaPeriodoController extends Controller
     
     private function get_comportamiento_injustificado($periodoId, $institutoId){
         $con = Yii::$app->db;
-        $query = "select 	count(n.id)
-                                    ,cur.name
+        $query = "select 	count(n.id) as total
+                                    ,substring(cur.name from 1 for 4) as name
                     from 	scholaris_asistencia_alumnos_novedades n
                                     inner join scholaris_asistencia_profesor a on a.id = n.asistencia_profesor_id
                                     inner join scholaris_clase c on c.id = a.clase_id 
@@ -149,7 +161,7 @@ class InspFechaPeriodoController extends Controller
                     where 	sop.scholaris_id = $periodoId
                                     and op.institute = $institutoId
                                     and n.es_justificado = false
-                    group by cur.name;";
+                    group by cur.name order by cur.name;";
         $res = $con->createCommand($query)->queryAll();
         return $res;
     }

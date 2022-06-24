@@ -35,6 +35,7 @@ if($modelPudPai)
     $pud_dip_porc_avance = pud_pai_porcentaje_avance( $planUnidad->id);    
 }
 
+
 //guarda el valor del porcentaje de avance en planificacion bloque unidad
 $modelPlanBloqUni = PlanificacionBloquesUnidad::findOne($planUnidad->id);
 $modelPlanBloqUni->avance_porcentaje = $pud_dip_porc_avance['porcentaje'];
@@ -56,13 +57,25 @@ $modelPudBitacora = PudAprobacionBitacora::find()
     ->where(['unidad_id' => $planUnidad->id])
     ->orderBy(['fecha_notifica' => SORT_DESC])
     ->one();
+$estadoAprobacion = 'SIN ESTADO';
+if($modelPudBitacora){$estadoAprobacion = $modelPudBitacora->estado_jefe_coordinador;}
+
 ?>
 
 <!--Scripts para que funcionen AJAX'S-->
 <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>-->
 <script src="https://cdn.ckeditor.com/4.17.1/standard/ckeditor.js"></script>
 
-
+<?php if($estadoAprobacion=="ENVIADO" || $estadoAprobacion=="APROBADO"){?>
+<style>
+    .ocultar a {
+        pointer-events: none;
+        cursor:default;
+        color:red;
+    }
+    
+</style>
+<?php } ?>
 <div class="pud-pep-index">
     <div class="m-0 vh-50 row justify-content-center align-items-center">
         <div class="card shadow col-lg-12 col-md-12">
@@ -80,12 +93,10 @@ $modelPudBitacora = PudAprobacionBitacora::find()
                             )
                         </h6>
                     </small>
-
-
                 </div>
             </div><!-- FIN DE CABECERA -->
 
-
+           
             <!-- inicia menu  -->
             <div class="row">
                 <div class="col-lg-6 col-md-6">
@@ -191,7 +202,6 @@ $modelPudBitacora = PudAprobacionBitacora::find()
                     </div>
                 <?php } ?>
                 <!-- termina detalle -->
-
             </div>
             <!-- fin cuerpo de card -->
     </div>
@@ -200,7 +210,21 @@ $modelPudBitacora = PudAprobacionBitacora::find()
 <!--<script src="https://code.jquery.com/jquery-2.2.4.js" integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI=" crossorigin="anonymous"></script>-->
 
 <script>
- 
+    //metodos que se utiliza para  bloquear la edision de botones
+    // document.body.onload = function() {        
+        
+    // }
+    
+    function bloquear_div()
+    {        
+        var resp = ('<?= $estadoAprobacion ?>'); 
+        if(resp=='ENVIADO' || resp=='APROBADO')
+        {    
+            $('.ocultar').hide();
+        }        
+    }
+    // fin metodo bloqueo de div
+
     function recargar_pagina(){
         location.reload();      
         
@@ -634,12 +658,13 @@ $modelPudBitacora = PudAprobacionBitacora::find()
                 success: function(response){
                     show_perfiles_disponibles();
                     show_perfiles_seleccionados();
+                    
                 }
             });
 
 
         }
-
+        // metodo 4.5.-
         function show_perfiles_seleccionados(){
             var planUnidadId = '<?= $planUnidad->id ?>';
             var url = '<?= Url::to(['helper-pud-pai/show-perfiles-seleccionados']) ?>';

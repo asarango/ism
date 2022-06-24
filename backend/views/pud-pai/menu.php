@@ -30,7 +30,7 @@ $colorNotOk = 'red';
 
 ?>
 <ul>
-    <li>
+    <li>      
         <b>1.- DATOS INFORMATIVOS</b>
         <ul>
             <li class="zoom"><a href="#" onclick="ver_detalle('1.1.-');">1.1.- Ver datos
@@ -178,8 +178,8 @@ $colorNotOk = 'red';
 <script>
      // despues del código  
    document.body.onload = function() {
-        ver_detalle( '<?= $opcion?>')
-    }
+        ver_detalle( '<?= $opcion?>')      
+    } 
 
     function ver_detalle( pestana ){
         var planUnidadId = '<?= $planUnidad->id ?>';        
@@ -203,6 +203,7 @@ $colorNotOk = 'red';
                 }else if(pestana == '3.1.-'){
                     show_sumativas_evaluaciones();
                     show_sumativas_evaluaciones2();
+                    bloquear_div();
                 }else if(pestana == '4.4.-'){
                     show_ensenara();
                 }else if(pestana == '4.5.-'){
@@ -214,7 +215,9 @@ $colorNotOk = 'red';
                 }else if(pestana=='6.1.-'){
                     show_servicios_accion_disponibles();
                     show_servicios_accion_seleccionadas();
+                  
                 }
+                bloquear_div();
             }
         });
         

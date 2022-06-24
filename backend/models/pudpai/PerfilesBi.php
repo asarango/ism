@@ -137,7 +137,7 @@ class PerfilesBi extends ActiveRecord{
 
     private function modal(){
         $html = '<a href="#"  data-bs-toggle="modal" data-bs-target="#PerfilBiModal" onclick="show_perfiles_disponibles()"> 
-                              <span class="badge rounded-pill" 
+                              <span class="ocultar badge rounded-pill " 
                               style="background-color: #ab0a3d"><i class="fa fa-briefcase" aria-hidden="true"></i> 
                               Seleccionar Perfil Bi
                               </span>';

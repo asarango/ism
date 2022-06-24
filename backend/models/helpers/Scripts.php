@@ -546,7 +546,7 @@ where hor.clase_id in
          return $mes;
      }
      
-     public function get_cursos_x_periodo(){
+     public function get_cursos_x_periodo($periodoId){
          
      }
 

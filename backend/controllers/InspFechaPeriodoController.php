@@ -111,8 +111,9 @@ class InspFechaPeriodoController extends Controller
     
     public function actionAjaxNoJustificado(){
         $periodoId = Yii::$app->user->identity->periodo_id;
+        $institutoId = Yii::$app->user->identity->instituto_defecto;
         
-        
+        $comportamiento = $this->get_comportamiento_injustificado($periodoId, $institutoId);
         
     }
     
@@ -129,6 +130,26 @@ class InspFechaPeriodoController extends Controller
                                     and periodo_id = $periodoId
                     group by EXTRACT(MONTH FROM fecha), EXTRACT(YEAR FROM fecha)
                     order by EXTRACT(YEAR FROM fecha), EXTRACT(MONTH FROM fecha);";
+        $res = $con->createCommand($query)->queryAll();
+        return $res;
+    }
+    
+    private function get_comportamiento_injustificado($periodoId, $institutoId){
+        $con = Yii::$app->db;
+        $query = "select 	count(n.id)
+                                    ,cur.name
+                    from 	scholaris_asistencia_alumnos_novedades n
+                                    inner join scholaris_asistencia_profesor a on a.id = n.asistencia_profesor_id
+                                    inner join scholaris_clase c on c.id = a.clase_id 
+                                    inner join op_course_paralelo par on par.id = c.paralelo_id 
+                                    inner join op_course cur on cur.id = par.course_id 
+                                    inner join op_section s on s.id = cur.section
+                                    inner join op_period op on op.id  = s.period_id 
+                                    inner join scholaris_op_period_periodo_scholaris sop on sop.op_id = op.id 		
+                    where 	sop.scholaris_id = $periodoId
+                                    and op.institute = $institutoId
+                                    and n.es_justificado = false
+                    group by cur.name;";
         $res = $con->createCommand($query)->queryAll();
         return $res;
     }

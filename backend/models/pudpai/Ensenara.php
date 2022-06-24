@@ -23,6 +23,7 @@ class Ensenara extends ActiveRecord{
     private $scholarisPeriodoId;
     private $institutoId;
     private $enfoques;
+    private $seccion_numero;
     public $html;
 
 
@@ -32,18 +33,26 @@ class Ensenara extends ActiveRecord{
 
         $this->scholarisPeriodoId = Yii::$app->user->identity->periodo_id;
         $this->institutoId = Yii::$app->user->identity->instituto_defecto;
+        $this->seccion_numero='44';
 
         $this->html = '';
         $this->ingresa_ensenara();
 
         $this->enfoques = PudPai::find()->where([
-          'seccion_numero' => 4,
+          'seccion_numero' =>  $this->seccion_numero,
           'planificacion_bloque_unidad_id' => $planUnidadId
         ])->all();
+        $this->actualizaCampoUltimaSeccion('4.4.-',$planUnidadId);
 
         $this->get_grupo();
     }
-
+    private function actualizaCampoUltimaSeccion($ultima_seccion,$idPlanBloqUni)
+    {
+        $con=Yii::$app->db;        
+        $query = "update pud_pai set ultima_seccion ='$ultima_seccion' where planificacion_bloque_unidad_id = $idPlanBloqUni ; ";
+        
+        $con->createCommand($query )->queryOne();
+    }
     private function ingresa_ensenara(){
 
       $this->validate_ensenara('ensenara_comunicacion');
@@ -66,7 +75,7 @@ class Ensenara extends ActiveRecord{
         if(!$pudPai){
           $model = new PudPai();
           $model->planificacion_bloque_unidad_id = $this->planUnidadId;
-          $model->seccion_numero = 4;
+          $model->seccion_numero =  $this->seccion_numero;
           $model->tipo = $tipo;
           $model->contenido = 'sin contenido';
           $model->created = $usuarioLog;
@@ -80,7 +89,8 @@ class Ensenara extends ActiveRecord{
 
 
 
-    private function get_grupo(){        
+    private function get_grupo()
+    {        
 
       $this->html .= '<h5 class=""><b>4.- ENFOQUES DE APRENDIZAJE </b></h5>';                
 

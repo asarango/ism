@@ -27,8 +27,8 @@ $this->title = 'Novedades de comportamiento ';
                     <b><?= ' (' . $modelGrupo->alumno->last_name . ' ' . $modelGrupo->alumno->first_name . ')'; ?></b>
                     <p>
                         <?=
-                        $modelAsistencia->clase->materia->name . ' / ' .
-                            $modelAsistencia->clase->course->name . ' "' .
+                        $modelAsistencia->clase->ismAreaMateria->materia->nombre . ' / ' .
+                            $modelAsistencia->clase->paralelo->course->name . ' "' .
                             $modelAsistencia->clase->paralelo->name . '" / ' .
                             $modelAsistencia->clase->profesor->last_name . " " . $modelAsistencia->clase->profesor->x_first_name . ' / ' .
                             $modelAsistencia->fecha . " / " .

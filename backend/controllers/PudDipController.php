@@ -78,10 +78,25 @@ class PudDipController extends Controller{
     {       
         $planBloqueUnidadId = $_GET['plan_bloque_unidad_id'];        
         $planUnidad = PlanificacionBloquesUnidad::findOne($planBloqueUnidadId);
+        
+        $bitacora = PudAprobacionBitacora::find()->where([
+            'unidad_id' =>$planBloqueUnidadId
+        ])
+        ->orderBy(['id'=>SORT_DESC])
+        ->one();
+        
+        $scripts = new Scripts();
+        $firmaAprobado = $scripts->firmar_documento($bitacora->usuario_responde, $bitacora->fecha_responde);
+        $firmaDocente = $scripts->firmar_documento($bitacora->usuario_notifica, $bitacora->fecha_notifica);
+
         return $this->render('index', [
-            'planUnidad' => $planUnidad
+            'planUnidad' => $planUnidad,
+            'bitacora' => $bitacora,
+            'firmaAprobado' => $firmaAprobado,
+            'firmaDocente' => $firmaDocente
         ]);       
-    }  
+    } 
+    
 
     public function actionPestana(){
         

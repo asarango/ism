@@ -29,8 +29,16 @@ class Preguntas extends ActiveRecord{
         $this->institutoId = Yii::$app->user->identity->instituto_defecto;
 
         $this->html = '';
+        $this->actualizaCampoUltimaSeccion('2.3.-',$planUnidadId);
 
         $this->get_preguntas();
+    }
+    private function actualizaCampoUltimaSeccion($ultima_seccion,$idPlanBloqUni)
+    {
+        $con=Yii::$app->db;        
+        $query = "update pud_pai set ultima_seccion ='$ultima_seccion' where planificacion_bloque_unidad_id = $idPlanBloqUni ; ";
+        
+        $con->createCommand($query )->queryOne();
     }
 
 
@@ -49,8 +57,6 @@ class Preguntas extends ActiveRecord{
                 // inicia row de botones de modales
                 $this->html .= '<div class="row">';
                 $this->html .= '<div class="col-lg-3 col-md-3 text-center">'.$this->modal_facticas().$this->modal_conceptuales(). $this->modal_debatibles().'</div>';
-                // $this->html .= '<div class="col-lg-3 col-md-3 text-center">'..'</div>';
-                // $this->html .= '<div class="col-lg-3 col-md-3 text-center">'..'</div>';
                 $this->html .= '</div>';
                 //******finaliza row de botones de modales
                 
@@ -92,7 +98,7 @@ class Preguntas extends ActiveRecord{
                       
                     $html .= '</div>
                     <div class="modal-footer">
-                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="recargar_pagina()">Cerrar</button>
                       
                     </div>
                   </div>
@@ -127,7 +133,7 @@ class Preguntas extends ActiveRecord{
                       
                     $html .= '</div>
                     <div class="modal-footer">
-                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="recargar_pagina()">Cerrar</button>
                       
                     </div>
                   </div>
@@ -164,7 +170,7 @@ class Preguntas extends ActiveRecord{
                       
                     $html .= '</div>
                     <div class="modal-footer">
-                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="recargar_pagina()">Cerrar</button>
                       
                     </div>
                   </div>

@@ -53,7 +53,9 @@ class ServicioAccion extends ActiveRecord{
                     $this->html .= '<tr>';
                     
                     $this->html .= '<th class="text-center" style="background-color: #ab0a3d">';
+                    $this->html .= '<div  class="ocultar">';
                     $this->html .= $this->modal_actividades();
+                    $this->html .= '</div>';
                     $this->html .= '</th>';
 
                     $this->html .= '<th class="text-center" style="background-color: #0a1f8f">';

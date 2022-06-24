@@ -73,7 +73,8 @@ class HelperPudPaiController extends Controller{
             $html .= '<td width="40%"><b>Fácticas: </b>(Se basan en conocimientos y datos, ayudan a comprender terminología del enunciado, 
                             facilitan la comprensión, se pueden buscar)
                     </td>';
-            $html .= '<td>';            
+            $html .= '<td>';   
+
             $html .= $this->modalDetallePreguntas('facticas', $preguntas);        
         $html .= '</td>';
         $html .= '</tr>'; //termina fàcticas
@@ -103,7 +104,7 @@ class HelperPudPaiController extends Controller{
         $html .= '</div>';
         return $html;
     }
-
+    
     private function modalDetallePreguntas($tipo, $preguntas){
         $html = '';
         foreach($preguntas as $pregunta){
@@ -116,13 +117,17 @@ class HelperPudPaiController extends Controller{
                 }else{
                     $color = '#ab0a3d';
                 }
+                $html.='<div class="ocultar">';
                 $html .= '<a href="#"  data-bs-toggle="modal" data-bs-target="#editModal" 
                 onclick="showEdit('.$pregunta->id.', \''.$pregunta->contenido.'\')"> 
-                <span class="badge rounded-pill" 
+                <span class=" badge rounded-pill" 
                 style="background-color: '.$color.'"><i class="fas fa-question-circle" aria-hidden="true"></i>';
+                $html .='<font size="2">';
                 $html .= $pregunta->contenido ;
-                $html .= '</span>';
+                $html .='</font>';
+                $html .= '</span>';                
                 $html .= '</a><br>';
+                $html .= '</div>';
             }
             
         }
@@ -202,8 +207,8 @@ class HelperPudPaiController extends Controller{
                 $titulo = $sumativa['titulo'];
             }
 
-            $html .= '<div class="" style="color: '.$color.'">';
-            $html .= $this->modal_sumativa($sumativa['id'], $sumativa['contenido'], $titulo);
+            $html .= '<div class="hi" style="color: '.$color.'">';            
+            $html .= $this->modal_sumativa($sumativa['id'], $sumativa['contenido'], $titulo);            
             $html .= '<b>Criterio '.$sumativa['criterio'].'</b>: '.$titulo.'<br>';
             $html .= $sumativa['contenido'].'<hr>';
             $html .= '</div>';
@@ -212,9 +217,12 @@ class HelperPudPaiController extends Controller{
     }
     //metodo para la seccion 3.1.-
     private function modal_sumativa($id, $contenido, $titulo){
-        $html = '<a href="#"  data-bs-toggle="modal" data-bs-target="#modal'.$id.'"> 
-        <i class="fas fa-edit"></i>';
+       
+        $html = '<div class="ocultar">';
+        $html .= '<a href="#"  data-bs-toggle="modal" data-bs-target="#modal'.$id.'"> ';
+        $html .= '<i class="fas fa-edit"></i>';        
         $html .= '</a>';
+        $html .= '</div>';
 
         $html.= '<div class="modal fade" id="modal'.$id.'" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
@@ -297,7 +305,9 @@ class HelperPudPaiController extends Controller{
             'tipo' => 'relacion-suma-eval'
         ])->one();
 
-        $html = $this->modal_sumativa2($model->id, $model->contenido);
+        $html = '<div class = "ocultar">';
+        $html .= $this->modal_sumativa2($model->id, $model->contenido);
+        $html .='</div>';
         $html .= '<small style="color: #65b2e8">Relación entre las tareas de evaluación sumativa y el enunciado de la indagación:<hr></small>';
         $html .= '<p>';
         $html .= $model->contenido;
@@ -622,9 +632,11 @@ class HelperPudPaiController extends Controller{
     }
 
     private function modal_respuesta($id, $pregunta, $respuesta){
-        $html = '<a href="#"  data-bs-toggle="modal" data-bs-target="#reflexionModalR'.$id.'" onclick="show_reflexion_disponibles()"> 
+        $html = '<div class="ocultar">';
+        $html .= '<a href="#"  data-bs-toggle="modal" data-bs-target="#reflexionModalR'.$id.'" onclick="show_reflexion_disponibles()"> 
                         <i class="fas fa-reply"> </i>';
                 $html .= '</a>';
+                $html .='</div>';
       
                 $html.= '<div class="modal fade" id="reflexionModalR'.$id.'" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div class="modal-dialog modal-xl">
@@ -763,7 +775,7 @@ class HelperPudPaiController extends Controller{
         $model->save();
 
     }
-
+    //metodo usado para 4.5.-
     public function actionShowPerfilesSeleccionados()
     {
         $planUnidadId = $_GET['plan_unidad_id'];
@@ -787,7 +799,7 @@ class HelperPudPaiController extends Controller{
         return $html;
 
     }
-
+    //metodo usado para 4.5.-
     private function devuelve_perfiles_seleccionados($reflexiones, $tipo){
 
         if($tipo == 'comunicacion'){
@@ -807,8 +819,11 @@ class HelperPudPaiController extends Controller{
         foreach($reflexiones as $refle){
             if($refle->tipo == $tipo){
                 $html .= '<li style="color: '.$color.'">';
+                $html .= '<div class="ocultar">';
                 $html .=  $this->modal_perfiles_seleccionado($refle->id, $refle->contenido, $refle->respuesta);
+                $html .= '</div>';
                 $html .= '<b><u> '.$refle->contenido.'</u></b><br>'.$refle->respuesta;
+               
                 $html .= '</li>';
 
                 $html .= '<li style="color: '.$color.'"><hr></li>';
@@ -819,10 +834,10 @@ class HelperPudPaiController extends Controller{
 
         return $html;
     }
-
+    //metodo usado para 4.5.-
     private function modal_perfiles_seleccionado($id, $pregunta, $respuesta){
         $html = '<a href="#"  data-bs-toggle="modal" data-bs-target="#reflexionModalR'.$id.'" onclick="show_reflexion_disponibles()"> 
-                        <i class="fas fa-reply"> </i>';
+                        <i class="fas fa-reply ocultar"> </i>';
                 $html .= '</a>';
       
                 $html.= '<div class="modal fade" id="reflexionModalR'.$id.'" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -882,40 +897,49 @@ class HelperPudPaiController extends Controller{
                         
             $html .= '</td>';
             
-            $presencial = $this->get_situacion_aprendizaje($planUnidadId, $categ, 'presencial');                                    
+            $presencial = $this->get_situacion_aprendizaje($planUnidadId, $categ, 'presencial'); 
+                                               
             $html .= '<td align="center">';
-                if(!$presencial){
-                    $html .= '<a href="#" onclick="inserta_situacion('.$planUnidadId.', \''.$categ.'\', \'presencial\')"><i class="fas fa-ban" style="color: #ab0a3d"></i></a>';
-                }else{
-                    $html .= '<a href="#" onclick="elimina_situacion('.$presencial.')"><i class="fas fa-check-circle" style="color: green"></i></a>';
-                }
+                $html .='<div class="ocultar">';
+                    if(!$presencial){
+                        $html .= '<a href="#" onclick="inserta_situacion('.$planUnidadId.', \''.$categ.'\', \'presencial\')"><i class="fas fa-ban" style="color: #ab0a3d"></i></a>';
+                    }else{
+                        $html .= '<a href="#" onclick="elimina_situacion('.$presencial.')"><i class="fas fa-check-circle" style="color: green"></i></a>';
+                    }
+                $html .='</div>';
             $html .= '</td>';
             
             $enLinea = $this->get_situacion_aprendizaje($planUnidadId, $categ, 'en_linea');                                    
             $html .= '<td align="center">';
+                $html .='<div class="ocultar">';
                 if(!$enLinea){
                     $html .= '<a href="#" onclick="inserta_situacion('.$planUnidadId.', \''.$categ.'\', \'en_linea\')"><i class="fas fa-ban" style="color: #ab0a3d"></i></a>';
                 }else{
                     $html .= '<a href="#" onclick="elimina_situacion('.$enLinea.')"><i class="fas fa-check-circle" style="color: green"></i></a>';
                 }
+                $html .='</div>';
             $html .= '</td>';
             
             $combinado = $this->get_situacion_aprendizaje($planUnidadId, $categ, 'combinado');                                    
             $html .= '<td align="center">';
+                $html .='<div class="ocultar">';
                 if(!$combinado){
                     $html .= '<a href="#" onclick="inserta_situacion('.$planUnidadId.', \''.$categ.'\', \'combinado\')"><i class="fas fa-ban" style="color: #ab0a3d"></i></a>';
                 }else{
                     $html .= '<a href="#" onclick="elimina_situacion('.$combinado.')"><i class="fas fa-check-circle" style="color: green"></i></a>';
                 }
+                $html .='</div>';
             $html .= '</td>';
             
             $remoto = $this->get_situacion_aprendizaje($planUnidadId, $categ, 'remoto');                                    
             $html .= '<td align="center">';
-                if(!$remoto){
-                    $html .= '<a href="#" onclick="inserta_situacion('.$planUnidadId.', \''.$categ.'\', \'remoto\')"><i class="fas fa-ban" style="color: #ab0a3d"></i></a>';
-                }else{
-                    $html .= '<a href="#" onclick="elimina_situacion('.$remoto.')"><i class="fas fa-check-circle" style="color: green"></i></a>';
-                }
+                $html .='<div class="ocultar">';
+                    if(!$remoto){
+                        $html .= '<a href="#" onclick="inserta_situacion('.$planUnidadId.', \''.$categ.'\', \'remoto\')"><i class="fas fa-ban" style="color: #ab0a3d"></i></a>';
+                    }else{
+                        $html .= '<a href="#" onclick="elimina_situacion('.$remoto.')"><i class="fas fa-check-circle" style="color: green"></i></a>';
+                    }
+                $html .='</div>';
             $html .= '</td>';
             
             
@@ -926,7 +950,8 @@ class HelperPudPaiController extends Controller{
         
     }
     
-    private function get_situacion_aprendizaje($planUnidadId, $categoria, $opcion){
+    private function get_situacion_aprendizaje($planUnidadId, $categoria, $opcion)
+    {
         $model = PudPai::find()->where([
             'planificacion_bloque_unidad_id' => $planUnidadId,
             'tipo' => $categoria,
@@ -962,7 +987,9 @@ class HelperPudPaiController extends Controller{
         $html .= '<ul>';
         foreach ($disponibles as $dispo){
             $html .= '<li>';
+                $html.= '<div class="ocultar">';
                 $html .= '<a class="zoom" href="#" onclick="insert_accion('.$dispo['id'].')">'.$dispo['opcion'].'</a>';
+                $html.='</div>';
             $html .= '</li>';
             $html .= '<li><hr>';
             $html .= '</li>';

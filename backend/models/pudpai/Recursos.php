@@ -103,8 +103,9 @@ class Recursos extends ActiveRecord{
                     $this->html .= '</div>';
                         
                     $this->html .= '<div class="card-body">';
-
+                        $this->html .= '<div class="ocultar">';
                         $this->html .= $this->modal();
+                        $this->html .='</div>';
                         $this->html .= '<div class="table table-responsive">';     
 
                         $this->html .= '<table class="table table-hover table-condensed table-bordered" id="table-recursos">';  

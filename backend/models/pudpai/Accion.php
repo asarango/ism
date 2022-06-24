@@ -30,11 +30,18 @@ class Accion extends ActiveRecord{
         $this->institutoId = Yii::$app->user->identity->instituto_defecto;
 
         $this->html = '';
+        $this->actualizaCampoUltimaSeccion('5.1.-',$planUnidadId);
 
         $this->get_accion();
     }
 
-
+    private function actualizaCampoUltimaSeccion($ultima_seccion,$idPlanBloqUni)
+    {
+        $con=Yii::$app->db;        
+        $query = "update pud_pai set ultima_seccion ='$ultima_seccion' where planificacion_bloque_unidad_id = $idPlanBloqUni ; ";
+        
+        $con->createCommand($query )->queryOne();
+    }
     private function get_accion(){       
         
             $temas = PlanificacionBloquesUnidadSubtitulo::find()->where([

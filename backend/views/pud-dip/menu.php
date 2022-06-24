@@ -23,8 +23,8 @@ $contador_5_6 = 0;
 $opcion = '1.1.-';
 
 if($modelPVD)
-{    $opcion=$modelPVD->ultima_seccion;
-    $pud_dip_porc_avance = pud_dip_porcentaje_avance($modelPVD->id,$planUnidad->id);
+{    
+    $opcion=$modelPVD->ultima_seccion;    
     $contador_5_4 = contador_de_consultar_lenguaje_y_aprendizaje_ckeck($modelPVD->id);
     $contador_5_6 = consultar_conexion_cas_ckeck($modelPVD->id);
    
@@ -52,7 +52,6 @@ $iconoOk = 'fas fa-check';
 $colorOk = 'green';
 $colorNotOk = 'red';
 $numCaracteresOk = $modelOpciones->categoria;
-
 
 //metodo usado para 5.4.- llamada a lenguaje y aprendizaje
 function contador_de_consultar_lenguaje_y_aprendizaje_ckeck($planVertDiplId) 
@@ -262,9 +261,9 @@ function contador_de_consultar_lenguaje_y_aprendizaje_ckeck($planVertDiplId)
    document.body.onload = function() {
         ver_detalle( '<?= $opcion?>')
     }
-     
 
-    function ver_detalle( pestana ){
+    function ver_detalle( pestana )
+    {
         var planUnidadId = '<?= $planUnidad->id ?>';   
         
         var url = '<?= Url::to(['pestana']) ?>';

@@ -22,26 +22,38 @@ class PerfilesBi extends ActiveRecord{
     private $scholarisPeriodoId;
     private $institutoId;
     private $recursos;
+    private $seccion_numero;
     public $html;
 
 
-    public function __construct($planUnidadId){
+    public function __construct($planUnidadId)
+    { 
         $this->planUnidadId = $planUnidadId;
         $this->planUnidad   = PlanificacionBloquesUnidad::findOne($planUnidadId);
         $this->scholarisPeriodoId = Yii::$app->user->identity->periodo_id;
         $this->institutoId = Yii::$app->user->identity->instituto_defecto;
 
         $this->html = '';
+        $this->seccion_numero='45';
+        $this->actualizaCampoUltimaSeccion('4.5.-',$planUnidadId);
+     
 
         $this->ingresa_recursos();
-        $this->consulta_recursos();
+        //$this->consulta_recursos();
         $this->get_accion();
+    }
+    private function actualizaCampoUltimaSeccion($ultima_seccion,$idPlanBloqUni)
+    {
+        $con=Yii::$app->db;        
+        $query = "update pud_pai set ultima_seccion ='$ultima_seccion' where planificacion_bloque_unidad_id = $idPlanBloqUni ; ";
+        
+        $con->createCommand($query )->queryOne();
     }
 
     private function consulta_recursos(){
         $this->recursos = PudPai::find()->where([
             'planificacion_bloque_unidad_id' => $this->planUnidadId,
-            'seccion_numero' => 8
+            'seccion_numero' => $this->seccion_numero
         ])->all();
     }
 
@@ -51,7 +63,8 @@ class PerfilesBi extends ActiveRecord{
         $this->validate_recurso('otros');
     }
 
-    private function validate_recurso($tipo){
+    private function validate_recurso($tipo)
+    {
         $pudPai = PudPai::find()->where([
             'planificacion_bloque_unidad_id' => $this->planUnidadId,
             'tipo' => $tipo
@@ -63,7 +76,7 @@ class PerfilesBi extends ActiveRecord{
             $model = new PudPai();
             
             $model->planificacion_bloque_unidad_id = $this->planUnidadId;
-            $model->seccion_numero = 8;
+            $model->seccion_numero = $this->seccion_numero;
             $model->tipo = $tipo;
             $model->contenido = '-';
             $model->created_at = $fechaHoy;
@@ -75,14 +88,14 @@ class PerfilesBi extends ActiveRecord{
     }
 
 
-    private function get_accion(){       
+    private function get_accion()
+    {       
+        // $temas = PlanificacionBloquesUnidadSubtitulo::find()->where([
+        //         'plan_unidad_id' => $this->planUnidadId
+        //     ])
+        //     ->orderBy('orden')
+        //     ->all();
         
-            $temas = PlanificacionBloquesUnidadSubtitulo::find()->where([
-                'plan_unidad_id' => $this->planUnidadId
-            ])
-            ->orderBy('orden')
-            ->all();
-
             $this->html .= '<h5 class=""><b>4.- ENFOQUES DE APRENDIZAJE </b></h5>';  
 
             $this->html .= '<div class="" style="align-items: center; display: flex; justify-content: center;">';
@@ -159,7 +172,7 @@ class PerfilesBi extends ActiveRecord{
                     $html .= '</div>';// fin de modal-body
 
                     $html .= '<div class="modal-footer">
-                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>                      
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="recargar_pagina()">Cerrar</button>                      
                       
                     </div>
                   </div>

@@ -102,13 +102,20 @@ class PlanificacionBloquesUnidadController extends Controller{
                            ])
                     ->orderBy('curriculo_bloque_id')
                     ->all(); 
+        
+        $scripts = new \backend\models\helpers\Scripts();
+        
+        $firmaAprueba = $scripts->firmar_documento($cabecera->coordinador_user, $cabecera->fecha_aprobacion_coordinacion);
+        $firmaElaborado = $scripts->firmar_documento($usuarioLogueado, $cabecera->fecha_envio_coordinador);
              
         return $this->render('index', [
             'materia'   => $materia,
             'unidades'  => $unidades,
             'cabecera'  => $cabecera,
             'seccion'   => $seccion,
-            'perfil'    => $perfil
+            'perfil'    => $perfil,
+            'firmaAprueba' => $firmaAprueba,
+            'firmaElaborado' => $firmaElaborado
         ]);
     } 
 

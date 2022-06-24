@@ -41,7 +41,7 @@ class PudPai extends \yii\db\ActiveRecord
             [['planificacion_bloque_unidad_id', 'seccion_numero', 'tipo', 'contenido', 'created_at', 'created'], 'required'],
             [['planificacion_bloque_unidad_id', 'seccion_numero', 'criterio_id'], 'default', 'value' => null],
             [['planificacion_bloque_unidad_id', 'seccion_numero', 'criterio_id'], 'integer'],
-            [['contenido', 'respuesta'], 'string'],
+            [['contenido', 'respuesta','ultima_seccion'], 'string'],
             [['created_at', 'updated_at'], 'safe'],
             [['tipo', 'titulo'], 'string', 'max' => 50],
             [['created', 'updated'], 'string', 'max' => 200],
@@ -67,6 +67,7 @@ class PudPai extends \yii\db\ActiveRecord
             'updated_at' => 'Updated At',
             'updated' => 'Updated',
             'respuesta' => 'Respuesta',
+            'ultima_seccion'=>'Ultima Sección'
         ];
     }
 

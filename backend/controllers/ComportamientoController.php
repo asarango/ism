@@ -207,7 +207,8 @@ class ComportamientoController extends Controller {
      * Elimina la novedad del estudiante con respecto a las novedades cometidas
      */
     public function actionQuitar($novedadId){
-        $model = ScholarisAsistenciaAlumnosNovedades::find()->where(['id' => $novedadId])->one();
+        
+        $model = ScholarisAsistenciaAlumnosNovedades::find()->where(['id' => $novedadId])->one();        
         $alumnoId = $model->grupo->estudiante_id;
         $model->delete();
         return $this->redirect([

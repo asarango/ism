@@ -366,6 +366,13 @@ Html::a(
                                     Sus planificaciones han sido aprobadas por el coordinador.
                                 </u>
                             </strong>
+                            
+                            <hr><!-- separacion para las firmas -->
+                            
+                            <b>Firmas</b><br>
+                            <b>Revisado y aprobado por : </b><?= $firmaAprueba['firmado_por'] ?> el <?= $firmaAprueba['firmado_el'] ?>
+                            <br/>
+                            <b>Elaborado por : </b><?= $firmaElaborado['firmado_por'] ?> el <?= $firmaElaborado['firmado_el'] ?>
                         </div>
                         <?php
                     }

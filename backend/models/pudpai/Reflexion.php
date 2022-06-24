@@ -22,8 +22,8 @@ class Reflexion extends ActiveRecord{
     private $scholarisPeriodoId;
     private $institutoId;
     private $recursos;
-    public $html;
-
+    private $seccion_numero;
+    public  $html;
 
     public function __construct($planUnidadId){
         $this->planUnidadId = $planUnidadId;
@@ -32,16 +32,27 @@ class Reflexion extends ActiveRecord{
         $this->institutoId = Yii::$app->user->identity->instituto_defecto;
 
         $this->html = '';
+        $this->seccion_numero = '8';
+        $this->actualizaCampoUltimaSeccion('8.1.-',$planUnidadId);
 
         $this->ingresa_recursos();
-        $this->consulta_recursos();
+        //$this->consulta_recursos();
         $this->get_accion();
     }
 
-    private function consulta_recursos(){
+    private function actualizaCampoUltimaSeccion($ultima_seccion,$idPlanBloqUni)
+    {
+        $con=Yii::$app->db;        
+        $query = "update pud_pai set ultima_seccion ='$ultima_seccion' where planificacion_bloque_unidad_id = $idPlanBloqUni ; ";
+        
+        $con->createCommand($query )->queryOne();
+    }
+
+    private function consulta_recursos()
+    {
         $this->recursos = PudPai::find()->where([
             'planificacion_bloque_unidad_id' => $this->planUnidadId,
-            'seccion_numero' => 8
+            'seccion_numero' => $this->seccion_numero
         ])->all();
     }
 
@@ -51,19 +62,21 @@ class Reflexion extends ActiveRecord{
         $this->validate_recurso('otros');
     }
 
-    private function validate_recurso($tipo){
+    private function validate_recurso($tipo)
+    {
         $pudPai = PudPai::find()->where([
             'planificacion_bloque_unidad_id' => $this->planUnidadId,
             'tipo' => $tipo
         ])->one();
 
-        if(!$pudPai){
+        if(!$pudPai)
+        {
             $userLog = Yii::$app->user->identity->usuario;
             $fechaHoy = date("Y-m-d H:i:s");
             $model = new PudPai();
             
             $model->planificacion_bloque_unidad_id = $this->planUnidadId;
-            $model->seccion_numero = 8;
+            $model->seccion_numero = $this->seccion_numero;
             $model->tipo = $tipo;
             $model->contenido = '-';
             $model->created_at = $fechaHoy;
@@ -74,20 +87,19 @@ class Reflexion extends ActiveRecord{
         }
     }
 
-
     private function get_accion(){       
         
             $temas = PlanificacionBloquesUnidadSubtitulo::find()->where([
                 'plan_unidad_id' => $this->planUnidadId
             ])
             ->orderBy('orden')
-            ->all();
+            ->all();           
 
             $this->html .= '<div class="" style="align-items: center; display: flex; justify-content: center;">';
                 $this->html .= '<div class="card" style="width: 90%; margin-top:20px">';
                 
                     $this->html .= '<div class="card-header">';                    
-                        $this->html .= '<h5 class=""><b>9.- REFLEXIÓN: </b></h5>';                        
+                        $this->html .= '<h5 class=""><b>8.1.- REFLEXIÓN: </b></h5>';                        
                         $this->html .= '<small style="color: #65b2e8">(Consideración de la planificación, el proceso y el impacto de la indagación. En el proceso de reflexión, garantizar dar respuesta a varias de la preguntas planteadas en cada momento.)</small>';
                     $this->html .= '</div>';
                         
@@ -154,7 +166,7 @@ class Reflexion extends ActiveRecord{
                     $html .= '</div>';// fin de modal-body
 
                     $html .= '<div class="modal-footer">
-                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>                      
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="recargar_pagina()">Cerrar</button>                      
                       
                     </div>
                   </div>

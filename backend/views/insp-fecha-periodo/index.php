@@ -67,77 +67,87 @@ $this->title = 'Fechas del año lectivo';
 
             <!-- #################### inicia cuerpo de card ##########################-->
             <div class="row p-5">
-                
+
                 <div class="row">
                     <div class="col-lg-4 col-md-4">
                         <div class="row card">
                             <canvas id="myChart"></canvas>
                         </div>
-                        
+
                         <div class="row" style="margin-top: 20px"><hr></div>
-                        
+
                         <div class="row card">
                             <canvas id="myChartnojustificado"></canvas>
                             <?=
-                              Html::a('<i class="fas fa-user-secret"> Ver alumnos injustificados</i>',
-                                      ['scholaris-asistencia-alumnos-novedades/index1']);
+                            Html::a('<i class="fas fa-user-secret"> Ver alumnos injustificados</i>',
+                                    ['scholaris-asistencia-alumnos-novedades/index1']);
                             ?>
                         </div>
-                        
+
+                        <div class="row" style="margin-top: 20px"><hr></div>
+
+                        <div class="row card">
+                            <canvas id="chart-no-justificado-docentes"></canvas>
+                            <?=
+                            Html::a('<i class="fas fa-user-secret"> Docentes sin timbrar</i>',
+                                    ['scholaris-asistencia-profesor/justificar']);
+                            ?>
+                        </div>
+
                     </div>
                     <!--fin de columna de graficos-->
-                        
-                    
+
+
                     <div class="col-lg-8 col-md-8">
                         <?=
-                GridView::widget([
-                    'dataProvider' => $dataProvider,
-                    'filterModel' => $searchModel,
-                    'columns' => [
-                        ['class' => 'yii\grid\SerialColumn'],
-                        'fecha',
-                        //'periodo_id',
-                        //'numero_dia',
-                        'hay_asitencia:boolean',
-                        'es_presencial:boolean',
-                        'observacion',
-                        /** INICIO BOTONES DE ACCION * */
-                        [
-                            'class' => 'yii\grid\ActionColumn',
-                            //                    'width' => '150px',
-                            'template' => '{update} {view} {mapa}',
-                            'buttons' => [
-                                'update' => function ($url, $model) {
-                                    return Html::a('<i class="fas fa-edit"></i>', $url, [
-                                        'title' => 'Actualizar', 'data-toggle' => 'tooltip', 'role' => 'modal-remote', 'data-pjax' => "0", 'class' => 'hand'
-                                    ]);
-                                },
-                                'view' => function ($url, $model) {
-                                    return Html::a('<i class="fas fa-eye"></i>', $url, [
-                                        'title' => 'VIsualizar', 'data-toggle' => 'tooltip', 'role' => 'modal-remote', 'data-pjax' => "0", 'class' => 'hand'
-                                    ]);
-                                },
-                                'mapa' => function ($url, $model) {
-                                    return Html::a('<i class="fab fa-accusoft"></i>', $url, [
-                                        'title' => 'VIsualizar', 'data-toggle' => 'tooltip', 'role' => 'modal-remote', 'data-pjax' => "0", 'class' => 'hand'
-                                    ]);
-                                },
-                            ],
-                            'urlCreator' => function ($action, $model, $key) {
-                                if ($action === 'update') {
-                                    return \yii\helpers\Url::to(['update', 'fecha' => $key]);
-                                } else if ($action === 'view') {
-                                    return \yii\helpers\Url::to(['view', 'fecha' => $key]);
-                                }
+                        GridView::widget([
+                            'dataProvider' => $dataProvider,
+                            'filterModel' => $searchModel,
+                            'columns' => [
+                                ['class' => 'yii\grid\SerialColumn'],
+                                'fecha',
+                                //'periodo_id',
+                                //'numero_dia',
+                                'hay_asitencia:boolean',
+                                'es_presencial:boolean',
+                                'observacion',
+                                /** INICIO BOTONES DE ACCION * */
+                                [
+                                    'class' => 'yii\grid\ActionColumn',
+                                    //                    'width' => '150px',
+                                    'template' => '{update} {view} {mapa}',
+                                    'buttons' => [
+                                        'update' => function ($url, $model) {
+                                            return Html::a('<i class="fas fa-edit"></i>', $url, [
+                                                'title' => 'Actualizar', 'data-toggle' => 'tooltip', 'role' => 'modal-remote', 'data-pjax' => "0", 'class' => 'hand'
+                                            ]);
+                                        },
+                                        'view' => function ($url, $model) {
+                                            return Html::a('<i class="fas fa-eye"></i>', $url, [
+                                                'title' => 'VIsualizar', 'data-toggle' => 'tooltip', 'role' => 'modal-remote', 'data-pjax' => "0", 'class' => 'hand'
+                                            ]);
+                                        },
+                                        'mapa' => function ($url, $model) {
+                                            return Html::a('<i class="fab fa-accusoft"></i>', $url, [
+                                                'title' => 'VIsualizar', 'data-toggle' => 'tooltip', 'role' => 'modal-remote', 'data-pjax' => "0", 'class' => 'hand'
+                                            ]);
+                                        },
+                                    ],
+                                    'urlCreator' => function ($action, $model, $key) {
+                                        if ($action === 'update') {
+                                            return \yii\helpers\Url::to(['update', 'fecha' => $key]);
+                                        } else if ($action === 'view') {
+                                            return \yii\helpers\Url::to(['view', 'fecha' => $key]);
+                                        }
 //                                else if($action === 'mapa') {
 //                                    return \yii\helpers\Url::to(['materias-pai/mapa-enfoques', 'materia_id' => $key]);
 //                                }
-                            }
-                        ],
-                    /** FIN BOTONES DE ACCION * */
-                    ],
-                ]);
-                ?>
+                                    }
+                                ],
+                            /** FIN BOTONES DE ACCION * */
+                            ],
+                        ]);
+                        ?>
                     </div>
                 </div>                
 
@@ -158,6 +168,7 @@ crossorigin="anonymous"></script>
 
     semanas();
     no_justificado();
+    no_justificado_docente();
 
     function semanas() {
         var url = "<?= yii\helpers\Url::to(['ajax-laborados']) ?>";
@@ -200,7 +211,7 @@ crossorigin="anonymous"></script>
         });
 
     }
-    
+
     function no_justificado() {
         var url = "<?= yii\helpers\Url::to(['ajax-no-justificado']) ?>";
 
@@ -222,7 +233,7 @@ crossorigin="anonymous"></script>
                     datasets: [{
                             label: 'Total Alumnos Injustificados',
 //                            backgroundColor: 'rgb(255, 99, 132)',
-                            backgroundColor: 'rgb(178, 213, 249)',
+                            backgroundColor: 'rgb(224, 249, 178)',
                             borderColor: 'rgb(255, 99, 132)',
 //                            data: [0, 10, 5, 2, 20, 30, 45],
                             data: totales
@@ -243,8 +254,58 @@ crossorigin="anonymous"></script>
         });
 
     }
-    
-    
+
+    function no_justificado_docente() {
+        var url = "<?= yii\helpers\Url::to(['ajax-no-justificado-docentes']) ?>";
+
+        $.ajax({
+            url: url,
+            type: 'GET',
+
+            success: function (resp) {
+                //console.log(resp);
+                var respuesta = JSON.parse(resp);
+                console.log(respuesta);
+                var meses = respuesta.meses;
+                var totales = respuesta.totales;
+
+                const labels = meses;
+
+                const data = {
+                    labels: labels,
+                    datasets: [{
+                            label: 'Total Docentes Injustificados',
+//                            backgroundColor: 'rgb(255, 99, 132)',
+                            backgroundColor: 'rgb(178, 213, 249)',
+                            borderColor: 'rgb(0, 0, 0)',
+//                            data: [0, 10, 5, 2, 20, 30, 45],
+                            data: totales
+                        }]
+                };
+
+                const config = {
+                type: 'bar',
+                        data: data,
+                        options: {
+                            indexAxis: 'y',
+                            elements: {
+                                    bar: {
+                                    borderWidth: 1,
+                                    }
+                             }
+                             }
+                        };
+                const myChart = new Chart(
+                        document.getElementById('chart-no-justificado-docentes'),
+                        config
+                        );
+
+            }
+        });
+
+    }
+
+
 
 </script>
 

@@ -72,18 +72,18 @@ $this->title = 'Faltas de estudiantes';
 //                        'id',
 //                        'asistencia_profesor_id',
                         'grupo_id',
-//                        [
-//                            'attribute' => 'grupo_id',
-//                            'format' => 'raw',
-//                            'value' => function ($model) {
-//                                return $model->asistenciaProfesor->fecha;
-//                            },
-//                            'filter' => $listaM,
-//                            'filterInputOptions' => [
-//                                'class' => 'form-control',
-//                                'prompt' => 'Seleccione asignatura...'
-//                            ],
-//                        ],
+                        [
+                            'attribute' => 'grupo_id',
+                            'format' => 'raw',
+                            'value' => function ($model) {
+                                return $model->grupo->alumno->last_name.' '.$model->grupo->alumno->first_name;
+                            },
+                            'filter' => $listaS,
+                            'filterInputOptions' => [
+                                'class' => 'form-control',
+                                'prompt' => 'Seleccione estudiante...'
+                            ],
+                        ],
                         [
                             'attribute' => 'asistencia_profesor_id',
                             'format' => 'raw',

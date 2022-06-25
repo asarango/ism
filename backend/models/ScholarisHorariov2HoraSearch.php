@@ -18,6 +18,7 @@ class ScholarisHorariov2HoraSearch extends ScholarisHorariov2Hora
     {
         return [
             [['id', 'numero'], 'integer'],
+            [['es_receso'], 'boolean'],
             [['sigla', 'nombre', 'desde', 'hasta'], 'safe'],
         ];
     }
@@ -60,6 +61,7 @@ class ScholarisHorariov2HoraSearch extends ScholarisHorariov2Hora
         $query->andFilterWhere([
             'id' => $this->id,
             'numero' => $this->numero,
+            'es_receso' => $this->es_receso,
         ]);
 
         $query->andFilterWhere(['ilike', 'sigla', $this->sigla])

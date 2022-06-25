@@ -71,45 +71,39 @@ class ScholarisAsistenciaAlumnosNovedadesController extends Controller
      */
     public function actionIndex1()
     {
+        
+        $periodoId = Yii::$app->user->identity->periodo_id;
         $searchModel = new ScholarisAsistenciaAlumnosNovedadesSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams, $periodoId);
+        
+        $students = $this->get_student_novedades($periodoId);
+        $listaS = \yii\helpers\ArrayHelper::map($students, 'id', 'name');
 
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
+            'listaS' => $listaS
         ]);
     }
-
-    /**
-     * Displays a single ScholarisAsistenciaAlumnosNovedades model.
-     * @param integer $id
-     * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    public function actionView($id)
-    {
-        return $this->render('view', [
-            'model' => $this->findModel($id),
-        ]);
+    
+    private function get_student_novedades($periodoId){
+        $con = Yii::$app->db;
+        $query = "select 	g.id 
+                                    ,concat(s.last_name,' ', s.first_name, ' ', s.middle_name ) as name
+                    from 	scholaris_asistencia_alumnos_novedades n
+                                    inner join scholaris_grupo_alumno_clase g on g.id = n.grupo_id 
+                                    inner join op_student s on s.id = g.estudiante_id
+                                    inner join scholaris_asistencia_profesor a on a.id = n.asistencia_profesor_id 
+                                    inner join scholaris_clase cla on cla.id = a.clase_id
+                                    inner join ism_area_materia am on am.id = cla.ism_area_materia_id 
+                                    inner join ism_malla_area ma on ma.id = am.malla_area_id 
+                                    inner join ism_periodo_malla pm on pm.id = ma.periodo_malla_id 
+                    where 	pm.scholaris_periodo_id = $periodoId
+                    order by 2;";
+        $res = $con->createCommand($query)->queryAll();
+        return $res;
     }
-
-    /**
-     * Creates a new ScholarisAsistenciaAlumnosNovedades model.
-     * If creation is successful, the browser will be redirected to the 'view' page.
-     * @return mixed
-     */
-    public function actionCreate()
-    {
-        $model = new ScholarisAsistenciaAlumnosNovedades();
-
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
-        }
-
-        return $this->render('create', [
-            'model' => $model,
-        ]);
-    }
+   
 
     /**
      * Updates an existing ScholarisAsistenciaAlumnosNovedades model.
@@ -118,12 +112,16 @@ class ScholarisAsistenciaAlumnosNovedadesController extends Controller
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionUpdate($id)
+    public function actionJustificar($id)
     {
         $model = $this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        if ($model->load(Yii::$app->request->post())) {
+            
+            $model->acuerdo_justificacion = $_POST['contenido'];
+            
+            $model->save();
+            return $this->redirect(['index1']);
         }
 
         return $this->render('update', [
@@ -131,19 +129,7 @@ class ScholarisAsistenciaAlumnosNovedadesController extends Controller
         ]);
     }
 
-    /**
-     * Deletes an existing ScholarisAsistenciaAlumnosNovedades model.
-     * If deletion is successful, the browser will be redirected to the 'index' page.
-     * @param integer $id
-     * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    public function actionDelete($id)
-    {
-        $this->findModel($id)->delete();
-
-        return $this->redirect(['index']);
-    }
+    
 
     /**
      * Finds the ScholarisAsistenciaAlumnosNovedades model based on its primary key value.

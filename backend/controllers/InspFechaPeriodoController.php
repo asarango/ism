@@ -129,6 +129,63 @@ class InspFechaPeriodoController extends Controller
         return json_encode($response);
     }
     
+    public function actionAjaxNoJustificadoDocentes(){
+        $periodoId = Yii::$app->user->identity->periodo_id;
+        
+        $noTimbrado = $this->get_notimbrado_docente($periodoId);
+        
+        $scripts = new \backend\models\helpers\Scripts();
+        
+        $labMes = array();
+        $labTot = array();
+        
+        foreach ($noTimbrado as $lab) {            
+            $mes = $scripts->convertir_mes($lab['mes']);
+            $tot = $lab['sin_timbrar'];            
+            
+            array_push($labMes, $mes);
+            array_push($labTot, $tot);
+        }
+        
+        $respuesta = array(
+            'meses' => $labMes,
+            'totales' => $labTot
+        );           
+        
+        return json_encode($respuesta); 
+    }
+    
+    
+    public function get_notimbrado_docente($periodoId){
+        $con = Yii::$app->db;
+        $query1 = "select 	count(cab.id) as total_horas_dia
+                    from	scholaris_horariov2_cabecera cab
+                                    inner join scholaris_horariov2_detalle det on det.cabecera_id = cab.id
+                                    inner join scholaris_horariov2_hora h on h.id = det.hora_id 
+                    where 	cab.periodo_id = $periodoId
+                                    and cab.id in (21,26)
+                                    and det.dia_id = 1
+                                    and h.es_receso = false;";
+        $res1 = $con->createCommand($query1)->queryOne();
+        $totalHorasDia = $res1['total_horas_dia'];
+        
+        $query2 = "select extract(year from fecha) as anio, extract(month from fecha) as mes, sum(falta_timbrar) as sin_timbrar
+                    from (
+                                    select 	f.fecha
+                                                    ,$totalHorasDia-(select count(id) from scholaris_asistencia_profesor where fecha = f.fecha) as falta_timbrar
+                                    from 	insp_fecha_periodo f		
+                                    where 	f.fecha >= '2021-09-01'
+                                                    and f.periodo_id = $periodoId
+                                                    and f.hay_asitencia = true
+                                    order by f.fecha
+                    ) as mes
+                    group by anio,mes
+                    order by anio,mes;";
+        $res = $con->createCommand($query2)->queryAll();
+        
+        return $res;
+    }
+    
     
     private function get_dias_trabajados($periodoId){
         

@@ -13,8 +13,10 @@ use Yii;
  * @property string $nombre
  * @property string $desde
  * @property string $hasta
+ * @property bool $es_receso
  *
  * @property ScholarisHorariov2Detalle[] $scholarisHorariov2Detalles
+ * @property ScholarisLeccionarioDetalle[] $scholarisLeccionarioDetalles
  */
 class ScholarisHorariov2Hora extends \yii\db\ActiveRecord
 {
@@ -35,6 +37,7 @@ class ScholarisHorariov2Hora extends \yii\db\ActiveRecord
             [['numero', 'sigla', 'nombre', 'desde', 'hasta'], 'required'],
             [['numero'], 'default', 'value' => null],
             [['numero'], 'integer'],
+            [['es_receso'], 'boolean'],
             [['sigla'], 'string', 'max' => 20],
             [['nombre'], 'string', 'max' => 50],
             [['desde', 'hasta'], 'string', 'max' => 30],
@@ -53,6 +56,7 @@ class ScholarisHorariov2Hora extends \yii\db\ActiveRecord
             'nombre' => 'Nombre',
             'desde' => 'Desde',
             'hasta' => 'Hasta',
+            'es_receso' => 'Es Receso',
         ];
     }
 
@@ -62,5 +66,13 @@ class ScholarisHorariov2Hora extends \yii\db\ActiveRecord
     public function getScholarisHorariov2Detalles()
     {
         return $this->hasMany(ScholarisHorariov2Detalle::className(), ['hora_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getScholarisLeccionarioDetalles()
+    {
+        return $this->hasMany(ScholarisLeccionarioDetalle::className(), ['hora_id' => 'id']);
     }
 }

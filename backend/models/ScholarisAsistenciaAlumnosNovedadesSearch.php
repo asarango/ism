@@ -39,9 +39,15 @@ class ScholarisAsistenciaAlumnosNovedadesSearch extends ScholarisAsistenciaAlumn
      *
      * @return ActiveDataProvider
      */
-    public function search($params)
+    public function search($params, $periodoId)
     {
-        $query = ScholarisAsistenciaAlumnosNovedades::find();
+        $query = ScholarisAsistenciaAlumnosNovedades::find()
+                ->innerJoin('scholaris_asistencia_profesor a', 'a.id = scholaris_asistencia_alumnos_novedades.asistencia_profesor_id')
+                ->innerJoin('scholaris_clase cla', 'cla.id = a.clase_id')
+                ->innerJoin('ism_area_materia am', 'am.id = cla.ism_area_materia_id') 
+                ->innerJoin('ism_malla_area ma', 'ma.id = am.malla_area_id') 
+                ->innerJoin('ism_periodo_malla pm', 'pm.id = ma.periodo_malla_id') 
+                ->where(['pm.scholaris_periodo_id' => $periodoId]);
 
         // add conditions that should always apply here
 

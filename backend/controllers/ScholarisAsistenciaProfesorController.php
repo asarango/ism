@@ -311,5 +311,11 @@ class ScholarisAsistenciaProfesorController extends Controller {
         $con->createCommand($query)->execute();
     }
     
+    
+    
+    public function actionJustificar(){
+        print_r('desde ajustificacion');
+    }
+    
 
 }

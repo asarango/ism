@@ -7,6 +7,7 @@ use Yii;
 use backend\models\KidsPlanSemanal;
 use backend\models\KidsPlanSemanalSearch;
 use backend\models\KidsUnidadMicro;
+use backend\models\ScholarisHorariov2Dia;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -111,4 +112,113 @@ class KidsPlanSemanalController extends Controller
         }
 
     }
+
+    
+    /**
+     * METODO PARA PASAR EL DETALLE DE LA PLANIFICACION SEMANAL
+     */
+    public function actionDetalle(){
+        $periodoId = Yii::$app->user->identity->periodo_id;
+        $usuario = Yii::$app->user->identity->usuario;
+
+        $kidsPlanSemanalId = $_GET['kids_plan_semanal_id'];
+        $kidsPlanSemanal = KidsPlanSemanal::findOne($kidsPlanSemanalId);
+
+        $courseId = $kidsPlanSemanal->kidsUnidadMicro->pca->op_course_id; //toma el surso asignado al plan
+        $horarioAsignado = $this->get_horario_asignado($courseId); //Consulta el horario asignado a la planificacion
+        $horario = $this->get_horario($horarioAsignado, $periodoId, $courseId, $usuario); //Trae el horario del docente del curso
+        $dias = ScholarisHorariov2Dia::find()->orderBy('numero')->asArray()->all();
+
+              
+
+        $arrayDias = array();
+
+        foreach($dias as $d){
+            $diaG =  $d['nombre'];    
+            $arrayHoras = array();
+
+            foreach($horario as $h){
+                $diaH = $h['dia'];
+                if($diaH == $diaG){
+                    array_push($arrayHoras, $h);
+                }
+            }
+
+            $d['horas'] = $arrayHoras;
+
+            array_push($arrayDias, $d);
+        }
+
+        
+
+        // echo '<pre>';
+        // print_r($arrayDias);
+        // die();
+
+        return $this->render('detalle',[
+            'kidsPlanSemanal' => $kidsPlanSemanal,
+            'horario' => $horario,
+            'arrayDias' => $arrayDias
+        ]);
+    }
+
+    
+    private function get_horario($cabeceraId, $periodoId, $courseId, $usuario){
+        $con = Yii::$app->db;
+        $query = "select 	dia.nombre as dia, hor.nombre as hora, det.id as detalle_id
+                            ,(select 	m.nombre 
+                            from	scholaris_clase c
+                                    inner join op_course_paralelo p on p.id = c.paralelo_id 
+                                    inner join op_course cu on cu.id = p.course_id 
+                                    inner join op_faculty f on f.id = c.idprofesor 
+                                    inner join res_users u on u.partner_id = f.partner_id 
+                                    inner join scholaris_horariov2_horario h on h.clase_id = c.id 
+                                    inner join scholaris_horariov2_detalle d on d.id = h.detalle_id 
+                                    inner join ism_area_materia am on am.id = c.ism_area_materia_id 
+                                    inner join ism_materia m on m.id = am.materia_id 
+                            where 	cu.id = $courseId
+                                    and u.login = '$usuario'
+                                    and d.id = det.id limit 1) as materia
+                            ,(select c.id  
+                            from scholaris_clase c
+                            inner join op_course_paralelo p on p.id = c.paralelo_id
+                            inner join op_course cu on cu.id = p.course_id
+                            inner join op_faculty f on f.id = c.idprofesor
+                            inner join res_users u on u.partner_id = f.partner_id
+                            inner join scholaris_horariov2_horario h on h.clase_id = c.id
+                            inner join scholaris_horariov2_detalle d on d.id = h.detalle_id
+                            inner join ism_area_materia am on am.id = c.ism_area_materia_id 
+                            inner join ism_materia m on m.id = am.materia_id 
+                            where cu.id = $courseId
+                            and u.login = '$usuario'
+                            and d.id = det.id limit 1) as clase_id
+                    from 	scholaris_horariov2_cabecera cab
+                            inner join scholaris_horariov2_detalle det on det.cabecera_id = cab.id 
+                            inner join scholaris_horariov2_dia dia on dia.id = det.dia_id
+                            inner join scholaris_horariov2_hora hor on hor.id = det.hora_id 
+                    where 	cab.id = $cabeceraId
+                            and cab.periodo_id = $periodoId
+                    order by dia.numero, hor.numero;";
+
+        $res = $con->createCommand($query)->queryAll();
+        return $res;
+    }
+
+
+    /**
+     * Método que entrega el horario asignado de la planificacion
+     */
+    private function get_horario_asignado($courseId){
+        $con = Yii::$app->db;
+        $query = "select 	c.asignado_horario 
+                        from	scholaris_clase c 
+                                inner join op_course_paralelo p on p.id = c.paralelo_id 
+                                inner join op_course cur on cur.id = p.course_id 
+                        where 	cur.id = $courseId
+                        limit 1;";
+        $res = $con->createCommand($query)->queryOne();
+
+        return $res['asignado_horario'];
+    }
+
 }

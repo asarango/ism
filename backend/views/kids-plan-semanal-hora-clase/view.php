@@ -4,14 +4,14 @@ use yii\helpers\Html;
 use yii\widgets\DetailView;
 
 /* @var $this yii\web\View */
-/* @var $model backend\models\ScholarisAsistenciaAlumnosNovedades */
+/* @var $model backend\models\KidsPlanSemanalHoraClase */
 
 $this->title = $model->id;
-$this->params['breadcrumbs'][] = ['label' => 'Scholaris Asistencia Alumnos Novedades', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => 'Kids Plan Semanal Hora Clases', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
 ?>
-<div class="scholaris-asistencia-alumnos-novedades-view">
+<div class="kids-plan-semanal-hora-clase-view">
 
     <h1><?= Html::encode($this->title) ?></h1>
 
@@ -30,13 +30,12 @@ $this->params['breadcrumbs'][] = $this->title;
         'model' => $model,
         'attributes' => [
             'id',
-            'asistencia_profesor_id',
-            'comportamiento_detalle_id',
-            'observacion',
-            'grupo_id',
-            'es_justificado:boolean',
-            'codigo_justificacion',
-            'acuerdo_justificacion:ntext',
+            'plan_semanal_id',
+            'clase_id',
+            'detalle_id',
+            'fecha',
+            'created_at',
+            'created',
         ],
     ]) ?>
 

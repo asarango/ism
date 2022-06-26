@@ -26,7 +26,12 @@ use yii\helpers\Html;
                 <?php
                     $semanaId = $plan['id'];
                     if($experienciaId == 0 && $plan['kids_unidad_micro_id'] != 0){
-                        echo '<a class="btn btn-primary" id="btn-show"><i class="fas fa-eye"></i></a>';
+                        echo Html::a(
+                            '<i class="fas fa-eye"></i>',
+                            ['detalle',
+                             'kids_plan_semanal_id' => $plan['plan_semanal_id']
+                            ]
+                        ); 
                     }elseif($experienciaId == 0 && !$plan['kids_unidad_micro_id']){
                         echo '<i class="fas fa-gift" title="Disponible"></i>';
                     }elseif($experienciaId != 0 && $plan['kids_unidad_micro_id'] != 0){

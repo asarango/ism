@@ -54,19 +54,15 @@ use backend\models\NeexClase;
                 <select  name="clase_id" class="select2 select2-hidden-accessible" style="width: 60%;" tabindex="-1" aria-hidden="true">
                     <option selected="selected" value="" >Asignatura</option>
                     <?php
-                    foreach ($materiasSelect as $disponible) {
-                        echo '<option value="' . $disponible['clase_id'] . '">' . $disponible['materia'] . '</option>';
-                    }
+                        foreach ($materiasSelect as $disponible) {
+                            echo '<option value="' . $disponible['clase_id'] . '">' . $disponible['materia'] . '</option>';
+                        }
                     ?>
-                </select>
-         
-            
-         
-                <?= Html::submitButton('Ingresar', ['class' => 'btn btn-success submit my-text-medium']) ?>
-           
+                </select>         
+                <?= Html::submitButton('Ingresar', ['class' => 'btn btn-success submit my-text-medium']) ?>           
             <?= Html::endForm() ?>
        
-
+        
         <div class="table responsive" style="width: 95%">
             <table class="table table-hover table-striped my-text-medium">
                 <thead>
@@ -83,7 +79,9 @@ use backend\models\NeexClase;
                     foreach ($materiasNee as $seleccionada) {
                         ?>
                         <tr class="text-center">
-                            <td><?= $seleccionada->clase->materia->name . '-' . $seleccionada->clase->profesor->last_name . ' ' . $seleccionada->clase->profesor->x_first_name ?></td>
+                            
+                            <td><?= $seleccionada->clase->ismAreaMateria->mallaArea->periodoMalla->malla->opCourseTemplate->name .
+                             '-' . $seleccionada->clase->profesor->last_name . ' ' .$seleccionada->clase->profesor->x_first_name ?></td>
                             <td><?= $seleccionada->grado_nee ?></td>
                             <td>
                                 <?php
@@ -114,7 +112,7 @@ use backend\models\NeexClase;
                                     <div class="modal-dialog">
                                         <div class="modal-content">
                                             <div class="modal-header">
-                                                <h5 class="modal-title" id="exampleModalLabel">NEE-<?= $seleccionada->clase->materia->name ?></h5>
+                                                <h5 class="modal-title" id="exampleModalLabel">NEE-<?= $seleccionada->clase->ismAreaMateria->mallaArea->periodoMalla->malla->opCourseTemplate->name ?></h5>
                                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                             </div>
                                             <div class="modal-body" style="text-align: start" >

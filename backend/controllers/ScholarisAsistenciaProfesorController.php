@@ -313,8 +313,11 @@ class ScholarisAsistenciaProfesorController extends Controller {
     
     
     
-    public function actionJustificar(){
-        print_r('desde ajustificacion');
+    public function actionDocentes(){
+        
+        
+        
+        return $this->render('docentes');
     }
     
 

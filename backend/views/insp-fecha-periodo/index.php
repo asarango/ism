@@ -90,7 +90,7 @@ $this->title = 'Fechas del año lectivo';
                             <canvas id="chart-no-justificado-docentes"></canvas>
                             <?=
                             Html::a('<i class="fas fa-user-secret"> Docentes sin timbrar</i>',
-                                    ['scholaris-asistencia-profesor/justificar']);
+                                    ['scholaris-asistencia-profesor/docentes']);
                             ?>
                         </div>
 

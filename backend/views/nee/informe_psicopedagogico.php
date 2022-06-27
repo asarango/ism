@@ -13,7 +13,11 @@ use yii\helpers\Url;
     <h5 style="margin-top: 10px; text-align: start;color:#0a1f8f">5.- INFORME PSICOPEDAGÓGICO</h5>
     <div class="col-lg-12 col-md-12 scroll-400" >
         <?php
+        // echo '<pre>';
+        // print_r($materiasNee);
+        // die();
         foreach ($opciones5 as $opcion) {
+            
             ?>
             <div class="card shadow" style="padding: 15px; margin-left: 25px;margin-right: 25px; margin-bottom: 15px">
                 <?= Html::beginForm(['update-sections', 'id' => $opcion['id']], 'post') ?>

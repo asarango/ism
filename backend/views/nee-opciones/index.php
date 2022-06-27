@@ -102,7 +102,6 @@ $this->title = 'NEE OPCIONES';
                                                         )
                                                         ?>
                                                     </li>
-
                                                     <li>
                                                         <a onclick="ajaxDelete(<?=$opcion['id']?>)" type="button" class="dropdown-item" style="font-size: 10px">
                                                             Eliminar
@@ -138,7 +137,7 @@ $this->title = 'NEE OPCIONES';
         var params = {
             id: id
         };
-        
+       
         $.ajax({
             url:url,
             data:params,

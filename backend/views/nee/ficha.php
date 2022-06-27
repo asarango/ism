@@ -65,7 +65,7 @@ if($pestana == 'informe_psicopedagogico'){
         <div class="card shadow col-lg-12 col-md-12">
             <div class=" row align-items-center p-2"><!-- INICIO DE CABECERA -->
                 <div class="col-lg-1">
-                    <h4><img src="ISM/main/images/submenu/herramientas-para-reparar.png" width="64px" style="" class="img-thumbnail"></h4>
+                    <h4><img src="ISM/main/images/submenu/herramientas-para-reparar.png" width="64px" class="img-thumbnail"></h4>
                 </div>
                 <div class="col-lg-11">
                     <h4><?= Html::encode($this->title) ?></h4>
@@ -180,7 +180,11 @@ if($pestana == 'informe_psicopedagogico'){
                         </div>
                         <!-- RENDERIZA A LA VISTA informe_psicopedagogico -->
                         <div class="tab-pane fade <?=$showInformePsicoActive ?>" id="v-pills-5" role="tabpanel" aria-labelledby="v-pills-5-tab">
-                            
+                        <?php
+                            echo $this->render('informe_psicopedagogico', [
+                                'materiasNee' => $materiasNee
+                            ])
+                            ?>
                         </div>
 
                         <!-- RENDERIZA A LA VISTA adaptaciones -->

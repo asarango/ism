@@ -95,7 +95,10 @@ class NeeOpcionesController extends Controller
 
     public function actionDelete($id){
         $model = NeeOpciones::findOne($id);
-        $model->delete();
+        if($model){
+            $model->delete();    
+        }
+        
         return $this->redirect(['index']);
     }
     

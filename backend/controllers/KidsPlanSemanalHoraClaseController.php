@@ -2,9 +2,11 @@
 
 namespace backend\controllers;
 
+use backend\models\KidsPlanSemanal;
 use Yii;
 use backend\models\KidsPlanSemanalHoraClase;
 use backend\models\KidsPlanSemanalHoraClaseSearch;
+use backend\models\ScholarisHorariov2Detalle;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -36,17 +38,53 @@ class KidsPlanSemanalHoraClaseController extends Controller
     public function actionIndex1()
     {
 
-        print_r($_GET);
+        $planSemanalId  = $_GET['plan_semanal_id'];
+        $claseId        = $_GET['clase_id'];
+        $detalleId      = $_GET['detalle_id'];
 
-        die();
+        $detalle = ScholarisHorariov2Detalle::findOne($detalleId);
+        $planSemanal = KidsPlanSemanal::findOne($planSemanalId);
+        $fechaInicia = $planSemanal->semana->fecha_inicio;
 
-        $searchModel = new KidsPlanSemanalHoraClaseSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $fecha = $this->calcula_fecha($detalle->dia->numero, $fechaInicia);
+        
+        $model = KidsPlanSemanalHoraClase::find()
+                ->where([
+                    'plan_semanal_id' => $planSemanalId, 
+                    'clase_id' => $claseId, 
+                    'detalle_id' => $detalleId
+                    ])
+                ->one();
 
-        return $this->render('index', [
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
-        ]);
+        if($model){
+            return $this->render('index',[
+                'model' => $model
+            ]);
+        }else{
+            $today = date('Y-m-d H:i:s');
+            $user = Yii::$app->user->identity->usuario;
+            $modelN = new KidsPlanSemanalHoraClase();
+            $modelN->plan_semanal_id = $planSemanalId;
+            $modelN->clase_id = $claseId;
+            $modelN->detalle_id = $detalleId;
+            $modelN->fecha = $fecha;
+            $modelN->created_at = $today;
+            $modelN->created = $user;
+            $modelN->save();
+
+            return $this->render('index',[
+                'model' => $modelN
+            ]);
+        }        
+    }
+
+    private function calcula_fecha($numeroNuevoDia, $fechaInicia){
+        
+        $diasParaSumar = $numeroNuevoDia-1;
+
+        $nuevaFecha = strtotime($fechaInicia.'+ '.$diasParaSumar.' days');
+
+        return date("Y-m-d", $nuevaFecha);
     }
 
     /**

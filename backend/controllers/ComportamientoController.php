@@ -16,6 +16,7 @@ use backend\models\PlanificacionOpciones;
 use backend\models\ScholarisAsistenciaAlumnosNovedades;
 use backend\models\ScholarisActividad;
 use backend\models\ScholarisAsistenciaClaseTema;
+use backend\models\helpers\Scripts;
 
 /**
  * ScholarisAsistenciaProfesorController implements the CRUD actions for ScholarisAsistenciaProfesor model.
@@ -89,9 +90,7 @@ class ComportamientoController extends Controller {
                             where os.id = sgac.estudiante_id
                             and sgac.clase_id = $modelAsistencia->clase_id order by os.last_name,os.first_name,os.middle_name;";
 
-        $modelGrupo = $con->createCommand($query)->queryAll();
-
-        
+        $modelGrupo = $con->createCommand($query)->queryAll();        
 
         $modelActividades = ScholarisActividad::find()
                 ->where([
@@ -100,6 +99,9 @@ class ComportamientoController extends Controller {
                         ])
                 ->andWhere(['between', 'inicio', $fechaDesde, $fechaHasta])
                 ->all();
+        //buscamos alumnos con NEE, de la clase
+        $objScript = new Scripts();
+        $modelNeeXClase = $objScript->mostrarAlumnosNeeClase('1631');
         
         $modelTemas = ScholarisAsistenciaClaseTema::find()
                 ->where(['asistencia_profesor_id' => $id])
@@ -112,6 +114,7 @@ class ComportamientoController extends Controller {
                     'modelAsistencia' => $modelAsistencia,
                     'modelActividades' => $modelActividades,
                     'modelTemas' => $modelTemas,
+                    'modelNeeXClase'=>$modelNeeXClase
         ]);
     }
 

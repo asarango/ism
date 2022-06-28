@@ -11,12 +11,12 @@ use yii\helpers\Url;
 $this->title = 'Opciones del Menú - ' . $menu->nombre;
 $pdfTitle = $this->title;
 $this->params['breadcrumbs'][] = $this->title;
+
+
 ?>
 
 
 <div class="secretaria-index">
-
-
 
     <div class="m-0 vh-50 row justify-content-center align-items-center">
 
@@ -50,7 +50,6 @@ $this->params['breadcrumbs'][] = $this->title;
                             </div>
                         </div>
                     </div>
-
                     <?php
                 }
                 ?>                

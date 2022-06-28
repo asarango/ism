@@ -76,12 +76,17 @@ use backend\models\NeexClase;
                 </thead>
                 <tbody>
                     <?php
+                    // echo '<pre>';
+                    // print_r($materiasNee);
+                    // die();
                     foreach ($materiasNee as $seleccionada) {
+                        
+                        
                         ?>
                         <tr class="text-center">
                             
-                            <td><?= $seleccionada->clase->ismAreaMateria->mallaArea->periodoMalla->malla->opCourseTemplate->name .
-                             '-' . $seleccionada->clase->profesor->last_name . ' ' .$seleccionada->clase->profesor->x_first_name ?></td>
+                            <td><?= strtoupper($seleccionada->clase->ismAreaMateria->materia->nombre).
+                             ' / ' . $seleccionada->clase->profesor->last_name . ' ' .$seleccionada->clase->profesor->x_first_name ?></td>
                             <td><?= $seleccionada->grado_nee ?></td>
                             <td>
                                 <?php

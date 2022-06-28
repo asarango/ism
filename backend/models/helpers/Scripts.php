@@ -549,6 +549,23 @@ where hor.clase_id in
      public function get_cursos_x_periodo($periodoId){
          
      }
+     public function mostrarAlumnosNeeClase($id_clase)
+     {
+        
+        $con = Yii::$app->db;
+
+        $query = "select n.id,n.student_id ,scholaris_periodo_id ,grado_nee,
+                fecha_inicia,diagnostico_inicia,estado,idcurso,
+                idprofesor,paralelo_id
+                from nee n
+                inner join nee_x_clase nc on n.id = nc.nee_id 
+                inner join scholaris_periodo p on p.id = n.scholaris_periodo_id 
+                inner join scholaris_clase c on c.id = nc.clase_id 
+                where nc.clase_id = '$id_clase';";
+
+        $respuesta = $con->createCommand($query)->queryall();
+        return $respuesta;         
+    }
 
     
 }

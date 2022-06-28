@@ -15,8 +15,13 @@ $estudiante = $student->data_student[0];
 //print_r($estudiante);
 $padres = $student->data_parents;
 
-$this->title = 'DIAC - ' . $estudiante->first_name . ' ' . $estudiante->middle_name . ' ' . $estudiante->last_name;
-//echo count($historial);
+$nombreCompletoEstudiante = $estudiante->first_name . ' ' . $estudiante->middle_name . ' ' . $estudiante->last_name;
+$inicialesEstudiante = getIniciales($nombreCompletoEstudiante);
+$this->title = 'Registro de Necesidad - ' . $nombreCompletoEstudiante . ' ('.$inicialesEstudiante.')';
+
+// echo "$estudiante->first_name"."<br>";
+// echo "$estudiante->middle_name"."<br>";
+// echo "$estudiante->last_name"."<br>";
 // echo '<pre>';
 //echo $pestana;
 //  print_r($opciones5);
@@ -45,18 +50,16 @@ if($pestana == 'informe_psicopedagogico'){
     $informePsicoActive = 'active';
     $showInformePsicoActive = 'show active';
 }
-//echo '<pre>';
-//echo $datosEstudActive;
-//echo $showDatosEstudActive;
-//echo '<br>';
-//echo $fechaElabActive;
-//echo $showFechaElabActive;
-//echo '<br>';
-//echo $informePsicoActive;
-//echo $showInformePsicoActive;
-//echo '<br>';
 
 
+function getIniciales($nombre){
+    $name = '';
+    $explode = explode(' ',$nombre);
+    foreach($explode as $x){
+        $name .=  $x[0];
+    }
+    return $name;    
+}
 ?>
 
 <div class="nee-ficha">
@@ -181,9 +184,9 @@ if($pestana == 'informe_psicopedagogico'){
                         <!-- RENDERIZA A LA VISTA informe_psicopedagogico -->
                         <div class="tab-pane fade <?=$showInformePsicoActive ?>" id="v-pills-5" role="tabpanel" aria-labelledby="v-pills-5-tab">
                         <?php
-                            echo $this->render('informe_psicopedagogico', [
-                                'materiasNee' => $materiasNee
-                            ])
+                            // echo $this->render('informe_psicopedagogico', [
+                            //     'materiasNee' => $materiasNee
+                            // ])
                             ?>
                         </div>
 

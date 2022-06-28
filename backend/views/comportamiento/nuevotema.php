@@ -19,8 +19,8 @@ $this->title = 'Creando un tema para este día';
                     <h4><?= Html::encode($this->title) ?></h4>
                     <p>
                         <?=
-                        $modelAsistencia->clase->materia->name . ' / ' .
-                        $modelAsistencia->clase->course->name . ' "' .
+                        $modelAsistencia->clase->ismAreaMateria->materia->nombre. ' / ' .
+                        $modelAsistencia->clase->paralelo->course->name . ' "' .
                         $modelAsistencia->clase->paralelo->name . '" / ' .
                         $modelAsistencia->clase->profesor->last_name . " " . $modelAsistencia->clase->profesor->x_first_name . ' / ' .
                         $modelAsistencia->fecha . " / " .
@@ -77,7 +77,7 @@ $this->title = 'Creando un tema para este día';
 
 
 
-<nav aria-label="breadcrumb">
+<!-- <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
         <li class="breadcrumb-item">
             <?php echo Html::a('Inicio', ['/profesor-inicio/index']); ?>
@@ -87,7 +87,7 @@ $this->title = 'Creando un tema para este día';
         </li>
         <li class="breadcrumb-item active" aria-current="page"><?= $this->title ?></li>
     </ol>
-</nav>
+</nav> -->
 
 
 

@@ -25,6 +25,7 @@ $total = ScholarisAsistenciaAlumnosNovedades::find()
         'asistencia_profesor_id' => $modelAsistencia->id
     ])
     ->all();
+
 //conteo de alumnos con novedades
 $numEstNovedades = ScholarisAsistenciaAlumnosNovedades::find()
     ->select(["grupo_id"])
@@ -33,6 +34,14 @@ $numEstNovedades = ScholarisAsistenciaAlumnosNovedades::find()
         'asistencia_profesor_id' => $modelAsistencia->id
     ])
     ->asArray()->all();
+//conteo de novedades
+$numNovedades = ScholarisAsistenciaAlumnosNovedades::find()
+->select(["grupo_id"])
+->where([
+    'asistencia_profesor_id' => $modelAsistencia->id
+])
+->asArray()->all();
+
 //conteo de alumnos sin asistencia
 $numEstSinAsistir = ScholarisAsistenciaAlumnosNovedades::find()
     ->select(["grupo_id"])
@@ -43,8 +52,9 @@ $numEstSinAsistir = ScholarisAsistenciaAlumnosNovedades::find()
     ])
     ->asArray()->all();
 
-
-
+// echo '<pre>';
+// print_r($modelGrupo);
+// die();
 //$this->params['breadcrumbs'][] = $this->title;
 ?>
 
@@ -52,7 +62,7 @@ $numEstSinAsistir = ScholarisAsistenciaAlumnosNovedades::find()
 
     <div class="m-0 vh-50 row justify-content-center align-items-center">
 
-        <div class="card shadow col-lg-10 col-md-10">
+        <div class="card shadow col-lg-11 col-md-11">
 
             <div class=" row align-items-center p-2">
                 <div class="col-lg-1">
@@ -95,51 +105,89 @@ $numEstSinAsistir = ScholarisAsistenciaAlumnosNovedades::find()
             </p>
 
             <div class="row">
-                <div class="col-lg-4 col-md-4">
+                <div class="col-lg-5 col-md-5">
                     <div class="table table-responsive" style="height: 500px; overflow-y: scroll">
                         <table class="table table-striped table-hover table-condensed table-bordered my-text-small">
                             <thead>
                                 <tr style="background-color: #898b8d; text-align: center;color: #ab0a3d;">
                                     <th>#</th>
-                                    <th><a href="#" onclick="show_obs()"><i class="text-center fas fa-circle" style="font-size:15px;color:#ab0a3d"></a></i></th>
-                                    <th>Estudiantes</th>
+                                    <th><a href="#" onclick="show_obs_nee()"><i class="text-center fas fa-circle btn-nn" style="font-size:15px;color:#ab0a3d"></i></a>
+                                        <a href="#" class="btn-n" onclick="hide_obs_nee()"><i class="text-center fas fa-circle btn-n" style="font-size:15px;color:#ab0a3d"></i></a>
+                                    </th>
+                                    <th><font size = "2">Estudiantes <span style="color: #0D6EFD;">(<?= count($modelGrupo);?>)</span></font></th>
                                     <th>Novedades
                                         <table>
                                             <tr>
                                                 <td style="color: #ab0a3d;">#:</td>
-                                                <td style="color: #0a1f8f;font-size: 13px; "><?php echo count($numEstNovedades) ?></td>
+                                                <td style="color: #0D6EFD;font-size: 13px; "><?php echo count($numNovedades ). 'N de ' . count($numEstNovedades).'E ' ?></td>
                                             </tr>
                                         </table>
                                     </th>
-                                    <th>Asistencia
+                                    <th>Asisten / Faltan
+                                        <?php $estAsisten = count($modelGrupo)-count($numEstSinAsistir) ;
+                                              $estFaltan = count($numEstSinAsistir) ;
+                                        ?>
                                         <table>
                                             <tr>
                                                 <td style="color: #ab0a3d;">#:</td>
-                                                <td style="color: #0a1f8f;font-size: 13px; "><?php echo count($numEstSinAsistir) ?></td>
+                                                <td style="color: #0D6EFD;font-size: 13px; "><?php echo  "$estAsisten /  $estFaltan "?></td>
                                             </tr>
                                         </table>
                                     </th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php
-                                $num = 0;
-                                $divisor = 5;
-
+                                <?php                              
+                                $num=0;                          
+                                //echo '<pre>';
+                                // print_r($modelGrupo);
+                                //print_r($modelNeeXClase);
+                                //die();
+   
                                 foreach ($modelGrupo as $alumno) {
                                     $num++;
                                     $numObsAlumno = 0;
-                                    $color = consulta_color($num);
+                                    $color = '';
 
                                     //******** NUMERO  *****************//
                                     echo '<tr>';
                                     echo '<td>' . $num . '</td>';
 
-                                    //******** COLOR N.E.E  *****************//                                   
-                                    if (($num % $divisor) == 0) {
-                                        echo '<td class="text-center"><i class="fas fa-circle btn-n" style="font-size:15px;color:' . $color . '; display:none"></i></td>';
-                                    } else {
-                                        echo '<td></td>';
+                                    //******** COLOR N.E.E  *****************// 
+                                    foreach($modelNeeXClase as $nee)
+                                    {
+                                        if($alumno['estudiante_id'] == $nee['student_id']) 
+                                        {
+                                            if($nee['grado_nee']==1){$color = 'green';}
+                                            if($nee['grado_nee']==2){$color = 'orange';}
+                                            if($nee['grado_nee']==3){$color = 'red';} 
+                                            echo '<td class="text-center"><i class="fas fa-circle btn-n" data-bs-toggle="modal" data-bs-target="#exampleModal" style="font-size:15px;color:' . $color . '; display:none" title="Grado: '.$nee['grado_nee'].'/ Fecha: '.$nee['fecha_inicia'].'/ Det: '.$nee['diagnostico_inicia'].'"></i></td>';  
+                                           
+                                            echo '<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" >';
+                                            echo '<div class="modal-dialog modal-dialog-centered" >';
+                                                echo '<div class="modal-content" style="background:#FFFFFF" role="dialog">';
+                                                echo '<div class="modal-header">';
+                                                    echo '<h5 class="modal-title" id="exampleModalLabel">'.$alumno['last_name'] . ' ' . $alumno['first_name'].'</h5>';
+                                                    echo '<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>';
+                                                echo '</div>';
+                                                echo '<div class="modal-body">';
+                                                    echo 'Grado: '.$nee['grado_nee'];
+                                                    echo '<br/>';
+                                                    echo 'Fecha: '.$nee['fecha_inicia'];
+                                                    echo '<br/>';
+                                                    echo 'Detalle: '.$nee['diagnostico_inicia'];   
+                                                    echo '<br/>';                                                 
+                                                echo '</div>';
+                                                // echo '<div class="modal-footer">';
+                                                //     echo '<button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cerrar</button>';                                                    
+                                                // echo '</div>';
+                                                echo '</div>';
+                                            echo '</div>';
+                                            echo '</div>';                                          
+                                        }
+                                        else {
+                                            echo '<td></td>';
+                                        }
                                     }
 
                                     //******** ESTUDIANTES  *****************//
@@ -170,7 +218,7 @@ $numEstSinAsistir = ScholarisAsistenciaAlumnosNovedades::find()
                         </table>
                     </div>
                 </div>
-                <div class="col-lg-8 col-md-8">
+                <div class="col-lg-7 col-md-7">
                     <div class="row shadow" style="margin-right: 10px">
                         <p>
                             <b><u>
@@ -283,24 +331,23 @@ function consulta_num_falta_por_alumno($total, $idAlumno)
     return $resp;
 }
 
-function consulta_color($num)
-{
-    $color = 'green';
-    if (($num % 2) == 0) {
-        $color = 'red';
-    }
-    if (($num % 3) == 0) {
-        $color = 'orange';
-    }
-    return $color;
-}
 ?>
 
 <!--/********************************************************************************************************************* */-->
 <!--PROGRAMACION JAVASCRIPT-->
-<script>
-    function show_obs() {
-        $(".btn-n").show();
+<script>  
+    window.onload = function () {
+        hide_obs_nee() 
+    }
+    function show_obs_nee() 
+    {        
+        $(".btn-n").show(); 
+        $(".btn-nn").hide();          
+    }
+    function hide_obs_nee() 
+    {        
+        $(".btn-n").hide();    
+        $(".btn-nn").show();          
     }
 
     function falta_a_clases_estudiante(alumnoId, claseId) {

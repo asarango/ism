@@ -26,7 +26,6 @@ $this->title = 'Plan Semanal';
                 <div class="row" style="background-color: #ccc; font-size: 12px">
                     <div class="col-md-12 col-sm-12">
                         <p style="color:white">
-                            <?= $this->title ?>
                             |                                
                             <?=
                             Html::a('<span class="badge rounded-pill" style="background-color: #0a1f8f"><i class="fa fa-briefcase" aria-hidden="true"></i> Inicio</span>',

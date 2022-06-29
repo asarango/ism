@@ -192,6 +192,19 @@ class KidsPlanSemanalController extends Controller
                             where cu.id = $courseId
                             and u.login = '$usuario'
                             and d.id = det.id limit 1) as clase_id
+                            ,(select concat(cu.name, ' ', p.name) 
+                            from scholaris_clase c
+                            inner join op_course_paralelo p on p.id = c.paralelo_id
+                            inner join op_course cu on cu.id = p.course_id
+                            inner join op_faculty f on f.id = c.idprofesor
+                            inner join res_users u on u.partner_id = f.partner_id
+                            inner join scholaris_horariov2_horario h on h.clase_id = c.id
+                            inner join scholaris_horariov2_detalle d on d.id = h.detalle_id
+                            inner join ism_area_materia am on am.id = c.ism_area_materia_id 
+                            inner join ism_materia m on m.id = am.materia_id 
+                            where cu.id = $courseId
+                            and u.login = '$usuario'
+                            and d.id = det.id limit 1) as curso
                     from 	scholaris_horariov2_cabecera cab
                             inner join scholaris_horariov2_detalle det on det.cabecera_id = cab.id 
                             inner join scholaris_horariov2_dia dia on dia.id = det.dia_id

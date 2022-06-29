@@ -11,8 +11,9 @@ use yii\grid\GridView;
 $this->title = 'Plan Semanal';
 
 // echo '<pre>';
+// print_r($kidsPlanSemanal);
 // print_r($kidsPlanSemanal->id);
-// print_r($kidsPlanSemanal->kidsUnidadMicro->experiencia);
+// print_r($kidsPlanSemanal->kidsUnidadMicro->pca->opCourse);
 // print_r($kidsPlanSemanal->semana->nombre_semana);
 // print_r($experiencias);
 // print_r($arrayDias);
@@ -32,7 +33,6 @@ $termina = $kidsPlanSemanal->kidsUnidadMicro->fecha_termina;
                 <div class="row" style="background-color: #ccc; font-size: 12px">
                     <div class="col-md-12 col-sm-12">
                         <p style="color:white">
-                            <?= $this->title ?>
                             |                                
                             <?=
                             Html::a('<span class="badge rounded-pill" style="background-color: #0a1f8f"><i class="fa fa-briefcase" aria-hidden="true"></i> Inicio</span>',
@@ -44,6 +44,16 @@ $termina = $kidsPlanSemanal->kidsUnidadMicro->fecha_termina;
                                     '<span class="badge rounded-pill" style="background-color: #0a1f8f"><i class="fa fa-briefcase" aria-hidden="true"></i> Planificaciones</span>',
                                     [
                                         'kids-menu/index1'
+                                    ]
+                            );
+                            ?>    
+                            |
+                            <?=
+                            Html::a(
+                                    '<span class="badge rounded-pill" style="background-color: #0a1f8f"><i class="fa fa-briefcase" aria-hidden="true"></i> Experiencias</span>',
+                                    [
+                                        'kids-plan-semanal/index',
+                                        'pca_id'=> $kidsPlanSemanal->kids_unidad_micro_id
                                     ]
                             );
                             ?>    
@@ -115,7 +125,8 @@ $termina = $kidsPlanSemanal->kidsUnidadMicro->fecha_termina;
                                               <td style="background-color:#65b2e8">°<?=$arrayDias[$i]['horas'][$j]['hora']?></td>
                                                 <td style="text-align:center">
                                                     <?=Html::a(
-                                                       $arrayDias[$i]['horas'][$j]['materia'],
+                                                       $arrayDias[$i]['horas'][$j]['materia'].
+                                                        '<br><small class="my-text-small">'.$arrayDias[$i]['horas'][$j]['curso'].'</small>',
                                                         ['kids-plan-semanal-hora-clase/index1',
                                                         'plan_semanal_id' => $kidsPlanSemanal->id,
                                                         'clase_id' => $arrayDias[$i]['horas'][$j]['clase_id'],

@@ -8,7 +8,6 @@ use backend\models\KidsPlanSemanalHoraClase;
 use backend\models\KidsPlanSemanalHoraClaseSearch;
 use backend\models\ScholarisHorariov2Detalle;
 use backend\models\KidsPlanSemanalHoraDestreza;
-
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -47,15 +46,9 @@ class KidsPlanSemanalHoraClaseController extends Controller
 
         $detalle = ScholarisHorariov2Detalle::findOne($detalleId);
         $planSemanal = KidsPlanSemanal::findOne($planSemanalId);
-
         $fechaInicia = $planSemanal->semana->fecha_inicio; //devuelve la fecha que inicia
 
         $fecha = $this->calcula_fecha($detalle->dia->numero, $fechaInicia); //calculo de la fecha para obtener la fecha que se planifica
-
-        $fechaInicia = $planSemanal->semana->fecha_inicio;
-
-        $fecha = $this->calcula_fecha($detalle->dia->numero, $fechaInicia);
-
         
         $model = KidsPlanSemanalHoraClase::find()
                 ->where([
@@ -64,7 +57,6 @@ class KidsPlanSemanalHoraClaseController extends Controller
                     'detalle_id' => $detalleId
                     ])
                 ->one();
-
 
         $unidadMicroId = $planSemanal->kids_unidad_micro_id;
         $destrezasDisponibles = $this->get_destrezas_disponibles($unidadMicroId);//destrezas disponibles planificadas en la
@@ -80,11 +72,6 @@ class KidsPlanSemanalHoraClaseController extends Controller
                 'model' => $model,
                 'modelDestrezas' => $modelDestrezas,
                 'destrezasDisponibles' => $destrezasDisponibles
-
-        if($model){
-            return $this->render('index',[
-                'model' => $model
-
             ]);
         }else{
             $today = date('Y-m-d H:i:s');
@@ -113,18 +100,6 @@ class KidsPlanSemanalHoraClaseController extends Controller
     private function calcula_fecha($numeroNuevoDia, $fechaInicia){        
         $diasParaSumar = $numeroNuevoDia-1;
         $nuevaFecha = strtotime($fechaInicia.'+ '.$diasParaSumar.' days');
-            return $this->render('index',[
-                'model' => $modelN
-            ]);
-        }        
-    }
-
-    private function calcula_fecha($numeroNuevoDia, $fechaInicia){
-        
-        $diasParaSumar = $numeroNuevoDia-1;
-
-        $nuevaFecha = strtotime($fechaInicia.'+ '.$diasParaSumar.' days');
-
         return date("Y-m-d", $nuevaFecha);
     }
 

@@ -143,9 +143,6 @@ $termina = $kidsPlanSemanal->kidsUnidadMicro->fecha_termina;
                                                     </td>
                                                     <?php
                                                 }
-                                                ?>
-                                                
-                                            <?php
                                         }
                                     ?>
                                     

@@ -18,7 +18,7 @@ class KidsDestrezaTareaSearch extends KidsDestrezaTarea
     {
         return [
             [['id', 'plan_destreza_id'], 'integer'],
-            [['fecha_presentacion', 'detalle_tarea', 'materiales', 'created_at', 'created', 'updated_at', 'upated'], 'safe'],
+            [['fecha_presentacion', 'titulo', 'detalle_tarea', 'materiales', 'created_at', 'created', 'updated_at', 'updated'], 'safe'],
             [['publicado_al_estudiante'], 'boolean'],
         ];
     }
@@ -67,10 +67,11 @@ class KidsDestrezaTareaSearch extends KidsDestrezaTarea
             'updated_at' => $this->updated_at,
         ]);
 
-        $query->andFilterWhere(['ilike', 'detalle_tarea', $this->detalle_tarea])
+        $query->andFilterWhere(['ilike', 'titulo', $this->titulo])
+            ->andFilterWhere(['ilike', 'detalle_tarea', $this->detalle_tarea])
             ->andFilterWhere(['ilike', 'materiales', $this->materiales])
             ->andFilterWhere(['ilike', 'created', $this->created])
-            ->andFilterWhere(['ilike', 'upated', $this->upated]);
+            ->andFilterWhere(['ilike', 'updated', $this->updated]);
 
         return $dataProvider;
     }

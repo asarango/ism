@@ -21,9 +21,11 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'fecha_presentacion') ?>
 
+    <?= $form->field($model, 'titulo') ?>
+
     <?= $form->field($model, 'detalle_tarea') ?>
 
-    <?= $form->field($model, 'materiales') ?>
+    <?php // echo $form->field($model, 'materiales') ?>
 
     <?php // echo $form->field($model, 'publicado_al_estudiante')->checkbox() ?>
 
@@ -33,7 +35,7 @@ use yii\widgets\ActiveForm;
 
     <?php // echo $form->field($model, 'updated_at') ?>
 
-    <?php // echo $form->field($model, 'upated') ?>
+    <?php // echo $form->field($model, 'updated') ?>
 
     <div class="form-group">
         <?= Html::submitButton('Search', ['class' => 'btn btn-primary']) ?>

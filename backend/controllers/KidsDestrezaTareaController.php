@@ -33,15 +33,32 @@ class KidsDestrezaTareaController extends Controller
      * Lists all KidsDestrezaTarea models.
      * @return mixed
      */
-    public function actionIndex()
+    public function actionCrearTarea()
     {
-        $searchModel = new KidsDestrezaTareaSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        // echo '<pre>';
+        // print_r($_POST);
+        // print_r($_FILES);
+        // die();
+        $usuario    = Yii::$app->user->identity->usuario;
+        $hoy        = date('Y-m-d H:i:s');
 
-        return $this->render('index', [
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
+        $model = new KidsDestrezaTarea();
+        $model->plan_destreza_id    = $_POST['plan_destreza_id'];
+        $model->fecha_presentacion  =  $_POST['fecha_presentacion'];
+        $model->titulo              =  $_POST['titulo'];
+        $model->detalle_tarea       =  $_POST['detalle_tarea'];
+        $model->materiales          =  $_POST['materiales'];
+        $model->publicado_al_estudiante =  $_POST['publicado_al_estudiante'];
+        $model->created_at          =  $hoy;
+        $model->created             = $usuario;
+        $model->updated_at          = $hoy;
+        $model->updated             = $usuario;
+        $model->save();
+
+        return $this->redirect(['update',
+            'id' => $model->id
         ]);
+
     }
 
     /**

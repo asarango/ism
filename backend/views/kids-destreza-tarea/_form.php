@@ -16,6 +16,8 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'fecha_presentacion')->textInput() ?>
 
+    <?= $form->field($model, 'titulo')->textInput(['maxlength' => true]) ?>
+
     <?= $form->field($model, 'detalle_tarea')->textarea(['rows' => 6]) ?>
 
     <?= $form->field($model, 'materiales')->textarea(['rows' => 6]) ?>
@@ -28,7 +30,7 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'updated_at')->textInput() ?>
 
-    <?= $form->field($model, 'upated')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'updated')->textInput(['maxlength' => true]) ?>
 
     <div class="form-group">
         <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>

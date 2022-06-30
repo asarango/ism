@@ -124,13 +124,74 @@ $curso = $model->clase->paralelo->course->name;
                                 <?php 
                                 foreach($modelDestrezas as $destrezaSel){
                                     ?>
-                                    <div class="card shadow p-3 zoom" style="margin-top:10px">
-                                    <strong class="text-segundo">Ámbito:</strong>
+                                    <div class="card shadow p-3 " style="margin-top:10px">
+                                        <div style="text-align:end">
+                                            <!-- BOTON AGREGAR TAREA -->
+                                            <a type="button" data-bs-toggle="modal" data-bs-target="#tareaModal<?=$destrezaSel['id'] ?>">
+                                                Agregar tarea &nbsp;
+                                                <i class="fas fa-sticky-note" style="color:#65b2e8" title="Agregar Tarea"></i>
+                                            </a>
+
+                                                <!-- MODAL AGREGAR TAREA -->
+                                                <div class="modal fade" id="tareaModal<?=$destrezaSel['id'] ?>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                    <div class="modal-dialog modal-lg">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title" id="exampleModalLabel">AGREGAR TAREA</h5>
+                                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                            </div>
+                                                            <div class="modal-body my-text-small">
+
+                                                                <div class="row">
+                                                                    <div class="col-md-12 col-sm-12">
+                                                                        <div class="alert alert-info" role="alert" style="text-align:start">
+                                                                            <?= Html::beginForm(['ingresa-destreza'], 'post', ['id' => 'form_destreza']) ?>
+                                                                            <div>
+                                                                                ¡AGREGA TU TAREA PARA LA DESTREZA!
+                                                                            </div>
+                                                                                <div class="mb-3">
+                                                                                    <label for="exampleInputEmail1" class="form-label">TITULO</label>
+                                                                                    <input type="text" class="form-control" name="titulo">
+                                                                                </div>
+                                                                                <div class="mb-3">
+                                                                                    <label for="exampleInputPassword1" class="form-label">CONTENIDO</label>
+                                                                                    <input type="text" class="form-control" name="actividad_contenido">
+                                                                                </div>
+                                                                                <button type="submit" class="btn btn-primary">Submit</button>
+                                                                            
+                                                                            <?= Html::endForm() ?>
+                                                                        </div>
+                                                                                                                                                
+                                                                    </div>
+                                                                </div>
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                        </div>
+
+
+                                        <strong class="text-segundo">Ámbito:</strong>
                                         <p class="text-segundo"><?=$destrezaSel['ambito'] ?></p>
                                         <br>
                                         <strong class="text-primero">Destreza:</strong>
                                         <p class="text-primero"><?=$destrezaSel['destreza'] ?></p>
-                                        
+                                        <div class="row card-footer">
+                                            <div class="col-md-6 col-sm-6" style="text-align:center">
+                                                
+                                                
+
+
+
+
+                                                
+                                            </div>
+                                            <div class="col-md-6 col-sm-6">
+                                                2
+                                            </div>
+                                        </div>
+
                                     </div>
                                     <?php
                                 }

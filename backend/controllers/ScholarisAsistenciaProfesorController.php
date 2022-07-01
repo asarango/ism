@@ -78,7 +78,11 @@ class ScholarisAsistenciaProfesorController extends Controller {
 
         $scripts = new \backend\models\helpers\Scripts();
         $model = $scripts->sql_mostrar_clases_x_profesor();
-
+        
+//        echo '<pre>';
+//        print_r($model);
+//        die();
+        
         $scriptsKids = new ScriptsKids();
         
         $clases = $scriptsKids->get_class_teacher();      
@@ -184,14 +188,14 @@ class ScholarisAsistenciaProfesorController extends Controller {
 
         $fecha = date("Y-m-d");
 
-        $modelExiste = \backend\models\ScholarisAsistenciaProfesor::find()->where([
+        $model = \backend\models\ScholarisAsistenciaProfesor::find()->where([
                     'clase_id' => $clase,
                     'hora_id' => $hora,
                     'fecha' => $fecha
-                ])->one();
+                ])->one();                               
 
-
-        if (!$modelExiste) {
+//        if (!$modelExiste) {            
+        if (!$model) {            
             $login = Yii::$app->user->identity->usuario;
 
             $modelUsuario = ResUsers::find()->where(['login' => $login])->one();
@@ -228,8 +232,7 @@ class ScholarisAsistenciaProfesorController extends Controller {
             $model->creado = $hoy;
             $model->modificado = $hoy;
             $model->estado = 1;
-            $model->save();
-                      
+            $model->save();                                  
 
             if ($diferencia == 1) {
 

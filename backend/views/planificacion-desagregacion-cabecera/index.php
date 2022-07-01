@@ -57,27 +57,14 @@ $this->params['breadcrumbs'][] = $this->title;
                     <option selected="selected" value="" >Escoja un curso...</option>
                     <?php
                             foreach($cursos as $nivel){
-                                echo '<option value="'.$nivel->id.'">'.$nivel->name.'</option>';
+                                echo '<option value="'.$nivel['id'].'">'.$nivel['name'].'</option>';
                             }
                         ?>
                 </select> 
             </div> <!-- /.form-group -->
     
 <hr>
-<!-- ORIGINAL
-                <div class="form-group">
-                    <select name="niveles" class="form-control" onchange="showAsignaturas()" id="nivel">
-                        <option value="">Seleccione Curso...</option>
-                        
-                   <"ingresar etiqueta php">     php
-                            foreach($cursos as $nivel){
-                                echo '<option value="'.$nivel->id.'">'.$nivel->name.'</option>';
-                            }
-                        ?>
 
-                    </select>
-                </div> 
--->
                
                 <div class="row">
                     <div class="table table-responsive">

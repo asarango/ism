@@ -984,8 +984,9 @@ order by hora.numero asc;";
     
     public function duplicar_criterios($actividadNueva, $actividadVieja){        
         $con = Yii::$app->db;
-        $query = "insert into scholaris_actividad_descriptor(actividad_id, criterio_id, detalle_id)
-                    select  $actividadNueva, criterio_id, detalle_id from scholaris_actividad_descriptor where actividad_id = $actividadVieja;";
+        $query = "insert into scholaris_actividad_descriptor(actividad_id, plan_vert_pai_descriptor_id)
+                    select $actividadNueva, plan_vert_pai_descriptor_id from scholaris_actividad_descriptor where actividad_id = $actividadVieja;";
+                    //select  $actividadNueva, criterio_id, detalle_id from scholaris_actividad_descriptor where actividad_id = $actividadVieja;";
         $con->createCommand($query)->execute();        
     }
     

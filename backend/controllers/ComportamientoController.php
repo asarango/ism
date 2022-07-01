@@ -101,7 +101,7 @@ class ComportamientoController extends Controller {
                 ->all();
         //buscamos alumnos con NEE, de la clase
         $objScript = new Scripts();
-        $modelNeeXClase = $objScript->mostrarAlumnosNeeClase('1631');
+        $modelNeeXClase = $objScript->mostrarAlumnosNeeClase($modelClase->id);
         
         $modelTemas = ScholarisAsistenciaClaseTema::find()
                 ->where(['asistencia_profesor_id' => $id])

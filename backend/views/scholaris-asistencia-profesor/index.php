@@ -76,6 +76,7 @@ if($tieneOtras){
                     </thead>
                     <tbody>
                         <?php
+//                            echo '<pre>';
 //                                        print_r($model);
 //                                        die();
                         foreach ($model as $data) {

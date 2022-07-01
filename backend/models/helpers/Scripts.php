@@ -1,4 +1,5 @@
 <?php
+
 namespace backend\models\helpers;
 
 use backend\models\PlanificacionBloquesUnidad;
@@ -13,18 +14,15 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\ActiveForm;
 
-
-
-class Scripts extends ActiveRecord{
-    
+class Scripts extends ActiveRecord {
 
     /**
      * Mètodo que devuelve el nombre y a que malla pertenece la materia
      * @return type
      */
-    function sql_materias_x_periodo(){
+    function sql_materias_x_periodo() {
         $periodoId = Yii::$app->user->identity->periodo_id;
-        
+
         $con = Yii::$app->db;
         $query = "select 	iam.id
 		,concat(im.nombre, ' ',malla.nombre) as materia
@@ -38,19 +36,17 @@ class Scripts extends ActiveRecord{
         $res = $con->createCommand($query)->queryAll();
         return $res;
     }
-    
-    
-    
+
     /**
      * Muestra las clases por profesor para realizar el registro de ingreso a la clase
      * Asistencia del docente
      * @return type
      */
-    function sql_mostrar_clases_x_profesor(){
+    function sql_mostrar_clases_x_profesor() {
         $periodoId = Yii::$app->user->identity->periodo_id;
         $usuarioLog = Yii::$app->user->identity->usuario;
         $con = \Yii::$app->db;
-        
+
         $query = "select 	mat.nombre as materia, hor.detalle_id ,cur.name as curso ,par.name as paralelo 
         ,sec.code
         ,hor.clase_id ,dia.id as dia_id ,dia.nombre as dia ,hora.id as hora_id 
@@ -81,22 +77,24 @@ where hor.clase_id in
                 ) 
         and dia.numero = date_part('dow',current_date) 
 order by hora.numero asc;";
-        
+
+//        echo $query;
+//        die();
+
         $res = $con->createCommand($query)->queryAll();
         return $res;
     }
-    
-    
+
     /**
      * Muestra la siguiente hora para generar timbrada o registro de la asistencia
      * @param type $claseId
      * @return type
      */
-    public function sql_mostrar_hora_siguiente($claseId){
+    public function sql_mostrar_hora_siguiente($claseId) {
         $periodoId = Yii::$app->user->identity->periodo_id;
         $usuarioLog = Yii::$app->user->identity->usuario;
         $con = \Yii::$app->db;
-        
+
         $query = "select mat.nombre as materia, hor.detalle_id 
 ,cur.name as curso ,par.name as paralelo, hora.numero ,hor.clase_id 
 ,dia.id as dia_id ,dia.nombre as dia ,hora.id as hora_id 
@@ -127,17 +125,16 @@ where hor.clase_id in
 	) 
 	and dia.numero = date_part('dow',current_date) 
 	and cla.id = $claseId order by hora.numero desc limit 1;";
-        
+
         $res = $con->createCommand($query)->queryOne();
         return $res;
     }
-    
-    
-    public function get_todas_clases_profesor(){
+
+    public function get_todas_clases_profesor() {
         $periodoId = Yii::$app->user->identity->periodo_id;
         $usuarioLog = Yii::$app->user->identity->usuario;
         $con = \Yii::$app->db;
-        
+
         $query = "select 	c.id as clase_id ,cur.name as curso 
                                     ,par.name as paralelo ,m.nombre as materia 
                     from 	scholaris_clase c 
@@ -153,15 +150,15 @@ where hor.clase_id in
                                     and pm.scholaris_periodo_id = $periodoId
                                     and c.es_activo = true
                                     order by cur.name, par.name";
-        
+
         $res = $con->createCommand($query)->queryAll();
         return $res;
     }
 
-    public function pud_dip_consultar_lenguaje_y_aprendizaje_ckeck($planVertDiplId){
+    public function pud_dip_consultar_lenguaje_y_aprendizaje_ckeck($planVertDiplId) {
         //consulta los los tdc que han sido marcados con check, mas los que aun no estan marcados
-       $con = Yii::$app->db;
-       $query = "select p.categoria ,p.opcion,pr.id as pvd_tdc_id ,p.id as tdc_id, 
+        $con = Yii::$app->db;
+        $query = "select p.categoria ,p.opcion,pr.id as pvd_tdc_id ,p.id as tdc_id, 
                 case 
                 when p.id is not null then true else false
                 end as es_seleccionado
@@ -183,13 +180,13 @@ where hor.clase_id in
                 order by opcion;
                 ";
         $resultado = $con->createCommand($query)->queryAll();
-       return $resultado;;
+        return $resultado;
+        ;
     }
 
-     //metodo usado para 5.6.- llamada a Conexion CAS
-     public function pud_dip_consultar_conexion_cas_ckeck($planVertDiplId) 
-     {
-         //consulta los los tdc que han sido marcados con check, mas los que aun no estan marcados
+    //metodo usado para 5.6.- llamada a Conexion CAS
+    public function pud_dip_consultar_conexion_cas_ckeck($planVertDiplId) {
+        //consulta los los tdc que han sido marcados con check, mas los que aun no estan marcados
         $con = Yii::$app->db;
         $query = "select p.categoria ,p.opcion,pr.id as pvd_tdc_id ,p.id as tdc_id, 
                  case 
@@ -212,18 +209,17 @@ where hor.clase_id in
                  where vertical_diploma_id = $planVertDiplId)
                  order by opcion;
                  ";
-         $resultado = $con->createCommand($query)->queryAll();         
-         return $resultado;
-     } 
+        $resultado = $con->createCommand($query)->queryAll();
+        return $resultado;
+    }
 
-     //consulta para extraer el porcentaje de avance del PUD DIPLOMA, para guardar en BLOQUE UNIDAD
-     public function pud_dip_porcentaje_avance($planVertDiplId,$planBloqueUniId) 
-     {
+    //consulta para extraer el porcentaje de avance del PUD DIPLOMA, para guardar en BLOQUE UNIDAD
+    public function pud_dip_porcentaje_avance($planVertDiplId, $planBloqueUniId) {
         $con = Yii::$app->db;
         $modelOpciones = PlanificacionOpciones::find()
-        ->where(['tipo'=>'PUD_NUM_CART_VALIDACION'])
-        ->one();
-        $minimoCaracteres = $modelOpciones->categoria;   
+                ->where(['tipo' => 'PUD_NUM_CART_VALIDACION'])
+                ->one();
+        $minimoCaracteres = $modelOpciones->categoria;
 
         $query = "select  coalesce(round(
             (((5)/*SE SUMA 5 POR DATOS EN DEFAULT (1.1 / 3.1 / 4.1 / 5.3 / 5.5)*/+
@@ -249,19 +245,18 @@ where hor.clase_id in
                             (select cast(categoria as numeric(18,2))from planificacion_opciones where tipo='PUD_CONTEO_PORCENTAJE'and seccion = 'DIP')
                            ,0),0) as porcentaje;
                  ";
-                 
-         $resultado = $con->createCommand($query)->queryOne();         
-         return $resultado;
 
-     } 
-     //consulta para extraer el porcentaje de avance del PUD PAI, para guardar en BLOQUE UNIDAD
-     public function pud_pai_porcentaje_avance($planBloqueUniId) 
-     {
+        $resultado = $con->createCommand($query)->queryOne();
+        return $resultado;
+    }
+
+    //consulta para extraer el porcentaje de avance del PUD PAI, para guardar en BLOQUE UNIDAD
+    public function pud_pai_porcentaje_avance($planBloqueUniId) {
         $con = Yii::$app->db;
         $modelOpciones = PlanificacionOpciones::find()
-        ->where(['tipo'=>'PUD_NUM_CART_VALIDACION'])
-        ->one();
-        $minimoCaracteres = $modelOpciones->categoria;   
+                ->where(['tipo' => 'PUD_NUM_CART_VALIDACION'])
+                ->one();
+        $minimoCaracteres = $modelOpciones->categoria;
 
         $query = "select (( 6 /* se graga 7 porque es el numero de item que el usuario no tiene que llenar*/ +
         /*2.3.-*/(
@@ -314,25 +309,24 @@ where hor.clase_id in
         )>0 then 1 else 0 end))
         )*100/(select cast(categoria as integer) from planificacion_opciones po where tipo = 'PUD_CONTEO_PORCENTAJE' and seccion='PAI')) 
         AS porcentaje;";
-                 
-         $resultado = $con->createCommand($query)->queryOne();         
-         return $resultado;
-     } 
 
-     //Script para consultar de forma Independiente el porcentaje de avance de pud pai
-     //consulta para extraer el porcentaje de avance del PUD PAI, para guardar en BLOQUE UNIDAD
-     public function pud_pai_porcentaje_avance_individual($aBuscar,$planBloqueUniId) 
-     {
+        $resultado = $con->createCommand($query)->queryOne();
+        return $resultado;
+    }
+
+    //Script para consultar de forma Independiente el porcentaje de avance de pud pai
+    //consulta para extraer el porcentaje de avance del PUD PAI, para guardar en BLOQUE UNIDAD
+    public function pud_pai_porcentaje_avance_individual($aBuscar, $planBloqueUniId) {
         $con = Yii::$app->db;
         $modelOpciones = PlanificacionOpciones::find()
-        ->where(['tipo'=>'PUD_NUM_CART_VALIDACION'])
-        ->one();
+                ->where(['tipo' => 'PUD_NUM_CART_VALIDACION'])
+                ->one();
         $minimoCaracteres = $modelOpciones->categoria;
-        $query='';
+        $query = '';
 
         switch ($aBuscar) {
             case '2.3.-':
-                    $query="select case when (  
+                $query = "select case when (  
                         (select case when count(*)>0 then 1 else 0 end from pud_pai pp where planificacion_bloque_unidad_id  = $planBloqueUniId and seccion_numero  = '2'
                         and tipo = 'facticas') +
                         (select case when count(*)>0 then 1 else 0 end  from pud_pai pp where planificacion_bloque_unidad_id  = $planBloqueUniId and seccion_numero  = '2'
@@ -342,12 +336,12 @@ where hor.clase_id in
                         ) = 3 then 1 else 0 end";
                 break;
             case '3.1.-':
-                    $query="select case when (length(contenido)>($minimoCaracteres))
+                $query = "select case when (length(contenido)>($minimoCaracteres))
                             then 1 else 0 end from pud_pai pp 
                             where planificacion_bloque_unidad_id  = $planBloqueUniId and seccion_numero  ='3' and tipo = 'relacion-suma-eval'";
                 break;
             case '4.4.-':
-                    $query="select( case when (
+                $query = "select( case when (
                         (select case when (length(contenido)>($minimoCaracteres))
                         then 1 else 0 end from pud_pai where planificacion_bloque_unidad_id =$planBloqueUniId  and seccion_numero  ='44' and tipo='ensenara_comunicacion')+
                         (select case when (length(contenido)>($minimoCaracteres))
@@ -361,7 +355,7 @@ where hor.clase_id in
                         )>0 then 1 else 0 end )";
                 break;
             case '4.5.-':
-                    $query = "select( case when (
+                $query = "select( case when (
                         (select case when (count(*)>0)
                         then 1 else 0 end from pud_pai where planificacion_bloque_unidad_id =$planBloqueUniId  and seccion_numero  ='45' and tipo='comunicacion')+
                         (select case when (count(*)>0)
@@ -375,10 +369,10 @@ where hor.clase_id in
                         )>0 then 1 else 0 end)";
                 break;
             case '6.1.-':
-                    $query="select case when count(*)>0 then 1 else 0 end from pud_pai pp where planificacion_bloque_unidad_id  = $planBloqueUniId and seccion_numero  = '6'";
+                $query = "select case when count(*)>0 then 1 else 0 end from pud_pai pp where planificacion_bloque_unidad_id  = $planBloqueUniId and seccion_numero  = '6'";
                 break;
             case '7.1.-':
-                    $query="select case when (
+                $query = "select case when (
                         (select case when (length(contenido)>($minimoCaracteres))
                         then 1 else 0 end from pud_pai where planificacion_bloque_unidad_id =$planBloqueUniId and seccion_numero  ='7' and tipo='bibliografico')+
                         (select case when (length(contenido)>($minimoCaracteres))
@@ -388,10 +382,10 @@ where hor.clase_id in
                         )>0 then 1 else 0 end as siete;";
                 break;
             case '8.1.-':
-                    $query="select case when count(*)>0 then 1 else 0 end from pud_pai pp where planificacion_bloque_unidad_id  = $planBloqueUniId and seccion_numero  ='8' and tipo='antes'";
+                $query = "select case when count(*)>0 then 1 else 0 end from pud_pai pp where planificacion_bloque_unidad_id  = $planBloqueUniId and seccion_numero  ='8' and tipo='antes'";
                 break;
             case 'todos':
-                    $query="select /*2.3.-*/(
+                $query = "select /*2.3.-*/(
                         select case when (  
                         (select case when count(*)>0 then 1 else 0 end from pud_pai pp where planificacion_bloque_unidad_id  = $planBloqueUniId and seccion_numero  = '2'
                         and tipo = 'facticas') +
@@ -449,32 +443,38 @@ where hor.clase_id in
                 break;
         }
 
-        $resultado = $con->createCommand($query)->queryOne();         
+        $resultado = $con->createCommand($query)->queryOne();
         return $resultado;
-     }
-     
-     public function firmar_documento($usuario, $fecha){
-         
-         $con = \Yii::$app->db;
-         $query = "select 	rp.name 
+    }
+
+    public function firmar_documento($usuario, $fecha) {
+
+        if (isset($usuario)) {
+            $con = \Yii::$app->db;
+            $query = "select 	rp.name 
                     from	res_users ru 
                                     inner join res_partner rp on rp.id = ru.partner_id 
                     where 	ru.login = '$usuario';";
-         
-         $res = $con->createCommand($query)->queryOne();
-         
-         return array(
-             'firmado_por' => $res['name'],
-             'firmado_el'  => $fecha
-         );
-         
-     }
-     
-     public function get_materias_kids_x_docente(){
-         $userLog = \Yii::$app->user->identity->usuario;
-         $periodoId = \Yii::$app->user->identity->periodo_id;
-         $con = \Yii::$app->db;
-         $query = "select 	iam.id 
+
+            $res = $con->createCommand($query)->queryOne();
+
+            return array(
+                'firmado_por' => $res['name'],
+                'firmado_el' => $fecha
+            );
+        }else{
+            return array(
+                'firmado_por' => 'Sin firma aùn',
+                'firmado_el' => $fecha
+            );
+        }
+    }
+
+    public function get_materias_kids_x_docente() {
+        $userLog = \Yii::$app->user->identity->usuario;
+        $periodoId = \Yii::$app->user->identity->periodo_id;
+        $con = \Yii::$app->db;
+        $query = "select 	iam.id 
                                     ,m.nombre 
                     from	scholaris_clase cla
                                     inner join op_faculty fac on fac.id = cla.idprofesor 
@@ -485,73 +485,73 @@ where hor.clase_id in
                                     inner join ism_materia m on m.id = iam.materia_id 
                     where 	use.login = '$userLog'
                                     and ipm.scholaris_periodo_id = $periodoId;";
-        $res  = $con->createCommand($query)->queryAll();
+        $res = $con->createCommand($query)->queryAll();
         return $res;
-     }
-     
-     public function convertir_mes($mesNumero){
+    }
+
+    public function convertir_mes($mesNumero) {
+
+        switch ($mesNumero) {
+            case 1:
+                $mes = 'Ene';
+                break;
+            case 2:
+                $mes = 'Feb';
+                break;
+
+            case 3:
+                $mes = 'Mar';
+                break;
+
+            case 4:
+                $mes = 'Abr';
+                break;
+
+            case 5:
+                $mes = 'May';
+                break;
+
+            case 6:
+                $mes = 'Jun';
+                break;
+
+            case 7:
+                $mes = 'Jul';
+                break;
+
+            case 8:
+                $mes = 'Ago';
+                break;
+
+            case 9:
+                $mes = 'Sep';
+                break;
+
+            case 10:
+                $mes = 'Oct';
+                break;
+
+            case 11:
+                $mes = 'Nov';
+                break;
+
+            case 12:
+                $mes = 'Dic';
+                break;
+            default:
+                $mes = 'Sin mes';
+                break;
+        }
+
+        return $mes;
+    }
+
+    public function get_cursos_x_periodo($periodoId) {
         
-         switch ($mesNumero){
-             case 1:
-                    $mes = 'Ene';
-                    break;
-             case 2:
-                    $mes = 'Feb';
-                    break;
-                
-             case 3:
-                    $mes = 'Mar';
-                    break;
-                
-             case 4:
-                    $mes = 'Abr';
-                    break;
-                
-             case 5:
-                    $mes = 'May';
-                    break;
-                
-             case 6:
-                    $mes = 'Jun';
-                    break;
-                
-             case 7:
-                    $mes = 'Jul';
-                    break;
-                
-             case 8:
-                    $mes = 'Ago';
-                    break;
-                
-             case 9:
-                    $mes = 'Sep';
-                    break;
-                
-             case 10:
-                    $mes = 'Oct';
-                    break;
-                
-             case 11:
-                    $mes = 'Nov';
-                    break;
-                
-             case 12:
-                    $mes = 'Dic';
-                    break;   
-             default:
-                 $mes = 'Sin mes';
-                 break;
-         }
-                   
-         return $mes;
-     }
-     
-     public function get_cursos_x_periodo($periodoId){
-         
-     }
-     public function mostrarAlumnosNeeClase($id_clase)
-     {
-        
+    }
+
+    public function mostrarAlumnosNeeClase($id_clase) {
+
         $con = Yii::$app->db;
 
         $query = "select n.id,n.student_id ,scholaris_periodo_id ,grado_nee,
@@ -564,8 +564,7 @@ where hor.clase_id in
                 where nc.clase_id = '$id_clase';";
 
         $respuesta = $con->createCommand($query)->queryall();
-        return $respuesta;         
+        return $respuesta;
     }
 
-    
 }

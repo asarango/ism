@@ -87,18 +87,23 @@ class NeeController extends Controller
         $con = Yii::$app->db;
         $query = "select 	s.id 
 		,concat(s.last_name, ' ',s.first_name,' ',s.middle_name) as student
-from 	res_users u
-		inner join op_faculty f on f.partner_id = u.partner_id
-		inner join scholaris_clase c on c.idprofesor = f.id
-		inner join scholaris_periodo p on p.codigo = c.periodo_scholaris
+from 	res_users u 
+		inner join op_faculty f on f.partner_id = u.partner_id 
+		inner join scholaris_clase c on c.idprofesor = f.id 
+		--inner join scholaris_periodo p on p.codigo = c.periodo_scholaris 
 		inner join scholaris_grupo_alumno_clase g on g.clase_id = c.id 
 		inner join op_student_inscription i on i.student_id = g.estudiante_id 
 		inner join op_student s on s.id = i.student_id 
-		inner join scholaris_op_period_periodo_scholaris sop on sop.op_id = i.period_id 		
-			and sop.scholaris_id = p.id 
-where 	u.login = '$usuarioLog'
-		and p.id = $scholarisPeriodoId
-order by s.last_name, s.first_name, s.middle_name ;";
+		inner join op_course_paralelo par on par.id = c.paralelo_id 
+		inner join op_course cur on cur.id = par.course_id 
+		inner join op_section sec on sec.id = cur.section
+		inner join scholaris_op_period_periodo_scholaris sop on sop.op_id = sec.period_id 
+where u.login = '$usuarioLog' 
+		and sop.scholaris_id = $scholarisPeriodoId 
+		order by s.last_name, s.first_name, s.middle_name ;";
+        
+//        echo $query;
+//        die();
         $res = $con->createCommand($query)->queryAll();
 
         return $res;
@@ -107,23 +112,28 @@ order by s.last_name, s.first_name, s.middle_name ;";
     private function consulta_nee($scholarisPeriodoId, $usuarioLog)
     {
         $con = Yii::$app->db;
-        $query = "select 	nee.id 
-		,concat(s.last_name, ' ',s.first_name,' ',s.middle_name) as student
-		,nee.created_at 
-from 	res_users u
-		inner join op_faculty f on f.partner_id = u.partner_id
-		inner join scholaris_clase c on c.idprofesor = f.id
-		inner join scholaris_periodo p on p.codigo = c.periodo_scholaris
-		inner join scholaris_grupo_alumno_clase g on g.clase_id = c.id 
-		inner join op_student_inscription i on i.student_id = g.estudiante_id 
-		inner join op_student s on s.id = i.student_id 
-		inner join scholaris_op_period_periodo_scholaris sop on sop.op_id = i.period_id 		
-			and sop.scholaris_id = p.id 
-		inner join nee on nee.student_id = i.student_id 
-where 	u.login = '$usuarioLog'
-		and p.id = $scholarisPeriodoId
-order by s.last_name, s.first_name, s.middle_name ;";
+        $query = "select 	nee.id ,concat(s.last_name, ' ',s.first_name,' ',s.middle_name) as student 
+                                    ,nee.created_at 
+                    from res_users u 
+                                    inner join op_faculty f on f.partner_id = u.partner_id 
+                                    inner join scholaris_clase c on c.idprofesor = f.id 
+                                    --inner join scholaris_periodo p on p.codigo = c.periodo_scholaris 
+                                    inner join scholaris_grupo_alumno_clase g on g.clase_id = c.id 
+                                    inner join op_student_inscription i on i.student_id = g.estudiante_id 
+                                    inner join op_student s on s.id = i.student_id 
+                                    inner join op_course_paralelo p on p.id = c.paralelo_id 
+                                    inner join op_course oc on oc.id = p.course_id 
+                                    inner join op_section os on os.id = oc.section
+                                    inner join scholaris_op_period_periodo_scholaris sop on sop.op_id = os.period_id 
+                                    inner join nee on nee.student_id = i.student_id
+                    where 	u.login = '$usuarioLog' 
+                                    and sop.scholaris_id = $scholarisPeriodoId 
+                    group by nee.id, s.last_name, s.first_name, s.middle_name
+                    order by s.last_name, s.first_name, s.middle_name;";
         $res = $con->createCommand($query)->queryAll();
+        
+//        echo $query;
+//        die();
 
         return $res;
     }
@@ -202,7 +212,7 @@ order by s.last_name, s.first_name, s.middle_name ;";
         //FInal de la edadedade
 
         $instituto      = OpInstitute::findOne($institutoId);
-        $materiasSelect = $this->consulta_materias_estudiante($model->student_id, $institutoId);
+        $materiasSelect = $this->consulta_materias_estudiante($model->student_id, $periodoId);
         $materiasNee    = NeeXClase::find()->where(['nee_id' => $neeId])->all();
 
         $this->ingresa_opciones($neeId); //Ingresa las opciones en vacio
@@ -232,18 +242,19 @@ order by s.last_name, s.first_name, s.middle_name ;";
 
     private function consulta_materias_estudiante($studentId, $periodoId){
         $con = Yii::$app->db;
-        $query = "select 	c.id as clase_id
-                            ,m.name as materia
-                    from 	scholaris_grupo_alumno_clase g
-                            inner join scholaris_clase c on c.id = g.clase_id
-                            inner join scholaris_periodo p on p.codigo = c.periodo_scholaris 
-                            inner join scholaris_materia m on m.id = c.idmateria 
-                    where 	g.estudiante_id = $studentId
-                            and p.id = $periodoId
-                            and c.id not in (
-                                select clase_id from nee_x_clase where clase_id = c.id and fecha_finaliza is null			
-                            )
-                    order by m.name;";
+        $query = "select 	c.id as clase_id ,m.nombre as materia 
+from 	scholaris_grupo_alumno_clase g 
+		inner join scholaris_clase c on c.id = g.clase_id  
+		inner join ism_area_materia am on am.id = c.ism_area_materia_id 
+		inner join ism_materia m on m.id = am.materia_id  
+		inner join ism_malla_area ma on ma.id = am.malla_area_id 
+		inner join ism_periodo_malla pm on pm.id = ma.periodo_malla_id
+where 	g.estudiante_id = $studentId 
+		and pm.scholaris_periodo_id = $periodoId 
+		and c.id not in ( select clase_id from nee_x_clase where clase_id = c.id and fecha_finaliza is null ) 
+order by m.nombre;";
+//        echo $query;
+//        die();
             $res = $con->createCommand($query)->queryAll();
             return $res;
     }

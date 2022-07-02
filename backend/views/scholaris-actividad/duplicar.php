@@ -55,12 +55,12 @@ $this->title = 'Duplicando actividad: '.$modelActividad->clase->ismAreaMateria->
             echo '<table class="table table-hover table-striped table-bordered">';
             echo '<tr>';
             echo '<td colspan="4" align="center" bgcolor="CCCCCC">PARALELO: ' 
-                . $clase->paralelo->name . ' | '
-                . $clase->profesor->last_name .' '. $clase->profesor->x_first_name
+                . $clase['paralelo'] . ' | '
+                . $clase['docente']
                 . '</td>';
             echo '</tr>';
 
-            $modelDias = toma_dias_horario($clase->id);
+            $modelDias = toma_dias_horario($clase['id']);
             foreach ($modelDias as $dia) {
 
 
@@ -75,7 +75,7 @@ $this->title = 'Duplicando actividad: '.$modelActividad->clase->ismAreaMateria->
                         echo '<td>' . $fechasAsi[$i] . '</td>';
                         echo '<td>' . $dia['num_dia'] . $dia['hora'] . '</td>';
 
-                        $modelRes = $sentencias->get_actividad_duplicada($modelActividad->id, $clase->id);
+                        $modelRes = $sentencias->get_actividad_duplicada($modelActividad->id, $clase['id']);
 
                         if ($modelRes) {
                             echo '<td>Actividad ya se encuentra duplicada</td>';
@@ -83,7 +83,7 @@ $this->title = 'Duplicando actividad: '.$modelActividad->clase->ismAreaMateria->
                             echo '<td>';
                             echo Html::a('clic aquí...', ['duplicaraqui',
                                 "actividadId" => $modelActividad->id,
-                                'clase' => $clase->id,
+                                'clase' => $clase['id'],
                                 'inicio' => $fechasAsi[$i],
                                 'hora' => $dia['id']
                             ]);

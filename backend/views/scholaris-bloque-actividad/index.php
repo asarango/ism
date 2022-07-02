@@ -1,7 +1,8 @@
 <?php
 
 use yii\helpers\Html;
-use kartik\grid\GridView;
+//use kartik\grid\GridView;
+use yii\grid\GridView;
 use yii\helpers\ArrayHelper;
 
 /* @var $this yii\web\View */

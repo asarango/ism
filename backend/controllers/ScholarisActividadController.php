@@ -1156,25 +1156,57 @@ class ScholarisActividadController extends Controller
         //$modelActividad = \backend\models\ScholarisActividad::find()->where(['id' => $actividadId])->one();
 
         $modelActividad = \backend\models\ScholarisActividad::findOne($actividadId);
+        $ismAreaMateriaId = $modelActividad->clase->ism_area_materia_id;
+        $cursoId = $modelActividad->clase->paralelo->course_id;
+        $claseId = $modelActividad->clase->id;
+        
+       
+        $modelClases = $this->get_clases_para_duplicar($ismAreaMateriaId, $cursoId, $claseId);
 
-
-        $modelClases = ScholarisClase::find()
-            ->where([
-                'idmateria' => $modelActividad->clase->idmateria,
-                'idcurso' => $modelActividad->clase->idcurso
-            ])
-            ->andWhere(['<>', 'id', $modelActividad->paralelo_id])
-            ->all();
-
-        //        echo '<pre>';
-        //        print_r($modelClases);
-        //        die();
+//        $modelClases = ScholarisClase::find()
+//            ->where([
+//                'ism_area_materia_id' => $modelActividad->clase->ism_area_materia_id,
+//                'idcurso' => $modelActividad->clase->paralelo->course_id
+//            ])
+//            ->andWhere(['<>', 'id', $modelActividad->paralelo_id])
+//            ->all();
+//
+//        //        echo '<pre>';
+//        //        print_r($modelClases);
+//        //        die();
 
 
         return $this->render('duplicar', [
             'modelClases' => $modelClases,
             'modelActividad' => $modelActividad
         ]);
+    }
+    
+    
+    /**
+     * 
+     * @param type $ismAreaMateria
+     * @param type $cursoId
+     * @param type $claseId
+     * @return typeMETODO QUE DEVUELVE LAS CLASES PARA DUPLICAR DEL MISMO CURSO Y DE LA MISMA MATERIA
+     */
+    private function get_clases_para_duplicar($ismAreaMateriaId, $cursoId, $claseId){
+        $con = \Yii::$app->db;
+        $query = "select 	c.id 
+                                ,cur.id as curso_id
+                                ,cur.name as curso
+                                ,p.name as paralelo
+                                ,concat(f.x_first_name, ' ', f.last_name) as docente 
+                from 	scholaris_clase c
+                                inner join op_course_paralelo p on p.id = c.paralelo_id 
+                                inner join op_course cur on cur.id = p.course_id
+                                inner join op_faculty f on f.id = c.idprofesor 
+                where 	c.ism_area_materia_id = $ismAreaMateriaId
+                                and p.course_id = $cursoId
+                                and c.id <> $claseId
+                order by p.name;";
+        $res = $con->createCommand($query)->queryAll();
+        return $res;
     }
 
     public function actionDuplicaraqui()

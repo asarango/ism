@@ -85,9 +85,22 @@ class PudDipController extends Controller{
         ->orderBy(['id'=>SORT_DESC])
         ->one();
         
+        if($bitacora){
+            $usuarioResponde = $bitacora->usuario_responde;
+            $fechaResponde = $bitacora->fecha_responde;
+            $usuarioNotifica = $bitacora->usuario_notifica;
+            $fechaNotifica = $bitacora->fecha_notifica;
+        }else{
+            $usuarioResponde = null;
+            $fechaResponde = null;
+            $usuarioNotifica = null;
+            $fechaNotifica = null;
+        }
+        
         $scripts = new Scripts();
-        $firmaAprobado = $scripts->firmar_documento($bitacora->usuario_responde, $bitacora->fecha_responde);
-        $firmaDocente = $scripts->firmar_documento($bitacora->usuario_notifica, $bitacora->fecha_notifica);
+        $firmaAprobado = $scripts->firmar_documento($usuarioResponde, $fechaResponde);
+        
+        $firmaDocente = $scripts->firmar_documento($usuarioNotifica, $fechaNotifica);
 
         return $this->render('index', [
             'planUnidad' => $planUnidad,

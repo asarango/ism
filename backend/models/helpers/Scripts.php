@@ -450,7 +450,7 @@ where hor.clase_id in
         return $resultado;
     }
 
-    public function firmar_documento($usuario, $fecha) {
+    public function firmar_documento($usuario, $fecha) {                
 
         if (isset($usuario)) {
             $con = \Yii::$app->db;

@@ -152,8 +152,9 @@ $numEstSinAsistir = ScholarisAsistenciaAlumnosNovedades::find()
                                     //******** NUMERO  *****************//
                                     echo '<tr>';
                                     echo '<td>' . $num . '</td>';
-
-                                    //******** COLOR N.E.E  *****************// 
+                                    
+                                    if($modelNeeXClase){
+                                            //******** COLOR N.E.E  *****************// 
                                     foreach($modelNeeXClase as $nee)
                                     {
                                         if($alumno['estudiante_id'] == $nee['student_id']) 
@@ -189,6 +190,9 @@ $numEstSinAsistir = ScholarisAsistenciaAlumnosNovedades::find()
                                             echo '<td></td>';
                                         }
                                     }
+                                    }else{
+                                        echo '<td></td>';
+                                    }                                 
 
                                     //******** ESTUDIANTES  *****************//
                                     echo '<td>' . $alumno['last_name'] . ' ' . $alumno['first_name'] . '</td>';

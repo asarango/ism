@@ -785,15 +785,15 @@ class ScholarisActividadController extends Controller
         $sentencias = new SentenciasSql();
         $modelActividad = \backend\models\ScholarisActividad::find()
             ->where(['id' => $id])
-            ->one();
+            ->one();        
 
         $tipo = $modelActividad->insumo->nombre_pai; 
         $grupo = \backend\models\ScholarisGrupoOrdenCalificacion::find()
             ->where(['codigo_tipo_actividad' => $modelActividad->tipo_actividad_id])
-            ->one();        
+            ->one();
 
-        if ($modelActividad->tipo_calificacion == 'P') {
-
+        if ($modelActividad->tipo_calificacion == 'P') {            
+            
             $con = Yii::$app->db;
             //consulta los criterios asociados a la actividad
             $queryIdCriterios = "select distinct id_criterio
@@ -803,6 +803,7 @@ class ScholarisActividadController extends Controller
                         where s.actividad_id = $id;";
             
             $arrayIdCriterios = $con->createCommand($queryIdCriterios)->queryAll();
+            
 
             // $modelCriterios = ScholarisActividadDescriptor::find()
             //     ->select(['criterio_id'])
@@ -1153,28 +1154,46 @@ class ScholarisActividadController extends Controller
     public function actionDuplicar()
     {
         $actividadId = $_GET['id'];
-        //$modelActividad = \backend\models\ScholarisActividad::find()->where(['id' => $actividadId])->one();
 
         $modelActividad = \backend\models\ScholarisActividad::findOne($actividadId);
-
-
-        $modelClases = ScholarisClase::find()
-            ->where([
-                'idmateria' => $modelActividad->clase->idmateria,
-                'idcurso' => $modelActividad->clase->idcurso
-            ])
-            ->andWhere(['<>', 'id', $modelActividad->paralelo_id])
-            ->all();
-
-        //        echo '<pre>';
-        //        print_r($modelClases);
-        //        die();
-
+        $ismAreaMateriaId = $modelActividad->clase->ism_area_materia_id;
+        $cursoId = $modelActividad->clase->paralelo->course_id;
+        $claseId = $modelActividad->clase->id;
+        
+       
+        $modelClases = $this->get_clases_para_duplicar($ismAreaMateriaId, $cursoId, $claseId);
 
         return $this->render('duplicar', [
             'modelClases' => $modelClases,
             'modelActividad' => $modelActividad
         ]);
+    }
+    
+    
+    /**
+     * 
+     * @param type $ismAreaMateria
+     * @param type $cursoId
+     * @param type $claseId
+     * @return typeMETODO QUE DEVUELVE LAS CLASES PARA DUPLICAR DEL MISMO CURSO Y DE LA MISMA MATERIA
+     */
+    private function get_clases_para_duplicar($ismAreaMateriaId, $cursoId, $claseId){
+        $con = \Yii::$app->db;
+        $query = "select 	c.id 
+                                ,cur.id as curso_id
+                                ,cur.name as curso
+                                ,p.name as paralelo
+                                ,concat(f.x_first_name, ' ', f.last_name) as docente 
+                from 	scholaris_clase c
+                                inner join op_course_paralelo p on p.id = c.paralelo_id 
+                                inner join op_course cur on cur.id = p.course_id
+                                inner join op_faculty f on f.id = c.idprofesor 
+                where 	c.ism_area_materia_id = $ismAreaMateriaId
+                                and p.course_id = $cursoId
+                                and c.id <> $claseId
+                order by p.name;";
+        $res = $con->createCommand($query)->queryAll();
+        return $res;
     }
 
     public function actionDuplicaraqui()

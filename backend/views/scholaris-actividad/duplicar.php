@@ -1,38 +1,50 @@
 <?php
 
 use yii\helpers\Html;
+use yii\helpers\Url;
 use yii\grid\GridView;
 
 $sentencias = new backend\models\SentenciasSql();
 
-/* @var $this yii\web\View */
-/* @var $searchModel app\models\ScholarisActividadSearch */
-/* @var $dataProvider yii\data\ActiveDataProvider */
-
-$this->title = 'Duplicar Actividad: ' . $modelActividad->clase->materia->name . ' / ' .
-        'Clase: ' . $modelActividad->clase->id . ' / ' .
-        'Curso: ' . $modelActividad->clase->curso->name . ' / ' .
-        'Actividad: ' . $modelActividad->title . ' / ' .
-        'Fecha: ' . $modelActividad->inicio;
-//$this->params['breadcrumbs'][] = $this->title;
+$this->title = 'Duplicando actividad: '.$modelActividad->clase->ismAreaMateria->materia->nombre;
 ?>
 
-<nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="#">Inicio</a></li>
-        <li class="breadcrumb-item">
-            <?php echo Html::a('Actividades', ['actividad', "actividad" => $modelActividad->id]); ?>
-        </li>
-        <li class="breadcrumb-item active" aria-current="page"><?= $this->title ?></li>
-    </ol>
-</nav>
-
-
 <div class="scholaris-actividad-duplicar">
+    <div class="m-0 vh-50 row justify-content-center align-items-center">
+        <div class="card shadow col-lg-10">
+            <div class=" row align-items-center p-2">
+                <div class="col-lg-1">
+                    <h4><img src="ISM/main/images/submenu/retroalimentacion.png" width="64px" class="img-thumbnail"></h4>                    
+                </div>
+                <div class="col-lg-11">
+                    <h4><?= Html::encode($this->title) ?></h4>
+                    <small>
+                        <?= 'Clase: ' . $modelActividad->clase->id . ' / ' .
+        'Curso: ' . $modelActividad->clase->paralelo->course->name . ' "'.$modelActividad->clase->paralelo->name.' " /' .
+        'Actividad: ' . $modelActividad->title . ' / ' .
+        'Fecha: ' . $modelActividad->inicio; ?>
+                    </small>
 
-    <div class="container">
+                </div>
+            </div>
+            <hr>
 
-        <?php
+            <div class="row">
+                <div class="col-lg-6 col-md-6"> 
+                </div>
+                <!-- fin de primeros botones -->
+
+                <!--botones derecha-->
+                <div class="col-lg-6 col-md-6" style="text-align: right;">                 
+                    
+                </div> <!-- FIN DE BOTONES DE ACCION Y NAVEGACIÓN -->
+            </div>
+
+
+            <!-- /****************************************************************************************************/  -->
+            <!-- comienza cuerpo  -->
+            <div class="row" style="margin-top: 15px; padding: 10px;">
+                <?php
 //        echo date('W', strtotime('2019-09-05'));
         $fechasAsi = toma_dias($modelActividad->inicio);
 //        print_r($fechasAsi);
@@ -42,10 +54,13 @@ $this->title = 'Duplicar Actividad: ' . $modelActividad->clase->materia->name . 
             echo '<div class="table table-responsive">';
             echo '<table class="table table-hover table-striped table-bordered">';
             echo '<tr>';
-            echo '<td colspan="4" align="center" bgcolor="CCCCCC">PARALELO: ' . $clase->paralelo->name . '</td>';
+            echo '<td colspan="4" align="center" bgcolor="CCCCCC">PARALELO: ' 
+                . $clase['paralelo'] . ' | '
+                . $clase['docente']
+                . '</td>';
             echo '</tr>';
 
-            $modelDias = toma_dias_horario($clase->id);
+            $modelDias = toma_dias_horario($clase['id']);
             foreach ($modelDias as $dia) {
 
 
@@ -60,7 +75,7 @@ $this->title = 'Duplicar Actividad: ' . $modelActividad->clase->materia->name . 
                         echo '<td>' . $fechasAsi[$i] . '</td>';
                         echo '<td>' . $dia['num_dia'] . $dia['hora'] . '</td>';
 
-                        $modelRes = $sentencias->get_actividad_duplicada($modelActividad->id, $clase->id);
+                        $modelRes = $sentencias->get_actividad_duplicada($modelActividad->id, $clase['id']);
 
                         if ($modelRes) {
                             echo '<td>Actividad ya se encuentra duplicada</td>';
@@ -68,7 +83,7 @@ $this->title = 'Duplicar Actividad: ' . $modelActividad->clase->materia->name . 
                             echo '<td>';
                             echo Html::a('clic aquí...', ['duplicaraqui',
                                 "actividadId" => $modelActividad->id,
-                                'clase' => $clase->id,
+                                'clase' => $clase['id'],
                                 'inicio' => $fechasAsi[$i],
                                 'hora' => $dia['id']
                             ]);
@@ -88,35 +103,10 @@ $this->title = 'Duplicar Actividad: ' . $modelActividad->clase->materia->name . 
             echo '</div>';
         }
 
-
-//        foreach ($modelClases as $clase) {
-//            echo '<p class="tamano10"><strong>';
-//            echo 'PARALELO: ' . $clase->paralelo->name . ': ';
-//            echo $clase->id.' '.$clase->profesor->last_name . ' ' . $clase->profesor->x_first_name;
-//            echo '</strong></p>';
-//
-//            $modelDias = $sentencias->fecha_para_duplicar($modelActividad, $clase->id);
-//            echo '<p class="tamano10">Fecha a duplicar: ' . $modelDias['dia'] . ' ' . $modelDias['fecha'];
-//            echo '</p>';
-//
-//            $modelRes = $sentencias->get_actividad_duplicada($modelActividad->id, $clase->id);
-//
-//            if ($modelRes) {
-//                echo '<p class="tamano10 text-success">Actividad ya se encuentra duplicada</p>';
-//            } else {
-//                echo '<p class="tamano10">Si desea duplicar la actividad en esta fecha, ';
-//                echo Html::a('clic aquí...', ['duplicaraqui',
-//                    "actividadId" => $modelActividad->id,
-//                    'clase' => $clase->id,
-//                    'inicio' => $modelDias['fecha']
-//                ]);
-//                echo '</p>';
-//            }
-//
-//            echo '<hr>';
-//        }
         ?>
-
+            </div>
+            <!-- finaliza cuerpo -->
+        </div>
     </div>
 </div>
 

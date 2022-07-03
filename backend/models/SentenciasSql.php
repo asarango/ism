@@ -306,12 +306,11 @@ order by dia.numero
                                 ,o.grupo_numero
                                 ,1 
                 from 	scholaris_grupo_alumno_clase g
-                                inner join scholaris_criterio c on c.id = $criterioId
-                                inner join scholaris_grupo_orden_calificacion o on o.codigo_nombre_pai = c.criterio
+                                inner join ism_criterio c on c.id = $criterioId
+                                inner join scholaris_grupo_orden_calificacion o on o.codigo_nombre_pai = c.nombre 
                 where 	g.clase_id = $claseId
                             and g.estudiante_id not in (select idalumno from scholaris_calificaciones where idalumno = g.estudiante_id and idactividad = $actividad and criterio_id = $criterioId);";
-//        print_r($query);
-//        die();
+        
         $res = $con->createCommand($query)->execute();
         //return $res;
     }
@@ -984,8 +983,9 @@ order by hora.numero asc;";
     
     public function duplicar_criterios($actividadNueva, $actividadVieja){        
         $con = Yii::$app->db;
-        $query = "insert into scholaris_actividad_descriptor(actividad_id, criterio_id, detalle_id)
-                    select  $actividadNueva, criterio_id, detalle_id from scholaris_actividad_descriptor where actividad_id = $actividadVieja;";
+        $query = "insert into scholaris_actividad_descriptor(actividad_id, plan_vert_pai_descriptor_id)
+                    select $actividadNueva, plan_vert_pai_descriptor_id from scholaris_actividad_descriptor where actividad_id = $actividadVieja;";
+                    //select  $actividadNueva, criterio_id, detalle_id from scholaris_actividad_descriptor where actividad_id = $actividadVieja;";
         $con->createCommand($query)->execute();        
     }
     

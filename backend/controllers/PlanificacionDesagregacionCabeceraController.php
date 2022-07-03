@@ -70,12 +70,33 @@ class PlanificacionDesagregacionCabeceraController extends Controller
 
     public function actionIndex()
     {
-        //$niveles = \backend\models\CurriculoMecNiveles::find()->all();
-        $cursos = \backend\models\OpCourseTemplate::find()->all();
+//        $cursos = \backend\models\OpCourseTemplate::find()->all();
+        $cursos = $this->get_cursos_docente();
 
         return $this->render('index', [
             'cursos' => $cursos
         ]);
+    }
+    
+    private function get_cursos_docente(){
+        $user = Yii::$app->user->identity->usuario;
+        $periodoId = Yii::$app->user->identity->periodo_id;
+        $con = Yii::$app->db;
+        $query = "select 	t.id 
+                                    ,t.name
+                    from	scholaris_clase cla
+                                    inner join op_faculty fac on fac.id = cla.idprofesor 
+                                    inner join res_users use on use.partner_id = fac.partner_id 
+                                    inner join op_course_paralelo par on par.id = cla.paralelo_id 
+                                    inner join op_course cur on cur.id = par.course_id
+                                    inner join op_course_template t on t.id = cur.x_template_id 
+                                    inner join op_section sec on  sec.id = cur.section
+                                    inner join scholaris_op_period_periodo_scholaris sop on sop.op_id = sec.period_id 
+                    where	use.login = '$user'
+                                    and sop.scholaris_id = $periodoId
+                    group by t.id, t.name;";
+        $res = $con->createCommand($query)->queryAll();
+        return $res;
     }
 
 
@@ -118,25 +139,27 @@ class PlanificacionDesagregacionCabeceraController extends Controller
     {
         $con = Yii::$app->db;
         $periodoId = Yii::$app->user->identity->periodo_id;
-        $institutoId = Yii::$app->user->identity->instituto_defecto;
-        $query = "insert into planificacion_desagregacion_cabecera 
-                    (ism_area_materia_id, year_from, year_to, is_active, comments, scholaris_periodo_id, estado)
-                    select 	am.id , 2021, 2025, true ,'CREADO AUTOMÁTICAMENTE'
-                                    ,pm.scholaris_periodo_id 
-                                    ,'INICIANDO' 
-                    from 	ism_malla mal
-                                    inner join ism_periodo_malla pm on pm.malla_id = mal.id 
-                                    inner join ism_malla_area ma on ma.periodo_malla_id = pm.id 
-                                    inner join ism_area a on a.id = ma.area_id 
-                                    inner join ism_area_materia am on am.malla_area_id = ma.id		
-                                    inner join ism_materia m on m.id = am.materia_id 
-                    where 	mal.op_course_template_id = $nivelId
-                                    and pm.scholaris_periodo_id = $periodoId
-                                    and am.id not in (select ism_area_materia_id  
-                                                        from planificacion_desagregacion_cabecera 
-                                                        where ism_area_materia_id  = am.id  
-                                                                and op_course_template_id = mal.op_course_template_id  
-                                                                and scholaris_periodo_id = pm.scholaris_periodo_id);";
+        $user = Yii::$app->user->identity->usuario;
+        $query = "insert into planificacion_desagregacion_cabecera (ism_area_materia_id, year_from, year_to, is_active, comments, scholaris_periodo_id, estado) 
+                    select am.id , 2021, 2025, true ,'CREADO AUTOMÁTICAMENTE' ,pm.scholaris_periodo_id ,'INICIANDO' 
+                    from ism_malla mal 
+                    inner join ism_periodo_malla pm on pm.malla_id = mal.id 
+                    inner join ism_malla_area ma on ma.periodo_malla_id = pm.id 
+                    inner join ism_area a on a.id = ma.area_id 
+                    inner join ism_area_materia am on am.malla_area_id = ma.id 
+                    inner join ism_materia m on m.id = am.materia_id 
+                    inner join scholaris_clase cla on cla.ism_area_materia_id = am.id 
+                    inner join op_faculty fac on fac.id = cla.idprofesor 
+                                    inner join res_users use on use.partner_id = fac.partner_id 
+                    where mal.op_course_template_id = $nivelId 
+                                    and pm.scholaris_periodo_id = $periodoId 
+                                    and am.id not in (select ism_area_materia_id 
+                                                                            from planificacion_desagregacion_cabecera 
+                                                                            where ism_area_materia_id = am.id 
+                                                                                            and op_course_template_id = mal.op_course_template_id 
+                                                                                            and scholaris_periodo_id = pm.scholaris_periodo_id)
+                                    and use.login = '$user'
+                    group by am.id, pm.scholaris_periodo_id;";
         
         $con->createCommand($query)->execute();
     }

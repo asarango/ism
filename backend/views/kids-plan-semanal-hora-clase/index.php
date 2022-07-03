@@ -17,14 +17,15 @@ $semana = $model->planSemanal->semana->nombre_semana;
 $dia = $model->detalle->dia->nombre;
 $hora = $model->detalle->hora->sigla;
 $curso = $model->clase->paralelo->course->name;
- $paralelo = $model->clase->paralelo->name;
- $materia = $model->clase->ismAreaMateria->materia->nombre;
+$paralelo = $model->clase->paralelo->name;
+$materia = $model->clase->ismAreaMateria->materia->nombre;
+$hoy = date('d-m-Y');
 //  print_r($destrezasDisponibles);
 // die();
 
 ?>
 <!-- JS y CSS Ckeditor -->
-<script src="https://cdn.ckeditor.com/4.17.1/full/ckeditor.js"></script>
+<script src="https://cdn.ckeditor.com/4.17.1/standard/ckeditor.js"></script>
 
 <div class="kids-plan-semanal-hora-clase-index">
 
@@ -124,13 +125,116 @@ $curso = $model->clase->paralelo->course->name;
                                 <?php 
                                 foreach($modelDestrezas as $destrezaSel){
                                     ?>
-                                    <div class="card shadow p-3 zoom" style="margin-top:10px">
-                                    <strong class="text-segundo">Ámbito:</strong>
+                                    <div class="card shadow p-3 " style="margin-top:10px">
+                                        <div style="text-align:end">
+                                            <!-- BOTON AGREGAR TAREA -->
+                                            <a type="button" data-bs-toggle="modal" data-bs-target="#tareaModal<?=$destrezaSel['id'] ?>">
+                                                Agregar tarea &nbsp;
+                                                <i class="fas fa-sticky-note" style="color:#65b2e8" title="Agregar Tarea"></i>
+                                            </a>
+
+                                                <!-- MODAL AGREGAR TAREA -->
+                                                <div class="modal fade" id="tareaModal<?=$destrezaSel['id'] ?>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                    <div class="modal-dialog modal-lg">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title" id="exampleModalLabel">AGREGAR TAREA</h5>
+                                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                            </div>
+                                                            <div class="modal-body">
+
+                                                                <?= Html::beginForm(['kids-destreza-tarea/crear-tarea'], 'post', ['enctype' => 'multipart/form-data']) ?>
+
+                                                                <input type="hidden" name="plan_destreza_id" value="<?=$destrezaSel['id']?>" >
+                                                                <div class="row" style="text-align:start">
+
+                                                                    <div class="col-md-6 col-sm-6">
+                                                                        <div class="mb-3">
+                                                                            <label for="exampleInputEmail1" class="form-label">TITULO</label>
+                                                                            <input type="text" class="form-control" name="titulo" require="">
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <div class="col-md-6 col-sm-6">
+                                                                        <div class="mb-3">
+                                                                            <label for="exampleInputEmail1" class="form-label">FECHA DE PRESENTACION</label>
+                                                                            <input type="date" class="form-control" name="fecha_presentacion" require="">
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <div class="col-md-6 col-sm-6">
+                                                                        <div class="form-check">
+                                                                            <input class="form-check-input" require="" type="radio" name="publicado_al_estudiante" id="exampleRadios1" value="1" checked >
+                                                                            <label class="form-check-label" for="exampleRadios1">
+                                                                                PUBLICAR
+                                                                            </label>
+                                                                            </div>
+                                                                            <div class="form-check">
+                                                                            <input class="form-check-input" require="" type="radio" name="publicado_al_estudiante" id="exampleRadios2" value="0">
+                                                                            <label class="form-check-label" for="exampleRadios2">
+                                                                                NO PUBLICAR
+                                                                            </label>
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <div class="col-md-6 col-sm-6">
+                                                                        <div class="mb-3">
+                                                                            <label for="formFileMultiple" class="form-label">Subir archivos</label>
+                                                                            <input class="form-control" type="file" id="formFileMultiple" name="archivos[]" multiple>
+                                                                        </div>                    
+                                                                    </div>
+
+                                                                    <div class="col-md-12 col-sm-12">
+                                                                        <div class="mb-3">
+                                                                            <label for="exampleInputPassword1" class="form-label">CONTENIDO</label>
+                                                                            <textarea name="detalle_tarea" require="" class="form-control" >Descripción de tarea</textarea>
+                                                                            <script>
+                                                                                CKEDITOR.replace( 'detalle_tarea',{
+                                                                                    customConfig: '/ckeditor_settings/config.js'                                
+                                                                                    } );
+                                                                            </script>
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <div class="col-md-12 col-sm-12">
+                                                                        <div class="mb-3">
+                                                                            <label for="exampleInputPassword1" class="form-label">RECURSOS</label>
+                                                                            <textarea name="materiales" require="" class="form-control" >Texto de recursos a utilizar</textarea>
+                                                                            <script>
+                                                                                CKEDITOR.replace( 'materiales',{
+                                                                                    customConfig: '/ckeditor_settings/config.js'                                
+                                                                                    } );
+                                                                            </script>
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <button type="submit" class="btn btn-primary">Agregar Tarea</button>                   
+
+                                                                </div>        
+
+                                                                <?= Html::endForm() ?>
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                        </div>
+
+
+                                        <strong class="text-segundo">Ámbito:</strong>
                                         <p class="text-segundo"><?=$destrezaSel['ambito'] ?></p>
                                         <br>
                                         <strong class="text-primero">Destreza:</strong>
                                         <p class="text-primero"><?=$destrezaSel['destreza'] ?></p>
-                                        
+                                        <div class="row card-footer">
+                                            <div class="col-md-6 col-sm-6" style="text-align:center">
+                                                Tareas:
+                                            </div>
+                                            <div class="col-md-6 col-sm-6">
+                                                <span class="badge rounded-pill bg-danger">2</span>
+                                            </div>
+                                        </div>
+
                                     </div>
                                     <?php
                                 }
@@ -141,8 +245,10 @@ $curso = $model->clase->paralelo->course->name;
                         
                         </div>
                         <div class="col-md-8 col-sm-8">
-                        <?= Html::beginForm(['ingresa-destreza'], 'post', ['id' => 'form_destreza']) ?>
-                            <textarea name="contenido" class="form-control" ></textarea>
+                        <?= Html::beginForm(['actualizar-actividad'], 'post') ?>
+
+                            <input type="hidden" name="hora_clase_id" value="<?=$model->id?>" >
+                            <textarea name="contenido" class="form-control" ><?=$model->actividades?></textarea>
                             <script>
                                 CKEDITOR.replace( 'contenido',{
                                     customConfig: '/ckeditor_settings/config.js'                                

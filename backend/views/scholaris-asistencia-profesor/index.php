@@ -81,8 +81,7 @@ $this->title = 'Mis actividades de hoy';
                     </thead>
                     <tbody>
                         <?php
-                        //                                        print_r($model);
-                        //                                        die();
+
                         foreach ($model as $data) {
                             echo '<tr>';
                             echo '<td class="text-center">' . $data['clase_id'] . '</td>';

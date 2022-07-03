@@ -478,6 +478,7 @@ class HelperPudPaiController extends Controller{
     //7.1.-
     public function actionUpdateRecurso(){  
 
+                
         $planUnidadId = $_GET['plan_unidad_id'];        
         $bibliografico = $_GET['bibliografico'];
         $tecnologico = $_GET['tecnologico'];

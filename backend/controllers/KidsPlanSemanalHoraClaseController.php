@@ -58,15 +58,14 @@ class KidsPlanSemanalHoraClaseController extends Controller
                     ])
                 ->one();
 
-        $unidadMicroId = $planSemanal->kids_unidad_micro_id;
-        $destrezasDisponibles = $this->get_destrezas_disponibles($unidadMicroId);//destrezas disponibles planificadas en la
-                                                                    //tablakids_micro_destreza
-                                                                       
-
+        $unidadMicroId = $planSemanal->kids_unidad_micro_id;        
+                                                                                           
         if($model){  //se cumple acuando el modelo existe, caso contrario realiza el ingreso del registro
             
             //destrezas planificadas
             $modelDestrezas = $this->get_destrezas_planificadas($model->id);
+            $destrezasDisponibles = $this->get_destrezas_disponibles($unidadMicroId, $model->id);//destrezas disponibles planificadas en la
+                                                                    //tablakids_micro_destreza
 
             return $this->render('index',[
                 'model' => $model,
@@ -87,6 +86,8 @@ class KidsPlanSemanalHoraClaseController extends Controller
 
             //destrezas planificadas
             $modelDestrezas = $this->get_destrezas_planificadas($modelN->id);
+            $destrezasDisponibles = $this->get_destrezas_disponibles($unidadMicroId, $modelN->id);//destrezas disponibles planificadas en la
+                                                                    //tablakids_micro_destreza
 
             return $this->render('index',[
                 'model' => $modelN,
@@ -124,13 +125,20 @@ class KidsPlanSemanalHoraClaseController extends Controller
     /**
      * Para tomar las destrezas disponibles
      */
-    private function get_destrezas_disponibles($unidadMicro){
+    private function get_destrezas_disponibles($unidadMicro, $horaClaseId){
         $con = Yii::$app->db;
         $query = "select  md.id 
                     ,concat(d.codigo, ' ', d.nombre) as destreza 
             from 	kids_micro_destreza md
                     inner join cur_curriculo_destreza d on d.id = md.destreza_id 
-            where 	md.micro_id = $unidadMicro;";
+            where 	md.micro_id = $unidadMicro 
+                    and md.id not in (select 	micro_destreza_id  
+                                        from 	kids_plan_semanal_hora_destreza d
+                                        where 	hora_clase_id = $horaClaseId
+                                                and micro_destreza_id = md.id);";
+
+            // echo $query;
+            // die();
         $res = $con->createCommand($query)->queryAll();
         return $res;
     }
@@ -153,7 +161,21 @@ class KidsPlanSemanalHoraClaseController extends Controller
 
 
     public function actionActualizarActividad(){
-        print_r($_POST);
+        //print_r($_POST);
+        $horaClaseId = $_POST['hora_clase_id'];
+        $contenido = $_POST['contenido'];
+
+        $model = KidsPlanSemanalHoraClase::findOne($horaClaseId);
+        $model->actividades = $contenido;
+
+        $model->save();
+
+        return $this->redirect(['index1',
+            'plan_semanal_id' => $model->plan_semanal_id,
+            'clase_id' => $model->clase_id,
+            'detalle_id' => $model->detalle_id
+        ]);
+
     }
 
     // /**

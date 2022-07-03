@@ -65,7 +65,8 @@ class Recursos extends ActiveRecord{
     private function validate_recurso($tipo){
         $pudPai = PudPai::find()->where([
             'planificacion_bloque_unidad_id' => $this->planUnidadId,
-            'tipo' => $tipo
+            'tipo' => $tipo,
+            'seccion_numero' => $this->seccion_numero
         ])->one();
 
         if(!$pudPai){

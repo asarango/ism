@@ -785,15 +785,15 @@ class ScholarisActividadController extends Controller
         $sentencias = new SentenciasSql();
         $modelActividad = \backend\models\ScholarisActividad::find()
             ->where(['id' => $id])
-            ->one();
+            ->one();        
 
         $tipo = $modelActividad->insumo->nombre_pai; 
         $grupo = \backend\models\ScholarisGrupoOrdenCalificacion::find()
             ->where(['codigo_tipo_actividad' => $modelActividad->tipo_actividad_id])
-            ->one();        
+            ->one();
 
-        if ($modelActividad->tipo_calificacion == 'P') {
-
+        if ($modelActividad->tipo_calificacion == 'P') {            
+            
             $con = Yii::$app->db;
             //consulta los criterios asociados a la actividad
             $queryIdCriterios = "select distinct id_criterio
@@ -803,6 +803,7 @@ class ScholarisActividadController extends Controller
                         where s.actividad_id = $id;";
             
             $arrayIdCriterios = $con->createCommand($queryIdCriterios)->queryAll();
+            
 
             // $modelCriterios = ScholarisActividadDescriptor::find()
             //     ->select(['criterio_id'])

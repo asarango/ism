@@ -27,6 +27,8 @@ $modelPudPai = PudPai::find()
 ->where(['planificacion_bloque_unidad_id' => $planUnidad->id])
 ->one();
 
+
+
 $pud_dip_porc_avance = array( "porcentaje" => 0);
 
 
@@ -36,9 +38,12 @@ if($modelPudPai)
 }
 
 
+$pud_dip_porc_avance['porcentaje'] ? $porcentaje = $pud_dip_porc_avance['porcentaje'] : $porcentaje = 0; // revisar select porque devuelve NULL
+
+
 //guarda el valor del porcentaje de avance en planificacion bloque unidad
 $modelPlanBloqUni = PlanificacionBloquesUnidad::findOne($planUnidad->id);
-$modelPlanBloqUni->avance_porcentaje = $pud_dip_porc_avance['porcentaje'];
+$modelPlanBloqUni->avance_porcentaje = $porcentaje;
 $modelPlanBloqUni->save();
 
 

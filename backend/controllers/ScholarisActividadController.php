@@ -466,10 +466,11 @@ class ScholarisActividadController extends Controller
     private function get_valores_estadisticos($claseId){
 
         $con = Yii::$app->db;
-        $queryCriterios = "select criterio 	 
-                    from 	scholaris_criterio c
-                    group by criterio 
-                    order by criterio;";
+        $queryCriterios = "select 	c.nombre as criterio
+                            from 	ism_criterio c 
+                            group by c.nombre
+                            order by c.nombre";
+        
         $criterios = $con->createCommand($queryCriterios)->queryAll();
 
         $queryCriUsados = "select 	curso, paralelo, docente, materia, clase_id, bloque_id, bloque, tipo_actividad, criterio, total 
@@ -486,7 +487,7 @@ class ScholarisActividadController extends Controller
                             group by b.id, b.abreviatura
                             order by b.orden;";
         $parciales = $con->createCommand($queryParciales)->queryAll();
-
+        
         return array(
             'criterios' => $criterios,
             'criUsados' => $criUsados,

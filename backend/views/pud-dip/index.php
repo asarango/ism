@@ -121,7 +121,7 @@ $modelPudBitacora = PudAprobacionBitacora::find()
                     <?= " Avance: " . $pud_dip_porc_avance['porcentaje'] . "%" ?>
                     <?php
                     if ($pud_dip_porc_avance['porcentaje'] == '100') {
-                        if ($modelPudBitacora->estado_jefe_coordinador == 'APROBADO') {
+                        if (isset($modelPudBitacora->estado_jefe_coordinador) == 'APROBADO') {
                             ?>
                             <a href="" data-bs-toggle="modal" data-bs-target="#exampleModal">
                                 <span class="badge rounded-pill" style="background-color: gray"><i class="fas fa-file-signature"></i> Firmas</span>

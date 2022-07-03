@@ -15,7 +15,9 @@ $this->title = 'Mis actividades de hoy';
     <div class="m-0 vh-50 row justify-content-center align-items-center">
         <div class="card shadow col-lg-10col-md-10">
             <div class=" row align-items-center p-2">
-                <div class="col-lg-1"><h4><img src="ISM/main/images/submenu/actividad-fisica.png" width="64px" style="" class="img-thumbnail"></h4></div>
+                <div class="col-lg-1">
+                    <h4><img src="ISM/main/images/submenu/actividad-fisica.png" width="64px" style="" class="img-thumbnail"></h4>
+                </div>
                 <div class="col-lg-11">
                     <h4><?= Html::encode($this->title) ?></h4>
                 </div>
@@ -23,38 +25,41 @@ $this->title = 'Mis actividades de hoy';
             <hr>
 
             <p>
-                |                                
+                |
                 <?=
-                Html::a('<span class="badge rounded-pill" style="background-color: #0a1f8f"><i class="fa fa-briefcase" aria-hidden="true"></i> Inicio</span>',
-                        ['site/index'], ['class' => 'link']);
-                ?>                
-                |    
-
-                
-
+                Html::a(
+                    '<span class="badge rounded-pill" style="background-color: #0a1f8f"><i class="fa fa-briefcase" aria-hidden="true"></i> Inicio</span>',
+                    ['site/index'],
+                    ['class' => 'link']
+                );
+                ?>
+                |
                 <?php
 
-if($tienePrescolar){
-    echo Html::a('<span class="badge rounded-pill" style="background-color: #9e28b5">
+                if ($tienePrescolar) {
+                    echo Html::a(
+                        '<span class="badge rounded-pill" style="background-color: #9e28b5">
                     <i class="fa fa-briefcase" aria-hidden="true"></i> Mis clases KIDS
                 </span>',
-                ['kids-menu/index1'], ['class' => 'link']);
+                        ['kids-menu/index1'],
+                        ['class' => 'link']
+                    );
 
-    echo ' | ';
-}
-    
-if($tieneOtras){
-    echo Html::a('<span class="badge rounded-pill" style="background-color: #ff9e18">
-            <i class="fa fa-briefcase" aria-hidden="true"></i> Mis clases
-        </span>',
-        ['profesor-inicio/index'], ['class' => 'link']);
+                    echo ' | ';
+                }
 
-        echo ' | ';
-}                    
-
-?>                                             
-
-
+                if ($tieneOtras) {
+                    echo Html::a(
+                        '<span class="badge rounded-pill" style="background-color: #ff9e18">
+                            <i class="fa fa-briefcase" aria-hidden="true"></i> Mis clases
+                         </span>',
+                        ['profesor-inicio/index'],
+                        ['class' => 'link']
+                    );
+                    echo ' | ';
+                }
+                ?>
+               
             </p>
 
             <!--comienza cuerpo de documento-->
@@ -76,8 +81,8 @@ if($tieneOtras){
                     </thead>
                     <tbody>
                         <?php
-//                                        print_r($model);
-//                                        die();
+                        //                                        print_r($model);
+                        //                                        die();
                         foreach ($model as $data) {
                             echo '<tr>';
                             echo '<td class="text-center">' . $data['clase_id'] . '</td>';
@@ -93,14 +98,15 @@ if($tieneOtras){
                                 echo '<td class="text-center">' . Html::a('<i class="fas fa-person-booth"></i> Ingresar', [
                                     '/comportamiento/index',
                                     "id" => $data['asistencia_id']
-                                        ], ['class' => 'link', 'style' => 'color: #898b8d']) .
-                                '</td>';
+                                ], ['class' => 'link', 'style' => 'color: #898b8d']) .
+                                    '</td>';
                             } else {
                                 echo '<td class="text-center">' . Html::a('<i class="fas fa-user-clock btn_registrar"> Registrar</i>', [
                                     'registrar',
                                     "clase" => $data['clase_id'],
                                     'hora' => $data['hora_id']
-                                        ], ['class' => 'link',
+                                ], [
+                                    'class' => 'link',
                                     'style' => 'color: #0a1f8f',
                                     //'id' => 'btn-registrar'.$data['detalle_id'],
                                     'onclick' => 'bloque_btn_registrar()'
@@ -113,7 +119,7 @@ if($tieneOtras){
                         }
                         ?>
                     </tbody>
-<!--                    <tfoot>
+                    <!--                    <tfoot>
                         <tr bgcolor="ff9e18" class="text-center">
                             <th>CLASE</th>
                             <th>ASIGNATURA</th>
@@ -133,7 +139,7 @@ if($tieneOtras){
 
 
         </div>
-    </div>  
+    </div>
 
 </div>
 
@@ -166,9 +172,9 @@ if($tieneOtras){
 
     });
 
-//    function alerta() {
-//        alert('Registrado exitosamente!!!');
-//    }
+    //    function alerta() {
+    //        alert('Registrado exitosamente!!!');
+    //    }
 
     function bloque_btn_registrar() {
 
@@ -178,5 +184,4 @@ if($tieneOtras){
         //alert(btn_id);
 
     }
-
 </script>

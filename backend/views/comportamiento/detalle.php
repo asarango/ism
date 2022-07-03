@@ -20,7 +20,7 @@ $this->title = 'Novedades de comportamiento ';
 
             <div class=" row align-items-center p-2">
                 <div class="col-lg-1">
-                    <h4><img src="ISM/main/images/submenu/retroalimentacion.png" width="64px" style="" class="img-thumbnail"></h4>
+                    <h4><img src="ISM/main/images/submenu/retroalimentacion.png" width="64px"  class="img-thumbnail"></h4>
                 </div>
                 <div class="col-lg-11">
                     <h4><?= Html::encode($this->title) ?></h4>
@@ -100,14 +100,22 @@ $this->title = 'Novedades de comportamiento ';
                         </ul>
                     </div>
                 </div>
+                
                 <div class="col-lg-8 col-md-8">
+                    <div class="">
+                        <?=
+                                Html::a(
+                                    '<span class="badge rounded-pill" style="background-color: #0a1f8f"><i class="fa fa-briefcase" aria-hidden="true"></i> Seguimiento DECE</span>',
+                                    ['dece-registro-seguimiento/create','id'=>$modelGrupo->alumno->id],
+                                    ['class' => 'link']
+                                );
+                        ?>
+                        <hr>
+                    </div>
                     <div class="row" style="margin-bottom: 50px">  
                             <table clase="table table-condensed table-striped table-hover my-text-small">
                                 <tr>
-                                    <td><b>Comportamiento Seleccionado:</b></td>
-                                </tr>
-                                <tr>
-                                    <td><label id="txt_seleccion_comp">N/A</label></td>
+                                    <td><b>Comportamiento Seleccionado:</b><label id="txt_seleccion_comp">N/A</label></td>
                                 </tr>
                             </table>                   
                             <?php $form = ActiveForm::begin(); ?>

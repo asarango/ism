@@ -1153,7 +1153,6 @@ class ScholarisActividadController extends Controller
     public function actionDuplicar()
     {
         $actividadId = $_GET['id'];
-        //$modelActividad = \backend\models\ScholarisActividad::find()->where(['id' => $actividadId])->one();
 
         $modelActividad = \backend\models\ScholarisActividad::findOne($actividadId);
         $ismAreaMateriaId = $modelActividad->clase->ism_area_materia_id;
@@ -1162,19 +1161,6 @@ class ScholarisActividadController extends Controller
         
        
         $modelClases = $this->get_clases_para_duplicar($ismAreaMateriaId, $cursoId, $claseId);
-
-//        $modelClases = ScholarisClase::find()
-//            ->where([
-//                'ism_area_materia_id' => $modelActividad->clase->ism_area_materia_id,
-//                'idcurso' => $modelActividad->clase->paralelo->course_id
-//            ])
-//            ->andWhere(['<>', 'id', $modelActividad->paralelo_id])
-//            ->all();
-//
-//        //        echo '<pre>';
-//        //        print_r($modelClases);
-//        //        die();
-
 
         return $this->render('duplicar', [
             'modelClases' => $modelClases,

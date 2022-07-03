@@ -309,6 +309,9 @@ where hor.clase_id in
         )>0 then 1 else 0 end))
         )*100/(select cast(categoria as integer) from planificacion_opciones po where tipo = 'PUD_CONTEO_PORCENTAJE' and seccion='PAI')) 
         AS porcentaje;";
+        
+//        print_r($query);
+//        die();
 
         $resultado = $con->createCommand($query)->queryOne();
         return $resultado;

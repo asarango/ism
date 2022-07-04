@@ -569,5 +569,19 @@ where hor.clase_id in
         $respuesta = $con->createCommand($query)->queryall();
         return $respuesta;
     }
+    //devulve listado de usuario y sus cargos
+    //se usa en seguimiento DECE
+    public function mostrarUsuarioParaDece()
+    {
+        $con = Yii::$app->db;
+        $query = 'select upper(cast(concat(rp."name",\' - \',rp."ref") as varchar(200))) as usuario
+        from usuario u 
+        inner join res_users ru on ru.login = u.usuario 
+        inner join res_partner rp on rp.id = ru.partner_id 
+        order by rp."name";';
+        $respuesta = $con->createCommand($query)->queryAll();
+        return  $respuesta;
+
+    }
 
 }

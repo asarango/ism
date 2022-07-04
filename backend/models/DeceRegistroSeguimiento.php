@@ -39,6 +39,7 @@ class DeceRegistroSeguimiento extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
+            [['id_clase', 'id_estudiante','fecha_inicio','motivo','estado'], 'required'],
             [['id_clase', 'id_estudiante'], 'default', 'value' => null],
             [['id_clase', 'id_estudiante'], 'integer'],
             [['fecha_inicio', 'fecha_fin'], 'safe'],

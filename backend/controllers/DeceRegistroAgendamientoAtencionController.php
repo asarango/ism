@@ -5,9 +5,11 @@ namespace backend\controllers;
 use Yii;
 use backend\models\DeceRegistroAgendamientoAtencion;
 use backend\models\DeceRegistroAgendamientoAtencionSearch;
+USE backend\models\PlanificacionOpciones;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\web\UploadedFile;
 
 /**
  * DeceRegistroAgendamientoAtencionController implements the CRUD actions for DeceRegistroAgendamientoAtencion model.
@@ -65,10 +67,43 @@ class DeceRegistroAgendamientoAtencionController extends Controller
     public function actionCreate($idSeguimiento)
     {
         $model = new DeceRegistroAgendamientoAtencion();
-
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        /** Extrae path donde se almacena los archivos */
+        $path_archivo_dece_atencion = PlanificacionOpciones::find()->where([
+            'tipo'=>'SUBIDA_ARCHIVO',
+            'categoria'=>'PATH_DECE_SEG'
+        ])->one();
+        $pathArchivos =$path_archivo_dece_atencion->opcion.$idSeguimiento.'/';       
+        //creamos la carpeta
+        
+        if (!file_exists($pathArchivos)) {            
+            mkdir($pathArchivos, 0777);     
+            chmod($pathArchivos, 0777) ;      
+        } 
+        if ($model->load(Yii::$app->request->post())) {
+            $imagenSubida = UploadedFile::getInstance($model,'path_archivo');         
+            if(!empty($imagenSubida))
+            {  
+                $imagenSubida->name = str_replace(' ', '', $imagenSubida->name);
+                $path = $pathArchivos.$imagenSubida->name;
+                                
+                if ($imagenSubida->saveAs($path))
+                {
+                    $model->save();
+                    $model->path_archivo = $model->id.'##'.$imagenSubida->name; 
+                    $model->save();
+                }
+            }
+            else
+            { 
+                $model->save();
+            }
+                       
             return $this->redirect(['create', 'idSeguimiento' => $model->id_reg_seguimiento]);
         }
+
+        // if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        //     return $this->redirect(['create', 'idSeguimiento' => $model->id_reg_seguimiento]);
+        // }
 
         return $this->render('create', [
             'model' => $model,

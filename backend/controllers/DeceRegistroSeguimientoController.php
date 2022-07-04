@@ -2,13 +2,16 @@
 
 namespace backend\controllers;
 
+use backend\models\DeceMotivos;
 use Yii;
 use backend\models\DeceRegistroSeguimiento;
 use backend\models\DeceRegistroSeguimientoSearch;
+use backend\models\ScholarisGrupoAlumnoClase;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
+use backend\models\helpers\Scripts;
 
 /**
  * DeceRegistroSeguimientoController implements the CRUD actions for DeceRegistroSeguimiento model.
@@ -64,18 +67,19 @@ class DeceRegistroSeguimientoController extends Controller
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
-   
+    //recibe el id de scholarisgrupoalumnoclase 
     public function actionCreate($id)
     {       
-        $model = new DeceRegistroSeguimiento();   
+        $model = new DeceRegistroSeguimiento(); 
         
-        if ($model->load(Yii::$app->request->post()) && $model->save()) 
-        {            
+        if ($model->load(Yii::$app->request->post())) 
+        {                       
+            $model->save();
             return $this->redirect(['update', 'id' => $model->id]);         
         }
         return $this->render('create', [
             'model' => $model,
-            'id_estudiante' => $id
+            'id_grupo' => $id //grupo contiene id estudinte e id clase 
         ]);
     }
 
@@ -89,6 +93,11 @@ class DeceRegistroSeguimientoController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
+        //busca el id del grupo, por clase y estudiante
+        $modelGrupo = ScholarisGrupoAlumnoClase::find()
+        ->where(['clase_id' =>$model->id_clase])
+        ->andWhere(['estudiante_id' =>$model->id_estudiante])
+        ->one();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['update', 'id' => $model->id]);
@@ -96,7 +105,7 @@ class DeceRegistroSeguimientoController extends Controller
 
         return $this->render('update', [
             'model' => $model,
-            'id_estudiante' => $model->id_estudiante
+            'id_grupo' => $modelGrupo->id
         ]);
     }
 

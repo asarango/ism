@@ -106,7 +106,7 @@ $this->title = 'Novedades de comportamiento ';
                         <?=
                                 Html::a(
                                     '<span class="badge rounded-pill" style="background-color: #0a1f8f"><i class="fa fa-briefcase" aria-hidden="true"></i> Seguimiento DECE</span>',
-                                    ['dece-registro-seguimiento/create','id'=>$modelGrupo->alumno->id],
+                                    ['dece-registro-seguimiento/create','id'=>$modelGrupo->id],
                                     ['class' => 'link']
                                 );
                         ?>

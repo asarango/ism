@@ -36,12 +36,12 @@ class DeceRegistroAgendamientoAtencion extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id_reg_seguimiento'], 'required'],
+            [['id_reg_seguimiento','fecha_inicio','estado'], 'required'],
             [['id_reg_seguimiento'], 'default', 'value' => null],
             [['id_reg_seguimiento'], 'integer'],
             [['fecha_inicio', 'fecha_fin'], 'safe'],
             [['estado'], 'string', 'max' => 50],
-            [['pronunciamiento', 'acuerdo_y_compromiso', 'evidencia'], 'string', 'max' => 500],
+            [['pronunciamiento', 'acuerdo_y_compromiso', 'evidencia'], 'string'],
             [['path_archivo'], 'string', 'max' => 250],
             [['id_reg_seguimiento'], 'exist', 'skipOnError' => true, 'targetClass' => DeceRegistroSeguimiento::className(), 'targetAttribute' => ['id_reg_seguimiento' => 'id']],
         ];

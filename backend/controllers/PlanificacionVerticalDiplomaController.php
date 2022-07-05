@@ -109,6 +109,8 @@ class PlanificacionVerticalDiplomaController extends Controller
             $modelPlanifVerticalDipl->updated =$userLog ;
             $modelPlanifVerticalDipl->updated_at =$fechaHoy ;
             $modelPlanifVerticalDipl->save();
+            
+            return $this->redirect(['index1', 'unidad_id' => $modelPlanifVerticalDipl->planificacion_bloque_unidad_id]);
         }       
         return $this->render('update', [
                    'modelPlanifVertDipl' => $modelPlanifVerticalDipl,
@@ -234,6 +236,9 @@ class PlanificacionVerticalDiplomaController extends Controller
        }
        return $arrayResp;       
     }
+    
+    
+    
     private function select_plan_vertical_diploma($planUnidadId)
     {
         //muestra el plan vert diploma, segun el codigo unidad seleccionado
@@ -258,6 +263,7 @@ class PlanificacionVerticalDiplomaController extends Controller
         $planVertical->concepto_clave = "Sin contenido";
         $planVertical->objetivo_evaluacion = "Sin contenido";
         $planVertical->intrumentos = "Sin contenido";
+        $planVertical->contenido = "Sin contenido";
         $planVertical->created = $userLog;
         $planVertical->created_at = $fechaHoy;
         $planVertical->save();
@@ -311,5 +317,77 @@ class PlanificacionVerticalDiplomaController extends Controller
         }             
         return  $arrayResp;
     }  
+    
+    
+    public function actionAjaxHabilidades(){
+        $planVerticalId = $_GET['plan_vertical_id'];
+        $habilidades = $this->get_habilidades($planVerticalId);
+        
+        return $this->renderPartial('_ajaxhabilidades',[
+            'habilidades' => $habilidades,
+            'planVerticalId' => $planVerticalId
+        ]);
+    }
+    
+    
+    public function actionAjaxHabilidadesSeleccionadas(){
+        $planVerticalId = $_GET['plan_vertical_id'];
+        $habilidades = $this->get_habilidades_titulos($planVerticalId);        
+        
+        return $this->renderPartial('_ajaxhabilidadesseleccionadas',[
+            'habilidades' => $habilidades
+        ]);
+    }
+    
+    
+    
+    private function get_habilidades($planVerticalId){
+        $con = Yii::$app->db;
+        $query = "select 	op.id as opcion_id
+                                    ,h.nombre as habilidad
+                                    ,sh.nombre as sub_habilidad
+                                    ,op.nombre 
+                                    ,dh.id as elegido_id
+                    from 	enfoques_diploma_sb_opcion op
+                                    inner join enfoques_diploma_sub_habilidad sh on sh.id = op.sub_habilidad_id 
+                                    inner join enfoques_diploma_habilidad h on h.id = sh.habilidad_id 
+                                    left join planificacion_vertical_diploma_habilidad dh on dh.opcion_habilidad_id = op.id
+                                                    and dh.plan_vertical_id = $planVerticalId
+                    order by h.nombre, sh.nombre, op.id;";
+        $res = $con->createCommand($query)->queryAll();
+        return $res;
+    }
+    
+    
+    private function get_habilidades_titulos($planVerticalId){
+        $con = Yii::$app->db;
+        $query = "select 	h.nombre                   
+                    from 	planificacion_vertical_diploma_habilidad dh
+                                    inner join enfoques_diploma_sb_opcion op on op.id = dh.opcion_habilidad_id 
+                                    inner join enfoques_diploma_sub_habilidad sub on sub.id = op.sub_habilidad_id
+                                    inner join enfoques_diploma_habilidad h on h.id = sub.habilidad_id 
+                    where 	dh.plan_vertical_id = $planVerticalId
+                    group  by h.nombre
+                    order by h.nombre;";
+        $res = $con->createCommand($query)->queryAll();
+        return $res;
+    }
+    
+    public function actionAjaxHabilidadesAccion(){        
+        $accion = $_POST['accion'];        
+        
+        if($accion == 'agregar'){
+            $opcionId = $_POST['opcion_id'];
+            $planVerticalId = $_POST['plan_vertical_id'];
+            $model = new \backend\models\PlanificacionVerticalDiplomaHabilidad();
+            $model->plan_vertical_id = $planVerticalId;
+            $model->opcion_habilidad_id = $opcionId;
+            $model->save();
+        }else{
+            $elegidoId = $_POST['elegido_id'];            
+            $model = \backend\models\PlanificacionVerticalDiplomaHabilidad::findOne($elegidoId);
+            $model->delete();
+        }                
+    }
 
 }

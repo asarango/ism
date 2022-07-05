@@ -73,6 +73,14 @@ $this->params['breadcrumbs'][] = $this->title;
                     );
                     ?>
                     |
+                    <?=
+                    Html::a(
+                            '<span class="badge rounded-pill" style="background-color: #ff9e18"><i class="fas fa-grip-horizontal" aria-hidden="true"></i> Opciones Horizontal IB</span>',
+                            ['horizontal', 'plan_vertical_id' => $planVerticalDiploma->id],
+                            ['class' => 'link']
+                    );
+                    ?>                         
+                    |
                 </div><!-- fin de menu derecha -->
             </div>
             <!-- finaliza menu menu  -->

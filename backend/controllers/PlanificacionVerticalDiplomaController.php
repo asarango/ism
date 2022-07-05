@@ -389,5 +389,29 @@ class PlanificacionVerticalDiplomaController extends Controller
             $model->delete();
         }                
     }
+    
+    
+    /**
+     * Metodo que añade las opciones de plan vertical
+     */
+    public function actionHorizontal(){
+        $planVerticalId = $_GET['plan_vertical_id'];
+        
+        $modelPlanVertical= PlanificacionVerticalDiploma::findOne($planVerticalId);
+        $this->insert_opciones($planVerticalId);
+        
+        return $this->render('horizontal', [
+            'modelPlanVertical' => $modelPlanVertical
+        ]);
+    }
+    
+    private function insert_opciones($planVerticalId){
+        $con = Yii::$app->db;
+        $query = "insert into planificacion_conexion_tdc(plan_vertical_id, opcion_tdc_id, es_activo)
+                select 	$planVerticalId, top.id, false 
+                from 	dip_conexiones_tdc_opciones top
+                where 	top.id not in (select opcion_tdc_id from planificacion_conexion_tdc where plan_vertical_id = $planVerticalId and opcion_tdc_id = top.id);";
+        $con->createCommand($query)->execute();
+    }
 
 }

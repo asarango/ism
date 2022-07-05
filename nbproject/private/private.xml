@@ -3,9 +3,12 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
+            <file>file:/var/www/html/ism/academico/backend/views/planificacion-vertical-diploma/_ajaxhabilidades.php</file>
+            <file>file:/var/www/html/ism/academico/backend/views/planificacion-vertical-diploma/index.php</file>
+            <file>file:/var/www/html/ism/academico/backend/web/css/coloresPersonalizados.css</file>
             <file>file:/var/www/html/ism/academico/common/config/main-local.php</file>
-            <file>file:/var/www/html/ism/academico/backend/controllers/ScholarisActividadController.php</file>
-            <file>file:/var/www/html/ism/academico/backend/models/SentenciasSql.php</file>
+            <file>file:/var/www/html/ism/academico/backend/controllers/PlanificacionVerticalDiplomaController.php</file>
+            <file>file:/var/www/html/ism/academico/backend/views/layouts/main.php</file>
         </group>
     </open-files>
 </project-private>

@@ -19,7 +19,7 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="planificacion-vertical-pai-criterios-index">
     <!-- CABECERA -->
     <div class="m-0 vh-50 row justify-content-center align-items-center">
-        <div class="card shadow col-lg-8 col-md-8">
+        <div class="card shadow col-lg-12 col-md-12">
             <div class=" row align-items-center p-2">
                 <div class="col-lg-1">
                     <h4><img src="ISM/main/images/submenu/herramientas-para-reparar.png" width="64px" style="" class="img-thumbnail"></h4>
@@ -81,11 +81,11 @@ $this->params['breadcrumbs'][] = $this->title;
             <hr>
             <!-- inicia cuerpo de card -->
             
-            <div class="card shadow p-4" style="margin: 20px;">
+            <div class="card shadow p-4" style="margin: 20px; font-size: 10px">
                 <?php $form = ActiveForm::begin(); ?>
 
                     <div class="row p-3">
-                        <div class="col-lg-2 col-md-2"><b>Objetivos de la Asignatura</b></div>
+                        <div class="col-lg-2 col-md-2"><b>Objetivos de la Unidad</b></div>
                         <div class="col-lg-10 col-md-10">
                         <?= $form->field($modelPlanifVertDipl, 'objetivo_asignatura')->textarea(['rows' => 3])->label(false) ?>
                         </div>
@@ -97,20 +97,22 @@ $this->params['breadcrumbs'][] = $this->title;
                         <?= $form->field($modelPlanifVertDipl, 'concepto_clave')->textarea(['rows' => 3])->label(false) ?>
                         </div>
                     </div>
+                
+                    <div class="row p-3">
+                        <div class="col-lg-2 col-md-2"><b>Contenido</b></div>
+                        <div class="col-lg-10 col-md-10">
+                        <?= $form->field($modelPlanifVertDipl, 'contenido')->textarea(['rows' => 3])->label(false) ?>
+                        </div>
+                    </div>
 
                     <div class="row p-3">
-                        <div class="col-lg-2 col-md-2"><b>Objetivos de la Evaluación</b></div>
+                        <div class="col-lg-2 col-md-2"><b>Evaluación PD</b></div>
                         <div class="col-lg-10 col-md-10">
                         <?= $form->field($modelPlanifVertDipl, 'objetivo_evaluacion')->textarea(['rows' => 3])->label(false) ?>
                         </div>
                     </div>
 
-                    <div class="row p-3">
-                        <div class="col-lg-2 col-md-2"><b>Instrumentos</b></div>
-                        <div class="col-lg-10 col-md-10">
-                        <?= $form->field($modelPlanifVertDipl, 'intrumentos')->textarea(['rows' => 3])->label(false) ?>
-                        </div>
-                    </div>
+                   
 
 
 
@@ -124,7 +126,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
             <hr>
 
-            <!-- inicia formulario de tdc -->
+<!--             inicia formulario de tdc 
             <div class="card shadow" style="margin: 20px;">
             <div class="row p-3">
                 <?=
@@ -135,10 +137,10 @@ $this->params['breadcrumbs'][] = $this->title;
                 ?>
             </div>            
             </div>
-            <!-- finaliza formulario de tdc -->
+             finaliza formulario de tdc 
 
                     <hr>
-            <!-- inicia formulario de habilidades -->
+             inicia formulario de habilidades 
             <div class="card shadow" style="margin: 20px;">
             <div class="row p-3">
                 <?=
@@ -148,7 +150,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     ]);
                 ?>
             </div>            
-            </div>            
+            </div>            -->
             <!-- finaliza formulario de habilidades -->
 
             <!-- fin cuerpo de card -->

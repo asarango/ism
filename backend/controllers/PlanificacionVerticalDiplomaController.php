@@ -400,8 +400,11 @@ class PlanificacionVerticalDiplomaController extends Controller
         $modelPlanVertical= PlanificacionVerticalDiploma::findOne($planVerticalId);
         $this->insert_opciones($planVerticalId);
         
+        $arrayConexionesTdc = $this->get_conexiones_tdc($planVerticalId);
+        
         return $this->render('horizontal', [
-            'modelPlanVertical' => $modelPlanVertical
+            'modelPlanVertical' => $modelPlanVertical,
+            'arrayConexionesTdc' => $arrayConexionesTdc
         ]);
     }
     
@@ -412,6 +415,44 @@ class PlanificacionVerticalDiplomaController extends Controller
                 from 	dip_conexiones_tdc_opciones top
                 where 	top.id not in (select opcion_tdc_id from planificacion_conexion_tdc where plan_vertical_id = $planVerticalId and opcion_tdc_id = top.id);";
         $con->createCommand($query)->execute();
+    }
+    
+    private function get_conexiones_tdc($planVerticalId){
+        $con = Yii::$app->db;
+        $query = "select 	pt.id 
+                                ,pt.es_activo 
+                                ,pt.contenido 
+                                ,op.es_de_lectura  
+                                ,op.tipo_area 
+                                ,op.opcion 
+                from 	planificacion_conexion_tdc pt
+                                inner join dip_conexiones_tdc_opciones op on op.id = pt.opcion_tdc_id 
+                where 	pt. plan_vertical_id = $planVerticalId
+                order by op.tipo_area;";
+        $res = $con->createCommand($query)->queryAll();
+        return $res;
+    }
+    
+    
+    public function actionUpdateTdcRegister(){
+        $tdcId = $_POST['tdc_id'];
+        $tipo = $_POST['tipo'];
+        $model = \backend\models\PlanificacionConexionTdc::findOne($tdcId);
+        if($tipo == 'formulario' || $tipo == 'preguntas'){
+        if(isset($_POST['contenido'])){
+            $opcion = $_POST['contenido'];
+        }else{
+            $opcion = $_POST['preguntas'];
+        }            
+            $model->contenido = $opcion;
+            $model->save();
+            return $this->redirect(['horizontal', 'plan_vertical_id' => $model->plan_vertical_id]);
+        }else{
+           $model->es_activo ? $cambio = false : $cambio = true;
+           $model->es_activo = $cambio;
+           $model->save();
+        }
+        
     }
 
 }

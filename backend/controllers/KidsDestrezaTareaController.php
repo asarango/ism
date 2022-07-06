@@ -5,6 +5,7 @@ namespace backend\controllers;
 use Yii;
 use backend\models\KidsDestrezaTarea;
 use app\models\KidsDestrezaTareaSearch;
+use backend\models\PlanificacionOpciones;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -40,7 +41,7 @@ class KidsDestrezaTareaController extends Controller
         // print_r($_FILES);
         // die();
         $usuario    = Yii::$app->user->identity->usuario;
-        $hoy        = date('Y-m-d H:i:s');
+        $hoy        = date('Y-m-d H:i:s');        
 
         $model = new KidsDestrezaTarea();
         $model->plan_destreza_id    = $_POST['plan_destreza_id'];
@@ -55,9 +56,57 @@ class KidsDestrezaTareaController extends Controller
         $model->updated             = $usuario;
         $model->save();
 
+        if($_FILES){
+            $this->upload_files($_FILES, $model->id);
+        }
+        
+
         return $this->redirect(['update',
             'id' => $model->id
         ]);
+
+    }
+
+    private function upload_files($files, $tareaId){
+        echo '<pre>';
+        // print_r($files);
+
+        $directory = PlanificacionOpciones::find()->where([
+            'categoria' => 'PATH_PROFE',
+            'tipo' => 'VER_ARCHIVO'
+        ])->one();
+
+
+        $path = $directory['opcion'].'kids/'.$tareaId.'/';
+
+        
+        foreach ($files["archivo"]['tmp_name'] as $key => $tmp_name) {
+            //Validamos que el archivo exista
+            if ($files["archivo"]["name"][$key]) {
+                $filename = $files["archivo"]["name"][$key]; //Obtenemos el nombre original del archivo
+                $source = $files["archivo"]["tmp_name"][$key]; //Obtenemos un nombre temporal del archivo
+
+                $directorio = $path; //Declaramos un  variable con la ruta donde guardaremos los archivos
+
+                //Validamos si la ruta de destino existe, en caso de no existir la creamos
+                if (!file_exists($directorio)) {
+                    mkdir($directorio, 0777) or die("No se puede crear el directorio de extracci&oacute;n");
+                }
+
+                $dir = opendir($directorio); //Abrimos el directorio de destino
+                $target_path = $directorio . '/' . $filename; //Indicamos la ruta de destino, así como el nombre del archivo
+
+                //Movemos y validamos que el archivo se haya cargado correctamente
+                //El primer campo es el origen y el segundo el destino
+                if (move_uploaded_file($source, $target_path)) {
+                    echo "El archivo $filename se ha almacenado en forma exitosa.<br>";
+                } else {
+                    echo "Ha ocurrido un error, por favor inténtelo de nuevo.<br>";
+                }
+                closedir($dir); //Cerramos el directorio de destino
+            }
+        }
+
 
     }
 

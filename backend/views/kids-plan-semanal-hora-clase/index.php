@@ -180,7 +180,7 @@ $hoy = date('d-m-Y');
                                                                     <div class="col-md-6 col-sm-6">
                                                                         <div class="mb-3">
                                                                             <label for="formFileMultiple" class="form-label">Subir archivos</label>
-                                                                            <input class="form-control" type="file" id="formFileMultiple" name="archivos[]" multiple>
+                                                                            <input class="form-control" type="file" id="formFileMultiple" name="archivo[]" multiple>
                                                                         </div>                    
                                                                     </div>
 
@@ -245,6 +245,8 @@ $hoy = date('d-m-Y');
                         
                         </div>
                         <div class="col-md-8 col-sm-8">
+
+                        <h5><b>DETALLE DE ACTIVIDADES PARA LA HORA CLASE</b></h5>
                         <?= Html::beginForm(['actualizar-actividad'], 'post') ?>
 
                             <input type="hidden" name="hora_clase_id" value="<?=$model->id?>" >

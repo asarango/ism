@@ -14,12 +14,14 @@ use Yii;
  * @property string $fecha_fin
  * @property string $estado
  * @property string $motivo
- * @property string $submotivo
- * @property string $submotivo2
  * @property string $persona_solicitante
  * @property string $atendido_por
  * @property string $atencion_para
  * @property string $responsable_seguimiento
+ * @property string $pronunciamiento
+ * @property string $acuerdo_y_compromiso
+ * @property string $eviencia
+ * @property string $path_archivo
  *
  * @property DeceRegistroAgendamientoAtencion[] $deceRegistroAgendamientoAtencions
  */
@@ -39,12 +41,14 @@ class DeceRegistroSeguimiento extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id_clase', 'id_estudiante','fecha_inicio','motivo','estado'], 'required'],
+            [['fecha_inicio','pronunciamiento','acuerdo_y_compromiso','estado','motivo','atendido_por','id_caso'], 'required'],
             [['id_clase', 'id_estudiante'], 'default', 'value' => null],
-            [['id_clase', 'id_estudiante'], 'integer'],
+            [['id_clase', 'id_estudiante','id_caso'], 'integer'],
             [['fecha_inicio', 'fecha_fin'], 'safe'],
+            [['pronunciamiento', 'acuerdo_y_compromiso', 'eviencia'], 'string'],
             [['estado'], 'string', 'max' => 50],
-            [['motivo', 'submotivo', 'submotivo2', 'persona_solicitante', 'atendido_por', 'atencion_para', 'responsable_seguimiento'], 'string', 'max' => 100],
+            [['motivo', 'persona_solicitante', 'atendido_por', 'atencion_para', 'responsable_seguimiento'], 'string', 'max' => 100],
+            [['path_archivo'], 'string', 'max' => 1000],
         ];
     }
 
@@ -55,18 +59,21 @@ class DeceRegistroSeguimiento extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
+            'id_caso'=>'Id Caso',
             'id_clase' => 'Id Clase',
             'id_estudiante' => 'Id Estudiante',
-            'fecha_inicio' => 'Fecha Inicio',
-            'fecha_fin' => 'Fecha Fin',
+            'fecha_inicio' => 'Fecha',
+            'fecha_fin' => 'Fecha',
             'estado' => 'Estado',
             'motivo' => 'Motivo',
-            'submotivo' => 'Submotivo',
-            'submotivo2' => 'Submotivo2',
-            'persona_solicitante' => 'Persona Solicitante',
+            'persona_solicitante' => 'Solicitante',
             'atendido_por' => 'Atendido Por',
             'atencion_para' => 'Atencion Para',
             'responsable_seguimiento' => 'Responsable Seguimiento',
+            'pronunciamiento' => 'Pronunciamiento',
+            'acuerdo_y_compromiso' => 'Acuerdo y Compromiso',
+            'eviencia' => 'Eviencia',
+            'path_archivo' => 'Path Archivo',
         ];
     }
 

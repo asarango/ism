@@ -105,8 +105,8 @@ $this->title = 'Novedades de comportamiento ';
                     <div class="">
                         <?=
                                 Html::a(
-                                    '<span class="badge rounded-pill" style="background-color: #0a1f8f"><i class="fa fa-briefcase" aria-hidden="true"></i> Seguimiento DECE</span>',
-                                    ['dece-registro-seguimiento/create','id'=>$modelGrupo->id],
+                                    '<span class="badge rounded-pill" style="background-color: #0a1f8f"><i class="fa fa-briefcase" aria-hidden="true"></i>Seguimiento</span>',
+                                    ['dece-casos/create','id'=>$modelGrupo->estudiante_id,'id_clase'=>$modelGrupo->clase_id],
                                     ['class' => 'link']
                                 );
                         ?>
@@ -131,9 +131,9 @@ $this->title = 'Novedades de comportamiento ';
                     </div><!-- fin de formulario -->
                     <div class="row" style="margin-bottom: 30px">
                         <div class="table table-responsive shadow" style="height: 190px; overflow-y: scroll">
-                            <table class="table table-condensed table-striped table-hover my-text-small">
-                                <thead>
-                                    <tr style="background-color: #898b8d; font-size:15px">
+                            <table class="table table-responsive table-bordered table-striped">
+                                <thead class="table-success">
+                                    <tr style=" text-align: center;color: #ab0a3d;">
                                         <th style="color:#ab0a3d">Código</th>
                                         <th style="color:#ab0a3d">Detalle</th>
                                         <th style="color:#ab0a3d">Observación</th>

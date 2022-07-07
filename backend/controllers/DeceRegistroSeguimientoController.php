@@ -12,6 +12,8 @@ use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
 use backend\models\helpers\Scripts;
+use yii\web\UploadedFile;
+USE backend\models\PlanificacionOpciones;
 
 /**
  * DeceRegistroSeguimientoController implements the CRUD actions for DeceRegistroSeguimiento model.
@@ -46,7 +48,7 @@ class DeceRegistroSeguimientoController extends Controller
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
         ]);
-    } 
+    }
 
     /**
      * Displays a single DeceRegistroSeguimiento model.
@@ -60,26 +62,63 @@ class DeceRegistroSeguimientoController extends Controller
         return $this->render('view', [
             'model' => $this->findModel($id),
         ]);
-    }  
+    }
 
     /**
      * Creates a new DeceRegistroSeguimiento model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
-    //recibe el id de scholarisgrupoalumnoclase 
-    public function actionCreate($id)
-    {       
-        $model = new DeceRegistroSeguimiento(); 
-        
-        if ($model->load(Yii::$app->request->post())) 
-        {                       
+    //recibe el id de scholarisgrupoalumnoclase
+    public function actionCreate()
+    {
+        $model = new DeceRegistroSeguimiento();
+    //     echo '<pre>';
+    //    print_r($_GET);
+    //    die();
+        if($_GET)
+        {
+            $id_clase = $_GET['id_clase'];
+            $id_estudiante = $_GET['id_estudiante'];
+            $id_caso= $_GET['id_caso'];
+            $model->id_estudiante = $id_estudiante;
+            $model->id_clase = $id_clase;
+            $model->id_caso = $id_caso;
+        }
+
+
+          /** Extrae path donde se almacena los archivos */
+        $path_archivo_dece_atencion = PlanificacionOpciones::find()->where([
+            'tipo'=>'SUBIDA_ARCHIVO',
+            'categoria'=>'PATH_DECE_SEG'
+        ])->one();
+
+        if ($model->load(Yii::$app->request->post()))
+        {
+            $imagenSubida = UploadedFile::getInstance($model,'path_archivo');
             $model->save();
-            return $this->redirect(['update', 'id' => $model->id]);         
+
+            if(!empty($imagenSubida))
+            {
+              $pathArchivos =$path_archivo_dece_atencion->opcion.$model->id_estudiante.'/'.$model->id.'/';
+
+               //creamos la carpeta
+                if (!file_exists($pathArchivos)) {
+                    mkdir($pathArchivos, 0777,true);
+                    chmod($pathArchivos, 0777);
+                }
+                $imagenSubida->name = str_replace(' ', '', $imagenSubida->name);
+                $path = $pathArchivos.$imagenSubida->name;
+                if ($imagenSubida->saveAs($path))
+                {
+                    $model->path_archivo = $model->id_estudiante.'/'.$model->id.'##'.$imagenSubida->name;
+                    $model->save();
+                }
+            }
+            return $this->redirect(['update', 'id' => $model->id]);
         }
         return $this->render('create', [
             'model' => $model,
-            'id_grupo' => $id //grupo contiene id estudinte e id clase 
         ]);
     }
 
@@ -92,20 +131,47 @@ class DeceRegistroSeguimientoController extends Controller
      */
     public function actionUpdate($id)
     {
-        $model = $this->findModel($id);
-        //busca el id del grupo, por clase y estudiante
-        $modelGrupo = ScholarisGrupoAlumnoClase::find()
-        ->where(['clase_id' =>$model->id_clase])
-        ->andWhere(['estudiante_id' =>$model->id_estudiante])
-        ->one();
+         $model = $this->findModel($id);
+      
+         /** Extrae path donde se almacena los archivos */
+        $path_archivo_dece_atencion = PlanificacionOpciones::find()->where([
+            'tipo'=>'SUBIDA_ARCHIVO',
+            'categoria'=>'PATH_DECE_SEG'
+        ])->one();
+        $pathArchivoModel = $model->path_archivo;
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+
+        if ($model->load(Yii::$app->request->post()))
+        {
+            //$imagenSubida = UploadedFile::getInstance($model,'path_archivo');
+
+            if(!empty($model->path_archivo))
+            {
+                $imagenSubida = UploadedFile::getInstance($model,'path_archivo');
+                $pathArchivos =$path_archivo_dece_atencion->opcion.$model->id_estudiante.'/'.$model->id.'/';
+
+               //creamos la carpeta
+                if (!file_exists($pathArchivos)) {
+                    mkdir($pathArchivos, 0777,true);
+                    chmod($pathArchivos, 0777);
+                }
+                $imagenSubida->name = str_replace(' ', '', $imagenSubida->name);
+                $path = $pathArchivos.$imagenSubida->name;
+                if ($imagenSubida->saveAs($path))
+                {
+                    $model->path_archivo = $model->id_estudiante.'/'.$model->id.'##'.$imagenSubida->name;
+                    $model->save();
+                }
+            }
+            else{
+                $model->path_archivo = $pathArchivoModel;
+                $model->save();
+            }
             return $this->redirect(['update', 'id' => $model->id]);
         }
 
         return $this->render('update', [
             'model' => $model,
-            'id_grupo' => $modelGrupo->id
         ]);
     }
 

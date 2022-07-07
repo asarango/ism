@@ -2,15 +2,16 @@
 
 use backend\models\DeceAsistente;
 use yii\helpers\Html;
+use yii\jui\DatePicker;
 use yii\widgets\ActiveForm;
 use backend\models\DeceMotivos;
-use backend\models\DeceRegistroAgendamientoAtencion;
 use backend\models\DeceRegistroSeguimiento;
 use backend\models\OpParent;
 use backend\models\OpStudent;
 use backend\models\ResPartner;
-use backend\models\ScholarisGrupoAlumnoClase;
+use backend\models\PlanificacionOpciones;
 use backend\models\helpers\Scripts;
+
 
 /* @var $this yii\web\View */
 /* @var $model app\models\DeceRegistroSeguimiento */
@@ -18,84 +19,48 @@ use backend\models\helpers\Scripts;
 
 $DateAndTime = date('m-d-Y h:i:s a', time());
 
-
-/*** R1 */
-$modelRegAgendamiento = DeceRegistroAgendamientoAtencion::find()
-    ->where(['id_reg_seguimiento' => $model->id])
-    ->one();
-
-$modelAsistentes = new DeceAsistente();
-if ($modelRegAgendamiento) {
-    $modelAsistentes = DeceAsistente::find()->where(['id_dece_reg_agend_atencion' => $modelRegAgendamiento->id])->all();
-} else {
-    $modelRegAgendamiento = new DeceRegistroAgendamientoAtencion();
-}
-/*** FIN R1 */
 //*** motivos */ 
-$motivos = DeceMotivos::find()
-    ->select(['motivo',])
-    ->from('dece_motivos')
+
+$arrayMotivos = cargaArreglo("motivo");
+$arrayEstado = cargaArreglo("estado_seg");
+$arrayResponsableSeg = cargaArreglo("responsable_seg");
+$arrayAtencionPara = cargaArreglo("atencion_para");
+function cargaArreglo($campo)
+{
+    $consulta = DeceMotivos::find()
+    ->select([$campo,])
     ->distinct()
+    ->where(['not', [$campo => null]])
     ->asArray()
     ->all();
 
-$arrayMotivos = array();
-//recorremos arreglo
-foreach ($motivos as $motivo) {
-    $arrayMotivos[$motivo['motivo']]=$motivo['motivo'];
+    $array = array();
+    //recorremos arreglo
+    foreach ($consulta as $dato) {
+        $array[$dato[$campo]]=$dato[$campo];
+    }
+    return $array;
 }
-//***  submotivos */ 
-$submotivos = (new yii\db\Query())
-    ->select(['submotivo',])
-    ->from('dece_motivos')
-    ->distinct()
-    ->all();
-
-$arraySubMotivos = array();
-//recorremos arreglo
-foreach ($submotivos as $motivo) {
-   $arraySubMotivos[$motivo['submotivo']]=$motivo['submotivo'];
-}
-//** estado */  
-$arrayEstado = array(
-    'PENDIENTE' => 'PENDIENTE',
-    'FINALIZADO' => 'FINALIZADO',
-    'NO ASISTIO' => 'NO ASISTIO'
-);
-//** atencion */ 
-$arrayAtencionPara = array(
-    'PADRE' => 'PADRE',
-    'MADRE' => 'MADRE',
-    'ESTUDIANTE' => 'ESTUDIANTE',
-    'DOCENTE' => 'DOCENTE'
-);
-//** responsable seguimiento */
-$arrayResponsableSeg = array(
-    'RECTORADO' => 'RECTORADO',
-    'INSPECCIÓN' => 'INSPECCIÓN',
-    'COORDINACIÓN' => 'COORDINACIÓN',
-    'SUBCOORDINACIÓN' => 'SUBCOORDINACIÓN',
-    'JEFATURA DE ÁREA' => 'JEFATURA DE ÁREA',
-    'DECE' => 'DECE',
-    'DOCENTE' => 'DOCENTE',
-    'SECRETARIA' => 'SECRETARIA',
-    'SOPORTE / ATENCIÓN AL CLIENTE' => 'SOPORTE / ATENCIÓN AL CLIENTE'
-);
-
+$modelPathArchivo = PlanificacionOpciones::find()
+    ->where(['tipo' => 'VER_ARCHIVO'])
+    ->andWhere(['categoria' => 'PATH_DECE_SEG'])
+    ->one();
 //llamo a grupo para buscar id alumno e id clase, $id_grupo es parametro de entrada
-$modelGrupo = ScholarisGrupoAlumnoClase::findOne($id_grupo);
-$id_student = $modelGrupo->alumno->id;
-$id_clase = $modelGrupo->clase->id;
-
-$modelEstudiante = OpStudent::findOne($id_student);
+$modelEstudiante = OpStudent::findOne($model->id_estudiante);
 $representante = OpParent::findOne($modelEstudiante->x_representante);
 $modelRepresentante = ResPartner::findOne($representante->name);
 
-//buscamos el numero de seguimientos que tiene el alumno
+    //buscamos el numero de seguimientos que tiene el alumno
 $modelRegSeguimiento = DeceRegistroSeguimiento::find()
-    ->where(['id_estudiante' => $id_student])
-    ->all();
-//extrae usuario del sistema 
+->where(['id_caso' => $model->id_caso])
+->orderBy(['estado'=>SORT_DESC,'fecha_inicio'=>SORT_ASC])
+->all();
+
+
+
+
+
+//extrae usuarios del sistema, para mosrtrar en atendido por 
 $objScript = new Scripts();
 $usuarios = $objScript->mostrarUsuarioParaDece();
 $arrayUsuario= array();
@@ -103,17 +68,21 @@ $arrayUsuario= array();
 foreach ($usuarios as $usu) {
     $arrayUsuario[$usu['usuario']]=$usu['usuario'];
 }
+
 ?>
+<script src="https://cdn.ckeditor.com/4.19.0/standard/ckeditor.js"></script>
+
 <div class="comportamiento-detalle">
 
     <div class="m-0 vh-50 row justify-content-center align-items-center">
 
         
             <div class="row p-4 ">
-                <div class="card col-lg-4 col-ms-4">
+                <div class="card col-lg-5 col-ms-5">
                     <!-- RENDERIZA A LA VISTA datos_estudiante.php -->
                     <h3 style="color:blueviolet"><b>Datos Estudiante</b></h3>
                     <table class="table table-responsive">
+                         
                         <tr>
                             <td><b>Alumno: </b></td>
                             <td><?= $modelEstudiante->first_name . ' ' . $modelEstudiante->middle_name . ' ' . $modelEstudiante->last_name ?></td>
@@ -121,33 +90,23 @@ foreach ($usuarios as $usu) {
                         <tr>
                             <td><b>Fecha Nacimiento: </b></td>
                             <td><?= $modelEstudiante->birth_date ?></td>
-                        </tr>
-                        <tr>
-                            <td><b>Cédula: </b></td>
-                            <td></td>
-                        </tr>
+                        </tr>                       
                         <tr>
                             <td><b>Representante: </b></td>
                             <td><?= $modelRepresentante->name ?></td>
-                        </tr>
-                        <tr>
-                            <td><b>Carnét Discapacidad: </b></td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td><b>Grupo Sanguineo: </b></td>
-                            <td><?= $modelEstudiante->blood_group ?></td>
-                        </tr>
+                        </tr>                       
                     </table>
                     <h3 style="color:red">Histórico Seguimiento</h3>
-                    <div style="overflow-x:hidden;overflow-y:scroll;">                        
-                        <table class="table table-success table-striped ">
+                    <div style="overflow-x:scroll;overflow-y:scroll;" >                        
+                        <table class="table table-success table-striped table-bordered my-text-small">
                             <tr class="table-primary">
                                 <td>ID</td>
-                                <td>FECHA</td>
-                                <td>ESTADO</td>
-                                <td>MOTIVO</td>
-                                <td>VER</td>
+                                <td>Fecha Creación</td>
+                                <td>Última Modificación</td>
+                                <td>Estado</td>
+                                <td>Motivo</td>
+                                <td>Editar</td>
+                                <td>Ver</td>
                             </tr>
                             <?php if ($modelRegSeguimiento) {
                                 foreach ($modelRegSeguimiento as $modelReg) {
@@ -155,12 +114,22 @@ foreach ($usuarios as $usu) {
                                     <tr>
                                         <td><?= $modelReg->id ?></td>
                                         <td><?= substr($modelReg->fecha_inicio,0,10) ?></td>
+                                        <td><?= substr($modelReg->fecha_fin,0,10) ?></td>
                                         <td><?= $modelReg->estado ?></td>
                                         <td><?= $modelReg->motivo ?></td>
                                         <td>
-                                                  <!-- boton llama modal -->
-                                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="<?php echo "#staticBackdrop$modelReg->id"; ?>">
-                                            <i class="fas fa-glasses"></i>
+                                        <?=
+                                            Html::a(
+                                                '<i class="fa fa-edit" aria-hidden="true"></i>',
+                                                ['dece-registro-seguimiento/update', 'id' =>$modelReg->id ],
+                                                ['class' => 'link']
+                                            );
+                                            ?>
+                                        </td>
+                                        <td>
+                                        <!--boton VER  boton llama modal -->
+                                        <button type="button" class="rounded-pill" data-bs-toggle="modal" data-bs-target="<?php echo "#staticBackdrop$modelReg->id"; ?>">
+                                            <i class="fas fa-glasses" style="color:blueviolet;"></i>
                                         </button>
                                         <!-- Modal -->
                                         <div class="modal fade" id="<?php echo "staticBackdrop$modelReg->id"; ?>" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
@@ -173,8 +142,12 @@ foreach ($usuarios as $usu) {
                                                     <div class="modal-body">
                                                         <table class="table table-striped table-hover">
                                                             <tr>
-                                                                <td><b>Fecha: </b></td>
+                                                                <td><b>Fecha Creación: </b></td>
                                                                 <td><?= substr($modelReg->fecha_inicio, 0, 10) ?></td>
+                                                            </tr>                                                            
+                                                            <tr>
+                                                                <td><b>Última Modificación: </b></td>
+                                                                <td><?= substr($modelReg->fecha_fin, 0, 10)  ?></td>
                                                             </tr>
                                                             <tr>
                                                                 <td><b>Estado: </b></td>
@@ -185,29 +158,36 @@ foreach ($usuarios as $usu) {
                                                                 <td><?= $modelReg->motivo ?></td>
                                                             </tr>
                                                             <tr>
-                                                                <td><b>Submotivo </b></td>
-                                                                <td><?= $modelReg->submotivo ?></td>
+                                                                <td><b>Pronunciamiento: </b></td>
+                                                                <td><?= $modelReg->pronunciamiento ?></td>
                                                             </tr>
                                                             <tr>
-                                                                <td><b>Submotivo2: </b></td>
-                                                                <td><?= $modelReg->submotivo2 ?></td>
-                                                            </tr>   
+                                                                <td><b>Acuerdo y Compromiso: </b></td>
+                                                                <td><?= $modelReg->acuerdo_y_compromiso ?></td>
+                                                            </tr>
                                                             <tr>
-                                                                <td><b>Solicitante: </b></td>
-                                                                <td><?= $modelReg->persona_solicitante ?></td>
+                                                                <td><b>Evidencia: </b></td>
+                                                                <td><?= $modelReg->acuerdo_y_compromiso ?></td>
                                                             </tr>
                                                             <tr>
                                                                 <td><b>Atendido Por: </b></td>
                                                                 <td><?= $modelReg->atendido_por ?></td>
                                                             </tr>
                                                             <tr>
-                                                                <td><b>Atención Para: </b></td>
-                                                                <td><?= $modelReg->atencion_para ?></td>
-                                                            </tr> 
-                                                            <tr>
                                                                 <td><b>Responsable Seguimiento</b></td>
                                                                 <td><?= $modelReg->responsable_seguimiento ?></td>
-                                                            </tr>                                    
+                                                            </tr>    
+                                                            <tr>
+                                                                <?php $arrayArchivo = array("", "");
+                                                                if (strlen($modelReg->path_archivo) > 0) {
+                                                                    $arrayArchivo = explode("##", $modelReg->path_archivo);
+                                                                }
+                                                                ?>
+                                                                <td><b>Archivo: </b></td>
+                                                                <td><a target="_blank" href="<?= $modelPathArchivo->opcion . $arrayArchivo[0].'/' . $arrayArchivo[1] ?>">
+                                                                        <?= $arrayArchivo[1] ?>
+                                                                    </a></td>
+                                                            </tr>                                
                                                         </table>
                                                     </div>
                                                     <div class="modal-footer">
@@ -226,55 +206,61 @@ foreach ($usuarios as $usu) {
                         </table>
                     </div>
                 </div>
-                <div class="card col-lg-8 col-ms-8">
+                <div class="card col-lg-7 col-ms-7">
                     <h3 style="color:blueviolet"><b>Seguimiento</b></h3>
                     <div class="dece-registro-seguimiento-form">
 
-                        <?php $form = ActiveForm::begin(); ?>
+                        <?php $form = ActiveForm::begin(); 
+                         
+                        ?>                        
 
-                        <?= $form->field($model, 'id_estudiante')->hiddenInput(['value' => $modelEstudiante->id])->label(false); ?>
+                        <?= $form->field($model, 'id_estudiante')->hiddenInput(['value' => $model->id_estudiante])->label(false); ?>
 
-                        <?= $form->field($model, 'id_clase')->hiddenInput(['value' => $id_clase])->label(false); ?>
+                        <?= $form->field($model, 'id_clase' )->hiddenInput(['value' =>$model->id_clase])->label(false); ?>
 
-                        <?= $form->field($model, 'fecha_inicio')->textInput(['type' => 'date']) ?>
+                        <?= $form->field($model, 'id_caso' )->hiddenInput(['value' =>$model->id_caso])->label(false); ?>
+                       
 
-                        <!-- <?= $form->field($model, 'fecha_fin')->textInput(['type' => 'date']) ?> -->
-
+                        <?php if($model->isNewRecord){ ?>
+                             <?= $form->field($model, 'fecha_inicio')->textInput(['type' => 'date' ]) ?>
+                             <?= $form->field($model, 'fecha_fin')->hiddenInput()->label(false) ?>
+                        <?php } else {?>
+                           <?= $form->field($model, 'fecha_fin')->textInput(['type' => 'date' ]) ?>
+                           <?= $form->field($model, 'fecha_inicio')->hiddenInput()->label(false) ?>
+                         <?php }?>
+                       
                         <?= $form->field($model, 'estado')->dropDownList($arrayEstado, ['prompt' => 'Seleccione Estado']) ?>
 
-                        <?= $form->field($model, 'motivo')->dropDownList($arrayMotivos, ['prompt' => 'Seleccione Motivo']) ?>
-
-                        <?= $form->field($model, 'submotivo')->dropDownList($arraySubMotivos, ['prompt' => 'Seleccione Submotivo']) ?>
-
-                        <?= $form->field($model, 'submotivo2')->textInput(['maxlength' => true]) ?>
-
-                        <?= $form->field($model, 'persona_solicitante')->dropDownList($arrayUsuario,['prompt' => 'Seleccione Opción']) ?>
+                        <?= $form->field($model, 'motivo')->dropDownList($arrayMotivos, ['prompt' => 'Seleccione Motivo']) ?>                
 
                         <?= $form->field($model, 'atendido_por')->dropDownList($arrayUsuario,['prompt' => 'Seleccione Opción']) ?>
 
-                        <?= $form->field($model, 'atencion_para')->dropDownList($arrayAtencionPara, ['prompt' => 'Seleccione Opción']) ?>
-
                         <?= $form->field($model, 'responsable_seguimiento')->dropDownList($arrayResponsableSeg, ['prompt' => 'Seleccione Opción']) ?>
 
-
+                        <?= $form->field($model, 'pronunciamiento')->textarea() ?>
+                            <script>
+                                    CKEDITOR.replace("deceregistroseguimiento-pronunciamiento");
+                            </script>
+                        <?= $form->field($model, 'acuerdo_y_compromiso')->textarea() ?>
+                            <script>
+                                CKEDITOR.replace("deceregistroseguimiento-acuerdo_y_compromiso");
+                            </script>
+                        <?= $form->field($model, 'eviencia')->textarea() ?>
+                            <script>
+                                CKEDITOR.replace("deceregistroseguimiento-eviencia");
+                            </script>
                         <br>
+                        <table class="table table-striped table-hover table-responsive">
+                            <tr>
+                                <td>
+                                    <?= $form->field($model, 'path_archivo')->fileInput(['maxlength' => true]) ?>
+                                </td>
+                            </tr>
+                        </table>
                         <div class="row">
                             <div class="col-lg-2">
                                 <div class="form-group">
                                     <?= Html::submitButton('Guardar', ['class' => 'btn btn-success']) ?>
-                                </div>
-                            </div>
-                            <div class="col-lg-4">
-                                <div>
-                                    <?php
-                                    if (!$model->isNewRecord) {
-                                        echo Html::a(
-                                            '<span class="btn btn-primary" style="background-color: #0a1f8f">Agendamiento Atención</span>',
-                                            ['dece-registro-agendamiento-atencion/create', 'idSeguimiento' => $model->id],
-                                            ['class' => 'link']
-                                        );
-                                    }
-                                    ?>
                                 </div>
                             </div>
                         </div>

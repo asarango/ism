@@ -8,17 +8,28 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model app\models\DeceRegistroSeguimiento */
 
-$this->title = 'Crear Seguimiento';
+$this->title = 'Creación - Seguimiento';
 $this->params['breadcrumbs'][] = ['label' => 'Dece Registro Seguimientos', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 
+//$id_grupo llega desde el controllador con -1, quiere decir que es directo del modulo DECE
+
+
+
 //llamamos al grupo
-$modelGrupo = ScholarisGrupoAlumnoClase::findOne($id_grupo);
-//buscamos el leccionario, a travez de la ultima clase, tomada del grupo
+$modelGrupo = ScholarisGrupoAlumnoClase::find()
+->where(['estudiante_id'=>$model->id_estudiante])
+->andWhere(['clase_id'=>$model->id_clase])
+->one();
+
+if($modelGrupo)// si el grupo existe viene de leccionario
+{
+    //buscamos el leccionario, a travez de la ultima clase, tomada del grupo
 $modelAsistProfesor = ScholarisAsistenciaProfesor::find()
-    ->where(['clase_id' => $modelGrupo->clase->id])
+    ->where(['clase_id' => $modelGrupo->clase_id])
     ->orderBy(['id' => SORT_DESC])
     ->one();
+}
 
 ?>
 <div class="dece-registro-seguimiento-create">
@@ -33,9 +44,14 @@ $modelAsistProfesor = ScholarisAsistenciaProfesor::find()
                 </div>
                 <div class="col-lg-10">
                     <h1><?= Html::encode($this->title) ?></h1>
+                    <h3><?= 'Asociado al Número de Caso: '.$model->id_caso?></h5>
                 </div>
             </div>
-            <div class=" row align-items-center p-2">
+            <div class=" row align-items-center p-2">                
+                <?php
+                if($modelGrupo)// si el grupo existe viene de leccionario
+                { 
+                ?>
                     <p>
                         <?=
                         Html::a(
@@ -45,11 +61,13 @@ $modelAsistProfesor = ScholarisAsistenciaProfesor::find()
                         );
                         ?>
                     </p>
+                <?php 
+                }
+                ?>
             </div>
 
             <?= $this->render('_form', [
-                'model' => $model,
-                'id_grupo' => $id_grupo
+                'model' => $model
             ]) ?>
 
         </div>

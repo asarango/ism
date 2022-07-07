@@ -73,26 +73,21 @@ class MateriasPaiController extends Controller{
         $periodoId      = Yii::$app->user->identity->periodo_id;
         $institutoId    = Yii::$app->user->identity->instituto_defecto;
         $con            = Yii::$app->db;
-        $query = "select 	mat.id
-                            ,mat.name as materia
-                            ,mat.language_code 
-                            ,mat.last_name 
-                    from 	scholaris_malla m
-                            inner join scholaris_malla_area ma on ma.malla_id = m.id 
-                            inner join scholaris_malla_materia mm on mm.malla_area_id = ma.id
-                            inner join scholaris_malla_curso mc on mc.malla_id = m.id
-                            inner join op_course cu on cu.id = mc.curso_id 		
-                            inner join scholaris_op_period_periodo_scholaris sop on sop.op_id = cu.period_id 
-                            inner join op_section se on se.id = cu.section
-                            inner join scholaris_materia mat on mat.id = mm.materia_id 
+
+        $query = "select 	mat.id ,mat.nombre as materia  
+                    from	ism_area_materia am
+                                    inner join ism_materia mat on mat.id = am.materia_id
+                                    inner join ism_malla_area ma on ma.id = am.malla_area_id 
+                                    inner join ism_periodo_malla pm on pm.id = ma.periodo_malla_id 
+                                    inner join ism_malla m on m.id = pm.malla_id
+                                    inner join scholaris_op_period_periodo_scholaris sop on sop.scholaris_id = pm.scholaris_periodo_id 
+                                    inner join op_course_template t on t.id = m.op_course_template_id 
+                                    inner join op_course cur on cur.x_template_id = t.id 
+                                    inner join op_section s on s.id = cur.section
+                                                                    and s.period_id = sop.op_id 
                     where 	sop.scholaris_id = $periodoId
-                            and se.code = 'PAI'
-                            and cu.x_institute = $institutoId
-                    group by mat.id
-                            ,mat.name
-                            ,mat.language_code 
-                            ,mat.last_name
-                    order by mat.name;";
+                                    and s.code = 'PAI' group by mat.id ,mat.nombre;";
+
         $res = $con->createCommand($query)->queryAll();
         return $res;
     } 
@@ -102,7 +97,6 @@ class MateriasPaiController extends Controller{
         $materia = \backend\models\IsmMateria::findOne($materiaId);    
         $habilidades = $this->consulta_habilidades();
         $this->procesa_hablidades_pai_a_cursos($materiaId);
-
         return $this->render('mapa-enfoques',[
             'habilidades' => $habilidades,
             'materia' => $materia

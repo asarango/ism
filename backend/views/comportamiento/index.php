@@ -107,19 +107,34 @@ $numEstSinAsistir = ScholarisAsistenciaAlumnosNovedades::find()
             <div class="row">
                 <div class="col-lg-5 col-md-5">
                     <div class="table table-responsive" style="height: 500px; overflow-y: scroll">
-                        <table class="table table-striped table-hover table-condensed table-bordered my-text-small">
-                            <thead>
-                                <tr style="background-color: #898b8d; text-align: center;color: #ab0a3d;">
+                        <table class="table table-responsive table-bordered table-striped ">
+                            <thead class="table-success">
+                                <tr style=" text-align: center;color: #ab0a3d;">
                                     <th>#</th>
-                                    <th><a href="#" onclick="show_obs_nee()"><i class="text-center fas fa-circle btn-nn" style="font-size:15px;color:#ab0a3d"></i></a>
-                                        <a href="#" class="btn-n" onclick="hide_obs_nee()"><i class="text-center fas fa-circle btn-n" style="font-size:15px;color:#ab0a3d"></i></a>
-                                    </th>
-                                    <th><font size = "2">Estudiantes <span style="color: #0D6EFD;">(<?= count($modelGrupo);?>)</span></font></th>
+                                    <th>
+                                        <table>
+                                            <tr>
+                                                <td>
+                                                    <a href="#" class="btn-nn" onclick="show_obs_nee()">
+                                                        <label class="btn-nn"  style="background-color: #ab0a3d; border:3px solid brown;border-radius: 100px;">
+                                                            <span style="color:white;"><?= count($modelNeeXClase) ?> </span>
+                                                        </label>
+                                                    </a>
+                                                    <a href="#" class="btn-n" onclick="hide_obs_nee()">
+                                                        <label class="btn-n"  style="background-color: #ab0a3d; border:3px solid brown;border-radius: 100px;">
+                                                            <span style="color:white;"><?= count($modelNeeXClase) ?> </span>
+                                                        </label>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                     </th>
+                                    <th>Estudiantes <span>(<?= count($modelGrupo);?>)</span></th>
                                     <th>Novedades
                                         <table>
                                             <tr>
-                                                <td style="color: #ab0a3d;">#:</td>
-                                                <td style="color: #0D6EFD;font-size: 13px; "><?php echo count($numNovedades ). 'N de ' . count($numEstNovedades).'E ' ?></td>
+                                                <td >#:</td>
+                                                <td ><?php echo count($numNovedades ). 'N de ' . count($numEstNovedades).'E ' ?></td>
                                             </tr>
                                         </table>
                                     </th>
@@ -129,8 +144,8 @@ $numEstSinAsistir = ScholarisAsistenciaAlumnosNovedades::find()
                                         ?>
                                         <table>
                                             <tr>
-                                                <td style="color: #ab0a3d;">#:</td>
-                                                <td style="color: #0D6EFD;font-size: 13px; "><?php echo  "$estAsisten /  $estFaltan "?></td>
+                                                <td>#:</td>
+                                                <td><?php echo  "$estAsisten /  $estFaltan "?></td>
                                             </tr>
                                         </table>
                                     </th>
@@ -138,11 +153,7 @@ $numEstSinAsistir = ScholarisAsistenciaAlumnosNovedades::find()
                             </thead>
                             <tbody>
                                 <?php                              
-                                $num=0;                          
-                                //echo '<pre>';
-                                // print_r($modelGrupo);
-                                //print_r($modelNeeXClase);
-                                //die();
+                                $num=0;  
    
                                 foreach ($modelGrupo as $alumno) {
                                     $num++;
@@ -229,10 +240,10 @@ $numEstSinAsistir = ScholarisAsistenciaAlumnosNovedades::find()
                                 <h4>Destreza / Actividades para la clase de hoy:</h4>
                             </u></b>
                         </p>
-                        <div class="table table-responsive">
-                            <table class="table table-striped table-hover table-condensed">
-                                <thead>
-                                    <tr style="background-color: #898b8d; color: #ab0a3d">
+                        <div class="">
+                            <table class="table table-responsive table-bordered table-striped ">
+                                <thead class="table-success">
+                                    <tr style="color:#ab0a3d">
                                         <th>TÍTULO</th>
                                         <th>DESCRIPCIÓN</th>
                                         <th>TAREAS</th>
@@ -276,9 +287,9 @@ $numEstSinAsistir = ScholarisAsistenciaAlumnosNovedades::find()
                         ?>                        
 
                         <div class="table table-responsive">
-                            <table class="table table-striped table-hover table-condensed">
-                                <thead>
-                                    <tr style="background-color: #898b8d; color: #ab0a3d">
+                            <table class="table table-responsive table-bordered table-striped ">
+                                <thead class="table-success">
+                                    <tr style="color:#ab0a3d">
                                         <th>TEMA</th>
                                         <th>OBSERVACIÓN</th>
                                         <th>ACCIONES</th>

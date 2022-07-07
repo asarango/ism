@@ -9,8 +9,6 @@ use Yii;
  *
  * @property int $id
  * @property string $motivo
- * @property string $submotivo
- * @property string $submotivo2
  */
 class DeceMotivos extends \yii\db\ActiveRecord
 {
@@ -28,7 +26,7 @@ class DeceMotivos extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['motivo', 'submotivo', 'submotivo2'], 'string', 'max' => 100],
+            [['motivo'], 'string', 'max' => 100],
         ];
     }
 
@@ -40,8 +38,6 @@ class DeceMotivos extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'motivo' => 'Motivo',
-            'submotivo' => 'Submotivo',
-            'submotivo2' => 'Submotivo2',
         ];
     }
 }

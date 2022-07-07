@@ -26,8 +26,8 @@ $this->params['breadcrumbs'][] = $this->title;
             <hr>
 
             <div class="row">
-                <?php
-                
+                <?php  
+                          
                 foreach ($submenu as $sub) {
                     if ($sub['ruta_icono']) {
                         $photo = $sub['ruta_icono'];
@@ -54,9 +54,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 }
                 ?>                
             </div>
-
         </div>
-
     </div>
 
 

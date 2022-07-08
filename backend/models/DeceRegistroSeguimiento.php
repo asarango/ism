@@ -84,4 +84,11 @@ class DeceRegistroSeguimiento extends \yii\db\ActiveRecord
     {
         return $this->hasMany(DeceRegistroAgendamientoAtencion::className(), ['id_reg_seguimiento' => 'id']);
     }
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCaso()
+    {
+        return $this->hasOne(DeceCasos::className(), ['id' => 'id_caso']);
+    }
 }

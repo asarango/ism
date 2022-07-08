@@ -38,7 +38,8 @@ class DeceCasosController extends Controller
         $usuarioLog = Yii::$app->user->identity->usuario;
         $periodoId = Yii::$app->user->identity->periodo_id;
         $estudiantes = $this->consulta_estudiantes($periodoId, $usuarioLog);
-        $casos = $this->mostrar_casos_por_usuario($usuarioLog);   
+        //$casos = $this->mostrar_casos_por_usuario($usuarioLog);   
+        $casos = $this->mostrar_casos_y_estadistica($usuarioLog);
 
         $searchModel = new DeceCasosSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
@@ -50,11 +51,41 @@ class DeceCasosController extends Controller
             'casos'=>$casos
         ]);
     }
+    private function mostrar_casos_y_estadistica($user)
+    {
+        $con = yii::$app->db;
+        $periodoId = Yii::$app->user->identity->periodo_id;
+        //extrae tdos los estudiantes asociados a un usuario de la tabla dece_casos
+        $query ="select distinct id_estudiante from dece_casos dc where id_usuario  = '$user';";
+        $usuariosCasos = $con->createCommand($query)->queryAll();
+        
+        $arrayCasos = array();
+        foreach($usuariosCasos as $usuario)
+        {
+            $id_estudiante = $usuario['id_estudiante'];          
+            
+            
+            $query2 = "select  concat(os.last_name,' ',os.middle_name,' ',os.first_name) nombre,dc.id_estudiante , 
+                    (select count(*) from dece_casos dc2 where id_estudiante  = dc.id_estudiante ) casos,
+                    (select count(*) from dece_registro_seguimiento drs where id_estudiante  = dc.id_estudiante ) seguimiento
+                    from dece_casos dc, op_student os  
+                    where id_estudiante =  $id_estudiante
+                    and id_usuario = '$user'
+                    and os.id = dc.id_estudiante 
+                    group by os.last_name,os.middle_name,os.first_name,dc.id_estudiante ;                   
+                    ";
+                   
+            $arrayCasos[]= $con->createCommand($query2)->queryOne();
+        }
+        return $arrayCasos;
+
+
+    }
     private function mostrar_casos_por_usuario($usuario)
     {
         $usuarioLog = Yii::$app->user->identity->usuario;
         $periodoId = Yii::$app->user->identity->periodo_id;
-        $modelCasos = DeceCasos::find()
+        $modelCasos = DeceCasos::find()       
         ->where(['id_usuario'=>$usuarioLog])
         ->andWhere(['id_periodo'=>$periodoId])
         ->all();
@@ -125,7 +156,7 @@ class DeceCasosController extends Controller
             $modelDeceCasos->id_usuario = $usuario;   
 
         }
-        if(isset($_POST['id']))//por pos envia desde el MOD DECE
+        if(isset($_POST['id']))//por post envia desde el MOD DECE, id de estudiante
         {
             $id_estudiante = $_POST['id'];        
             

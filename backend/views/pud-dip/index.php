@@ -283,7 +283,7 @@ $modelPudBitacora = PudAprobacionBitacora::find()
                 case '2.1.-':
                     respuesta = '<?= Url::to(['pud-dip/update-descri-text-uni']) ?>';
                     break;
-                case '5.1.-':
+                case '4.2.-':
                     respuesta = '<?= Url::to(['pud-dip/update-habilidades']) ?>';
                     break;
                 case '5.2.-':

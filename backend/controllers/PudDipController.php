@@ -1060,8 +1060,8 @@ class PudDipController extends Controller{
 
     private function modal_generico($id, $texto,$titulo,$accion_update){
        
-        print_r($accion_update);
-        die();
+//        print_r($accion_update);
+//        die();
         
         $html = '<a href="#"  data-bs-toggle="modal" data-bs-target="#modalS2'.$id.'"> 
                     <i class="fas fa-edit"></i>';

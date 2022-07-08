@@ -132,7 +132,7 @@ class PudDipController extends Controller{
             case '4.1.-':
                 $respuesta =$this->get_indagacion($planUnidadId);
                     break;
-            case '5.1.-':
+            case '4.2.-':
                 $respuesta =$this->get_accion_habilidades($planUnidadId);
                 break;
             case '5.2.-':
@@ -484,16 +484,20 @@ class PudDipController extends Controller{
         $templateId = $planBloqueUnidad->planCabecera->ismAreaMateria->mallaArea->periodoMalla->malla->op_course_template_id;
 
         $con = Yii::$app->db;
-        $query = "select 	concat(f.x_first_name,' ', f.last_name) as docente
-        from 	scholaris_clase c 
-                 inner join scholaris_periodo p on p.codigo = c.periodo_scholaris 
-                 inner join op_course oc on oc.id = c.idcurso 
-                inner join op_faculty f on f.id = c.idprofesor 
-         where 	c.idmateria  = $materiaId
-                 and p.id = $scholarisPeriodoId
-                 and oc.x_template_id = $templateId
-         group by f.x_first_name, f.last_name;";
-
+        
+        $query = "select 	concat(f.x_first_name,' ', f.last_name) as docente 
+                    from 	scholaris_clase c 
+                                    inner join ism_area_materia am on am.id = c.ism_area_materia_id 
+                                    inner join ism_malla_area ma on ma.id = am.malla_area_id 
+                                    inner join ism_periodo_malla pm on pm.id = ma.periodo_malla_id 
+                                    inner join op_course_paralelo par on par.id = c.paralelo_id  
+                                    inner join op_course oc on oc.id = par.course_id  
+                                    inner join op_faculty f on f.id = c.idprofesor 
+                    where 	c.ism_area_materia_id = $materiaId
+                                    and pm.scholaris_periodo_id  = $scholarisPeriodoId 
+                                    and oc.x_template_id = $templateId
+                    group by f.x_first_name, f.last_name;";
+        
         $res = $con->createCommand($query)->queryAll();
         
         return $res;
@@ -551,7 +555,12 @@ class PudDipController extends Controller{
         $titulo = "2.1.- DESCRIPCION Y TEXTO DE LA UNIDAD";
         $planifVertDipl = PlanificacionVerticalDiploma::find()->where([
             'planificacion_bloque_unidad_id'=>$planBloqueUnidad->id
-        ])->one();                       
+        ])->one();  
+        
+//        echo '<pre>';
+//print_r($planifVertDipl);
+//die();
+        
         return     $this->mostrar_campo_simple($planifVertDipl->id,$planifVertDipl->descripcion_texto_unidad,$titulo,$accion_update,"");
     } 
     /*** 3.1.-  EVALUACION DEL PD PARA LA UNIDAD */
@@ -563,7 +572,7 @@ class PudDipController extends Controller{
         $planifVertDipl = PlanificacionVerticalDiploma::find()->where([
             'planificacion_bloque_unidad_id'=>$planBloqueUnidad->id
         ])->one();                       
-        return     $this->mostrar_campo_viene_de($planifVertDipl->id,$planifVertDipl->objetivo_asignatura,$titulo,$accion_update,"");
+        return     $this->mostrar_campo_viene_de($planifVertDipl->id,$planifVertDipl->objetivo_evaluacion,$titulo,$accion_update,"");
     } 
      /*** 4.1.-  Indagacion */
      private function get_indagacion($planBloqueUnidad)
@@ -582,13 +591,15 @@ class PudDipController extends Controller{
          ])->one();                       
          return  $this->mostrar_campo_viene_de($planifVertDipl->id,$planifVertDipl->objetivo_asignatura,$titulo,$accion_update,$text_intro);
      }   
+     
+     
      /*** 5.1 Accion contenido habilidad y concepto */ 
      private function get_accion_habilidades($planBloqueUnidad)
     {       
         $contenidoImp='';
         $planBloqueUnidad   = PlanificacionBloquesUnidad::findOne($planBloqueUnidad);  
-        $accion_update = "5.1.-";
-        $titulo = "5.1.- CONTENIDO, HABILIDADES Y CONCEPTOS: CONOCIMIENTOS ESENCIALES";
+        $accion_update = "4.2.-";
+        $titulo = "4.2.- CONTENIDO, HABILIDADES Y CONCEPTOS: CONOCIMIENTOS ESENCIALES";
         $planifVertDipl = PlanificacionVerticalDiploma::find()->where([
             'planificacion_bloque_unidad_id'=>$planBloqueUnidad->id
         ])->one(); 
@@ -608,13 +619,15 @@ class PudDipController extends Controller{
             }
         }
         //FIN bucle para capturar el contenido       
-        $contenido = $this->mostrar_campo_viene_de($planifVertDipl->id,$contenidoImp,"CONTENIDOS",$accion_update,"");
+        $contenido = $this->mostrar_campo_viene_de($planifVertDipl->id,$planifVertDipl->contenido,"CONTENIDOS",$accion_update,"");
         $habilidad =$this->mostrar_campo_simple($planifVertDipl->id,$planifVertDipl->habilidades,"HABILIDADES",$accion_update,"");
         $concepto = $this->mostrar_campo_viene_de($planifVertDipl->id,$planifVertDipl->concepto_clave,"CONCEPTOS",$accion_update,"");
         $respuesta = $this->mostrar_campo_viene_de($planifVertDipl->id,$contenido.$habilidad.$concepto,$titulo,$accion_update,"");
         //$respuesta = $contenido.$habilidad.$concepto ; 
         return $respuesta;     
     }
+    
+    
     /*** 5.2 Accion Proceso de Aprendizaje*/
     private function get_accion_proceso_aprendizaje($planBloqueUnidad)
     {
@@ -964,7 +977,7 @@ class PudDipController extends Controller{
         $modelPudAprBit = PudAprobacionBitacora::find()
         ->where(['unidad_id'=>$modelPlanVer->planificacion_bloque_unidad_id])
         ->orderBy(['fecha_notifica'=>SORT_DESC])
-        ->one();   
+        ->one();          
         
         $activar = true;        
 
@@ -984,11 +997,7 @@ class PudDipController extends Controller{
     private function mostrar_campo_simple($idPlanifVertDipl,$texto_a_mostrar,$titulo,$accion_update,$text_intro_cab )
     {        
         
-        $activarModalGenerico= $this->consultaRespuestaEnvio($idPlanifVertDipl);
-
-    //     echo '<pre>';
-    //    print_r($activarModalGenerico);
-    //    die();
+        $activarModalGenerico= $this->consultaRespuestaEnvio($idPlanifVertDipl);         
 
         $html ='';      
         $html .= '<div class="" style="align-items: center; display: flex; justify-content: center;">';
@@ -1051,6 +1060,9 @@ class PudDipController extends Controller{
 
     private function modal_generico($id, $texto,$titulo,$accion_update){
        
+        print_r($accion_update);
+        die();
+        
         $html = '<a href="#"  data-bs-toggle="modal" data-bs-target="#modalS2'.$id.'"> 
                     <i class="fas fa-edit"></i>';
         $html .= '</a>';

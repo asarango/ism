@@ -36,10 +36,10 @@ $modelAsistProfesor = ScholarisAsistenciaProfesor::find()
         <div class="card shadow col-lg-10 col-md-10">
             <div class=" row align-items-center p-2">
                 <div class="col-lg-1">
-                    <h4><img src="ISM/main/images/submenu/menu.png" width="64px" class="img-thumbnail"></h4>
+                    <h3><img src="ISM/main/images/submenu/menu.png" width="64px" class="img-thumbnail"></h3>
                 </div>
                 <div class="col-lg-11">
-                    <h4><?= Html::encode($this->title) ?></h4>
+                    <h3><?= Html::encode($this->title) ?></h3>
                 </div>
                 <!-- FIN DE CABECERA -->
                 <!-- inicia menu  -->
@@ -59,7 +59,6 @@ $modelAsistProfesor = ScholarisAsistenciaProfesor::find()
                             {
                             ?>
                             |
-
                             <?=
                             Html::a(
                                 '<span class="badge rounded-pill" style="background-color: blue"><i class="fa fa-briefcase" aria-hidden="true"></i>Regresar Dece Casos</span>',

@@ -140,14 +140,8 @@ function contador_de_consultar_lenguaje_y_aprendizaje_ckeck($planVertDiplId)
             <i class="<?=$iconoOk;?>" title="DATOS INGRESADOS" style="color: <?=$colorOk;?>;"></i>
             </a>
             </li>
-        </ul>
-    </li>
-    <hr>
-
-    <li>
-        <b>5.- ACCIÓN</b>
-        <ul>                                
-            <li class="zoom"><a href="#" onclick="ver_detalle('5.1.-');">5.1.- Contenido, Habilidades y Conceptos: Conocimientos Esenciales
+            
+            <li class="zoom"><a href="#" onclick="ver_detalle('4.2.-');">4.2.- Contenido, Habilidades y Conceptos: Conocimientos Esenciales
                 <?php
                 if (strlen($modelPVD->habilidades)<$numCaracteresOk)
                 { $iconoColor = $colorNotOk;}
@@ -157,6 +151,13 @@ function contador_de_consultar_lenguaje_y_aprendizaje_ckeck($planVertDiplId)
                 <i class="<?=$iconoOk;?>" title="FALTA INGRESAR DATOS" style="color: <?=$iconoColor;?>;"></i>
                 </a>            
             </li>
+        </ul>
+    </li>
+    <hr>
+
+    <li>
+        <b>5.- ACCIÓN</b>
+        <ul>                                            
             <li class="zoom"><a href="#" onclick="ver_detalle('5.2.-');">5.2.- Proceso de aprendizaje
                 <?php
                     if (strlen($modelPVD->proceso_aprendizaje)<$numCaracteresOk)

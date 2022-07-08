@@ -105,8 +105,15 @@ class PlanificacionBloquesUnidadController extends Controller{
         
         $scripts = new \backend\models\helpers\Scripts();
         
-        $firmaAprueba = $scripts->firmar_documento($cabecera->coordinador_user, $cabecera->fecha_aprobacion_coordinacion);
-        $firmaElaborado = $scripts->firmar_documento($usuarioLogueado, $cabecera->fecha_envio_coordinador);
+        if($cabecera->coordinador_user){
+             $firmaAprueba = $scripts->firmar_documento($cabecera->coordinador_user, $cabecera->fecha_aprobacion_coordinacion);
+            $firmaElaborado = $scripts->firmar_documento($usuarioLogueado, $cabecera->fecha_envio_coordinador);
+        }else{
+            $firmaAprueba = $scripts->firmar_documento('admin', '2000-01-01');
+            $firmaElaborado = $scripts->firmar_documento('admin', '2000-01-01');
+        }
+        
+        
              
         return $this->render('index', [
             'materia'   => $materia,

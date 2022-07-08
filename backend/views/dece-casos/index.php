@@ -10,6 +10,8 @@ use yii\grid\GridView;
 $this->title = 'Dece Casos';
 $this->params['breadcrumbs'][] = $this->title;
 
+
+
 ?>
 <!--Scripts para que funcionen AJAX de select 2 -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
@@ -85,36 +87,35 @@ $this->params['breadcrumbs'][] = $this->title;
                                     <tr>
 
                                         <td><strong>Estudiante</strong></td>
-                                        <td ><strong>Acción</strong></td>
+                                        <td><strong>Casos</strong></td>
+                                        <td><strong>Seg.</strong></td>
+                                        <td><strong>Acción</strong></td>
                                     </tr>
                                 </thead>
-                                <tbody>
-                                     <?php
-                                     foreach($casos as $caso){ 
-                                        $nombreEstudiante = $caso->estudiante->middle_name.' '.$caso->estudiante->first_name.' '.$caso->estudiante->last_name
-                                     ?>
-                                     <tr>
-                                        <td><?=  $nombreEstudiante ?></td>
-                                        <td>    
-                                                                                
-                                               <?=  Html::a(
-                                                '<span class="badge  rounded-pill" style="background-color:red;">Ver Caso</span>',
-                                                ['dece-casos/update','id'=>$caso->id],
-                                                ['class' => 'link']
-                                            ); ?>
-
-                                             <?=  Html::a(
-                                                '<span class="badge  rounded-pill" style="background-color:red;">Crear Seguimiento</span>',
-                                                ['dece-registro-seguimiento/create'],
-                                                ['class' => 'link']
-                                            ); ?>
-                                        </td>
+                                <tbody>                                    
+                                    <?php
+                                    foreach ($casos as $caso) {
                                         
-                                    </tr>
-                                    
-                                     <?php 
-                                      } //fin for
-                                     ?>
+                                        $nombreEstudiante = $caso['nombre'];
+                                        //$nombreEstudiante = $caso->estudiante->middle_name . ' ' . $caso->estudiante->first_name . ' ' . $caso->estudiante->last_name
+                                    ?>
+                                        <tr>
+                                            <td><?= $nombreEstudiante ?></td>
+                                            <td><strong><?=$caso['casos']?></strong></td>
+                                            <td><strong><?=$caso['seguimiento']?></strong></td>
+                                            <td>
+                                                <?= Html::a(
+                                                    '<span class="badge  rounded-pill" style="background-color:red;">Ver Casos</span>',
+                                                    ['dece-casos/create','id'=>$caso['id_estudiante'],'id_clase'=>0],                                                   
+                                                    ['class' => 'link']
+                                                ); ?>
+                                            </td>
+
+                                        </tr>
+
+                                    <?php
+                                    } //fin for
+                                    ?>
                                 </tbody>
                             </table>
                         </div>
@@ -145,12 +146,13 @@ $this->params['breadcrumbs'][] = $this->title;
         </div>
     </div>
 </div>
-   <!-- SCRIPT PARA SELECT2 -->
+<!-- SCRIPT PARA SELECT2 -->
 <script>
-        buscador();
-        function buscador() {
-            $('.select2').select2({
-                closeOnSelect: true
-            });
-        }
+    buscador();
+
+    function buscador() {
+        $('.select2').select2({
+            closeOnSelect: true
+        });
+    }
 </script>

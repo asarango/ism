@@ -82,7 +82,10 @@ foreach ($usuarios as $usu) {
                     <!-- RENDERIZA A LA VISTA datos_estudiante.php -->
                     <h3 style="color:blueviolet"><b>Datos Estudiante</b></h3>
                     <table class="table table-responsive">
-                         
+                        <tr>
+                            <td><b>No. Caso: </b></td>
+                            <td><?= $model->caso->numero_caso ?></td>
+                        </tr>                   
                         <tr>
                             <td><b>Alumno: </b></td>
                             <td><?= $modelEstudiante->first_name . ' ' . $modelEstudiante->middle_name . ' ' . $modelEstudiante->last_name ?></td>
@@ -96,11 +99,11 @@ foreach ($usuarios as $usu) {
                             <td><?= $modelRepresentante->name ?></td>
                         </tr>                       
                     </table>
-                    <h3 style="color:red">Histórico Seguimiento</h3>
+                    <h3 style="color:red">Histórico Seguimientos</h3>
                     <div style="overflow-x:scroll;overflow-y:scroll;" >                        
                         <table class="table table-success table-striped table-bordered my-text-small">
                             <tr class="table-primary">
-                                <td>ID</td>
+                                <td>No.</td>
                                 <td>Fecha Creación</td>
                                 <td>Última Modificación</td>
                                 <td>Estado</td>
@@ -136,7 +139,7 @@ foreach ($usuarios as $usu) {
                                             <div class="modal-dialog modal-dialog-scrollable modal-xl">
                                                 <div class="modal-content">
                                                     <div class="modal-header">
-                                                        <h5 class="modal-title" id="staticBackdropLabel"><b>Ficha Seguimiento: <?= $modelReg->id ?></b></h5>
+                                                        <h5 class="modal-title" id="staticBackdropLabel"><b>Seguimiento No:  <?= $modelReg->id ?></b></h5>
                                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                     </div>
                                                     <div class="modal-body">
@@ -167,14 +170,14 @@ foreach ($usuarios as $usu) {
                                                             </tr>
                                                             <tr>
                                                                 <td><b>Evidencia: </b></td>
-                                                                <td><?= $modelReg->acuerdo_y_compromiso ?></td>
+                                                                <td><?= $modelReg->eviencia ?></td>
                                                             </tr>
                                                             <tr>
                                                                 <td><b>Atendido Por: </b></td>
                                                                 <td><?= $modelReg->atendido_por ?></td>
                                                             </tr>
                                                             <tr>
-                                                                <td><b>Responsable Seguimiento</b></td>
+                                                                <td><b>Responsable Seguimiento:</b></td>
                                                                 <td><?= $modelReg->responsable_seguimiento ?></td>
                                                             </tr>    
                                                             <tr>

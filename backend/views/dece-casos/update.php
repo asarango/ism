@@ -46,7 +46,7 @@ $modelAsistProfesor = ScholarisAsistenciaProfesor::find()
                 <!-- inicia menu  -->
                 <br>
                 <div class="row">
-                    <div class="col-lg-6 col-md-6">
+                    <div class="col-lg-10 col-md-10">
                         <p>
                             <!-- menu izquierda -->
                             |
@@ -58,7 +58,7 @@ $modelAsistProfesor = ScholarisAsistenciaProfesor::find()
                             );
                             ?>                            
                             <?php
-                            if ($model->id_clase == 0) //si es mayor a cero, biene de leccionario
+                            if ($model->id_clase == 0) //si es igual a cero, biene del dece
                             {
                             ?>
                             |
@@ -69,10 +69,20 @@ $modelAsistProfesor = ScholarisAsistenciaProfesor::find()
                                 ['class' => 'link']
                             );
                             ?>
+                            |
+                             <?=
+                            Html::a(
+                                '<span class="badge rounded-pill" style="background-color: grey"><i class="fa fa-briefcase" aria-hidden="true"></i>Crear Nuevo Caso</span>',
+                                ['dece-casos/create', 'id' => $model->id_estudiante,'id_clase' =>$model->id_clase ],
+                                ['class' => 'link']
+                            );
+                            ?>
+                            |
                              <?php
                             }
                             ?>
                             |
+                           
                             <?=
                             Html::a(
                                 '<span class="badge rounded-pill" style="background-color: orange"><i class="fa fa-briefcase" aria-hidden="true"></i>Crear Seguimiento</span>',
@@ -98,7 +108,7 @@ $modelAsistProfesor = ScholarisAsistenciaProfesor::find()
                         </p>
                     </div> <!-- fin de menu izquierda -->
 
-                    <div class="col-lg-6 col-md-6" style="text-align: right;">
+                    <div class="col-lg-2 col-md-2" style="text-align: right;">
                         <!-- inicio de menu derecha -->
 
                     </div><!-- fin de menu derecha -->

@@ -8,7 +8,7 @@ use backend\models\ScholarisGrupoAlumnoClase;
 /* @var $this yii\web\View */
 /* @var $model app\models\DeceRegistroSeguimiento */
 
-$this->title = 'Dece Seguimiento - Ficha Número: ' . $model->id;
+$this->title = 'Dece Seguimiento - No.: ' . $model->id;
 $this->params['breadcrumbs'][] = ['label' => 'Dece Registro Seguimientos', 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $model->id, 'url' => ['view', 'id' => $model->id]];
 $this->params['breadcrumbs'][] = 'Update';
@@ -41,17 +41,16 @@ $modelAsistProfesor = ScholarisAsistenciaProfesor::find()
                 </div>
                 <div class="col-lg-10">
                     <h1><?= Html::encode($this->title) ?></h1>
-                    <h3><?= 'Asociado al Número de Caso: '.$model->id_caso?></h5>
+                    <h3><?= 'Asociado al Número de Caso: '.$model->caso->numero_caso?></h5>
                 </div>
             </div>
             <div class=" row align-items-center p-2">
-                    <p>
-                 
-                        |
+                    <p>                      
                     <?php
                        if($model->id_clase>0)//si es mayor a cero, biene de leccionario
                         { 
                         ?>
+                        |
                         <?=
                         Html::a(
                             '<span class="badge rounded-pill" style="background-color: #0a1f8f"><i class="fa fa-briefcase" aria-hidden="true"></i>Regresar - Mi Clase</span>',
@@ -62,6 +61,23 @@ $modelAsistProfesor = ScholarisAsistenciaProfesor::find()
                         <?php
                         }
                         ?>
+                        <?php
+                            if ($model->id_clase == 0) //si es mayor a cero, biene de leccionario
+                            {
+                            ?>
+                            |
+
+                            <?=
+                            Html::a(
+                                '<span class="badge rounded-pill" style="background-color: blue"><i class="fa fa-briefcase" aria-hidden="true"></i>Regresar Casos</span>',
+                                ['dece-casos/update','id'=>$model->id_caso],
+                                ['class' => 'link']
+                            );
+                            ?>
+                              <?php
+                            }
+                            ?>
+                             |
                     </p>
             </div>
 

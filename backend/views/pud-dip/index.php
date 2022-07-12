@@ -238,19 +238,63 @@ $modelPudBitacora = PudAprobacionBitacora::find()
                 url: url,
                 type: 'GET',
                 beforeSend: function () {},
-                success: function () {
-                    /*if (contenido.length>50)
-                     {
-                     $(control).css({'color':'green'});
-                     
-                     }else{                       
-                     $(control).css({'color':'red'});
-                     }*/
-                    //ver_detalle(accion_update);
+                success: function () {                    
                     location.reload();
 
                 }
             });
+
+        }
+        
+        /** FUNCION PARA MODIFICACION DE EVALUACIONES */
+        function update_evaluaciones(id, accion_update, campo) {
+            
+            var contenido = CKEDITOR.instances['editor-text-unidad'].getData();
+            var url = buscar_url(accion_update);
+            var control = "#" + accion_update;
+            params = {
+                evaluacion_id: id,
+                contenido: contenido,
+                accion: accion_update,
+                campo: campo
+            }
+            $.ajax({
+                data: params,
+                url: url,
+                type: 'GET',
+                beforeSend: function () {},
+                success: function () {                    
+                    //location.reload();
+
+                }
+            });
+
+        }
+        
+        
+         /** FUNCION PARA MODIFICACION DE PUD_DIP */
+        function update_pud_dip_boolean(id) {
+            
+            alert('desde update_pud_dip_boolean linea 278 de la vista index.php');
+//            var contenido = CKEDITOR.instances['editor-text-unidad'].getData();
+//            var url = buscar_url(accion_update);
+//            var control = "#" + accion_update;
+//            params = {
+//                evaluacion_id: id,
+//                contenido: contenido,
+//                accion: accion_update,
+//                campo: campo
+//            }
+//            $.ajax({
+//                data: params,
+//                url: url,
+//                type: 'GET',
+//                beforeSend: function () {},
+//                success: function () {                    
+//                    //location.reload();
+//
+//                }
+//            });
 
         }
 
@@ -286,9 +330,14 @@ $modelPudBitacora = PudAprobacionBitacora::find()
                 case '4.2.-':
                     respuesta = '<?= Url::to(['pud-dip/update-habilidades']) ?>';
                     break;
+                case '5.1.-':
+                    respuesta = '<?= Url::to(['pud-dip/update-evaluaciones']) ?>';
+                    break;
+                    
                 case '5.2.-':
                     respuesta = '<?= Url::to(['pud-dip/update-proceso-aprendizaje']) ?>';
                     break;
+                    
                 case '5.4.-':
                     respuesta = '<?= Url::to(['pud-dip/update-lenguaje-aprendizaje']) ?>';
                     break;
@@ -321,4 +370,28 @@ $modelPudBitacora = PudAprobacionBitacora::find()
         }
 
         //// FIN PARA PERFILES BI
+        
+        
+        
+        ////proceso de aprendizaje
+        
+        function registra_proceso_aprendizaje(id){
+            var url = '<?= Url::to(['actualiza-opcion']) ?>';
+            var params = {
+                id: id
+            };
+            
+            $.ajax({
+                data: params,
+                url: url,
+                type: 'POST',
+                beforeSend: function () {},
+                success: function () {
+                    //ver_detalle(accion_update_op);
+                    location.reload();
+                }
+            });
+        }
+        
+        ////fin de proceso de aprendizaje
     </script>

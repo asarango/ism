@@ -18,6 +18,14 @@ $modelPVD = PlanificacionVerticalDiploma::find()
 ->where(['planificacion_bloque_unidad_id'=>$planUnidad->id])
 ->one();
 
+//para proceso de aprendizaje
+$modelProcApre = backend\models\PudDipProcesoAprendizaje::find()
+->where(['plan_unidad_id'=>$planUnidad->id, 'es_activo' => true])
+->all();
+
+
+$contador_5_1 = 0;
+$contador_5_3_1 = 0;
 $contador_5_4 = 0;
 $contador_5_6 = 0;
 $opcion = '1.1.-';
@@ -25,7 +33,9 @@ $opcion = '1.1.-';
 if($modelPVD)
 {    
     $opcion=$modelPVD->ultima_seccion;    
-    $contador_5_4 = contador_de_consultar_lenguaje_y_aprendizaje_ckeck($modelPVD->id);
+    $contador_5_1 = contador_evaluaciones($planUnidad->id);
+    $contador_5_3_1 = contador_metacognicion($planUnidad->id);
+    $contador_5_4 = contador_de_consultar_lenguaje_y_aprendizaje_ckeck($modelPVD->id);    
     $contador_5_6 = consultar_conexion_cas_ckeck($modelPVD->id);
    
 }else{
@@ -87,6 +97,58 @@ function contador_de_consultar_lenguaje_y_aprendizaje_ckeck($planVertDiplId)
     }
     return $contador_5_6; 
  } 
+ 
+ 
+ //para llamada 5.1
+ function contador_evaluaciones($planUnidadId){
+     
+     $contador_5_1 = 0;         
+     $model = backend\models\PudDipEvaluaciones::find()->where(['plan_unidad_id' => $planUnidadId])->one();
+     
+     if($model){
+         if(strlen($model->formativa) > 20 && strlen($model->sumativa) > 20){
+            $contador_5_1 = 1;
+         }         
+     }
+     
+     return $contador_5_1;
+ }
+ 
+ 
+ //para metacognitivo
+ //para conocer si esta planificado el metacognitivo
+ 
+
+function contador_metacognicion($planUnidadId){
+    $pudDip = backend\models\PudDip::find()->where([
+    'planificacion_bloques_unidad_id' => $planUnidadId,
+    'codigo' => 'METACOGNICION' 
+    ])->all();
+    
+    $contador_5_3_1 = 0;
+    
+    $cont = 0;
+    $contDetalle = 0;
+    foreach ($pudDip as $pud){
+        if($pud->opcion_boolean == true){
+            $cont++;
+        }
+        
+        if($pud->campo_de == 'escrito' && strlen($pud->opcion_texto) > 20){
+            $contDetalle = 1;
+        }
+    }
+    
+    if($cont>0 && $contDetalle > 0 ){
+        $contador_5_3_1 = 1;
+    }
+    
+    return $contador_5_3_1;
+    
+}
+
+
+
 
 
 ?>
@@ -158,9 +220,22 @@ function contador_de_consultar_lenguaje_y_aprendizaje_ckeck($planVertDiplId)
     <li>
         <b>5.- ACCIÓN</b>
         <ul>                                            
+            <li class="zoom"><a href="#" onclick="ver_detalle('5.1.-');">5.1.- Evaluaciones
+                <?php                    
+                    
+                    if ($contador_5_1==0)
+                    { $iconoColor = $colorNotOk;}
+                    else
+                    { $iconoColor = $colorOk;}
+                    ?>
+                    <i class="<?=$iconoOk;?>" title="FALTA INGRESAR DATOS" style="color: <?=$iconoColor;?>;"></i>
+                    </a>       
+            </li>
+            
             <li class="zoom"><a href="#" onclick="ver_detalle('5.2.-');">5.2.- Proceso de aprendizaje
-                <?php
-                    if (strlen($modelPVD->proceso_aprendizaje)<$numCaracteresOk)
+                <?php                    
+                    
+                    if (!$modelProcApre )
                     { $iconoColor = $colorNotOk;}
                     else
                     { $iconoColor = $colorOk;}
@@ -168,10 +243,27 @@ function contador_de_consultar_lenguaje_y_aprendizaje_ckeck($planVertDiplId)
                     <i class="<?=$iconoOk;?>" title="FALTA INGRESAR DATOS" style="color: <?=$iconoColor;?>;"></i>
                     </a>            
             </li>
+           
+            <!--para 5.3-->
             <li class="zoom"><a href="#" onclick="ver_detalle('5.3.-');">5.3.- Enfoque del aprendizaje (EDA):</a>
             <i class="<?=$iconoOk;?>" title="DATOS INGRESADOS" style="color: <?=$colorOk;?>;"></i>
             </a>
             </li>
+            
+            
+            <!--para 5.3.1 METACOGNICION-->
+            <li class="zoom"><a href="#" onclick="ver_detalle('5.3.1.-');">5.3.1.- Metacognición
+            <?php                   
+                    if ($contador_5_3_1==0)
+                    { $iconoColor = $colorNotOk;}
+                    else
+                    { $iconoColor = $colorOk;}
+                    ?>
+                    <i class="<?=$iconoOk;?>" title="FALTA INGRESAR DATOS" style="color: <?=$iconoColor;?>;"></i>
+                    </a>            
+            </li>
+            
+            
             <li class="zoom"><a href="#" onclick="ver_detalle('5.4.-');">5.4.- Lenguaje y Aprendizaje
             <?php                   
                     if ($contador_5_4==0)
@@ -182,6 +274,8 @@ function contador_de_consultar_lenguaje_y_aprendizaje_ckeck($planVertDiplId)
                     <i class="<?=$iconoOk;?>" title="FALTA INGRESAR DATOS" style="color: <?=$iconoColor;?>;"></i>
                     </a>            
             </li>
+            
+            
             <li class="zoom"><a href="#" onclick="ver_detalle('5.5.-');">5.5.- Conexiones con TDC</a>
             <i class="<?=$iconoOk;?>" title="DATOS INGRESADOS" style="color: <?=$colorOk;?>;"></i>
             </a>

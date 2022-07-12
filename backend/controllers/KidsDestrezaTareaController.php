@@ -5,6 +5,7 @@ namespace backend\controllers;
 use Yii;
 use backend\models\KidsDestrezaTarea;
 use app\models\KidsDestrezaTareaSearch;
+use backend\models\KidsTareaArchivo;
 use backend\models\PlanificacionOpciones;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -37,7 +38,7 @@ class KidsDestrezaTareaController extends Controller
     public function actionCrearTarea()
     {
         $usuario    = Yii::$app->user->identity->usuario;
-        $hoy        = date('Y-m-d H:i:s');        
+        $hoy        = date('Y-m-d H:i:s');
 
         $model = new KidsDestrezaTarea();
         $model->plan_destreza_id    = $_POST['plan_destreza_id'];
@@ -52,25 +53,34 @@ class KidsDestrezaTareaController extends Controller
         $model->updated             = $usuario;
         $model->save();
 
-        if($_FILES){      
-//            busca el directorio para guardar los archivos
+        if ($_FILES) {
+            //            busca el directorio para guardar los archivos
             $directory = PlanificacionOpciones::find()->where([
-                    'categoria' => 'PATH_PROFE',
-                    'tipo' => 'VER_ARCHIVO'
-                ])->one();
+                'categoria' => 'PATH_PROFE',
+                'tipo' => 'SUBIDA_ARCHIVO'
+            ])->one();
 
             //completa el path del archivo
-            $path = $directory['opcion'].'kids/'.$model->id.'/';
-                
-//            llama al método de subida de archivos
-            $script = new \backend\models\helpers\Scripts();
-            $script->upload_files($_FILES, $path);                       
-        }
-        
-        return $this->redirect(['update',
-            'id' => $model->id
-        ]);
+            $path = $directory['opcion'] . 'kids/' . $model->id . '/';
 
+            //            llama al método de subida de archivos
+            $script = new \backend\models\helpers\Scripts();
+            $script->upload_files($_FILES, $path);
+
+            //insertando registro de los archivos
+
+            foreach ($_FILES['archivo']['name'] as $f) {
+                $arch = new \backend\models\KidsTareaArchivo();
+                $arch->archivo = $f;
+                $arch->tarea_id = $model->id;
+                $arch->save();
+            }
+        }
+
+        return $this->redirect([
+            'update',
+            'id' => $model->id,
+        ]);
     }
 
 
@@ -116,13 +126,73 @@ class KidsDestrezaTareaController extends Controller
     {
         $model = $this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        $archivos = \backend\models\KidsTareaArchivo::find()->where([
+            'tarea_id' => $model->id
+        ])->all();
+
+        if ($model->load(Yii::$app->request->post())) {
+            $model->fecha_presentacion = $model->fecha_presentacion . ' 23:59:59';
+            
+            $model->detalle_tarea = $_POST['detalle_tarea'];
+            $model->materiales = $_POST['materiales'];            
+
+            $model->save();          
+
+            if ($_FILES) {
+                //            busca el directorio para guardar los archivos
+                $directory = PlanificacionOpciones::find()->where([
+                    'categoria' => 'PATH_PROFE',
+                    'tipo' => 'SUBIDA_ARCHIVO'
+                ])->one();
+
+                //completa el path del archivo
+                $path = $directory['opcion'] . 'kids/' . $model->id . '/';
+
+                //            llama al método de subida de archivos
+                $script = new \backend\models\helpers\Scripts();
+                $script->upload_files($_FILES, $path);
+
+                //insertando registro de los archivos
+
+                foreach ($_FILES['archivo']['name'] as $f) {
+                    $arch = new \backend\models\KidsTareaArchivo();
+                    $arch->archivo = $f;
+                    $arch->tarea_id = $model->id;
+                    $arch->save();
+                }
+            }
+
+            return $this->redirect(['update', 'id' => $model->id]);
         }
+
+        $directory = PlanificacionOpciones::find()->where([
+            'categoria' => 'PATH_PROFE',
+            'tipo' => 'VER_ARCHIVO'
+        ])->one();
+
+        //completa el path del archivo
+        $path = $directory['opcion'] . 'kids/' . $model->id . '/';
 
         return $this->render('update', [
             'model' => $model,
+            'archivos' => $archivos,
+            'path' => $path
         ]);
+    }
+
+
+    public function actionEliminarArchivo(){
+        $path = $_GET['path']; 
+        $id = $_GET['archivo_id'];
+        
+        $model = KidsTareaArchivo::findOne($id);
+        $tareaId = $model->tarea_id;
+
+        unlink('/var/www/html/'.$path);
+        $model->delete();
+        
+
+        return $this->redirect(['update', 'id' => $tareaId]);
     }
 
     /**
@@ -132,11 +202,32 @@ class KidsDestrezaTareaController extends Controller
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionDelete($id)
+    public function actionEliminar($id)
     {
-        $this->findModel($id)->delete();
 
-        return $this->redirect(['index']);
+
+        $model = KidsDestrezaTarea::findOne($id);
+        $planSemanalId = $model->planDestreza->horaClase->plan_semanal_id;
+        $claseId = $model->planDestreza->horaClase->clase_id;
+        $detalleId = $model->planDestreza->horaClase->detalle_id;
+
+        $this->eliminar_archivos($model->id);
+
+        $model->delete();
+
+        return $this->redirect([
+            'kids-plan-semanal-hora-clase/index1',
+            'plan_semanal_id' => $planSemanalId,
+            'clase_id' => $claseId,
+            'detalle_id' => $detalleId
+        ]);
+    }
+
+    private function eliminar_archivos($tareaId)
+    {
+        $con = Yii::$app->db;
+        $query = "delete from kids_tarea_archivo where tarea_id = $tareaId";
+        $con->createCommand($query)->execute();
     }
 
     /**

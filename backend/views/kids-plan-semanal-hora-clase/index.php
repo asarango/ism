@@ -187,7 +187,7 @@ $hoy = date('d-m-Y');
                                                                     <div class="col-md-12 col-sm-12">
                                                                         <div class="mb-3">
                                                                             <label for="exampleInputPassword1" class="form-label">CONTENIDO</label>
-                                                                            <textarea name="detalle_tarea" require="" class="form-control" >Descripción de tarea</textarea>
+                                                                            <textarea name="detalle_tarea" require="" class="form-control" ></textarea>
                                                                             <script>
                                                                                 CKEDITOR.replace( 'detalle_tarea',{
                                                                                     customConfig: '/ckeditor_settings/config.js'                                
@@ -199,7 +199,7 @@ $hoy = date('d-m-Y');
                                                                     <div class="col-md-12 col-sm-12">
                                                                         <div class="mb-3">
                                                                             <label for="exampleInputPassword1" class="form-label">RECURSOS</label>
-                                                                            <textarea name="materiales" require="" class="form-control" >Texto de recursos a utilizar</textarea>
+                                                                            <textarea name="materiales" require="" class="form-control" ></textarea>
                                                                             <script>
                                                                                 CKEDITOR.replace( 'materiales',{
                                                                                     customConfig: '/ckeditor_settings/config.js'                                
@@ -220,18 +220,46 @@ $hoy = date('d-m-Y');
                                                 </div>
                                         </div>
 
-
+                                        <!-- MUESTRA INFORMACIÓN DESTREZA - AMBITO Y TAREAS -->
                                         <strong class="text-segundo">Ámbito:</strong>
                                         <p class="text-segundo"><?=$destrezaSel['ambito'] ?></p>
                                         <br>
                                         <strong class="text-primero">Destreza:</strong>
                                         <p class="text-primero"><?=$destrezaSel['destreza'] ?></p>
                                         <div class="row card-footer">
-                                            <div class="col-md-6 col-sm-6" style="text-align:center">
-                                                Tareas:
-                                            </div>
-                                            <div class="col-md-6 col-sm-6">
-                                                <span class="badge rounded-pill bg-danger">2</span>
+                                            TAREAS
+                                            <div class="table table-responsive">
+                                                <table class="table table-hover table-stripped my-text-small">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>VER</th>
+                                                            <th>TITULO</th>
+                                                            <th>F.PRESENTACION</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <?php 
+                                                        foreach($destrezaSel['tareas'] as $tarea ){
+                                                            ?>
+                                                        <tr>
+                                                            <td style="width:30px">
+                                                                <?=Html::a(
+                                                                    '<i class="fas fa-pencil-alt" style="font-size:12px; color:#0a1f8f"  ></i>',
+                                                                    [
+                                                                        'kids-destreza-tarea/update',
+                                                                        'id' => $tarea['id']
+                                                                    ]
+                                                                );?>
+                                                            </td>
+                                                            <td><?=$tarea['titulo'] ?></td>
+                                                            <td><?=$tarea['fecha_presentacion'] ?></td>
+                                                        </tr>
+                                                            <?php
+                                                        }
+                                                        ?>
+                                                        
+                                                    </tbody>
+                                                </table>
                                             </div>
                                         </div>
 
@@ -241,9 +269,9 @@ $hoy = date('d-m-Y');
                                 ?>
                                 </div>
                             </div>
-
-                        
                         </div>
+
+                        <!-- LADO DERECHO CKEDITOR -->
                         <div class="col-md-8 col-sm-8">
 
                         <h5><b>DETALLE DE ACTIVIDADES PARA LA HORA CLASE</b></h5>

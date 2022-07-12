@@ -124,23 +124,84 @@ $termina = $kidsPlanSemanal->kidsUnidadMicro->fecha_termina;
                                               ?>
                                               <td style="background-color:#65b2e8">°<?=$arrayDias[$i]['horas'][$j]['hora']?></td>
                                                 <td style="text-align:center">
-                                                    <?=Html::a(
-                                                       $arrayDias[$i]['horas'][$j]['materia'].
-                                                        '<br><small class="my-text-small">'.$arrayDias[$i]['horas'][$j]['curso'].'</small>',
-                                                        ['kids-plan-semanal-hora-clase/index1',
-                                                        'plan_semanal_id' => $kidsPlanSemanal->id,
-                                                        'clase_id' => $arrayDias[$i]['horas'][$j]['clase_id'],
-                                                        'detalle_id' => $arrayDias[$i]['horas'][$j]['detalle_id']
-                                                    ],
-                                                    [
-                                                        'class' => 'link'
-                                                    ]
-                                                    )?>
+                                                    <div class="zoom">
+                                                        <?=Html::a(
+                                                        $arrayDias[$i]['horas'][$j]['materia'].
+                                                            '<br><small class="my-text-small">'.$arrayDias[$i]['horas'][$j]['curso'].'</small>',
+                                                            ['kids-plan-semanal-hora-clase/index1',
+                                                            'plan_semanal_id' => $kidsPlanSemanal->id,
+                                                            'clase_id' => $arrayDias[$i]['horas'][$j]['clase_id'],
+                                                            'detalle_id' => $arrayDias[$i]['horas'][$j]['detalle_id']
+                                                        ],
+                                                        [
+                                                            'class' => 'link'
+
+                                                        ]
+                                                        )?>
+                                                    </div>
                                                 </td>
-                                                <td style="text-align:center">ambito</td>
-                                                <td style="text-align:center">destreza</td>
-                                                <td style="text-align:center">act</td>
-                                                <td style="text-align:center">tarea</td> 
+                                                <?php $colorBg1 = ($arrayDias[$i]['horas'][$j]['total_ambitos'] > 0 ) ? 'bg-success' : 'bg-danger' ?>
+                                                <?php $colorBg2 = ($arrayDias[$i]['horas'][$j]['total_destrezas'] > 0 ) ? 'bg-success' : 'bg-danger' ?>
+                                                <?php $colorBg3 = ($arrayDias[$i]['horas'][$j]['actividades'] > 0 || $arrayDias[$i]['horas'][$j]['actividades'] == 'none' ) ? 'bg-danger' : 'bg-success' ?>
+                                                <?php $colorBg4 = ($arrayDias[$i]['horas'][$j]['total_tareas'] > 0 ) ? 'bg-success' : 'bg-danger' ?>
+                                                
+                                                <td style="text-align:center">
+                                                <?php 
+                                                    //SI EXISTE CLASE_ID PINTA LOS COUNTS DE AMBITOS(si es la clase del profesor logeado)
+                                                    if(isset($arrayDias[$i]['horas'][$j]['clase_id'])){
+                                                    ?>
+                                                    <span class="badge rounded-pill <?=$colorBg1?>">
+                                                        <?=$arrayDias[$i]['horas'][$j]['total_ambitos']?>
+                                                    </span>
+                                                    <?php
+                                                    }
+                                                ?>
+                                                </td>
+                                               
+                                                    
+                                                
+                                                <td style="text-align:center">
+                                                <?php 
+                                                    //SI EXISTE CLASE_ID PINTA LOS COUNTS DE DESTREZAS(si es la clase del profesor logeado)
+                                                    if(isset($arrayDias[$i]['horas'][$j]['clase_id'])){
+                                                    ?>
+                                                    <span class="badge rounded-pill <?=$colorBg2?>"><?=$arrayDias[$i]['horas'][$j]['total_destrezas']?></span>
+                                                    <?php
+                                                    }
+                                                ?>  
+                                                </td>
+
+                                                <td style="text-align:center">
+                                                    <?php 
+                                                        //SI EXISTE CLASE_ID PINTA LOS COUNTS DE ACTIVIDADES(si es la clase del profesor logeado)
+                                                        if(isset($arrayDias[$i]['horas'][$j]['clase_id'])){
+                                                        ?>
+                                                        <span class="badge rounded-pill <?=$colorBg3?>">
+                                                            <?=
+                                                                $actividad = 
+                                                                ($arrayDias[$i]['horas'][$j]['actividades'] <> 0 || $arrayDias[$i]['horas'][$j]['actividades'] <> 'none' ) ?
+                                                                    '<i class="fas fa-check" style="color:white; font-size:10px"></i>' :
+                                                                    '<i class="fas fa-times" style="color:white; font-size:10px"></i>' 
+                                                              ?>
+                                                        </span>
+                                                        <?php
+                                                        }
+                                                    ?>
+                                                    
+                                                </td>
+                                                <td style="text-align:center">
+                                                    <?php 
+                                                        //SI EXISTE CLASE_ID PINTA LOS COUNTS DE TAREAS(si es la clase del profesor logeado)
+                                                        if(isset($arrayDias[$i]['horas'][$j]['clase_id'])){
+                                                        ?>
+                                                        <span class="badge rounded-pill <?=$colorBg4?>">
+                                                            <?=$arrayDias[$i]['horas'][$j]['total_tareas']?>
+                                                        </span>
+                                                        <?php
+                                                        }
+                                                    ?>
+                                                    
+                                                </td> 
                                                 </tr>
                                               <?php  
                                             }

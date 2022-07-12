@@ -2,6 +2,7 @@
 
 namespace backend\controllers;
 
+use backend\models\KidsDestrezaTarea;
 use backend\models\KidsPlanSemanal;
 use Yii;
 use backend\models\KidsPlanSemanalHoraClase;
@@ -63,7 +64,21 @@ class KidsPlanSemanalHoraClaseController extends Controller
         if($model){  //se cumple acuando el modelo existe, caso contrario realiza el ingreso del registro
             
             //destrezas planificadas
-            $modelDestrezas = $this->get_destrezas_planificadas($model->id);
+            $destrezas = $this->get_destrezas_planificadas($model->id);            
+            $modelDestrezas = array();
+
+            //iteracion  para ingresar las tareas al arreglo
+            foreach($destrezas as $des){
+                $tareas = KidsDestrezaTarea::find()->where([
+                    'plan_destreza_id' => $des['id']
+                ])->all();
+
+                $des['tareas'] = $tareas;
+                array_push($modelDestrezas, $des);
+
+            }
+      
+
             $destrezasDisponibles = $this->get_destrezas_disponibles($unidadMicroId, $model->id);//destrezas disponibles planificadas en la
                                                                     //tablakids_micro_destreza
 
@@ -118,9 +133,11 @@ class KidsPlanSemanalHoraClaseController extends Controller
                         inner join cur_curriculo_destreza cd on cd.id = md.destreza_id 
                         inner join cur_curriculo_ambito a on a.id = cd.ambito_id 
                 where 	pd.hora_clase_id = $horaClaseId;";
+        // echo $query;
+        // die();
                         $res = $con->createCommand($query)->queryAll();
         return $res;
-    }
+    }   
 
     /**
      * Para tomar las destrezas disponibles

@@ -20,6 +20,7 @@ use Yii;
  * @property string $updated
  *
  * @property KidsPlanSemanalHoraDestreza $planDestreza
+ * @property KidsTareaArchivo[] $kidsTareaArchivos
  */
 class KidsDestrezaTarea extends \yii\db\ActiveRecord
 {
@@ -75,5 +76,13 @@ class KidsDestrezaTarea extends \yii\db\ActiveRecord
     public function getPlanDestreza()
     {
         return $this->hasOne(KidsPlanSemanalHoraDestreza::className(), ['id' => 'plan_destreza_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getKidsTareaArchivos()
+    {
+        return $this->hasMany(KidsTareaArchivo::className(), ['tarea_id' => 'id']);
     }
 }

@@ -5,6 +5,7 @@ namespace backend\controllers;
 use backend\models\KidsPca;
 use Yii;
 use backend\models\KidsPlanSemanal;
+use backend\models\KidsPlanSemanalHoraClase;
 use backend\models\KidsPlanSemanalSearch;
 use backend\models\KidsUnidadMicro;
 use backend\models\ScholarisHorariov2Dia;
@@ -42,10 +43,10 @@ class KidsPlanSemanalController extends Controller
         $pcaId = $_GET['pca_id'];
         $pca = KidsPca::findOne($pcaId);
         $experiencias = KidsUnidadMicro::find()
-        ->where(['pca_id' => $pcaId])
-        ->orderBy('orden')
-        ->all();
-        
+            ->where(['pca_id' => $pcaId])
+            ->orderBy('orden')
+            ->all();
+
         return $this->render('index', [
             'pca' => $pca,
             'experiencias' => $experiencias
@@ -55,21 +56,22 @@ class KidsPlanSemanalController extends Controller
     /**
      * Muestra las semanas con las experiencia elejidas
      */
-    public function actionAjaxSemanas(){ 
+    public function actionAjaxSemanas()
+    {
 
-        $experienciaId  = $_GET['experiencia_id'];        
-        $opCourseId     = $_GET['op_course_id'];        
+        $experienciaId  = $_GET['experiencia_id'];
+        $opCourseId     = $_GET['op_course_id'];
 
         $planSemanal = $this->get_plan_semanal_cab($opCourseId);
 
-        return $this->renderPartial('_ajax-semanas',[
+        return $this->renderPartial('_ajax-semanas', [
             'planSemanal' => $planSemanal,
             'experienciaId' => $experienciaId
         ]);
-
     }
 
-    private function get_plan_semanal_cab($courseId){
+    private function get_plan_semanal_cab($courseId)
+    {
         $con = Yii::$app->db;
         $query = "select 	s.id 
                             ,s.nombre_semana 
@@ -91,8 +93,9 @@ class KidsPlanSemanalController extends Controller
 
 
 
-    public function actionAjaxInsertExperiencia(){
-        
+    public function actionAjaxInsertExperiencia()
+    {
+
         $kidsUnidadMicroId = $_POST['experiencia_id'];
         $semanaId = $_POST['semana_id'];
         $today = date('Y-m-d H:i:s');
@@ -105,19 +108,19 @@ class KidsPlanSemanalController extends Controller
         $model->created = $userLog;
         $model->estado = 'INICIANDO';
 
-        if($model->save()){
+        if ($model->save()) {
             return true;
-        }else{
+        } else {
             return false;
         }
-
     }
 
-    
+
     /**
      * METODO PARA PASAR EL DETALLE DE LA PLANIFICACION SEMANAL
      */
-    public function actionDetalle(){
+    public function actionDetalle()
+    {
         $periodoId = Yii::$app->user->identity->periodo_id;
         $usuario = Yii::$app->user->identity->usuario;
 
@@ -127,43 +130,65 @@ class KidsPlanSemanalController extends Controller
         $courseId = $kidsPlanSemanal->kidsUnidadMicro->pca->op_course_id; //toma el surso asignado al plan
         $horarioAsignado = $this->get_horario_asignado($courseId); //Consulta el horario asignado a la planificacion
         $horario = $this->get_horario($horarioAsignado, $periodoId, $courseId, $usuario); //Trae el horario del docente del curso
-        $dias = ScholarisHorariov2Dia::find()->orderBy('numero')->asArray()->all();
-
-              
+        $dias = ScholarisHorariov2Dia::find()->orderBy('numero')->asArray()->all();        
 
         $arrayDias = array();
 
-        foreach($dias as $d){
-            $diaG =  $d['nombre'];    
+        foreach ($dias as $d) {
+            $diaG =  $d['nombre'];
             $arrayHoras = array();
 
-            foreach($horario as $h){
+            foreach ($horario as $h) {
                 $diaH = $h['dia'];
-                if($diaH == $diaG){
+                if ($diaH == $diaG) {                    
+                    // consulta si la actividad esta llena sino devuelve none
+                    $actividad = KidsPlanSemanalHoraClase::find()->where([
+                        'plan_semanal_id' => $kidsPlanSemanalId,
+                        'clase_id' => $h['clase_id'],
+                        'detalle_id' => $h['detalle_id']
+                    ])->one();
+                    if (isset($actividad->actividades)) {
+                        $actividades = $actividad->actividades;
+                    } else {
+                        $actividades = 'none';
+                    } //fin de consuta de si existe actidades                    
+
+                    if($h['clase_id']){
+                        $h['actividades'] = $actividades;       //Inyecta al arreglo las actividades                                 
+                        $h['total_destrezas'] = $this->get_total_destrezas($kidsPlanSemanalId, $h['clase_id'], $h['detalle_id'], $usuario);                                                            
+                        $h['total_tareas'] = $this->get_total_tareas($kidsPlanSemanalId, $h['clase_id'], $h['detalle_id'], $usuario);                    
+                        $h['total_ambitos'] = $this->get_total_ambitos($kidsPlanSemanalId, $h['clase_id'], $h['detalle_id'], $usuario);                    
+                    }else{
+                        $h['actividades'] = 0;
+                        $h['total_destrezas'] = 0;
+                        $h['total_tareas'] = 0;
+                        $h['total_ambitos'] = 0;
+                    }                    
                     array_push($arrayHoras, $h);
                 }
             }
-
+        
             $d['horas'] = $arrayHoras;
 
             array_push($arrayDias, $d);
         }
 
-        
+
 
         // echo '<pre>';
         // print_r($arrayDias);
         // die();
 
-        return $this->render('detalle',[
+        return $this->render('detalle', [
             'kidsPlanSemanal' => $kidsPlanSemanal,
             'horario' => $horario,
             'arrayDias' => $arrayDias
         ]);
     }
 
-    
-    private function get_horario($cabeceraId, $periodoId, $courseId, $usuario){
+
+    private function get_horario($cabeceraId, $periodoId, $courseId, $usuario)
+    {
         $con = Yii::$app->db;
         $query = "select 	dia.nombre as dia, hor.nombre as hora, det.id as detalle_id
                             ,(select 	m.nombre 
@@ -221,7 +246,8 @@ class KidsPlanSemanalController extends Controller
     /**
      * Método que entrega el horario asignado de la planificacion
      */
-    private function get_horario_asignado($courseId){
+    private function get_horario_asignado($courseId)
+    {
         $con = Yii::$app->db;
         $query = "select 	c.asignado_horario 
                         from	scholaris_clase c 
@@ -234,4 +260,58 @@ class KidsPlanSemanalController extends Controller
         return $res['asignado_horario'];
     }
 
+    private function get_total_destrezas($planSemanalId, $claseId, $detalleId, $userLog)
+    {
+        $con = Yii::$app->db;
+        $query = "select 	count(hd.id) as total_destrezas
+        from 	kids_plan_semanal_hora_destreza hd
+                inner join kids_plan_semanal_hora_clase hc on hc.id = hd.hora_clase_id 
+        where hc.created ilike '$userLog'
+                and hc.plan_semanal_id = $planSemanalId
+                and hc.clase_id = $claseId
+                and hc.detalle_id = $detalleId;";
+        $res = $con->createCommand($query)->queryOne();
+
+        return $res['total_destrezas'];
+    }
+
+    private function get_total_ambitos($planSemanalId, $claseId, $detalleId, $userLog)
+    {
+        $con = Yii::$app->db;
+        $query = "select 	a.nombre
+        from 	kids_plan_semanal_hora_destreza hd
+                inner join kids_plan_semanal_hora_clase hc on hc.id = hd.hora_clase_id
+                inner join kids_micro_destreza md on md.id = hd.micro_destreza_id  
+                inner join cur_curriculo_destreza d on d.id = md.destreza_id 
+                inner join cur_curriculo_ambito a on a.id = d.ambito_id 
+        where hc.created ilike '$userLog'
+                and hc.plan_semanal_id = $planSemanalId
+                and hc.clase_id = $claseId
+                and hc.detalle_id = $detalleId
+        group by a.nombre;";
+        $res = $con->createCommand($query)->queryOne();
+
+        $total = 0;
+        if($res){
+            $total = count($res);
+        }
+
+        return $total;
+    }
+    
+    private function get_total_tareas($planSemanalId, $claseId, $detalleId, $userLog)
+    {
+        $con = Yii::$app->db;
+        $query = "select 	count(hd.id) as total_destrezas
+        from 	kids_plan_semanal_hora_destreza hd
+                inner join kids_plan_semanal_hora_clase hc on hc.id = hd.hora_clase_id
+                inner join kids_destreza_tarea t on t.plan_destreza_id = hd.id 
+        where hc.created ilike '$userLog'
+                and hc.plan_semanal_id = $planSemanalId
+                and hc.clase_id = $claseId
+                and hc.detalle_id = $detalleId;";
+        $res = $con->createCommand($query)->queryOne();
+
+        return $res['total_destrezas'];
+    }
 }

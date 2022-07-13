@@ -38,17 +38,13 @@ function pud_dip_porcentaje_avance($planVertDiplId,$planBloqueUniId)
                 </div>
                 <div class="col-lg-11">
                     <h4><?= Html::encode($this->title) ?></h4>
-
-                    <h5>
-                        
+                    <h5>                        
                         <?= 'CURSO: ' . $cabecera->ismAreaMateria->mallaArea->periodoMalla->malla->opCourseTemplate->name ?>
                     </h5>
-
                     <small>
                         (
-                        <?=
-                        
-                        $cabecera->ismAreaMateria->materia->nombre . ' -  MEC'
+                        <?=                        
+                            $cabecera->ismAreaMateria->materia->nombre . ' -  MEC'
                         ?>
                         )
                     </small>
@@ -108,6 +104,13 @@ function pud_dip_porcentaje_avance($planVertDiplId,$planBloqueUniId)
                         echo Html::a(
                             '<span class="badge rounded-pill" style="background-color: #ff9e18 "><i class="far fa-file-pdf" aria-hidden="true"></i> PDF Plan Vertical</span>',
                             ['pdf-pv', 'cabecera_id' => $cabecera->id],
+                            ['class' => 'link', 'target' => '_blank']
+                        );
+                        echo ' | '; 
+
+                        echo Html::a(
+                            '<span class="badge rounded-pill" style="background-color: #F08080 "><i class="far fa-file-pdf" aria-hidden="true"></i> PDF Plan Horizontal</span>',
+                            ['pdf-ph', 'cabecera_id' => $cabecera->id],
                             ['class' => 'link', 'target' => '_blank']
                         );
                         echo ' | ';                        

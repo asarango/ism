@@ -51,7 +51,6 @@ if(!isset($pestana)){
                 <div class="row" style="background-color: #ccc; font-size: 12px">
                     <div class="col-md-12 col-sm-12">
                         <p style="color:white">
-                            <?= $this->title ?>
                             |                                
                             <?=
                             Html::a('<span class="badge rounded-pill" style="background-color: #0a1f8f"><i class="fa fa-briefcase" aria-hidden="true"></i> Inicio</span>',
@@ -78,13 +77,19 @@ if(!isset($pestana)){
                             |
                         </p>
                     </div>
+                    <div class="col-md-12 col-sm-12">
+                            <h5 style="color:white"><?= $this->title ?></h5>
+                    </div>
                 </div>
-
-                <div class="row"  style="background-color:#fff; font-size:12px">
+                <!-- Comienza cuerpo  -->
+                <div class="row"  style="background-color:#fff; font-size:12px; margin-top:10px">
+                    <div class="col-md-12 col-sm-12">
+                        <strong><i class="fas fa-lightbulb"></i> EXPERIENCIAS DE APRENDIZAJE: </strong><?= $micro['experiencia'] ?>
+                    </div>
                     <div class="col-lg-12 col-md-12 col-sm-12">
                         <div class="row">
 
-                            <div class="col-lg-4 col-md-4 col-sm-4">
+                            <div class="col-lg-6 col-md-6 col-sm-6">
                                 <strong><i class="fas fa-user"></i> DOCENTE: </strong>
                                 <?php
                                 foreach ($datos['docentes'] as $docen) {
@@ -93,16 +98,15 @@ if(!isset($pestana)){
                                 ?>
                             </div>
 
-                            <div class="col-lg-4 col-md-4 col-sm-4">
+                            <div class="col-lg-6 col-md-6 col-sm-6" >
                                 <strong><i class="fas fa-list-ol"></i> SUBNIVEL: </strong><?= $datos['subnivel'] ?>
                             </div>
-                            <div class="col-lg-4 col-md-4 col-sm-4">
-                                <strong><i class="fas fa-lightbulb"></i> EXPERIENCIAS DE APRENDIZAJE: </strong><?= $micro['experiencia'] ?>
-                            </div>
-                            <div class="col-lg-4 col-md-4 col-sm-4">
+                            
+                            <div class="col-lg-6 col-md-6 col-sm-6">
                                 <strong><i class="fas fa-calendar"></i> FECHA INICIO: </strong><?= $micro['fecha_inicia'] ?>
                             </div>
-                            <div class="col-lg-4 col-md-4 col-sm-4">
+
+                            <div class="col-lg-6 col-md-6 col-sm-6" >
                                 <strong><i class="fas fa-calendar"></i> FECHA FIN: </strong><?= $micro['fecha_termina'] ?>
                             </div>
                         </div>

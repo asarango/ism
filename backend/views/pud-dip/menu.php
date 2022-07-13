@@ -26,6 +26,7 @@ $modelProcApre = backend\models\PudDipProcesoAprendizaje::find()
 
 $contador_5_1 = 0;
 $contador_5_3_1 = 0;
+$contador_5_3_2 = 0;
 $contador_5_4 = 0;
 $contador_5_6 = 0;
 $opcion = '1.1.-';
@@ -35,6 +36,7 @@ if($modelPVD)
     $opcion=$modelPVD->ultima_seccion;    
     $contador_5_1 = contador_evaluaciones($planUnidad->id);
     $contador_5_3_1 = contador_metacognicion($planUnidad->id);
+    $contador_5_3_2 = contador_diferenciacion($planUnidad->id);
     $contador_5_4 = contador_de_consultar_lenguaje_y_aprendizaje_ckeck($modelPVD->id);    
     $contador_5_6 = consultar_conexion_cas_ckeck($modelPVD->id);
    
@@ -117,8 +119,6 @@ function contador_de_consultar_lenguaje_y_aprendizaje_ckeck($planVertDiplId)
  
  //para metacognitivo
  //para conocer si esta planificado el metacognitivo
- 
-
 function contador_metacognicion($planUnidadId){
     $pudDip = backend\models\PudDip::find()->where([
     'planificacion_bloques_unidad_id' => $planUnidadId,
@@ -148,8 +148,35 @@ function contador_metacognicion($planUnidadId){
 }
 
 
-
-
+//para metacognitivo
+ //para conocer si esta planificado el metacognitivo
+function contador_diferenciacion($planUnidadId){
+    $pudDip = backend\models\PudDip::find()->where([
+    'planificacion_bloques_unidad_id' => $planUnidadId,
+    'codigo' => 'APRENDIZAJE-DIFERENCIADO' 
+    ])->all();
+    
+    $contador_5_3_2 = 0;
+    
+    $cont = 0;
+    $contDetalle = 0;
+    foreach ($pudDip as $pud){
+        if($pud->opcion_boolean == true){
+            $cont++;
+        }
+        
+        if($pud->campo_de == 'escrito' && strlen($pud->opcion_texto) > 20){
+            $contDetalle = 1;
+        }
+    }
+    
+    if($cont>0 && $contDetalle > 0 ){
+        $contador_5_3_2 = 1;
+    }
+    
+    return $contador_5_3_2;
+    
+}
 
 ?>
 <ul>
@@ -255,6 +282,19 @@ function contador_metacognicion($planUnidadId){
             <li class="zoom"><a href="#" onclick="ver_detalle('5.3.1.-');">5.3.1.- Metacognición
             <?php                   
                     if ($contador_5_3_1==0)
+                    { $iconoColor = $colorNotOk;}
+                    else
+                    { $iconoColor = $colorOk;}
+                    ?>
+                    <i class="<?=$iconoOk;?>" title="FALTA INGRESAR DATOS" style="color: <?=$iconoColor;?>;"></i>
+                    </a>            
+            </li>
+            
+            
+            <!--para 5.3.2 diferenciacion-->
+            <li class="zoom"><a href="#" onclick="ver_detalle('5.3.2.-');">5.3.2.- Aprendizaje Diferenciado
+            <?php                   
+                    if ($contador_5_3_2 == 0)
                     { $iconoColor = $colorNotOk;}
                     else
                     { $iconoColor = $colorOk;}

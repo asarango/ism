@@ -142,6 +142,9 @@ class PudDipController extends Controller {
             case '5.3.1.-':
                 $respuesta = $this->get_accion_metacognicion($planUnidadId);
                 break;
+            case '5.3.2.-':
+                $respuesta = $this->get_accion_diferenciacion($planUnidadId);
+                break;
             case '5.4.-':
                 $respuesta = $this->get_accion_lenguaje_aprendizaje($planUnidadId);
                 break;
@@ -917,7 +920,7 @@ class PudDipController extends Controller {
     private function get_accion_metacognicion($planBloqueUnidadId) {
        
         $planBloqueUnidad = PlanificacionBloquesUnidad::findOne($planBloqueUnidadId);
-        $accion_update = "5.3.1-";
+        $accion_update = "5.3.1.-";
         $titulo = "5.3.1- METACOGNICIÓN";
 
          $this->ingresa_metacognicion($planBloqueUnidadId); //ingresa las opciones 
@@ -926,8 +929,13 @@ class PudDipController extends Controller {
 //        $modelPlanVertical = PlanificacionVerticalDiploma::find()->where(['planificacion_bloque_unidad_id' => $planBloqueUnidad])->one();
 //        $modelPlanVertical->ultima_seccion = $accion_update;
 //        $modelPlanVertical->save();
-//        
-//
+        
+
+        $modelPlanVertical = PlanificacionVerticalDiploma::find()->where(['planificacion_bloque_unidad_id' => $planBloqueUnidadId])->one();
+        $modelPlanVertical->ultima_seccion = $accion_update;
+        $modelPlanVertical->save();
+        
+
         return $mostrar;
     }
     
@@ -977,25 +985,177 @@ class PudDipController extends Controller {
         $html .= '</div>';
         $html .= '<div class="card-body" >';
         // inicia row
-
+        $html .= '<div class="row">';
         foreach ($pudDip as $pud) {
             $pud->opcion_boolean ? $check = 'checked' : $check = '';
             
             if($pud->campo_de == 'seleccion'){
                 $html .= '<div class="form-check form-switch">
-                        <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked" '.$check.' onclick="update_pud_dip_boolean('.$pud->id.')">
+                        <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked" '.$check.' '
+                        . 'onclick="update_pud_dip_boolean('.$pud->id.')">
                         <label class="form-check-label" for="flexSwitchCheckChecked">'.$pud->opcion_texto.'</label>
                       </div>';
+            }else{
+                $detalle = $pud->opcion_texto;
+                $pudId = $pud->id;
             }
             
         }
+        $html .= '</div>'; //FIN ROW SELECCION
+        
+        $html .= '<hr />'; 
+        
+//            $html .= '<div class="row">'; //inicia row de detalle
+        $html .= Html::beginForm(['update-pud-dip'], 'post');
+                $html .= '<b>Información Detallada</b>';
+                $html .= '<input type="hidden" name="campo_de" value="escrito">';
+                $html .= '<input type="hidden" name="id" value="'.$pudId.'">';
+                $html.= '<textarea name="contenido" class="form-control" id="detalle-metacognicion" >'.$detalle.'</textarea>
+                                <script>
+                                    CKEDITOR.replace( "contenido",{
+                                        customConfig: "/ckeditor_settings/config.js"                                
+                                        } );
+                                </script>';                       
 
-
+            $html .= '<div style="text-align:end; margin-top:5px">
+                        <button type="submit" class="btn btn-success">Actualizar</button>
+                  </div>';
+        
+            $html .= Html::endForm();
+//        $html .= '</div>';//fin de row de detalle
         //******finaliza row
         $html .= '</div>'; //fin de card-body
         $html .= '</div>';
         $html .= '</div>';
         return $html;
+    }
+    
+    
+     /*     * * 5.3.2  DIFERENCIACION */
+    private function get_accion_diferenciacion($planBloqueUnidadId) {
+       
+        $planBloqueUnidad = PlanificacionBloquesUnidad::findOne($planBloqueUnidadId);
+        $accion_update = "5.3.2.-";
+        $titulo = "5.3.2.- DIFERENCIACIÓN";
+
+        $this->ingresa_diferenciacion($planBloqueUnidadId); //ingresa las opciones 
+        $mostrar = $this->mostrar_seleccion_diferenciacion($planBloqueUnidadId, $titulo);        
+
+        $modelPlanVertical = PlanificacionVerticalDiploma::find()->where(['planificacion_bloque_unidad_id' => $planBloqueUnidadId])->one();
+        $modelPlanVertical->ultima_seccion = $accion_update;
+        $modelPlanVertical->save();
+        
+        return $mostrar;
+    }
+    
+    private function ingresa_diferenciacion($planBloqueUnidadId){
+        $con = Yii::$app->db;
+        $query = "insert into pud_dip (planificacion_bloques_unidad_id, codigo, campo_de, opcion_boolean, opcion_texto) 
+                select 	$planBloqueUnidadId,tipo, 'seleccion', false, opcion 
+                from 	dip_opciones op
+                where 	op.tipo = 'APRENDIZAJE-DIFERENCIADO'
+                                and op.opcion not in (select opcion_texto from pud_dip 
+                                where planificacion_bloques_unidad_id = $planBloqueUnidadId 
+                                and opcion_texto = opcion and codigo = 'APRENDIZAJE-DIFERENCIADO');";
+        $con->createCommand($query)->execute();
+        
+        $modelDetalle = \backend\models\PudDip::find()->where([
+            'codigo' => 'APRENDIZAJE-DIFERENCIADO',
+            'campo_de' => 'escrito',
+            'planificacion_bloques_unidad_id' => $planBloqueUnidadId
+        ])->one();
+        
+        if(!$modelDetalle){
+            $model = new \backend\models\PudDip();
+            $model->planificacion_bloques_unidad_id = $planBloqueUnidadId;
+            $model->codigo = 'APRENDIZAJE-DIFERENCIADO';
+            $model->campo_de = 'escrito';
+            $model->opcion_texto = 'None';
+            $model->save();
+        }                
+    }
+    
+    private function mostrar_seleccion_diferenciacion($planBloqueUnidadId, $titulo) {
+        $pudDip = \backend\models\PudDip::find()->where([
+            'planificacion_bloques_unidad_id' => $planBloqueUnidadId,
+            'codigo' => 'APRENDIZAJE-DIFERENCIADO'
+         ])->all();
+        
+
+        $html = '';
+        $html .= '<div class="" style="align-items: center; display: flex; justify-content: center;">';
+        $html .= '<div class="card" style="width: 100%; margin-top:20px">';
+        $html .= '<div class="card-header">';
+        $html .= '<div class="row">';
+        $html .= '<h5 class=""><b>' . $titulo . '</b></h5>';
+        $html .= '</div>';
+        $html .= '</div>';
+        $html .= '<div class="card-body" >';
+        // inicia row
+        $html .= '<div class="row">';
+        foreach ($pudDip as $pud) {
+            $pud->opcion_boolean ? $check = 'checked' : $check = '';
+            
+            if($pud->campo_de == 'seleccion'){
+                $html .= '<div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked" '.$check.' '
+                        . 'onclick="update_pud_dip_boolean('.$pud->id.')">
+                        <label class="form-check-label" for="flexSwitchCheckChecked">'.$pud->opcion_texto.'</label>
+                      </div>';
+            }else{
+                $detalle = $pud->opcion_texto;
+                $pudId = $pud->id;
+            }
+            
+        }
+        $html .= '</div>'; //FIN ROW SELECCION
+        
+        $html .= '<hr />'; 
+        
+//            $html .= '<div class="row">'; //inicia row de detalle
+        $html .= Html::beginForm(['update-pud-dip'], 'post');
+                $html .= '<b>Información Detallada</b>';
+                $html .= '<input type="hidden" name="campo_de" value="escrito">';
+                $html .= '<input type="hidden" name="id" value="'.$pudId.'">';
+                $html.= '<textarea name="contenido" class="form-control" id="detalle-metacognicion" >'.$detalle.'</textarea>
+                                <script>
+                                    CKEDITOR.replace( "contenido",{
+                                        customConfig: "/ckeditor_settings/config.js"                                
+                                        } );
+                                </script>';                       
+
+            $html .= '<div style="text-align:end; margin-top:5px">
+                        <button type="submit" class="btn btn-success">Actualizar</button>
+                  </div>';
+        
+            $html .= Html::endForm();
+//        $html .= '</div>';//fin de row de detalle
+        //******finaliza row
+        $html .= '</div>'; //fin de card-body
+        $html .= '</div>';
+        $html .= '</div>';
+        return $html;
+    }
+    
+    
+    
+    
+    
+    public function actionUpdatePudDip(){
+        $campoDe = $_POST['campo_de'];
+        $id = $_POST['id'];            
+        
+        $model = \backend\models\PudDip::findOne($id);
+        
+        if($campoDe == 'seleccion'){            
+            $model->opcion_boolean ? $model->opcion_boolean = false : $model->opcion_boolean = true;
+            $model->save();            
+        }else{
+            $model->opcion_texto = $_POST['contenido'];
+            $model->save();
+            return $this->redirect(['index1', 'plan_bloque_unidad_id' => $model->planificacion_bloques_unidad_id]);
+        }
+                
     }
     
 

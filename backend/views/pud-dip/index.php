@@ -275,28 +275,36 @@ $modelPudBitacora = PudAprobacionBitacora::find()
          /** FUNCION PARA MODIFICACION DE PUD_DIP */
         function update_pud_dip_boolean(id) {
             
-            alert('desde update_pud_dip_boolean linea 278 de la vista index.php');
 //            var contenido = CKEDITOR.instances['editor-text-unidad'].getData();
-//            var url = buscar_url(accion_update);
-//            var control = "#" + accion_update;
-//            params = {
-//                evaluacion_id: id,
-//                contenido: contenido,
-//                accion: accion_update,
-//                campo: campo
-//            }
-//            $.ajax({
-//                data: params,
-//                url: url,
-//                type: 'GET',
-//                beforeSend: function () {},
-//                success: function () {                    
-//                    //location.reload();
-//
-//                }
-//            });
+            var url = '<?= Url::to(['update-pud-dip']) ?>';
+            params = {
+                id: id,
+                contenido: '',
+                campo_de: 'seleccion'
+            };
+            
+            $.ajax({
+                data: params,
+                url: url,
+                type: 'POST',
+                beforeSend: function () {},
+                success: function () {                    
+                    //location.reload();
+
+                }
+            });
 
         }
+        
+        function update_pud_dip_texto(id) {
+            var contenido = $("#detalle-metacognicion").val();
+            alert(id);
+            alert(contenido);
+            
+
+        }
+        
+        
 
         function update_campos_check(id_pvd, idPvd_Op, accion_update_op, tipoProceso) {
             //idPvd_Op: esta variable toma dos valores de id's, de dos tablas diferentes

@@ -17,7 +17,7 @@ use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use Mpdf\Mpdf;
 use datetime;
-class Pdf extends \yii\db\ActiveRecord{
+class PdfPh extends \yii\db\ActiveRecord{
 
     private $planCabecera;
     public function __construct($cabeceraId){        

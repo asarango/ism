@@ -115,4 +115,35 @@ class PlanificacionVerticalDiploma extends \yii\db\ActiveRecord
     {
         return $this->hasMany(PlanificacionVerticalDiplomaRelacionTdc::className(), ['vertical_diploma_id' => 'id']);
     }
+    //Devuelve solo los check que estan activados, para presentar en el reporte.
+    public function consultar_tdc_ckeck_reporte($planVertDiplId) 
+    {
+       //consulta los tdc que han sido marcados con check
+       $con = Yii::$app->db;
+       $query = "select p.opcion
+                from planificacion_opciones p, planificacion_vertical_diploma_relacion_tdc pr,
+                planificacion_vertical_diploma pvd 
+                where p.tipo='RELACION_TDC'  and pvd.id =$planVertDiplId 
+                and pr.vertical_diploma_id = pvd.id   
+                and pr.relacion_tdc_id  = p.id                
+                order by opcion;
+                ";
+        $resultado = $con->createCommand($query)->queryAll();
+        return $resultado;
+    }
+    //Devuelve solo los check que estan activados, para presentar en el reporte.
+    public function consultar_habilidad_check_reporte($plaVertDiplId) 
+    {    
+        //consulta las habilidades que han sido marcados con check           
+        $con = Yii::$app->db;        
+        $query = "select h.es_exploracion 
+                from contenido_pai_habilidades h, planificacion_vertical_diploma_habilidades ph,
+                planificacion_vertical_diploma pvd 
+                where pvd.id =$plaVertDiplId 
+                and ph.vertical_diploma_id = pvd.id   
+                and ph.habilidad_id  = h.id ";
+        $resultado = $con->createCommand($query)->queryAll(); 
+       
+       return $resultado;       
+    }
 }

@@ -303,8 +303,13 @@ class PlanificacionBloquesUnidadController extends Controller{
     }
 
 
-    /****PARA GENERAR PDF DE PLAN vertical DE DIPLOMA */
+    /****PARA GENERAR PDF DE PLAN VERTICAL DE DIPLOMA */
     public function actionPdfPv(){
+        $cabeceraId = $_GET['cabecera_id'];
+        new Pdf($cabeceraId);
+    }
+    /****PARA GENERAR PDF DE PLAN HORIZONTAL DE DIPLOMA */
+    public function actionPdfPh(){
         $cabeceraId = $_GET['cabecera_id'];
         new Pdf($cabeceraId);
     }

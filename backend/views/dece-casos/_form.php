@@ -47,7 +47,7 @@ $modelRegSeguimiento = DeceRegistroSeguimiento::find()
     ->all();
 
 ?>
-<script src="https://cdn.ckeditor.com/4.19.0/standard/ckeditor.js"></script>
+<script src="//cdn.ckeditor.com/4.19.0/full/ckeditor.js"></script>
 
 <div class="">
     <legend><b>Estudiante: </b>

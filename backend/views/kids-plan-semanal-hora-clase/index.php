@@ -208,7 +208,7 @@ $hoy = date('d-m-Y');
                                                                         </div>
                                                                     </div>
 
-                                                                    <button type="submit" class="btn btn-primary">Agregar Tarea</button>                   
+                                                                    <button type="submit" class="btn btn-primary">Agregar Tarea/Evaluación</button>                   
 
                                                                 </div>        
 
@@ -227,7 +227,7 @@ $hoy = date('d-m-Y');
                                         <strong class="text-primero">Destreza:</strong>
                                         <p class="text-primero"><?=$destrezaSel['destreza'] ?></p>
                                         <div class="row card-footer">
-                                            TAREAS
+                                            <strong>TAREAS/EVALUACIÓN</strong> 
                                             <div class="table table-responsive">
                                                 <table class="table table-hover table-stripped my-text-small">
                                                     <thead>

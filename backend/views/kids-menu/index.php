@@ -52,10 +52,27 @@ $this->title = 'Menu Kids';
                         ?>
                     </div>
                 </div>
+                
+                <div class="col-md-4">
+                    <div class="zoom" style="text-align:center; margin:15px">
+                        <?=
+                        Html::a(
+                                '<img src="ISM/main/images/kids/satisfaccion.png" width="20%" title="Planificaciones">  
+                                    <br>Calificaciones',
+                                [
+                                    'kids-calificaciones/index1'
+                                ],
+                                [
+                                    'class' => 'link my-text-small'
+                                ]
+                        );
+                        ?>
+                    </div>
+                </div>
 
-                <div class="col-md-8">
+                <div class="col-md-4">
                     <div style="padding-top:20px; padding-left:40px; padding-right:40px " >
-                        <p>Aqui realizas planificación curricular anual (PCA) y planificación semanal</p>
+                        <p>Aquí nuestras opciones Kids</p>
                     </div>
                 </div>
 

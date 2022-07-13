@@ -44,6 +44,9 @@ $this->title = 'Plan Semanal';
                            
                         </p>
                     </div>
+                    <div class="col-md-12 col-sm-12">
+                            <h5 style="color:white">Kids Plan Semanal</h5>
+                    </div>
                     <hr>
                     <div class="col-md-12 col-sm-12">
                             <div class="row">

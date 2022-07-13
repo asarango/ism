@@ -23,7 +23,6 @@ $curso = $modelPca->opCourse->name;
                 <div class="row">
                     <div class="col-md-12 col-sm-12">
                         <p style="color:white">
-                            <?= $this->title ?>
                             |                                
                             <?=
                             Html::a('<span class="badge rounded-pill" style="background-color: #0a1f8f"><i class="fa fa-briefcase" aria-hidden="true"></i> Inicio</span>',
@@ -52,10 +51,10 @@ $curso = $modelPca->opCourse->name;
                             ?>    
                             |
                         </p>
-                        
                     </div>
 
                     <div class="col-md-12 col-sm-12">
+                        <h5 style="color:white"><?= $this->title ?></h5>
                             <strong>CURSO: <?=$curso?></strong>
                     </div>
 

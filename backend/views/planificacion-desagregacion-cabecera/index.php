@@ -25,8 +25,6 @@ $this->params['breadcrumbs'][] = $this->title;
                     <h4><?= Html::encode($this->title) ?></h4>
                 </div>
             </div><!-- FIN DE CABECERA -->
-
-
             <!-- inicia menu  -->
             <div class="row">
                 <div class="col-lg-6 col-md-6">
@@ -99,6 +97,7 @@ $this->params['breadcrumbs'][] = $this->title;
         var params = {
             curso_id    :   nivel 
         };
+        alert(url);
 
         $.ajax({
             data: params,

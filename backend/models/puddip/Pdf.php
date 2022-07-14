@@ -20,18 +20,18 @@ use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use Mpdf\Mpdf;
 use DateTime;
+use backend\models\helpers\HelperGeneral;
 
 class Pdf extends \yii\db\ActiveRecord{
 
     private $planVertDipl;
+    private $IdCabecera;
 
     public function __construct($cabeceraId){        
         $this->planVertDipl = PlanificacionVerticalDiploma::find()->where([
             'planificacion_bloque_unidad_id' => $cabeceraId
         ])->one(); 
-        /*echo '<pre>';
-        print_r( $this->planVertDipl->planificacionBloqueUnidad->planCabecera->id)  ;  
-        die();*/
+        $this->IdCabecera = $cabeceraId;
 
         $this->generate_pdf();
     }
@@ -182,6 +182,10 @@ class Pdf extends \yii\db\ActiveRecord{
         $periodoId = Yii::$app->user->identity->periodo_id;       
         $periodo = ScholarisPeriodo::findOne($periodoId);
         $fechaHoy = date('Y-m-d H:i:s');
+        $objHelper = new HelperGeneral();
+        $horaSemana =    $objHelper->getCargaHorariaSemanal($this->IdCabecera);
+        print_r($r[0]['count']);
+        die();
 
         $modelScholarisM = $this->select_scholaris_materia();      
 

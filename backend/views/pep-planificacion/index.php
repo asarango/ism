@@ -7,7 +7,7 @@ use yii\helpers\Url;
 /* @var $searchModel backend\models\PlanificacionDesagregacionCabeceraSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Planificación';
+$this->title = 'Planificación PEP';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
@@ -23,6 +23,9 @@ $this->params['breadcrumbs'][] = $this->title;
                 </div>
                 <div class="col-lg-11">
                     <h4><?= Html::encode($this->title) ?></h4>
+                    <small>
+                        <?= $course->name ?>
+                    </small>
                 </div>
             </div><!-- FIN DE CABECERA -->
             <!-- inicia menu  -->
@@ -34,6 +37,15 @@ $this->params['breadcrumbs'][] = $this->title;
                     Html::a(
                             '<span class="badge rounded-pill" style="background-color: #9e28b5"><i class="fa fa-briefcase" aria-hidden="true"></i> Inicio</span>',
                             ['site/index'],
+                            ['class' => 'link']
+                    );
+                    ?>
+                    
+                    |
+                    <?=
+                    Html::a(
+                            '<span class="badge rounded-pill" style="background-color: #65b2e8"><i class="fa fa-briefcase" aria-hidden="true"></i> Pantalla Principal</span>',
+                            ['planificacion-desagregacion-cabecera/index'],
                             ['class' => 'link']
                     );
                     ?>
@@ -49,58 +61,7 @@ $this->params['breadcrumbs'][] = $this->title;
             <!-- finaliza menu menu  -->
 
             <!-- inicia cuerpo de card -->
-            <div class="row" style="margin-top: 25px;">
-
-                <select name="niveles" onchange="showAsignaturas()" id="nivel" class="form-control select2 select2-hidden-accessible" style="width: 99%;" tabindex="-1" aria-hidden="true">
-                    <option selected="selected" value="" >Escoja un curso...</option>
-                    <?php
-                    foreach ($cursos as $nivel) {
-                        echo '<option value="' . $nivel['id'] . '">' . $nivel['name'] . '</option>';
-                    }
-                    ?>
-                </select> 
-            </div> <!-- /.form-group -->
-
-            <hr>
-
-
-            <div class="row">
-                <div class="table table-responsive">
-                    <table class="table table-hover table-striped">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>ASIGNATURA</th>
-                                <th>TOTAL CRITERIOS USADOS</th>
-                                <th>ACCIONES</th>
-                            </tr>
-                        </thead>
-                        <tbody id="table-body">
-
-                        </tbody>
-                    </table>
-                </div>
-            </div>            
-        </div>
-        <!-- fin cuerpo de card -->
-        <div class="card shadow col-lg-8 col-md-8" style="margin-top: 20px">
-            <div class="row">
-                <?php
-                $cont = 0;
-                foreach ($cursos as $curso) {
-                    if ($curso['code'] == 'BAS') {
-                        $cont++;
-                    }
-                }
-
-                if ($cont > 0) {
-                    echo $this->render('planificacion-pep', ['cursos' => $cursos]);
-                }
-                ?>
-
-
-
-            </div>
+            
         </div>
     </div>
 </div>

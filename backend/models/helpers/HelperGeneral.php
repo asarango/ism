@@ -113,6 +113,44 @@ class HelperGeneral extends ActiveRecord{
 
         return $arraySemas;
     }
+    public function get_cursos_docente($user,$periodoId)
+    {              
+        $query = "select 	t.id 
+                                    ,t.name
+                    from	scholaris_clase cla
+                                    inner join op_faculty fac on fac.id = cla.idprofesor 
+                                    inner join res_users use on use.partner_id = fac.partner_id 
+                                    inner join op_course_paralelo par on par.id = cla.paralelo_id 
+                                    inner join op_course cur on cur.id = par.course_id
+                                    inner join op_course_template t on t.id = cur.x_template_id 
+                                    inner join op_section sec on  sec.id = cur.section
+                                    inner join scholaris_op_period_periodo_scholaris sop on sop.op_id = sec.period_id 
+                    where	use.login = '$user'
+                                    and sop.scholaris_id = $periodoId
+                    group by t.id, t.name;";
+        $resp = $this->consultaBD($query);                   
+        
+        return $resp;
+    }
+    public function query_asignaturas_x_nivel($nivelId)
+    {       
+        $query = "select 	cab.id
+		,m.nombre as name
+		,count(cri.id) as total_criterios_evaluacion
+                from 	planificacion_desagregacion_cabecera cab 
+                                inner join ism_area_materia iam on iam.id = cab.ism_area_materia_id 
+                                inner join ism_malla_area ia on ia.id = iam.malla_area_id 
+                                inner join ism_periodo_malla ipm on ipm.id = ia.periodo_malla_id 
+                                inner join ism_malla im on im.id = ipm.malla_id
+                                inner join ism_materia m on m.id = iam.materia_id 
+                                left join planificacion_desagregacion_criterios_evaluacion cri on cri.criterio_evaluacion_id = cab.id 
+                where 	im.op_course_template_id = $nivelId
+                group by cab.id ,m.nombre;";
+
+        $res =  $this->consultaBD($query);        
+
+        return $res;
+    }
     
 }
 

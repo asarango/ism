@@ -50,7 +50,6 @@ $this->params['breadcrumbs'][] = $this->title;
 
             <!-- inicia cuerpo de card -->
             <div class="row" style="margin-top: 25px;">
-
                 <select name="niveles" onchange="showAsignaturas()" id="nivel" class="form-control select2 select2-hidden-accessible" style="width: 99%;" tabindex="-1" aria-hidden="true">
                     <option selected="selected" value="" >Escoja un curso...</option>
                     <?php
@@ -97,7 +96,7 @@ $this->params['breadcrumbs'][] = $this->title;
         var params = {
             curso_id    :   nivel 
         };
-        alert(url);
+      
 
         $.ajax({
             data: params,

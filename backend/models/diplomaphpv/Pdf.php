@@ -288,27 +288,52 @@ class Pdf extends \yii\db\ActiveRecord{
             order by e.nombre;
             ";
 
-        $habilidades = $con->createCommand($query)->queryAll();
+        $habilidades = $con->createCommand($query)->queryAll();        
+
+        //extraccion de fila uno
+        $arrayFilas = array();
+        foreach($habilidades as $habi)
+        {
+                    if(count($arrayFilas)>0)
+                    {
+                        if(!in_array($habi['uno'],$arrayFilas))
+                        {
+                            $arrayFilas[]=$habi['uno'];
+                        }          
+                    }else{
+                        $arrayFilas[]=$habi['uno'];
+                    }                   
+        } 
         
-
         //tabla de habilidades
-
         $tablaHbailidades = '
                 <table border="0" cellspacing="0" cellpadding="2">                    
                     <tbody >
-                ';
-           
-        foreach($habilidades as $habi)
-        {
-           $tablaHbailidades .= '<tr>                       
-                        <td style="font-size:9">'.$habi['uno'].'</td>
-                        <td style="font-size:9">'.$habi['dos'].'</td>
-                        <td style="font-size:9">'.$habi['tres'].'</td>
-                    </tr> '; 
-        }
+                ';       
+                foreach($arrayFilas as $fila)
+                {    
+                    $tablaHbailidades .='<tr>
+                                <td style="font-size:9;"><b>'.$fila.'</b></td>
+                                <td style="font-size:9"></td>
+                                <td style="font-size:9"></td>
+                            </tr>';           
+                    foreach($habilidades as $habi2)
+                    {                        
+                        if($fila==$habi2['uno'])
+                        {
+                            $tablaHbailidades .='<tr >
+                            <td style="font-size:9;"></td>
+                            <td style="font-size:9;border-top: thin solid;">'.$habi2['dos'].'</td>
+                            <td style="font-size:9;border-top: thin solid;">'.$habi2['tres'].'</td>
+                            </tr>';                            
+                        }                      
+                    }       
+                    //$tablaHbailidades .= '</td>';                   
+                }
                             
         $tablaHbailidades .="</tbody>
                 </table> ";
+               
         
         return $tablaHbailidades; 
     }

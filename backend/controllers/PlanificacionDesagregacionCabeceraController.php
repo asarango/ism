@@ -4,6 +4,7 @@ namespace backend\controllers;
 
 use backend\models\CurriculoMec;
 use backend\models\CurriculoMecNiveles;
+use backend\models\helpers\HelperGeneral;
 use Yii;
 use backend\models\PlanificacionDesagregacionCabecera;
 use backend\models\PlanificacionDesagregacionCabeceraSearch;
@@ -70,8 +71,10 @@ class PlanificacionDesagregacionCabeceraController extends Controller
 
     public function actionIndex()
     {
-//        $cursos = \backend\models\OpCourseTemplate::find()->all();
-        $cursos = $this->get_cursos_docente();
+        $user = Yii::$app->user->identity->usuario;
+        $periodoId = Yii::$app->user->identity->periodo_id;
+        $objHelper = new HelperGeneral();       
+        $cursos = $objHelper->get_cursos_docente($user,$periodoId);
 
         return $this->render('index', [
             'cursos' => $cursos
@@ -101,12 +104,14 @@ class PlanificacionDesagregacionCabeceraController extends Controller
     }
 
 
+
     public function actionListMaterias()
     {
-
+        $objHelper = new HelperGeneral();  
         $cursoId = $_POST['curso_id'];
         $this->insert_cabecera($cursoId); //Inserta materias al planificacion_desagregacion_cabecera
-        $asignaturas = $this->query_asignaturas_x_nivel($cursoId); //toma las asignaturas
+        
+        $asignaturas = $objHelper->query_asignaturas_x_nivel($cursoId); //toma las asignaturas
 
         $html = "";
 
@@ -164,27 +169,6 @@ class PlanificacionDesagregacionCabeceraController extends Controller
         
         $con->createCommand($query)->execute();
     }
-
-    private function query_asignaturas_x_nivel($nivelId)
-    {
-        $con = Yii::$app->db;
-        $query = "select 	cab.id
-		,m.nombre as name
-		,count(cri.id) as total_criterios_evaluacion
-                from 	planificacion_desagregacion_cabecera cab 
-                                inner join ism_area_materia iam on iam.id = cab.ism_area_materia_id 
-                                inner join ism_malla_area ia on ia.id = iam.malla_area_id 
-                                inner join ism_periodo_malla ipm on ipm.id = ia.periodo_malla_id 
-                                inner join ism_malla im on im.id = ipm.malla_id
-                                inner join ism_materia m on m.id = iam.materia_id 
-                                left join planificacion_desagregacion_criterios_evaluacion cri on cri.criterio_evaluacion_id = cab.id 
-                where 	im.op_course_template_id = $nivelId
-                group by cab.id ,m.nombre;";
-
-        $res = $con->createCommand($query)->queryAll();
-        return $res;
-    }
-
 
 
     public function actionDesagregacion()

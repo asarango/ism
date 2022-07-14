@@ -16,6 +16,8 @@ use backend\models\PlanificacionBloquesUnidad;
 use backend\models\PlanificacionBloquesUnidadSubtitulo;
 use backend\models\PlanificacionBloquesUnidadSubtitulo2;
 use backend\models\diplomaphpv\Pdf;
+use backend\models\diplomaphpv\PdfPh;
+use backend\models\helpers\HelperGeneral;
 use backend\models\PlanificacionVerticalDiploma;
 use backend\models\PlanificacionVerticalPaiOpciones;
 use backend\models\PudAprobacionBitacora;
@@ -111,9 +113,7 @@ class PlanificacionBloquesUnidadController extends Controller{
         }else{
             $firmaAprueba = $scripts->firmar_documento('admin', '2000-01-01');
             $firmaElaborado = $scripts->firmar_documento('admin', '2000-01-01');
-        }
-        
-        
+        }       
              
         return $this->render('index', [
             'materia'   => $materia,
@@ -157,9 +157,8 @@ class PlanificacionBloquesUnidadController extends Controller{
         $con->createCommand($query)->execute();
     }
 
-
-    public function actionUpdate(){        
-
+    public function actionUpdate()
+    {
         $unidadId = $_GET['unidad_id'];
         $model = PlanificacionBloquesUnidad::findOne($unidadId);
         $modelSubtitulo = PlanificacionBloquesUnidadSubtitulo::find()->where([
@@ -309,9 +308,10 @@ class PlanificacionBloquesUnidadController extends Controller{
         new Pdf($cabeceraId);
     }
     /****PARA GENERAR PDF DE PLAN HORIZONTAL DE DIPLOMA */
-    public function actionPdfPh(){
-        $cabeceraId = $_GET['cabecera_id'];
-        new Pdf($cabeceraId);
+    public function actionPdfPh()
+    {
+        $cabeceraId = $_GET['cabecera_id'];             
+        new PdfPh($cabeceraId);       
     }
     /****FIN PARA GENERAR PDF DE PLAN HORIZONTAL DE DIPLOMA */
 

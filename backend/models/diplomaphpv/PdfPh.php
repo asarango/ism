@@ -17,10 +17,17 @@ use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use Mpdf\Mpdf;
 use datetime;
-class PdfPh extends \yii\db\ActiveRecord{
+use backend\models\helpers\HelperGeneral;
+
+
+
+class PdfPh extends \yii\db\ActiveRecord
+{
 
     private $planCabecera;
-    public function __construct($cabeceraId){        
+    
+    public function __construct($cabeceraId)
+    {     
         $this->planCabecera = PlanificacionDesagregacionCabecera::findOne($cabeceraId);                      
         $this->generate_pdf();
     }
@@ -195,7 +202,8 @@ class PdfPh extends \yii\db\ActiveRecord{
                 <td class="border" style="background-color:$colorCabeceraFondo;font-size:9"><b>OBJETIVOS DE LA ASIGNATURA</b></td>           
                 <td class="border" style="background-color:$colorCabeceraFondo;font-size:9"><b>CONCEPTO CLAVE</b></td>           
                 <td class="border" style="background-color:$colorCabeceraFondo;font-size:9"><b>CONTENIDOS</b></td>           
-                <td class="border" style="background-color:$colorCabeceraFondo;font-size:9"><b>HABILIDADES IB</b></td>           
+                <td class="border" style="background-color:$colorCabeceraFondo;font-size:9"><b>HABILIDADES IB</b></td>   
+                <td class="border" style="background-color:$colorCabeceraFondo;font-size:9"><b>CONEXIÓN CON TDC</b></td>           
                 <td class="border" style="background-color:$colorCabeceraFondo;font-size:9"><b>EVALUACIÓN PD</b></td>          
                 
             </tr>
@@ -216,8 +224,7 @@ class PdfPh extends \yii\db\ActiveRecord{
             $html .= '<td class="border" style="font-size:9">'.$plaUni->unit_title.'</td>';//TITULO DE LA UNIDAD
            
             if (count($planVerticalDipl)>0) 
-            {
-              
+            {              
                 /***BUSQUEDA ITEM: RELACION TDC */          
                 $arrayConsultaTdc=$objPlanVerticalDiploma->consultar_tdc_ckeck_reporte($planVerticalDipl[0]['id']);              
                  // recorremos un bucle para capturar los item re relacion tdc
@@ -250,6 +257,7 @@ class PdfPh extends \yii\db\ActiveRecord{
                 $html .= '<td class="border" style="font-size:9">'.$planVerticalDipl[0]['contenido'].'</td>';   //CONTENIDO 
                 //$html .= '<td class="border" align=""><font size="3">'.$relacion_tdc.'</font></td>';           //RELACION CON TDC
                 $html .= '<td class="border" style="font-size:9">'.$this->consultaHabilidadesBI($planVerticalDipl[0]['id']).'</td>';  //HABILIDADES DE ENFOQUE DEL APRENDIZAJE 
+                $html .= '<td class="border" style="font-size:9">'.$this->consultaConexionTDC($planVerticalDipl[0]['id']).'</td>';  //CONEXION CON TDC
                 $html .= '<td class="border" style="font-size:9">'.$planVerticalDipl[0]['objetivo_evaluacion'].'</td>';   //OBJ EVALUACION 
                 //$html .= '<td class="border" align=""><font size="3">'.$planVerticalDipl[0]['intrumentos'].'</font></td>';  //INSTRUMENTO EVALUACION 
             } 
@@ -267,6 +275,52 @@ class PdfPh extends \yii\db\ActiveRecord{
         $html .= '</table>'; 
         return $html;       
     }
+    private function consultaConexionTDC($id_planBloqueUnidad)
+    {
+        $con = Yii::$app->db; 
+        $query = "
+        --select p.id,p.es_activo ,p.contenido,d.id,d.es_de_lectura,d.tipo_area ,d.opcion,d.es_activo 
+            select p.id,
+            case
+                when d.tipo_area ='Áreas de conocimiento' then 2 
+                when d.tipo_area ='Conceptos' then 5 
+                when d.tipo_area ='Conocimiento y actor del conocimiento' then 1 
+                when d.tipo_area ='Marcos de conocimiento' then 4
+                when d.tipo_area ='Preguntas de conocimiento' then 3
+            end as orden,
+            d.tipo_area,p.contenido, d.opcion,d.es_de_lectura
+            from planificacion_conexion_tdc p
+            inner join dip_conexiones_tdc_opciones d on d.id = p.opcion_tdc_id  
+            where p.plan_vertical_id = $id_planBloqueUnidad 
+            and p.es_activo = true and d.es_activo = true
+            order by orden,d.tipo_area;
+        ";
+
+       $conexionTDC = $con->createCommand($query)->queryAll();
+       
+       $tablaConexion ='<table border="0" cellspacing="0" cellpadding="2">';
+       foreach($conexionTDC as $conTdc)
+       {
+            if($conTdc['es_de_lectura'])
+            {
+                $tablaConexion .= '<tr>                       
+                       <td style="font-size:9">'.strtoupper($conTdc['tipo_area']).'</td>
+                       <td style="font-size:9">'.$conTdc['contenido'].'</td>
+                    </tr> '; 
+                
+            }else{
+                $tablaConexion .= '<tr>                       
+                       <td style="font-size:9">'.strtoupper($conTdc['tipo_area']).'</td>
+                       <td style="font-size:9">'.$conTdc['opcion'].'</td>
+                   </tr> '; 
+
+            }       
+       }
+       $tablaConexion .="</table>";
+
+       return $tablaConexion;
+    }
+
     private function consultaHabilidadesBI($id_planBloqueUnidad)
     {
         $con = Yii::$app->db;    
@@ -319,7 +373,7 @@ class PdfPh extends \yii\db\ActiveRecord{
         $titulo = <<<EOK
             <table width="100%" cellspacing="0" cellpadding="5">
                 <tr >
-                    <td align="center">PLANIFICACIÓN VERTICAL - PD</td>               
+                    <td align="center">PLANIFICACIÓN HORIZONTAL - PD</td>               
                 </tr>
             </table>
         EOK;       
@@ -333,7 +387,7 @@ class PdfPh extends \yii\db\ActiveRecord{
         $html .= $titulo;
         $html .= $this->generaDatosCabeceras();      
              
-        $html .= $this->bloque_materia_iteracion();        
+        //$html .= $this->bloque_materia_iteracion();        
         $html .= $this->unidades_iteracion(); 
         return $html;
     }
@@ -389,19 +443,33 @@ class PdfPh extends \yii\db\ActiveRecord{
         $scholarisPeriodoId = Yii::$app->user->identity->periodo_id;
         $institutoId = Yii::$app->user->identity->instituto_defecto;
         $docentes = $this->get_docentes($planBloqueUnidad,$scholarisPeriodoId);
+        // **** datos para extraer numero de horas semana, y numero de semanas *********
+        $objHelper = new HelperGeneral();
+        $arrayhorasSemana =    $objHelper->getCargaHorariaSemanal($this->planCabecera->id);
+        $horasSemana = $arrayhorasSemana[0]['count'];
+        $arraySemanas = $objHelper->getCargaSemanasTrabajo($this->planCabecera->id);
+
+        $tablaSemana = '<table>';
+        $tablaSemana .= '<tr><td style="font-size:8">B1 - </td><td style="font-size:8">'.$arraySemanas[0].'</td></tr>';
+        $tablaSemana .= '<tr><td style="font-size:8">B2 - </td><td style="font-size:8">'.$arraySemanas[1].'</td></tr>';
+        $tablaSemana .= '<tr><td style="font-size:8">B3 - </td><td style="font-size:8">'.$arraySemanas[2].'</td></tr>';
+        $tablaSemana .= '<tr><td style="font-size:8">B4 - </td><td style="font-size:8">'.$arraySemanas[3].'</td></tr>';
+        $tablaSemana .= '</table>';
+
+               
 
         $tiempo = $this->calcula_horas(
-            $planBloqueUnidad->planCabecera->ism_area_materia_id,
-            $planBloqueUnidad->planCabecera->ismAreaMateria->mallaArea->periodoMalla->malla->op_course_template_id,
+            $this->planCabecera->ism_area_materia_id,
+            $this->planCabecera->ismAreaMateria->mallaArea->periodoMalla->malla->op_course_template_id,
             $scholarisPeriodoId,
             $planBloqueUnidad
-        );
+        );       
        
         $colorFondo = "#BEDBEC";
-        $materia = $planBloqueUnidad->planCabecera->ismAreaMateria->materia->nombre;
-        $curso = $planBloqueUnidad->planCabecera->ismAreaMateria->mallaArea->periodoMalla->malla->opCourseTemplate->name;
+        $materia = $this->planCabecera->ismAreaMateria->materia->nombre;
+        $curso = $this->planCabecera->ismAreaMateria->mallaArea->periodoMalla->malla->opCourseTemplate->name;
         $profesores ="";
-        $horasSemana = $tiempo['horas'];
+        //$horasSemana = $tiempo['horas'];
         foreach($docentes as $docente){
             $profesores .= '* '.$docente['docente'].' <br> ';
         } 
@@ -415,20 +483,9 @@ class PdfPh extends \yii\db\ActiveRecord{
                 <td colspan="2" class="border" style="font-size:10">$materia</td>
                 <td class="border" style="background-color:$colorFondo;font-size:10">Año del PD</td>
                 <td class="border" style="font-size:10"> $curso</td>                 
-            </tr>
-            <tr>
-                <td class="border" style="background-color:$colorFondo;font-size:10">Carga Horario Semanal:</td>
-                <td class="border" style="font-size:10">$horasSemana</td>
-                <td class="border" style="background-color:$colorFondo;font-size:10">Nro. Semanas de Trabajo:</td>
-                <td class="border" style="font-size:10"> 40 </td>
-                <td class="border" style="background-color:$colorFondo;font-size:10">Total de Semanas de Clases:</td>
-                <td class="border" style="font-size:10">40 </td>
-                <td class="border" style="background-color:$colorFondo;font-size:10">Evaluación del Aprendizaje e Imprevistos</td>                
-                <td class="border" style="font-size:10"></td>
-                <td class="border" style="background-color:$colorFondo;font-size:10">Cantidad de Unidades</td>
-                <td class="border" style="font-size:10"> 4 </td>
-            </tr>
+            </tr>        
             </table>
+            <br>
             EOT;   
         return $html;
         

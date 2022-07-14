@@ -17,10 +17,16 @@ use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use Mpdf\Mpdf;
 use datetime;
+use backend\models\helpers\HelperGeneral;
+
+
+
 class Pdf extends \yii\db\ActiveRecord{
 
     private $planCabecera;
-    public function __construct($cabeceraId){        
+    
+    public function __construct($cabeceraId)
+    {     
         $this->planCabecera = PlanificacionDesagregacionCabecera::findOne($cabeceraId);                      
         $this->generate_pdf();
     }
@@ -333,7 +339,7 @@ class Pdf extends \yii\db\ActiveRecord{
         $html .= $titulo;
         $html .= $this->generaDatosCabeceras();      
              
-        $html .= $this->bloque_materia_iteracion();        
+        //$html .= $this->bloque_materia_iteracion();        
         $html .= $this->unidades_iteracion(); 
         return $html;
     }
@@ -389,19 +395,33 @@ class Pdf extends \yii\db\ActiveRecord{
         $scholarisPeriodoId = Yii::$app->user->identity->periodo_id;
         $institutoId = Yii::$app->user->identity->instituto_defecto;
         $docentes = $this->get_docentes($planBloqueUnidad,$scholarisPeriodoId);
+        // **** datos para extraer numero de horas semana, y numero de semanas *********
+        $objHelper = new HelperGeneral();
+        $arrayhorasSemana =    $objHelper->getCargaHorariaSemanal($this->planCabecera->id);
+        $horasSemana = $arrayhorasSemana[0]['count'];
+        $arraySemanas = $objHelper->getCargaSemanasTrabajo($this->planCabecera->id);
+
+        $tablaSemana = '<table>';
+        $tablaSemana .= '<tr><td style="font-size:8">B1 - </td><td style="font-size:8">'.$arraySemanas[0].'</td></tr>';
+        $tablaSemana .= '<tr><td style="font-size:8">B2 - </td><td style="font-size:8">'.$arraySemanas[1].'</td></tr>';
+        $tablaSemana .= '<tr><td style="font-size:8">B3 - </td><td style="font-size:8">'.$arraySemanas[2].'</td></tr>';
+        $tablaSemana .= '<tr><td style="font-size:8">B4 - </td><td style="font-size:8">'.$arraySemanas[3].'</td></tr>';
+        $tablaSemana .= '</table>';
+
+               
 
         $tiempo = $this->calcula_horas(
-            $planBloqueUnidad->planCabecera->ism_area_materia_id,
-            $planBloqueUnidad->planCabecera->ismAreaMateria->mallaArea->periodoMalla->malla->op_course_template_id,
+            $this->planCabecera->ism_area_materia_id,
+            $this->planCabecera->ismAreaMateria->mallaArea->periodoMalla->malla->op_course_template_id,
             $scholarisPeriodoId,
             $planBloqueUnidad
-        );
+        );       
        
         $colorFondo = "#BEDBEC";
-        $materia = $planBloqueUnidad->planCabecera->ismAreaMateria->materia->nombre;
-        $curso = $planBloqueUnidad->planCabecera->ismAreaMateria->mallaArea->periodoMalla->malla->opCourseTemplate->name;
+        $materia = $this->planCabecera->ismAreaMateria->materia->nombre;
+        $curso = $this->planCabecera->ismAreaMateria->mallaArea->periodoMalla->malla->opCourseTemplate->name;
         $profesores ="";
-        $horasSemana = $tiempo['horas'];
+        //$horasSemana = $tiempo['horas'];
         foreach($docentes as $docente){
             $profesores .= '* '.$docente['docente'].' <br> ';
         } 
@@ -420,7 +440,7 @@ class Pdf extends \yii\db\ActiveRecord{
                 <td class="border" style="background-color:$colorFondo;font-size:10">Carga Horario Semanal:</td>
                 <td class="border" style="font-size:10">$horasSemana</td>
                 <td class="border" style="background-color:$colorFondo;font-size:10">Nro. Semanas de Trabajo:</td>
-                <td class="border" style="font-size:10"> 40 </td>
+                <td class="border" style="font-size:10">  $tablaSemana </td>
                 <td class="border" style="background-color:$colorFondo;font-size:10">Total de Semanas de Clases:</td>
                 <td class="border" style="font-size:10">40 </td>
                 <td class="border" style="background-color:$colorFondo;font-size:10">Evaluación del Aprendizaje e Imprevistos</td>                

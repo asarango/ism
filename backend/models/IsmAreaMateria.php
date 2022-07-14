@@ -19,11 +19,13 @@ use Yii;
  * @property int $curso_curriculo_id
  * @property int $orden
  * @property int $ambito_id
+ * @property string $idioma
  *
  * @property CurriculoMecAsignatutas $asignaturaCurriculo
  * @property CurriculoMecNiveles $cursoCurriculo
  * @property IsmMallaArea $mallaArea
  * @property IsmMateria $materia
+ * @property KidsMicroDestreza[] $kidsMicroDestrezas
  * @property PlanificacionDesagregacionCabecera[] $planificacionDesagregacionCabeceras
  * @property ScholarisClase[] $scholarisClases
  */
@@ -49,6 +51,7 @@ class IsmAreaMateria extends \yii\db\ActiveRecord
             [['promedia', 'imprime_libreta', 'es_cuantitativa'], 'boolean'],
             [['porcentaje'], 'number'],
             [['tipo'], 'string', 'max' => 30],
+            [['idioma'], 'string', 'max' => 5],
             [['asignatura_curriculo_id'], 'exist', 'skipOnError' => true, 'targetClass' => CurriculoMecAsignatutas::className(), 'targetAttribute' => ['asignatura_curriculo_id' => 'id']],
             [['curso_curriculo_id'], 'exist', 'skipOnError' => true, 'targetClass' => CurriculoMecNiveles::className(), 'targetAttribute' => ['curso_curriculo_id' => 'id']],
             [['malla_area_id'], 'exist', 'skipOnError' => true, 'targetClass' => IsmMallaArea::className(), 'targetAttribute' => ['malla_area_id' => 'id']],
@@ -74,6 +77,7 @@ class IsmAreaMateria extends \yii\db\ActiveRecord
             'curso_curriculo_id' => 'Curso Curriculo ID',
             'orden' => 'Orden',
             'ambito_id' => 'Ambito ID',
+            'idioma' => 'Idioma',
         ];
     }
 
@@ -107,6 +111,14 @@ class IsmAreaMateria extends \yii\db\ActiveRecord
     public function getMateria()
     {
         return $this->hasOne(IsmMateria::className(), ['id' => 'materia_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getKidsMicroDestrezas()
+    {
+        return $this->hasMany(KidsMicroDestreza::className(), ['ism_area_materia_id' => 'id']);
     }
 
     /**

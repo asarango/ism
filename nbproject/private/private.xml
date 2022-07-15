@@ -9,6 +9,8 @@
             <file>file:/var/www/html/ism/academico/backend/views/planificacion-desagregacion-cabecera/index.php</file>
             <file>file:/var/www/html/ism/academico/common/config/main-local.php</file>
             <file>file:/var/www/html/ism/academico/backend/views/planificacion-desagregacion-cabecera/planificacion-pep.php</file>
+            <file>file:/var/www/html/ism/academico/backend/models/helpers/HelperGeneral.php</file>
+            <file>file:/var/www/html/ism/academico/backend/controllers/PlanificacionDesagregacionCabeceraController.php</file>
         </group>
     </open-files>
 </project-private>

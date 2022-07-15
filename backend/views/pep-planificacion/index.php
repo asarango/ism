@@ -59,8 +59,16 @@ $this->params['breadcrumbs'][] = $this->title;
                 </div><!-- fin de menu derecha -->
             </div>
             <!-- finaliza menu menu  -->
-
+            
             <!-- inicia cuerpo de card -->
+            <div class="row" style="margin-top: 20px">
+                <b><h5><u>Temas de la planificación PEP</u></h5></b>
+                
+                
+                <div id="div-detalle-temas"></div>
+                
+            </div>
+            <!-- finaliza cuerpo de card -->            
             
         </div>
     </div>
@@ -68,21 +76,26 @@ $this->params['breadcrumbs'][] = $this->title;
 
 <!-- SCRIPT PARA MOSTRAR MATERIAS POR CURSO ESCOGIDO -->
 <script>
-    function showAsignaturas() {
-        var nivel = $('#nivel').val();
-        var url = '<?= Url::to(['list-materias']) ?>';
+    
+    showTemas();
+    
+    function showTemas() {
+        var url = '<?= Url::to(['ajax-get']) ?>';
+        var opCourseId = '<?= $course->id ?>';
+        
+        
         var params = {
-            curso_id: nivel
+            op_course_id: opCourseId
         };
         //alert(url);
 
         $.ajax({
             data: params,
             url: url,
-            type: 'POST',
+            type: 'GET',
             beforeSend: function () {},
             success: function (response) {
-                $("#table-body").html(response);
+                $("#div-detalle-temas").html(response);
                 //console.log(response);
             }
         });
@@ -91,7 +104,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
 
 <!-- SCRIPT PARA SELECT2 -->
-<script>
+<!--<script>
     buscador();
     function buscador() {
         $('.select2').select2({
@@ -99,4 +112,4 @@ $this->params['breadcrumbs'][] = $this->title;
         });
     }
 
-</script>
+</script>-->

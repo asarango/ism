@@ -68,16 +68,57 @@ class PepPlanificacionController extends Controller{
     {
         $opCourseTemplateId = $_GET['op_course_template_id'];
         $course = \backend\models\OpCourseTemplate::findOne($opCourseTemplateId);
+        $periodoId = Yii::$app->user->identity->periodo_id;
         
+        $this->insertar_temas($opCourseTemplateId, $periodoId);
+        
+        $temas = \backend\models\PepPlanificacionXUnidad::find()->where([
+            'op_course_template_id' => $opCourseTemplateId,
+            'scholaris_periodo_id' => $periodoId
+        ])->all();
         
         return $this->render('index',[
-            'course' => $course
+            'course' => $course,
+            'temas' => $temas
         ]);
         
     }
     
-    private function insertar_temas(){
+    private function insertar_temas($opCourseTemplateId, $scholarisPeriodoId){
+        $hoy = date('Y-m-d H:i:s');
+        $usuario = Yii::$app->user->identity->usuario;
+        
         $con = Yii::$app->db;
+        $query = "insert into pep_planificacion_x_unidad (op_course_template_id, scholaris_periodo_id
+                                ,tema_transdisciplinar_id, desde, hasta, porcentaje_planificado
+                                ,created_at, created)	
+                select 	$opCourseTemplateId, $scholarisPeriodoId, op.id , '1999-01-01', '1999-01-01',0,'$hoy', '$usuario'
+                from 	pep_opciones op
+                where 	op.tipo = 'tema'
+                                and op.id not in (select 	tema_transdisciplinar_id 
+                from 	pep_planificacion_x_unidad
+                where 	op_course_template_id = $opCourseTemplateId
+                                and scholaris_periodo_id = $scholarisPeriodoId
+                                and tema_transdisciplinar_id = op.id);";
+        $con->createCommand($query)->execute();
+    }
+    
+    
+    /**
+     * Metodo para generar las acciones ajax con consultas
+     * por GET
+     */
+    public function actionAjaxGet(){
+        print_r($_GET);
+    }
+    
+    
+    /**
+     * Metodo para ingresar informacion por ajax
+     * por POST
+     */
+    public function actionAjaxPost(){
+        
     }
     
     

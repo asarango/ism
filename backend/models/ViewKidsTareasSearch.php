@@ -19,7 +19,7 @@ class ViewKidsTareasSearch extends ViewKidsTareas
     {
         return [
             [['curso', 'paralelo', 'materia', 'fecha_presentacion', 'titulo'], 'safe'],
-            // [['rol_id', 'numero_incremento', 'instituto_defecto', 'periodo_id'], 'integer'],
+            [['tarea_id'], 'integer'],
             // [['activo'], 'boolean'],
         ];
     }
@@ -62,7 +62,7 @@ class ViewKidsTareasSearch extends ViewKidsTareas
 
         // grid filtering conditions
         $query->andFilterWhere([
-            // 'rol_id' => $this->rol_id,
+             'tarea_id' => $this->tarea_id,
             // 'activo' => $this->activo,
             // 'numero_incremento' => $this->numero_incremento,
             // 'instituto_defecto' => $this->instituto_defecto,

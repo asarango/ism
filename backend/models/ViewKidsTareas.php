@@ -30,6 +30,7 @@ class ViewKidsTareas extends \yii\db\ActiveRecord
     {
         return [
             [['paralelo'], 'string'],
+            [['tarea_id'], 'integer'],
             [['fecha_presentacion'], 'safe'],
             [['curso'], 'string', 'max' => 32],
             [['materia', 'titulo'], 'string', 'max' => 100],
@@ -48,7 +49,8 @@ class ViewKidsTareas extends \yii\db\ActiveRecord
             'materia' => 'Materia',
             'fecha_presentacion' => 'Fecha Presentacion',
             'titulo' => 'Titulo',
-            'usuario' => 'Usuario'
+            'usuario' => 'Usuario',
+            'tarea_id' => 'Tarea ID'
         ];
     }
 }

@@ -10,11 +10,7 @@ $this->title = 'Kids Plan Semanal Hora Clases';
 $this->params['breadcrumbs'][] = $this->title;
  
 // echo '<pre>';
-// print_r($destrezasDisponibles);
-// print_r($modelDestrezas);
-// print_r($modelDestrezas[0]->microDestreza->destreza->nombre);
-
-//  print_r($destrezasDisponibles);
+// print_r($model->planDestreza->horaClase);
 // die();
 
 ?>
@@ -40,9 +36,12 @@ $this->params['breadcrumbs'][] = $this->title;
                             |
                             <?=
                             Html::a(
-                                    '<span class="badge rounded-pill" style="background-color: #0a1f8f"><i class="fa fa-briefcase" aria-hidden="true"></i> Planificaciones</span>',
+                                    '<span class="badge rounded-pill" style="background-color: #0a1f8f"><i class="fa fa-briefcase" aria-hidden="true"></i>Hora Clase</span>',
                                     [
-                                        'kids-menu/index1'
+                                        'kids-plan-semanal-hora-clase/index1',
+                                        'plan_semanal_id' => $model->planDestreza->horaClase->plan_semanal_id,
+                                        'clase_id' => $model->planDestreza->horaClase->clase_id,
+                                        'detalle_id' => $model->planDestreza->horaClase->detalle_id
                                     ]
                             );
                             ?>    

@@ -52,13 +52,35 @@ $this->params['breadcrumbs'][] = $this->title;
                             'filterModel' => $searchModel,
                             'columns' => [
                                 ['class' => 'yii\grid\SerialColumn'],
+                                'tarea_id',
                                 'curso',
                                 'paralelo',
                                 'materia',
                                 'fecha_presentacion',
                                 'titulo',
 
-                                ['class' => 'yii\grid\ActionColumn'],
+                                /** INICIO BOTONES DE ACCION * */
+                        [
+                            'class' => 'yii\grid\ActionColumn',
+//                    'width' => '150px',
+                            'template' => '{calificar}',
+                            'buttons' => [
+                                'calificar' => function ($url, $model) {
+                                    return Html::a('<img src="ISM/main/images/kids/calificaciones.png">', $url, [
+                                        'title' => 'Calificar', 'data-toggle' => 'tooltip', 'role' => 'modal-remote', 'data-pjax' => "0", 'class' => 'hand'
+                                    ]);
+                                }
+                            ],
+                            'urlCreator' => function ($action, $model, $key) {
+                                if ($action === 'calificar') {
+                                    return \yii\helpers\Url::to(['calificar', 'tarea_id' => $model->tarea_id]);
+                                }
+//                        else if ($action === 'update') {
+//                            return \yii\helpers\Url::to(['update', 'id' => $key]);
+//                        }
+                            }
+                        ],
+                        /** FIN BOTONES DE ACCION * */
                             ],
                         ]); ?>
                         </div>

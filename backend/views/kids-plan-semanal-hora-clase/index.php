@@ -91,6 +91,7 @@ $hoy = date('d-m-Y');
                             
                         </div> 
                     </div>
+                    
                 </div>
                 <!-- Fin de encabezado -->
 
@@ -129,7 +130,7 @@ $hoy = date('d-m-Y');
                                         <div style="text-align:end">
                                             <!-- BOTON AGREGAR TAREA -->
                                             <a type="button" data-bs-toggle="modal" data-bs-target="#tareaModal<?=$destrezaSel['id'] ?>">
-                                                Agregar tarea &nbsp;
+                                                + Tarea/Evaluación &nbsp;
                                                 <i class="fas fa-sticky-note" style="color:#65b2e8" title="Agregar Tarea"></i>
                                             </a>
 
@@ -227,7 +228,7 @@ $hoy = date('d-m-Y');
                                         <strong class="text-primero">Destreza:</strong>
                                         <p class="text-primero"><?=$destrezaSel['destreza'] ?></p>
                                         <div class="row card-footer">
-                                            <strong>TAREAS/EVALUACIÓN</strong> 
+                                            <strong><li>TAREA/EVALUACIÓN</li></strong> 
                                             <div class="table table-responsive">
                                                 <table class="table table-hover table-stripped my-text-small">
                                                     <thead>

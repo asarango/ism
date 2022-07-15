@@ -117,6 +117,7 @@ class HelperGeneral extends ActiveRecord{
     {              
         $query = "select 	t.id 
                                     ,t.name
+                                    ,sec.code
                     from	scholaris_clase cla
                                     inner join op_faculty fac on fac.id = cla.idprofesor 
                                     inner join res_users use on use.partner_id = fac.partner_id 
@@ -127,7 +128,7 @@ class HelperGeneral extends ActiveRecord{
                                     inner join scholaris_op_period_periodo_scholaris sop on sop.op_id = sec.period_id 
                     where	use.login = '$user'
                                     and sop.scholaris_id = $periodoId
-                    group by t.id, t.name;";
+                    group by t.id, t.name, sec.code;";
         $resp = $this->consultaBD($query);                   
         
         return $resp;

@@ -188,6 +188,8 @@ $numEstSinAsistir = ScholarisAsistenciaAlumnosNovedades::find()
                                                     echo 'Fecha: '.$nee['fecha_inicia'];
                                                     echo '<br/>';
                                                     echo 'Detalle: '.$nee['diagnostico_inicia'];   
+                                                    echo '<br/>'; 
+                                                    echo 'Recomendaciones: '.$nee['recomendacion_clase'];   
                                                     echo '<br/>';                                                 
                                                 echo '</div>';
                                                 // echo '<div class="modal-footer">';

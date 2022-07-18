@@ -618,5 +618,40 @@ where hor.clase_id in
             }
         }
     }
+    
+    
+    public function get_tipo_uso_op_course_template($opCourseTemplateId){
+        $periodoId = Yii::$app->user->identity->periodo_id;
+        
+        $con = Yii::$app->db;
+        $query = "select 	c.tipo_usu_bloque  
+                    from 	scholaris_clase c
+                                    inner join op_course_paralelo p on p.id = c.paralelo_id 
+                                    inner join op_course cur on cur.id = p.course_id
+                                    inner join op_section sec on sec.id = cur.section
+                                    inner join scholaris_op_period_periodo_scholaris sop on sop.op_id = sec.period_id 
+                                    inner join scholaris_bloque_actividad b on b.tipo_uso = c.tipo_usu_bloque 
+                    where 	cur.x_template_id = $opCourseTemplateId
+                                    and sop.scholaris_id = $periodoId
+                    limit 1;";
+        $res = $con->createCommand($query)->queryOne();
+        return $res['tipo_usu_bloque'];
+    }
+    
+    
+    /**
+     * Metodo para las iniciales
+     * Se debe pasar el nombre en una cadena desde el primer nombre  hasta el apellido
+     * @param type $nombre
+     * @return type
+     */
+    public function getIniciales($nombre){
+        $name = '';
+        $explode = explode(' ',$nombre);
+        foreach($explode as $x){
+            $name .=  $x[0];
+        }
+        return $name;    
+    }
 
 }

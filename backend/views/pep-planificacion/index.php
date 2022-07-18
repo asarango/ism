@@ -85,7 +85,8 @@ $this->params['breadcrumbs'][] = $this->title;
         
         
         var params = {
-            op_course_id: opCourseId
+            op_course_id: opCourseId,
+            accion: 'temas'
         };
         //alert(url);
 

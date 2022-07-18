@@ -411,7 +411,7 @@ class PudDipController extends Controller {
 
     //generador pdf, pud dip
     public function actionPdfPudDip() {
-        $idPlanUniBloque = $_GET['planificacion_unidad_bloque_id'];
+        $idPlanUniBloque = $_GET['planificacion_unidad_bloque_id'];        
         new Pdf($idPlanUniBloque);
     }
 
@@ -856,9 +856,11 @@ class PudDipController extends Controller {
         $planifVertDipl = PlanificacionVerticalDiploma::find()->where([
                     'planificacion_bloque_unidad_id' => $planBloqueUnidad->id
                 ])->one();
-                
-        $textItem .= $this->get_enfoques($planifVertDipl->id);
         
+        $objScrip = new Scripts(); 
+                
+        $textItem .= $objScrip->get_enfoques($planifVertDipl->id);
+
         
         $impItems = $this->mostrar_campo_viene_de($planifVertDipl->id, $textItem, $titulo, $accion_update, "");
         $modelPlanVertical = PlanificacionVerticalDiploma::find()->where(['planificacion_bloque_unidad_id' => $planBloqueUnidad->id])->one();
@@ -868,53 +870,6 @@ class PudDipController extends Controller {
         return $impItems;
     }
     
-    private function get_enfoques($planVerticalId){
-        $con = Yii::$app->db;
-        $queryHabilidades = "select 	h.id 
-                                    ,h.nombre 
-                    from 	planificacion_vertical_diploma_habilidad ph
-                                    inner join enfoques_diploma_sb_opcion op on op.id = ph.opcion_habilidad_id 
-                                    inner join enfoques_diploma_sub_habilidad sub on sub.id = op.sub_habilidad_id 
-                                    inner join enfoques_diploma_habilidad h on h.id = sub.habilidad_id 
-                    where 	ph.plan_vertical_id = $planVerticalId
-                    group by h.id, h.nombre 
-                    order by h.nombre;";
-        
-        $queryOpciones = "select 	h.id 
-                                            ,h.nombre as habilidad
-                                            ,op.nombre as opcion
-                            from 	planificacion_vertical_diploma_habilidad ph
-                                            inner join enfoques_diploma_sb_opcion op on op.id = ph.opcion_habilidad_id 
-                                            inner join enfoques_diploma_sub_habilidad sub on sub.id = op.sub_habilidad_id 
-                                            inner join enfoques_diploma_habilidad h on h.id = sub.habilidad_id 
-                            where 	ph.plan_vertical_id = $planVerticalId 
-                            order by h.nombre, op.nombre ;";     
-        
-        $habilidades = $con->createCommand($queryHabilidades)->queryAll(); //extrae las habilidades
-        $opciones = $con->createCommand($queryOpciones)->queryAll(); //extrae las opciones elejidas en el plan vertical
-        
-        $html = '';
-        
-        $html .= '<ul>';
-        foreach ($habilidades as $habilidad){            
-            $html .= '<li><b>'.$habilidad['nombre'].'</b></li>';            
-            $html .= '<ul>';
-            foreach ($opciones as $op){                
-                if($op['id'] == $habilidad['id']){
-                    $html .= '<li><i class="far fa-arrow-circle-right"></i>'.$op['opcion'].'</li>';                    
-                }                
-            }
-            $html .= '</ul><br>';            
-        }
-        $html .= '</ul>';
-        
-        
-
-//        return $arregloMaster;
-        return $html;
-    } ///fin de 5.3
-    
-
     
     /*     * * 5.3.1 Metacognicion */
     private function get_accion_metacognicion($planBloqueUnidadId) {
@@ -928,13 +883,11 @@ class PudDipController extends Controller {
         
 //        $modelPlanVertical = PlanificacionVerticalDiploma::find()->where(['planificacion_bloque_unidad_id' => $planBloqueUnidad])->one();
 //        $modelPlanVertical->ultima_seccion = $accion_update;
-//        $modelPlanVertical->save();
-        
+//        $modelPlanVertical->save();        
 
         $modelPlanVertical = PlanificacionVerticalDiploma::find()->where(['planificacion_bloque_unidad_id' => $planBloqueUnidadId])->one();
         $modelPlanVertical->ultima_seccion = $accion_update;
-        $modelPlanVertical->save();
-        
+        $modelPlanVertical->save();     
 
         return $mostrar;
     }
@@ -973,6 +926,7 @@ class PudDipController extends Controller {
             'planificacion_bloques_unidad_id' => $planBloqueUnidadId,
             'codigo' => 'METACOGNICION'
          ])->all();
+
         
 
         $html = '';

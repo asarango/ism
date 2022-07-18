@@ -76,9 +76,7 @@ use backend\models\NeexClase;
                 </thead>
                 <tbody>
                     <?php
-                    // echo '<pre>';
-                    // print_r($materiasNee);
-                    // die();
+                    
                     foreach ($materiasNee as $seleccionada) {
                         
                         
@@ -143,6 +141,12 @@ use backend\models\NeexClase;
                                                 <label>DIAGNÓSTICO INICIA:</label>
                                                 <?=
                                                 Html::textarea('diagnostico_inicia', $seleccionada->diagnostico_inicia, ['class' => 'form-control',
+                                                    'rows' => '3'
+                                                ])
+                                                ?>
+                                                <label>RECOMENDACIONES:</label>
+                                                <?=
+                                                Html::textarea('recomendacion_clase', $seleccionada->recomendacion_clase, ['class' => 'form-control',
                                                     'rows' => '3'
                                                 ])
                                                 ?>

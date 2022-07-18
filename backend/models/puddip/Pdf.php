@@ -1,9 +1,11 @@
 <?php
 namespace backend\models\puddip;
-
+use Yii;
 use backend\controllers\PlanificacionVerticalDiplomaController;
+use backend\controllers\PudDipController;
 use backend\models\CurriculoMecBloque;
 use backend\models\OpCourseTemplate;
+use backend\models\PudDipEvaluaciones;
 use backend\models\PlanificacionBloquesUnidad;
 use backend\models\PlanificacionDesagregacionCabecera;
 use backend\models\PlanificacionDesagregacionCriteriosEvaluacion;
@@ -14,25 +16,25 @@ use backend\models\PlanificacionBloquesUnidadSubtitulo;
 use backend\models\PudPep;
 use backend\models\ScholarisMateria;
 use backend\models\ScholarisPeriodo;
-use Yii;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use Mpdf\Mpdf;
 use DateTime;
 use backend\models\helpers\HelperGeneral;
+use backend\models\helpers\Scripts;
 
 class Pdf extends \yii\db\ActiveRecord{
 
     private $planVertDipl;
     private $IdCabecera;
 
-    public function __construct($cabeceraId){        
+    public function __construct($idPlanUniBloque){        
         $this->planVertDipl = PlanificacionVerticalDiploma::find()->where([
-            'planificacion_bloque_unidad_id' => $cabeceraId
+            'planificacion_bloque_unidad_id' => $idPlanUniBloque
         ])->one(); 
-        $this->IdCabecera = $cabeceraId;
-
+        
+        $this->IdCabecera = $this->planVertDipl->planificacionBloqueUnidad->plan_cabecera_id; 
         $this->generate_pdf();
     }
     /*****  METODOS DE CONSULTA A LA BASE ****************************************************************************************************/       
@@ -78,6 +80,10 @@ class Pdf extends \yii\db\ActiveRecord{
         $mpdf->showImageErrors = true; 
         
         $html = $this->cuerpo(); 
+
+        echo '<pre>';
+       print_r($html);
+       die();
         $mpdf->WriteHTML($html); 
         
         $piePagina=$this->pie_pagina();
@@ -168,9 +174,8 @@ class Pdf extends \yii\db\ActiveRecord{
         $html .= $this->datos_materia_profesor();
         $html .= $this->descripcion_y_evaluacion_reporte();
         $html .= $this->indagacion_reporte();
-        $html .= $this->contenido_habilidades_reporte();
-        $html .= $this->enfoque_aprendizaje_reporte();
-        $html .= $this->lenguaje_y_aprendizaje_reporte();
+        $html .= $this->contenido_habilidades_reporte();       
+        //$html .= $this->lenguaje_y_aprendizaje_reporte();
         $html .= $this->recursos_reporte();
         $html .= $this->reflexion_reporte();
         return $html;
@@ -183,10 +188,9 @@ class Pdf extends \yii\db\ActiveRecord{
         $periodo = ScholarisPeriodo::findOne($periodoId);
         $fechaHoy = date('Y-m-d H:i:s');
         $objHelper = new HelperGeneral();
-        $horaSemana =    $objHelper->getCargaHorariaSemanal($this->IdCabecera);
-        print_r($r[0]['count']);
-        die();
-
+                                                        //hay que enviar, el id de la cabecera desagregacion
+        $horaSemana = $objHelper->getCargaHorariaSemanal($this->IdCabecera);
+       
         $modelScholarisM = $this->select_scholaris_materia();      
 
         $cursos = \backend\models\OpCourseTemplate::find()->all(); 
@@ -312,12 +316,13 @@ class Pdf extends \yii\db\ActiveRecord{
     private function descripcion_y_evaluacion_reporte()
     {        
         $objPlanVertDip = $this->planVertDipl;
+        $colorCabeceraFondo = "#BEDBEC";
         
         $html ='';
         $html.='<table style="font-size:10;" width="100%" cellspacing="0" cellpadding="5">';
                     $html.='<tr>';
-                        $html.='<td class="border" align="center"><b>DESCRIPCION Y TEXTO DE LA UNIDAD</b></td>';
-                        $html.='<td class="border" align="center"><b>EVALUACION DEL PD PARA LA UNIDAD</b></td>';
+                        $html.='<td class="border" style="background-color:'.$colorCabeceraFondo.';"><b>DESCRIPCION Y TEXTO DE LA UNIDAD</b></td>';
+                        $html.='<td class="border" style="background-color:'.$colorCabeceraFondo.';"><b>EVALUACION DEL PD PARA LA UNIDAD</b></td>';
                     $html.='</tr>';
                    $html.='<tr>';
                         $html.='<td class="border" align="">';
@@ -334,22 +339,42 @@ class Pdf extends \yii\db\ActiveRecord{
     private function indagacion_reporte()
     {
         $objPlanVertDip = $this->planVertDipl;
+        $colorCabeceraFondo = "#BEDBEC";
+                    
+        //bucle para capturar el contenido, habilidares
+        $arrayContenido=$this->select_contenidos($objPlanVertDip->planificacion_bloque_unidad_id);
+        $contenidoImp='';  
+        if(count($arrayContenido)>0){
+            foreach($arrayContenido as $arraySubContenido){                  
+                $contenidoImp .= '<u><b>'.$arraySubContenido['subtitulo'].'</b></u>';   
+                $contenidoImp .= '<ul>';                
+                foreach($arraySubContenido['subtitulos'] as $contenido){
+                    $contenidoImp .= '<li>♠ '.$contenido['contenido'].'</li>';                    
+                }
+                $contenidoImp .= '</ul>';
+            }
+        }
 
-        $text='<b>OBJETIVOS DE TRANSFERENCIA</b><br>Haga una lista de uno a tres objetivos grandes, globales y de largo plazo para esta unidad. Los objetivos de 
-              transferencia son aquellos que los estudiantes aplicarán, sus conocimientos, habilidades y conceptos al final 
-              de la unidad bajo circunstancias nuevas / diferentes, y por si mismos sin el andamiaje del maestro.';
         
         $html ='<br>';
-        $html.='<b>INDAGACION:</b> Establecer el propósitos de la unidad';
+        $html.='<b>INDAGACION:</b>Establecimiento del propósito de la unidad';
         $html.='<table style="font-size:10;" width="100%" cellspacing="0" cellpadding="5">';
                     $html.='<tr>';
-                        $html.='<td class="border" align="">'.$text.'</td>';                       
+                        $html.='<td class="border" colspan = "3" style="background-color:'.$colorCabeceraFondo.';"><b>OBJETIVOS DE TRANSFERENCIA</b></td>';                       
                     $html.='</tr>';
                     $html.='<tr>';
-                        $html.='<td class="border" align="">';
+                        $html.='<td class="border" colspan = "3">';
                            $html.="$objPlanVertDip->objetivo_asignatura";
                         $html.='</td>';
-                    $html.='</tr>';  
+                    $html.='</tr>'; 
+                    $html.='<tr>
+                            <td class="border" colspan = "3" style="background-color:'.$colorCabeceraFondo.';"><b>CONOCIMIENTOS ESENCIALES:</b></td>
+                            </tr>'; 
+                    $html.='<tr>
+                            <td class="border">CONTENIDO:<br>'.$contenidoImp.'</td>
+                            <td class="border">HABILIDADES:<br>'.$objPlanVertDip->habilidades.'</td>
+                            <td class="border">CONCEPTOS CLAVE:<br>'.$objPlanVertDip->concepto_clave.'</td>
+                            </tr>'; 
         $html.='</table>';
         return $html;
     }
@@ -358,6 +383,7 @@ class Pdf extends \yii\db\ActiveRecord{
     //REPORTE 5.2.- Proceso de Aprendizaje
     private function contenido_habilidades_reporte()
     {
+        $colorCabeceraFondo = "#BEDBEC";
         $objPlanVertDip = $this->planVertDipl;             
         //bucle para capturar el contenido, habilidares
         $arrayContenido=$this->select_contenidos($objPlanVertDip->planificacion_bloque_unidad_id);
@@ -373,56 +399,112 @@ class Pdf extends \yii\db\ActiveRecord{
                 $contenidoImp .= '</ul>';
             }
         }
+        $procesoAprendizaje = \backend\models\PudDipProcesoAprendizaje::find()
+        ->where(['plan_unidad_id' => $objPlanVertDip->planificacion_bloque_unidad_id,'es_activo'=>true])
+        ->all();
         
+        $enfoqueEvaluacion = PudDipEvaluaciones::find()
+        ->where(['plan_unidad_id'=>$objPlanVertDip->planificacion_bloque_unidad_id])
+        ->one(); 
+
+        $objScrip = new Scripts();                 
+        $textProcesoApre = $objScrip->get_enfoques($objPlanVertDip->id);
+        $textMetacognicion = $this->get_metacognicion($objPlanVertDip->planificacion_bloque_unidad_id);
+        $textDiferenciacion = $this->get_diferenciacion($objPlanVertDip->planificacion_bloque_unidad_id);
+
         $html ='<br>';
         $html.='<b>ACCION:</b> Enseñanza y aprendizaje a través de la investigación';
         $html.='<table style="font-size:10;" width="100%" cellspacing="0" cellpadding="5">';
-                    $html.='<tr>';
-                        $html.='<td class="border" align=""><b>CONTENIDO, HABILIDADES Y CONCEPTOS: CONOCIMIENTOS ESENCIALES</b></td>';  
-                        $html.='<td class="border" align="center"><b>Proceso de Aprendizaje: </b><br> Escriba el enfoque pedagógico que usará durante la unidad, este debe emplearse para ayudar a facilitar el aprendizaje.</td>';                       
-                    $html.='</tr>';
-                    $html.='<tr>';
-                    //tabla para contenido 5.1.-
-                    $html.='<td class="border" align="">';                       
-                        $html.='<b><u>Contenidos:</u></b>';
-                        $html.='<table width="100%" cellspacing="0" cellpadding="5">';
-                            $html.='<tr>';
-                            $html.='<td>'.$contenidoImp.'</td>';
-                            $html.='</tr>';
-                        $html.='</table>'; 
-                        $html.='<b><u>Habilidades:</u></b>';
-                        $html.='<table width="100%" cellspacing="0" cellpadding="5">';
-                            $html.='<tr>';
-                                $html.='<td>'.$objPlanVertDip->habilidades.'</td>';
-                            $html.='</tr>';
-                        $html.='</table>'; 
-                        $html.='<b><u>Conceptos:</u></b>';
-                        $html.='<table width="100%" cellspacing="0" cellpadding="5">';
-                            $html.='<tr>';
-                                $html.='<td>'.$objPlanVertDip->concepto_clave.'</td>';
-                            $html.='</tr>';
-                        $html.='</table>'; 
-                    $html.='</td>';
-                    //proceso aprendizaje 5.2.-
-                    $html.='<td class="border" align="">';                       
-                        $html.='<b><u>Experiencias y estrategias de aprendizaje, o planificación para el aprendizaje independiente:</u></b>';
-                        $html.='<table width="100%" cellspacing="0" cellpadding="5">';
-                            $html.='<tr>';
-                            $html.='<td>'.$objPlanVertDip->proceso_aprendizaje.'</td>';
-                            $html.='</tr>';
-                        $html.='</table>'; 
-                        $html.='<b><u>Evaluación Formativa / Sumativa :</u></b>';
-                        $html.='<table width="100%" cellspacing="0" cellpadding="5">';
-                            $html.='<tr>';
-                                $html.='<td>'.$objPlanVertDip->intrumentos.'</td>';
-                            $html.='</tr>';
-                        $html.='</table>';                        
-                    $html.='</td>';
-                $html.='</tr>';  
-            $html.='</table>';
-        //bloque de proceso de aprendizaje
+                    $html.='<tr>                       
+                                <td class="border" style="background-color:'.$colorCabeceraFondo.';"><b>PROCESO DE APRENDIZAJE: </b></td> 
+                                <td class="border" style="background-color:'.$colorCabeceraFondo.';"><b>ENFOQUES DEL APRENDIZAJE: </b></td>
+                                <td class="border" style="background-color:'.$colorCabeceraFondo.';"><b>EVALUACIÓN SUMATIVA: </b></td>                                                  
+                            </tr>';
+                    $html.='<tr >                       
+                                <td rowspan="3" class="border">';
+                                foreach ($procesoAprendizaje as $proc) {
+                                    $html .= '<li> '.$proc->opcion->opcion.'</li>';
+                                }                                
+                        $html.='</td> 
+                                <td rowspan="3" class="border" >'. $textProcesoApre.'</td>
+                                <td class="border" >'.$enfoqueEvaluacion->sumativa.'</td>                       
+                            </tr>';                   
+                    $html.='<tr>                                
+                                <td class="border" style="background-color:'.$colorCabeceraFondo.';"><b>EVALUACIÓN FORMATIVA: </b></td> 
+                            </tr>'; 
+                    $html.='<tr>
+                                <td class="border" >'.$enfoqueEvaluacion->formativa.'</td> 
+                            </tr>';
+                    //**FILA DE METACOGNICION */        
+                    $html.='<tr>                       
+                                <td class="border" style="background-color:'.$colorCabeceraFondo.';"><b>METACOGNICIÓN: </b></td> 
+                                <td class="border" style="background-color:'.$colorCabeceraFondo.';"><b>DIFERECIACIÓN: </b></td>
+                                <td class="border" style="background-color:'.$colorCabeceraFondo.';"><b>ESTUDIANTE CON NEE: </b></td>                                                  
+                            </tr>';
+                    $html.='<tr >                       
+                                <td rowspan="3" class="border">'.$textMetacognicion.'</td>
+                                <td rowspan="3" class="border" >'. $textDiferenciacion.'</td>
+                                <td class="border"></td>                       
+                            </tr>';                   
+                    $html.='<tr>                                
+                                <td class="border" style="background-color:'.$colorCabeceraFondo.';"><b>ESTUDIANTES CON TALENTOS SOBRESALIENTES: </b></td> 
+                            </tr>'; 
+                    $html.='<tr>
+                                <td class="border" ></td> 
+                            </tr>';
+                    //** fila de LENGUA Y APRENDISAJE */
+                    $html.=$this->lenguaje_y_aprendizaje_reporte();
+        $html.='</table>'; 
         
         return $html;
+    }
+    private function get_metacognicion($planBloqueUnidadId)
+    {
+        $pudDip = \backend\models\PudDip::find()->where([
+            'planificacion_bloques_unidad_id' => $planBloqueUnidadId,
+            'codigo' => 'METACOGNICION'
+         ])->all();
+        $campoTexto = '';
+        $html = '';       
+            $html.='<ul>';
+            foreach ($pudDip as $pud) {
+                           
+                if($pud->campo_de == 'escrito')
+                {
+                    $campoTexto =$pud->opcion_texto;                   
+                }elseif($pud->campo_de == 'seleccion' && $pud->opcion_boolean == true )
+                {
+                    $html .= '<li>'.$pud->opcion_texto.'</li>';                   
+                }               
+            }
+            $html.='</ul>';       
+        $html.='<p><b>Información Detallada: </b>'.$campoTexto.'</p>';
+
+        return $html ;
+    }
+    private function get_diferenciacion($planBloqueUnidadId)
+    {
+        $pudDip = \backend\models\PudDip::find()->where([
+            'planificacion_bloques_unidad_id' => $planBloqueUnidadId,
+            'codigo' => 'APRENDIZAJE-DIFERENCIADO'
+         ])->all();
+        $campoTexto = '';
+        $html = '';       
+            $html.='<ul>';
+            foreach ($pudDip as $pud) {
+                           
+                if($pud->campo_de == 'escrito')
+                {
+                    $campoTexto =$pud->opcion_texto;                   
+                }elseif($pud->campo_de == 'seleccion' && $pud->opcion_boolean == true )
+                {
+                    $html .= '<li>'.$pud->opcion_texto.'</li>';                   
+                }               
+            }
+            $html.='</ul>';       
+        $html.='<p><b>Información Detallada: </b>'.$campoTexto.'</p>';
+
+        return $html ;
     }
      //metodo usado para 5.1.-, llamada a contenidos REPORTE
      private function select_contenidos($planUnidadId)
@@ -524,6 +606,7 @@ class Pdf extends \yii\db\ActiveRecord{
     //REPORTE 5.4 - lenguaje y aprendizaje
     private function lenguaje_y_aprendizaje_reporte()
     {
+        $colorCabeceraFondo = "#BEDBEC";
         $objPlanVertDip = $this->planVertDipl;
         $text_lenguaje = '<b>LENGUAJE Y APRENDIZAJE</b>';
         $text_con_tdc = '<b>CONEXION CON TDC</b>';
@@ -533,74 +616,41 @@ class Pdf extends \yii\db\ActiveRecord{
         $conexion_tdc = $this->conexion_tdc_reporte();
         $conexion_cas = $this->conexion_cas_reporte();
 
-        $html ='';
-        $html.='<table style="font-size:10;" width="100%" cellspacing="0" cellpadding="5">';
+        $html ='';       
                     $html.='<tr>';
-                        $html.='<td class="border" align="">'.$text_lenguaje.'</td>'; 
-                        $html.='<td class="border" align="">'.$text_con_tdc.'</td>';   
-                        $html.='<td class="border" align="">'.$text_con_cas.'</td>';                       
+                        $html.='<td class="border" style="background-color:'.$colorCabeceraFondo.';">'.$text_lenguaje.'</td>'; 
+                        $html.='<td class="border" style="background-color:'.$colorCabeceraFondo.';">'.$text_con_tdc.'</td>';   
+                        $html.='<td class="border" style="background-color:'.$colorCabeceraFondo.';">'.$text_con_cas.'</td>';                       
                     $html.='</tr>';
                     $html.='<tr>';
-                        $html.='<td class="border" align="">';
-                            $html.='<table border="0" cellpadding="3">';            
-                                $html.='<tr>';
-                                    $html.='<td>'.$detalle_len_y_aprend.'</td>';   
-                                $html.='</tr>';
-                                $html.='<tr>';                            
-                                    $html.='<td><br><b><u>Detalles:</u></b>'.$objPlanVertDip->detalle_len_y_aprendizaje.'</td>';                           
-                                $html.='</tr>';
-                            $html.='</table>';
-                        $html.='</td>';
-                        $html.='<td class="border" align="">';
-                            $html.='<table border="0" cellpadding="3">';            
-                                $html.='<tr>';
-                                    $html.='<td>'.$conexion_tdc.'</td>'; 
-                                $html.='</tr>';
-                                $html.='<tr>';                               
-                                    $html.='<td><br><b><u>Detalles:</u></b>'.$objPlanVertDip->conexion_tdc.'</td>';                           
-                                $html.='</tr>';
-                            $html.='</table>';                            
-                        $html.='</td>';
-                        $html.='<td class="border" align="">';
-                            $html.='<table border="0" cellpadding="3">';            
-                            $html.='<tr>';
-                                $html.='<td>'.$conexion_cas.'</td>'; 
-                            $html.='</tr>';
-                            $html.='<tr>';                               
-                                $html.='<td><br><b><u>Detalles:</u></b>'.$objPlanVertDip->detalle_cas.'</td>';                           
-                            $html.='</tr>';
-                            $html.='</table>';
-                        $html.='</td>';                       
-                    $html.='</tr>';                    
-            $html.='</table>';
+                        $html.='<td class="border">'.$detalle_len_y_aprend.'                                                    
+                                    <p><b>Información Detallada:</b></p>'.$objPlanVertDip->detalle_len_y_aprendizaje.'  
+                               </td>';
+                        $html.='<td class="border">'.$conexion_tdc.'                                                    
+                                    <p><b>Información Detallada:</b></p>'.$objPlanVertDip->conexion_tdc.'  
+                               </td>';
+                        $html.='<td class="border">'.$conexion_cas.'                                                    
+                                    <p><b>Información Detallada:</b></p>'.$objPlanVertDip->detalle_cas.'  
+                                </td>';       
+                    $html.='</tr>';                   
+          
         return $html;
     }
     /*** 5.4  Lenguaje y aprendizaje aux*/
     private function lenguaje_aprendizaje_item()
     {
-        $objPlanVertDip = $this->planVertDipl;       
-       
+        $objPlanVertDip = $this->planVertDipl;  
         $modelPlanifVertDiplTDC = $this->consultar_lenguaje_y_aprendizaje_ckeck($objPlanVertDip->id); 
 
-        $itemConexionCas = '';
-        $itemConexionCas.="<table class=\"table table-hover table-condensed table-striped table-bordered\">";
-        $idPvdOp ='';
-
+        $itemConexionCas = '<ul>';      
         foreach($modelPlanifVertDiplTDC as $tdc)
         {            
             if($tdc['es_seleccionado'])
-            {
-                $idPvdOp=$tdc['pvd_tdc_id'];//Id de tabla planifi_vd_relacion_tdc
-                $itemConexionCas.='<tr>';
-                $itemConexionCas.='<td>';
-                $itemConexionCas.='<font size="3"><u><b>♠ '.$tdc['opcion'].'</b></u></font>';
-                $itemConexionCas.='</td>';
-                $itemConexionCas.='</tr>';                             
+            {   
+                $itemConexionCas.='<li>'.$tdc['opcion'].'</li>';                        
             }
-        }
-        $itemConexionCas.="</table>";    
-
-
+        }  
+        $itemConexionCas .= '</ul>';       
        return $itemConexionCas;
     }  
     //metodo usado para 5.4.- llamada a lenguaje y aprendizaje
@@ -636,14 +686,14 @@ class Pdf extends \yii\db\ActiveRecord{
     /*** 5.5 Conexion con TDC */
     private function conexion_tdc_reporte()
     {
-        $textoImp = ''; 
+        $textoImp = '<ul>'; 
         $objPlanVertDip = $this->planVertDipl;
         $arrayConexionTDC = $this->select_relacionTDC($objPlanVertDip);
         foreach($arrayConexionTDC as $conexionTDC)
         {
-            $textoImp = '<font size="3">♠ '.$conexionTDC->relacionTdc->opcion.'</font><br>'. $textoImp;
+            $textoImp .= '<li>'.$conexionTDC->relacionTdc->opcion.'</li>';
         }
-        $textoImp.='<br>';
+        $textoImp.='</ul>';
         return  $textoImp;
     } 
 
@@ -661,25 +711,18 @@ class Pdf extends \yii\db\ActiveRecord{
      /**** REPORTE: 5.6 Conexion con CAS ***/
      private function conexion_cas_reporte()
      {
-         $objPlanVertDip = $this->planVertDipl;
-        
+         $objPlanVertDip = $this->planVertDipl;        
          $modelPlanifVertDiplTDC = $this->consultar_conexion_cas_ckeck($objPlanVertDip->id); 
-
-         $itemConexionCas = '';
-         $itemConexionCas.="<table class=\"table table-hover table-condensed table-striped table-bordered\">";        
+         $itemConexionCas = '';      
          foreach($modelPlanifVertDiplTDC as $tdc)
-         {            
+         {     
+            $itemConexionCas .= '<ul>';         
              if($tdc['es_seleccionado'])
              {
-                 $itemConexionCas.='<tr>';
-                    $itemConexionCas.='<td>';
-                        $itemConexionCas.='<font size="3"><u><b>♠ '.$tdc['opcion'].'</b></u></font>';
-                    $itemConexionCas.='</td>';
-                 $itemConexionCas.='</tr>';                             
+                $itemConexionCas.='<li>'.$tdc['opcion'].'</li>';                                           
              }
          }
-         $itemConexionCas.="</table>";     
-        
+         $itemConexionCas.='</ul>';  
         return $itemConexionCas;
      }
       //metodo usado para 5.6.- llamada a Conexion CAS

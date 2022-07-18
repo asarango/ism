@@ -39,7 +39,7 @@ class NeeXClase extends \yii\db\ActiveRecord
             [['nee_id', 'clase_id', 'grado_nee'], 'default', 'value' => null],
             [['nee_id', 'clase_id', 'grado_nee'], 'integer'],
             [['fecha_inicia', 'fecha_finaliza'], 'safe'],
-            [['diagnostico_inicia', 'diagnostico_finaliza'], 'string'],
+            [['diagnostico_inicia', 'diagnostico_finaliza','recomendacion_clase'], 'string'],
             [['nee_id'], 'exist', 'skipOnError' => true, 'targetClass' => Nee::className(), 'targetAttribute' => ['nee_id' => 'id']],
             [['clase_id'], 'exist', 'skipOnError' => true, 'targetClass' => ScholarisClase::className(), 'targetAttribute' => ['clase_id' => 'id']],
         ];
@@ -59,6 +59,7 @@ class NeeXClase extends \yii\db\ActiveRecord
             'diagnostico_inicia' => 'Diagnostico Inicia',
             'fecha_finaliza' => 'Fecha Finaliza',
             'diagnostico_finaliza' => 'Diagnostico Finaliza',
+            'recomendacion_clase'=>'Recomendaciones'
         ];
     }
 

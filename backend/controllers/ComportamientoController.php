@@ -105,8 +105,7 @@ class ComportamientoController extends Controller {
         
         $modelTemas = ScholarisAsistenciaClaseTema::find()
                 ->where(['asistencia_profesor_id' => $id])
-                ->all();
-        
+                ->all();        
 
         return $this->render('index', [
                     'modelClase' => $modelClase,

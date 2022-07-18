@@ -99,8 +99,7 @@ class PlanificacionDesagregacionCabeceraController extends Controller
                     where	use.login = '$user'
                                     and sop.scholaris_id = $periodoId
                     group by t.id, t.name, sec.code;";
-        echo $query;
-        die();
+        
         $res = $con->createCommand($query)->queryAll();
         return $res;
     }

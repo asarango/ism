@@ -12,14 +12,12 @@ use yii\helpers\Html;
 /**
  * PlanificacionDesagregacionCabeceraController implements the CRUD actions for PlanificacionDesagregacionCabecera model.
  */
-class PepPlanificacionController extends Controller{
-    
-    
+class PepPlanificacionController extends Controller {
+
     /**
      * {@inheritdoc}
      */
-    public function behaviors()
-    {
+    public function behaviors() {
         return [
             'access' => [
                 'class' => AccessControl::className(),
@@ -39,8 +37,7 @@ class PepPlanificacionController extends Controller{
         ];
     }
 
-    public function beforeAction($action)
-    {
+    public function beforeAction($action) {
         if (!parent::beforeAction($action)) {
             return false;
         }
@@ -64,30 +61,28 @@ class PepPlanificacionController extends Controller{
         return true;
     }
 
-    public function actionIndex1()
-    {
+    public function actionIndex1() {
         $opCourseTemplateId = $_GET['op_course_template_id'];
         $course = \backend\models\OpCourseTemplate::findOne($opCourseTemplateId);
         $periodoId = Yii::$app->user->identity->periodo_id;
-        
+
         $this->insertar_temas($opCourseTemplateId, $periodoId);
-        
+
         $temas = \backend\models\PepPlanificacionXUnidad::find()->where([
-            'op_course_template_id' => $opCourseTemplateId,
-            'scholaris_periodo_id' => $periodoId
-        ])->all();
-        
-        return $this->render('index',[
-            'course' => $course,
-            'temas' => $temas
+                    'op_course_template_id' => $opCourseTemplateId,
+                    'scholaris_periodo_id' => $periodoId
+                ])->all();
+
+        return $this->render('index', [
+                    'course' => $course,
+                    'temas' => $temas
         ]);
-        
     }
-    
-    private function insertar_temas($opCourseTemplateId, $scholarisPeriodoId){
+
+    private function insertar_temas($opCourseTemplateId, $scholarisPeriodoId) {
         $hoy = date('Y-m-d H:i:s');
         $usuario = Yii::$app->user->identity->usuario;
-        
+
         $con = Yii::$app->db;
         $query = "insert into pep_planificacion_x_unidad (op_course_template_id, scholaris_periodo_id
                                 ,tema_transdisciplinar_id, desde, hasta, porcentaje_planificado
@@ -102,24 +97,62 @@ class PepPlanificacionController extends Controller{
                                 and tema_transdisciplinar_id = op.id);";
         $con->createCommand($query)->execute();
     }
-    
-    
+
     /**
      * Metodo para generar las acciones ajax con consultas
      * por GET
      */
-    public function actionAjaxGet(){
-        print_r($_GET);
+    public function actionAjaxGet() {
+        $periodoId = Yii::$app->user->identity->periodo_id;
+        $accion = $_GET['accion'];
+
+        switch ($accion) {
+            case 'temas':
+                $temas = $this->get_temas($_GET);
+                $bloques = $this->get_bloques($_GET['op_course_id'], $periodoId);
+                return $this->renderPartial('_ajax-temas', [
+                    'temas' => $temas,
+                    'bloques' => $bloques
+                ]);
+                break;
+        }
+    }
+
+    private function get_temas($get) {
+        $opCourseTemplateId = $get['op_course_id'];
+        $periodoId = Yii::$app->user->identity->periodo_id;
+
+        $temas = \backend\models\PepPlanificacionXUnidad::find()->where([
+                    'op_course_template_id' => $opCourseTemplateId,
+                    'scholaris_periodo_id' => $periodoId
+                ])->all();
+
+        return $temas;
     }
     
-    
+    private function get_bloques($opcourseTemplateId, $periodoId){
+        $helper = new \backend\models\helpers\Scripts();
+        $uso = $helper->get_tipo_uso_op_course_template($opcourseTemplateId);
+        
+        $con = Yii::$app->db;
+        $query = "select 	b.id as bloque_id
+                                    ,b.name as bloque
+                    from	scholaris_bloque_actividad b
+                                    inner join scholaris_periodo p on p.codigo = b.scholaris_periodo_codigo 
+                    where 	b.tipo_uso = '$uso'
+                                    and p.id = $periodoId
+                                    and b.tipo_bloque in ('PARCIAL', 'EXAMEN')
+                    order by b.orden;";
+        $res = $con->createCommand($query)->queryAll();
+        return $res;
+    }
+
     /**
      * Metodo para ingresar informacion por ajax
      * por POST
      */
-    public function actionAjaxPost(){
+    public function actionAjaxPost() {
         
     }
-    
-    
+
 }

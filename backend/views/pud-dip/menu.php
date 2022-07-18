@@ -38,7 +38,7 @@ if($modelPVD)
     $contador_5_3_1 = contador_metacognicion($planUnidad->id);
     $contador_5_3_2 = contador_diferenciacion($planUnidad->id);
     $contador_5_4 = contador_de_consultar_lenguaje_y_aprendizaje_ckeck($modelPVD->id);    
-    $contador_5_6 = consultar_conexion_cas_ckeck($modelPVD->id);
+    $contador_5_6 = consultar_conexion_cas_ckeck($modelPVD->id);    
    
 }else{
     $modelPVD = new PlanificacionVerticalDiploma();
@@ -320,6 +320,7 @@ function contador_diferenciacion($planUnidadId){
             <i class="<?=$iconoOk;?>" title="DATOS INGRESADOS" style="color: <?=$colorOk;?>;"></i>
             </a>
             </li>
+            
             <li class="zoom"><a href="#" onclick="ver_detalle('5.6.-');">5.6.- Conexiones con CAS
             <?php                   
                     if ($contador_5_6==0)
@@ -330,6 +331,14 @@ function contador_diferenciacion($planUnidadId){
                     <i class="<?=$iconoOk;?>" title="FALTA INGRESAR DATOS" style="color: <?=$iconoColor;?>;"></i>
                     </a>            
             </li>
+            
+            
+            <!--No lleva contador porque es posible que exista nee o no-->
+            <li class="zoom"><a href="#" onclick="ver_detalle('5.7.-');">5.7.- Estudiantes con Nee</li>
+            
+            <!--No lleva contador porque es posible que exista nee o no-->
+            <li class="zoom"><a href="#" onclick="ver_detalle('5.8.-');">5.8.- Estudiantes con talento sobresaliente</li>
+            
         </ul>
     </li>
     <hr>

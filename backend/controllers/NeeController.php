@@ -214,7 +214,7 @@ where u.login = '$usuarioLog'
         $instituto      = OpInstitute::findOne($institutoId);
         $materiasSelect = $this->consulta_materias_estudiante($model->student_id, $periodoId);
         $materiasNee    = NeeXClase::find()->where(['nee_id' => $neeId])->all();
-
+        
         $this->ingresa_opciones($neeId); //Ingresa las opciones en vacio
         // $opciones5 = $this->consulta_seccion_5($neeId);
         // $opciones6 = $this->consulta_seccion_6($neeId);
@@ -243,18 +243,17 @@ where u.login = '$usuarioLog'
     private function consulta_materias_estudiante($studentId, $periodoId){
         $con = Yii::$app->db;
         $query = "select 	c.id as clase_id ,m.nombre as materia 
-from 	scholaris_grupo_alumno_clase g 
-		inner join scholaris_clase c on c.id = g.clase_id  
-		inner join ism_area_materia am on am.id = c.ism_area_materia_id 
-		inner join ism_materia m on m.id = am.materia_id  
-		inner join ism_malla_area ma on ma.id = am.malla_area_id 
-		inner join ism_periodo_malla pm on pm.id = ma.periodo_malla_id
-where 	g.estudiante_id = $studentId 
-		and pm.scholaris_periodo_id = $periodoId 
-		and c.id not in ( select clase_id from nee_x_clase where clase_id = c.id and fecha_finaliza is null ) 
-order by m.nombre;";
-//        echo $query;
-//        die();
+                    from 	scholaris_grupo_alumno_clase g 
+                            inner join scholaris_clase c on c.id = g.clase_id  
+                            inner join ism_area_materia am on am.id = c.ism_area_materia_id 
+                            inner join ism_materia m on m.id = am.materia_id  
+                            inner join ism_malla_area ma on ma.id = am.malla_area_id 
+                            inner join ism_periodo_malla pm on pm.id = ma.periodo_malla_id
+                    where 	g.estudiante_id = $studentId 
+                            and pm.scholaris_periodo_id = $periodoId 
+                            and c.id not in ( select clase_id from nee_x_clase where clase_id = c.id and fecha_finaliza is null ) 
+                    order by m.nombre;";
+
             $res = $con->createCommand($query)->queryAll();
             return $res;
     }
@@ -345,12 +344,14 @@ order by m.nombre;";
         $diagInicia = $_POST['diagnostico_inicia'];
         $fechaFinal = $_POST['fecha_finaliza'];
         $diagFinali = $_POST['diagnostico_finaliza'];
+        $recomendacion = $_POST['recomendacion_clase'];
         
         $model = NeeXClase::findOne($id);
         $model->grado_nee = $gradoNee;
         $model->diagnostico_inicia = $diagInicia;
         $model->fecha_finaliza = $fechaFinal;
         $model->diagnostico_finaliza = $diagFinali;
+        $model->recomendacion_clase = $recomendacion;
         $model->save();
 
         return $this->redirect(['ficha', 

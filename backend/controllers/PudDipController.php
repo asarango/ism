@@ -74,8 +74,11 @@ class PudDipController extends Controller {
     /*     * * ACCIONES  */
 
     public function actionIndex1() {
+        $periodoId = Yii::$app->user->identity->periodo_id;
         $planBloqueUnidadId = $_GET['plan_bloque_unidad_id'];
         $planUnidad = PlanificacionBloquesUnidad::findOne($planBloqueUnidadId);
+        
+        $opCourseTemplateId = $planUnidad->planCabecera->ismAreaMateria->mallaArea->periodoMalla->malla->op_course_template_id;        
 
         $bitacora = PudAprobacionBitacora::find()->where([
                     'unidad_id' => $planBloqueUnidadId
@@ -99,13 +102,44 @@ class PudDipController extends Controller {
         $firmaAprobado = $scripts->firmar_documento($usuarioResponde, $fechaResponde);
 
         $firmaDocente = $scripts->firmar_documento($usuarioNotifica, $fechaNotifica);
+               
 
         return $this->render('index', [
                     'planUnidad' => $planUnidad,
                     'bitacora' => $bitacora,
                     'firmaAprobado' => $firmaAprobado,
-                    'firmaDocente' => $firmaDocente
+                    'firmaDocente' => $firmaDocente      
         ]);
+    }
+    
+    
+    public function get_nee($periodId, $opCourseTemplateId){
+        $con = Yii::$app->db;
+        $query = "select 	cur.id 
+		,cur.name as curso
+		,p.name as paralelo
+		,mat.nombre as materia		
+		,concat(s.first_name, ' ', s.middle_name, ' ', s.last_name) as estudiante
+		,nxc.grado_nee 
+		,nxc.diagnostico_inicia 
+		,nxc.fecha_inicia 
+from 	nee
+		inner join scholaris_grupo_alumno_clase g on g.estudiante_id = nee.student_id 
+		inner join scholaris_clase cla on cla.id  = g.clase_id
+		inner join ism_area_materia am on am.id = cla.ism_area_materia_id
+		inner join ism_malla_area ma on ma.id = am.malla_area_id
+		inner join ism_periodo_malla pm on pm.id = ma.periodo_malla_id 
+		inner join ism_malla mal on mal.id = pm.malla_id 
+		inner join op_course_paralelo p on p.id = cla.paralelo_id 
+		inner join op_course cur on cur.id = p.course_id 
+		inner join ism_materia mat on mat.id = am.materia_id 
+		inner join op_student s on s.id = g.estudiante_id 
+		inner join nee_x_clase nxc on nxc.nee_id = nee.id 
+						and nxc.clase_id = cla.id 
+where 	pm.scholaris_periodo_id = $periodId
+		and mal.op_course_template_id = $opCourseTemplateId;";
+        $res = $con->createCommand($query)->queryAll();
+        return $res;
     }
 
     public function actionPestana() {
@@ -156,11 +190,14 @@ class PudDipController extends Controller {
                 break;
             case '5.6.-':
                 $respuesta = $this->get_accion_conexion_cas($planUnidadId);
-                ;
                 break;
             case '5.6.1.-':
                 $respuesta = $this->get_accion_conexion_cas($planUnidadId);
-                ;
+            case '5.7.-':
+                $respuesta = $this->get_accion_nee($planUnidadId);
+                break;
+            case '5.8.-':
+                $respuesta = $this->get_accion_talentos($planUnidadId);
                 break;
             case '6.1.-':
                 $respuesta = $this->get_accion_recurso($planUnidadId);
@@ -411,7 +448,7 @@ class PudDipController extends Controller {
 
     //generador pdf, pud dip
     public function actionPdfPudDip() {
-        $idPlanUniBloque = $_GET['planificacion_unidad_bloque_id'];
+        $idPlanUniBloque = $_GET['planificacion_unidad_bloque_id'];        
         new Pdf($idPlanUniBloque);
     }
 
@@ -856,9 +893,11 @@ class PudDipController extends Controller {
         $planifVertDipl = PlanificacionVerticalDiploma::find()->where([
                     'planificacion_bloque_unidad_id' => $planBloqueUnidad->id
                 ])->one();
-                
-        $textItem .= $this->get_enfoques($planifVertDipl->id);
         
+        $objScrip = new Scripts(); 
+                
+        $textItem .= $objScrip->get_enfoques($planifVertDipl->id);
+
         
         $impItems = $this->mostrar_campo_viene_de($planifVertDipl->id, $textItem, $titulo, $accion_update, "");
         $modelPlanVertical = PlanificacionVerticalDiploma::find()->where(['planificacion_bloque_unidad_id' => $planBloqueUnidad->id])->one();
@@ -868,53 +907,6 @@ class PudDipController extends Controller {
         return $impItems;
     }
     
-    private function get_enfoques($planVerticalId){
-        $con = Yii::$app->db;
-        $queryHabilidades = "select 	h.id 
-                                    ,h.nombre 
-                    from 	planificacion_vertical_diploma_habilidad ph
-                                    inner join enfoques_diploma_sb_opcion op on op.id = ph.opcion_habilidad_id 
-                                    inner join enfoques_diploma_sub_habilidad sub on sub.id = op.sub_habilidad_id 
-                                    inner join enfoques_diploma_habilidad h on h.id = sub.habilidad_id 
-                    where 	ph.plan_vertical_id = $planVerticalId
-                    group by h.id, h.nombre 
-                    order by h.nombre;";
-        
-        $queryOpciones = "select 	h.id 
-                                            ,h.nombre as habilidad
-                                            ,op.nombre as opcion
-                            from 	planificacion_vertical_diploma_habilidad ph
-                                            inner join enfoques_diploma_sb_opcion op on op.id = ph.opcion_habilidad_id 
-                                            inner join enfoques_diploma_sub_habilidad sub on sub.id = op.sub_habilidad_id 
-                                            inner join enfoques_diploma_habilidad h on h.id = sub.habilidad_id 
-                            where 	ph.plan_vertical_id = $planVerticalId 
-                            order by h.nombre, op.nombre ;";     
-        
-        $habilidades = $con->createCommand($queryHabilidades)->queryAll(); //extrae las habilidades
-        $opciones = $con->createCommand($queryOpciones)->queryAll(); //extrae las opciones elejidas en el plan vertical
-        
-        $html = '';
-        
-        $html .= '<ul>';
-        foreach ($habilidades as $habilidad){            
-            $html .= '<li><b>'.$habilidad['nombre'].'</b></li>';            
-            $html .= '<ul>';
-            foreach ($opciones as $op){                
-                if($op['id'] == $habilidad['id']){
-                    $html .= '<li><i class="far fa-arrow-circle-right"></i>'.$op['opcion'].'</li>';                    
-                }                
-            }
-            $html .= '</ul><br>';            
-        }
-        $html .= '</ul>';
-        
-        
-
-//        return $arregloMaster;
-        return $html;
-    } ///fin de 5.3
-    
-
     
     /*     * * 5.3.1 Metacognicion */
     private function get_accion_metacognicion($planBloqueUnidadId) {
@@ -928,13 +920,11 @@ class PudDipController extends Controller {
         
 //        $modelPlanVertical = PlanificacionVerticalDiploma::find()->where(['planificacion_bloque_unidad_id' => $planBloqueUnidad])->one();
 //        $modelPlanVertical->ultima_seccion = $accion_update;
-//        $modelPlanVertical->save();
-        
+//        $modelPlanVertical->save();        
 
         $modelPlanVertical = PlanificacionVerticalDiploma::find()->where(['planificacion_bloque_unidad_id' => $planBloqueUnidadId])->one();
         $modelPlanVertical->ultima_seccion = $accion_update;
-        $modelPlanVertical->save();
-        
+        $modelPlanVertical->save();     
 
         return $mostrar;
     }
@@ -973,6 +963,7 @@ class PudDipController extends Controller {
             'planificacion_bloques_unidad_id' => $planBloqueUnidadId,
             'codigo' => 'METACOGNICION'
          ])->all();
+
         
 
         $html = '';
@@ -1304,6 +1295,147 @@ class PudDipController extends Controller {
 
         return $selectcion . $texto;
     }
+    
+    
+    /** 5.7 ESTUDIANTES CON NEE **/
+    private function get_accion_nee($planBloqueUnidadId){
+        $planBloqueUnidad = PlanificacionBloquesUnidad::findOne($planBloqueUnidadId);
+        $accion_update = "5.7.-";
+        $titulo = "5.7.- ESTUDIANTES CON NEE";
+       
+        
+        $opCourseTemplateId = $planBloqueUnidad->planCabecera->ismAreaMateria->mallaArea->periodoMalla->malla->op_course_template_id;
+        $mostrar = $this->mostrar_nee($opCourseTemplateId, $titulo);
+
+        $modelPlanVertical = PlanificacionVerticalDiploma::find()->where(['planificacion_bloque_unidad_id' => $planBloqueUnidadId])->one();
+        $modelPlanVertical->ultima_seccion = $accion_update;
+        $modelPlanVertical->save();
+        
+        return $mostrar;
+    }
+    
+    private function mostrar_nee($opCourseTemplateId, $titulo) {        
+        $periodoId = Yii::$app->user->identity->periodo_id;
+        $nee = $this->get_nee($periodoId, $opCourseTemplateId);
+                     
+
+        $html = '';
+        $html .= '<div class="" style="align-items: center; display: flex; justify-content: center;">';
+        $html .= '<div class="card" style="width: 100%; margin-top:20px">';
+        $html .= '<div class="card-header">';
+        $html .= '<div class="row">';
+        $html .= '<h5 class=""><b>' . $titulo . '</b></h5>';
+        $html .= '</div>';
+        $html .= '</div>';
+        $html .= '<div class="card-body" >';
+        // inicia row
+        $html .= '<div class="row">';
+        $html .= '<ul>';
+        if($nee){
+            foreach ($nee as $n){
+                $html .= '<p>';
+                $html .= '<b><u><i class="fas fa-user-graduate"></i> '.$n['estudiante'].'</u></b><br>';
+                $html .= $n['curso'].' | '.$n['paralelo'].' | '. $n['materia'].'<br>';
+                $html .= 'grado: ('.$n['grado_nee'].') '.$n['diagnostico_inicia'];
+                $html .= '</p>';
+                $html .= '<hr>';
+
+            }
+        }else{
+            $html .= '<p>No existen NEE</p>';
+        }
+        $html .= '</ul>';        
+        $html .= '</div>'; //FIN ROW SELECCION
+        
+        $html .= '</div>'; //fin de card-body
+        $html .= '</div>';
+        $html .= '</div>';
+        return $html;
+    }
+    
+    
+    
+    /*     * * 5.8  ESTUDIANTES CON TALENTOS ESPECIALES*/
+    private function get_accion_talentos($planBloqueUnidadId) {
+       
+        $planBloqueUnidad = PlanificacionBloquesUnidad::findOne($planBloqueUnidadId);
+        $accion_update = "5.8.-";
+        $titulo = "5.8.- ESTUDIANTES CON TALENTO SOBRESALIENTE";
+
+        $this->ingresa_talento($planBloqueUnidadId); //ingresa las opciones 
+        $mostrar = $this->mostrar_talento($planBloqueUnidadId, $titulo);        
+
+        $modelPlanVertical = PlanificacionVerticalDiploma::find()->where(['planificacion_bloque_unidad_id' => $planBloqueUnidadId])->one();
+        $modelPlanVertical->ultima_seccion = $accion_update;
+        $modelPlanVertical->save();
+        
+        return $mostrar;
+    }
+    
+    private function ingresa_talento($planBloqueUnidadId){
+        $model = \backend\models\PudDip::find()->where([
+            'planificacion_bloques_unidad_id' => $planBloqueUnidadId,
+            'codigo' => 'TALENTOS'
+           ])->one();
+        
+        if(!$model){
+           $modelN = new \backend\models\PudDip();
+           $modelN->planificacion_bloques_unidad_id = $planBloqueUnidadId;
+           $modelN->codigo = 'TALENTOS';
+           $modelN->campo_de = 'escrito';
+           $modelN->opcion_texto = '';
+           $modelN->save();
+        }
+        
+    }
+    
+    
+   
+    private function mostrar_talento($planBloqueUnidadId, $titulo) {
+        $pudDip = \backend\models\PudDip::find()->where([
+            'planificacion_bloques_unidad_id' => $planBloqueUnidadId,
+            'codigo' => 'TALENTOS'
+         ])->one();
+        
+
+        $html = '';
+        $html .= '<div class="" style="align-items: center; display: flex; justify-content: center;">';
+        $html .= '<div class="card" style="width: 100%; margin-top:20px">';
+        $html .= '<div class="card-header">';
+        $html .= '<div class="row">';
+        $html .= '<h5 class=""><b>' . $titulo . '</b></h5>';
+        $html .= '</div>';
+        $html .= '</div>';
+        $html .= '<div class="card-body" >';
+        
+        
+//            $html .= '<div class="row">'; //inicia row de detalle
+        $html .= Html::beginForm(['update-pud-dip'], 'post');
+                $html .= '<b>Información Detallada</b>';
+                $html .= '<input type="hidden" name="campo_de" value="escrito">';
+                $html .= '<input type="hidden" name="id" value="'.$pudDip->id.'">';
+                $html.= '<textarea name="contenido" class="form-control" id="detalle-metacognicion" >'.$pudDip->opcion_texto.'</textarea>
+                                <script>
+                                    CKEDITOR.replace( "contenido",{
+                                        customConfig: "/ckeditor_settings/config.js"                                
+                                        } );
+                                </script>';                       
+
+            $html .= '<div style="text-align:end; margin-top:5px">
+                        <button type="submit" class="btn btn-success">Actualizar</button>
+                  </div>';
+        
+            $html .= Html::endForm();
+//        $html .= '</div>';//fin de row de detalle
+        //******finaliza row
+        $html .= '</div>'; //fin de card-body
+        $html .= '</div>';
+        $html .= '</div>';
+        return $html;
+    }
+    
+    
+    
 
     /** 6.1.- Recursos */
     private function get_accion_recurso($planBloqueUnidad) {

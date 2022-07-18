@@ -558,7 +558,7 @@ where hor.clase_id in
         $con = Yii::$app->db;
 
         $query = "select n.id,n.student_id ,scholaris_periodo_id ,grado_nee,
-                fecha_inicia,diagnostico_inicia,estado,idcurso,
+                fecha_inicia,diagnostico_inicia,recomendacion_clase,estado,idcurso,
                 idprofesor,paralelo_id
                 from nee n
                 inner join nee_x_clase nc on n.id = nc.nee_id 
@@ -583,6 +583,50 @@ where hor.clase_id in
         return  $respuesta;
 
     }
+    public  function get_enfoques($planVerticalId)
+    {
+        $con = Yii::$app->db;
+        $queryHabilidades = "select 	h.id 
+                                    ,h.nombre 
+                    from 	planificacion_vertical_diploma_habilidad ph
+                                    inner join enfoques_diploma_sb_opcion op on op.id = ph.opcion_habilidad_id 
+                                    inner join enfoques_diploma_sub_habilidad sub on sub.id = op.sub_habilidad_id 
+                                    inner join enfoques_diploma_habilidad h on h.id = sub.habilidad_id 
+                    where 	ph.plan_vertical_id = $planVerticalId
+                    group by h.id, h.nombre 
+                    order by h.nombre;";
+        
+        $queryOpciones = "select 	h.id 
+                                            ,h.nombre as habilidad
+                                            ,op.nombre as opcion
+                            from 	planificacion_vertical_diploma_habilidad ph
+                                            inner join enfoques_diploma_sb_opcion op on op.id = ph.opcion_habilidad_id 
+                                            inner join enfoques_diploma_sub_habilidad sub on sub.id = op.sub_habilidad_id 
+                                            inner join enfoques_diploma_habilidad h on h.id = sub.habilidad_id 
+                            where 	ph.plan_vertical_id = $planVerticalId 
+                            order by h.nombre, op.nombre ;";     
+        
+        $habilidades = $con->createCommand($queryHabilidades)->queryAll(); //extrae las habilidades
+        $opciones = $con->createCommand($queryOpciones)->queryAll(); //extrae las opciones elejidas en el plan vertical
+        
+        $html = '';
+        
+        $html .= '<ul>';
+        foreach ($habilidades as $habilidad){            
+            $html .= '<li><b>'.$habilidad['nombre'].'</b></li>';            
+            $html .= '<ul>';
+            foreach ($opciones as $op){                
+                if($op['id'] == $habilidad['id']){
+                    $html .= '<li><i class="far fa-arrow-circle-right"></i>'.$op['opcion'].'</li>';                    
+                }                
+            }
+            $html .= '</ul><br>';            
+        }
+        $html .= '</ul>';      
+
+//        return $arregloMaster;
+        return $html;
+    } ///fin de 5.3
     
     
     /**
@@ -617,6 +661,41 @@ where hor.clase_id in
                 closedir($dir); //Cerramos el directorio de destino
             }
         }
+    }
+    
+    
+    public function get_tipo_uso_op_course_template($opCourseTemplateId){
+        $periodoId = Yii::$app->user->identity->periodo_id;
+        
+        $con = Yii::$app->db;
+        $query = "select 	c.tipo_usu_bloque  
+                    from 	scholaris_clase c
+                                    inner join op_course_paralelo p on p.id = c.paralelo_id 
+                                    inner join op_course cur on cur.id = p.course_id
+                                    inner join op_section sec on sec.id = cur.section
+                                    inner join scholaris_op_period_periodo_scholaris sop on sop.op_id = sec.period_id 
+                                    inner join scholaris_bloque_actividad b on b.tipo_uso = c.tipo_usu_bloque 
+                    where 	cur.x_template_id = $opCourseTemplateId
+                                    and sop.scholaris_id = $periodoId
+                    limit 1;";
+        $res = $con->createCommand($query)->queryOne();
+        return $res['tipo_usu_bloque'];
+    }
+    
+    
+    /**
+     * Metodo para las iniciales
+     * Se debe pasar el nombre en una cadena desde el primer nombre  hasta el apellido
+     * @param type $nombre
+     * @return type
+     */
+    public function getIniciales($nombre){
+        $name = '';
+        $explode = explode(' ',$nombre);
+        foreach($explode as $x){
+            $name .=  $x[0];
+        }
+        return $name;    
     }
 
 }

@@ -179,7 +179,7 @@ $modelPudBitacora = PudAprobacionBitacora::find()
                 <div class="col-lg-3 col-md-3" style="overflow-y: scroll; height: 650px; border-top: solid 1px #ccc;">
                     <?=
                     $this->render('menu', [
-                        'planUnidad' => $planUnidad,
+                        'planUnidad' => $planUnidad
                     ]);
                     ?>
                 </div>

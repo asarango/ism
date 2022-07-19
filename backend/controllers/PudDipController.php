@@ -112,35 +112,6 @@ class PudDipController extends Controller {
         ]);
     }
     
-    
-    public function get_nee($periodId, $opCourseTemplateId){
-        $con = Yii::$app->db;
-        $query = "select 	cur.id 
-		,cur.name as curso
-		,p.name as paralelo
-		,mat.nombre as materia		
-		,concat(s.first_name, ' ', s.middle_name, ' ', s.last_name) as estudiante
-		,nxc.grado_nee 
-		,nxc.diagnostico_inicia 
-		,nxc.fecha_inicia 
-from 	nee
-		inner join scholaris_grupo_alumno_clase g on g.estudiante_id = nee.student_id 
-		inner join scholaris_clase cla on cla.id  = g.clase_id
-		inner join ism_area_materia am on am.id = cla.ism_area_materia_id
-		inner join ism_malla_area ma on ma.id = am.malla_area_id
-		inner join ism_periodo_malla pm on pm.id = ma.periodo_malla_id 
-		inner join ism_malla mal on mal.id = pm.malla_id 
-		inner join op_course_paralelo p on p.id = cla.paralelo_id 
-		inner join op_course cur on cur.id = p.course_id 
-		inner join ism_materia mat on mat.id = am.materia_id 
-		inner join op_student s on s.id = g.estudiante_id 
-		inner join nee_x_clase nxc on nxc.nee_id = nee.id 
-						and nxc.clase_id = cla.id 
-where 	pm.scholaris_periodo_id = $periodId
-		and mal.op_course_template_id = $opCourseTemplateId;";
-        $res = $con->createCommand($query)->queryAll();
-        return $res;
-    }
 
     public function actionPestana() {
 
@@ -909,8 +880,8 @@ where 	pm.scholaris_periodo_id = $periodId
     
     
     /*     * * 5.3.1 Metacognicion */
-    private function get_accion_metacognicion($planBloqueUnidadId) {
-       
+    private function get_accion_metacognicion($planBloqueUnidadId) 
+    {       
         $planBloqueUnidad = PlanificacionBloquesUnidad::findOne($planBloqueUnidadId);
         $accion_update = "5.3.1.-";
         $titulo = "5.3.1- METACOGNICIÓN";
@@ -1316,7 +1287,8 @@ where 	pm.scholaris_periodo_id = $periodId
     
     private function mostrar_nee($opCourseTemplateId, $titulo) {        
         $periodoId = Yii::$app->user->identity->periodo_id;
-        $nee = $this->get_nee($periodoId, $opCourseTemplateId);
+        $objScritp = new Scripts();
+        $nee = $objScritp->get_nee($periodoId, $opCourseTemplateId);     
                      
 
         $html = '';

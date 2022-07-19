@@ -119,7 +119,8 @@ function contador_de_consultar_lenguaje_y_aprendizaje_ckeck($planVertDiplId)
  
  //para metacognitivo
  //para conocer si esta planificado el metacognitivo
-function contador_metacognicion($planUnidadId){
+function contador_metacognicion($planUnidadId)
+{
     $pudDip = backend\models\PudDip::find()->where([
     'planificacion_bloques_unidad_id' => $planUnidadId,
     'codigo' => 'METACOGNICION' 
@@ -334,10 +335,14 @@ function contador_diferenciacion($planUnidadId){
             
             
             <!--No lleva contador porque es posible que exista nee o no-->
-            <li class="zoom"><a href="#" onclick="ver_detalle('5.7.-');">5.7.- Estudiantes con Nee</li>
+            <li class="zoom"><a href="#" onclick="ver_detalle('5.7.-');">5.7.- Estudiantes con Nee
+                <i class="<?=$iconoOk;?>" title="" style="color: green;"></i>
+            </li>
             
             <!--No lleva contador porque es posible que exista nee o no-->
-            <li class="zoom"><a href="#" onclick="ver_detalle('5.8.-');">5.8.- Estudiantes con talento sobresaliente</li>
+            <li class="zoom"><a href="#" onclick="ver_detalle('5.8.-');">5.8.- Estudiantes con talento sobresaliente
+                <i class="<?=$iconoOk;?>" title="" style="color: green;"></i>
+            </li>
             
         </ul>
     </li>

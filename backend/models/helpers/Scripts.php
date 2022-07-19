@@ -222,7 +222,7 @@ where hor.clase_id in
         $minimoCaracteres = $modelOpciones->categoria;
 
         $query = "select  coalesce(round(
-            (((5)/*SE SUMA 5 POR DATOS EN DEFAULT (1.1 / 3.1 / 4.1 / 5.3 / 5.5)*/+
+            (((7)/*SE SUMA 5 POR DATOS EN DEFAULT (1.1 / 3.1 / 4.1 / 5.3 / 5.5 /5.7/5.8 )*/+
             (select case when LENGTH(descripcion_texto_unidad) /*2.1*/ > $minimoCaracteres then 1 else 0 END from planificacion_vertical_diploma pvd where planificacion_bloque_unidad_id = $planBloqueUniId)+
             (select case when LENGTH(habilidades) /*4.2*/ > $minimoCaracteres then 1 else 0 END from planificacion_vertical_diploma pvd where planificacion_bloque_unidad_id = $planBloqueUniId)+
             (select case when count(*) /*5.2*/> 0 then 1 else 0 end  from pud_dip_proceso_aprendizaje pa where es_activo = true and plan_unidad_id = $planBloqueUniId)+
@@ -627,7 +627,36 @@ where hor.clase_id in
 //        return $arregloMaster;
         return $html;
     } ///fin de 5.3
-    
+
+    public function get_nee($periodId, $opCourseTemplateId)
+    {
+        $con = Yii::$app->db;
+        $query = "select 	cur.id 
+		,cur.name as curso
+		,p.name as paralelo
+		,mat.nombre as materia		
+		,concat(s.first_name, ' ', s.middle_name, ' ', s.last_name) as estudiante
+		,nxc.grado_nee 
+		,nxc.diagnostico_inicia 
+		,nxc.fecha_inicia 
+from 	nee
+		inner join scholaris_grupo_alumno_clase g on g.estudiante_id = nee.student_id 
+		inner join scholaris_clase cla on cla.id  = g.clase_id
+		inner join ism_area_materia am on am.id = cla.ism_area_materia_id
+		inner join ism_malla_area ma on ma.id = am.malla_area_id
+		inner join ism_periodo_malla pm on pm.id = ma.periodo_malla_id 
+		inner join ism_malla mal on mal.id = pm.malla_id 
+		inner join op_course_paralelo p on p.id = cla.paralelo_id 
+		inner join op_course cur on cur.id = p.course_id 
+		inner join ism_materia mat on mat.id = am.materia_id 
+		inner join op_student s on s.id = g.estudiante_id 
+		inner join nee_x_clase nxc on nxc.nee_id = nee.id 
+						and nxc.clase_id = cla.id 
+where 	pm.scholaris_periodo_id = $periodId
+		and mal.op_course_template_id = $opCourseTemplateId;";
+        $res = $con->createCommand($query)->queryAll();
+        return $res;
+    }
     
     /**
      * METODO PARA SUBIR ARCHIVOS AL SERVIDOR
@@ -661,41 +690,6 @@ where hor.clase_id in
                 closedir($dir); //Cerramos el directorio de destino
             }
         }
-    }
-    
-    
-    public function get_tipo_uso_op_course_template($opCourseTemplateId){
-        $periodoId = Yii::$app->user->identity->periodo_id;
-        
-        $con = Yii::$app->db;
-        $query = "select 	c.tipo_usu_bloque  
-                    from 	scholaris_clase c
-                                    inner join op_course_paralelo p on p.id = c.paralelo_id 
-                                    inner join op_course cur on cur.id = p.course_id
-                                    inner join op_section sec on sec.id = cur.section
-                                    inner join scholaris_op_period_periodo_scholaris sop on sop.op_id = sec.period_id 
-                                    inner join scholaris_bloque_actividad b on b.tipo_uso = c.tipo_usu_bloque 
-                    where 	cur.x_template_id = $opCourseTemplateId
-                                    and sop.scholaris_id = $periodoId
-                    limit 1;";
-        $res = $con->createCommand($query)->queryOne();
-        return $res['tipo_usu_bloque'];
-    }
-    
-    
-    /**
-     * Metodo para las iniciales
-     * Se debe pasar el nombre en una cadena desde el primer nombre  hasta el apellido
-     * @param type $nombre
-     * @return type
-     */
-    public function getIniciales($nombre){
-        $name = '';
-        $explode = explode(' ',$nombre);
-        foreach($explode as $x){
-            $name .=  $x[0];
-        }
-        return $name;    
     }
 
 }

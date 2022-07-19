@@ -75,15 +75,12 @@ class Pdf extends \yii\db\ActiveRecord{
             'margin_header' => 5,
             'margin_footer' => 5,
         ]);
-        $cabecera = $this->cabecera();        
+        $cabecera = $this->versionIso();        
         $mpdf->SetHtmlHeader($cabecera);
         $mpdf->showImageErrors = true; 
         
-        $html = $this->cuerpo(); 
-
-        echo '<pre>';
-       print_r($html);
-       die();
+        $html = $this->cuerpo();  
+        $html .= $this->firmas();       
         $mpdf->WriteHTML($html); 
         
         $piePagina=$this->pie_pagina();
@@ -94,19 +91,29 @@ class Pdf extends \yii\db\ActiveRecord{
         exit;
     }
     /****CABECERA */
-    private function cabecera(){
+    private function versionIso()
+    {
+
         
         $codigoISO='ISOMR20-10';
         $version='2.0';
         $fecha=date('Y-m-d H:i:s'); 
+
+        $htmlTabla = <<<EOF
+        <b>ISM<br>
+            INTERNATIONAL SCHOLASTIC MODEL
+            <br>
+            PLANIFICADOR DE UNIDADES PROGRAMA DEL DIPLOMA
+        </b> 
+        EOF;
         
         $html = ''; 
         $html .= '<table width="100%" cellspacing="0" cellpadding="10">'; 
         $html .= '<tr>'; 
-        $html .= '<td class="border" align="center" width="20%"><img src="imagenes/instituto/logo/logo2.png" width="60px"></td>';
-        $html .= '<td class="border" align="center" width=""></td>';
-        $html .= '<td class="border" align="left" width="20%"><font size="1">
-                        <table style="font-size:8;">
+        $html .= '<td class="border" align="center" width="20%"><img src="imagenes/instituto/logo/logoISM1.png" width="150px"></td>';
+        $html .= '<td class="border" align="center" width="100%">'.$htmlTabla.'</td>';
+        $html .= '<td class="border" align="left" width="20%">
+                        <table style="font-size:12;">
                             <tr>
                                 <td>Código:</td>
                                 <td>'.$codigoISO.'</td> 
@@ -117,7 +124,7 @@ class Pdf extends \yii\db\ActiveRecord{
                             </tr> 
                             <tr>
                                 <td>Fecha:</td>
-                                <td>2018-09-17</td>
+                                <td>'.$fecha.'</td>
                             </tr> 
                             <tr>
                                 <td>Pág: :</td>
@@ -138,7 +145,7 @@ class Pdf extends \yii\db\ActiveRecord{
         $objPlanVertDip = $this->planVertDipl;
         
         $html = '';
-        $html.='<table style="font-size:10" width="100%" cellspacing="0" cellpadding="5">';
+        /*$html.='<table style="font-size:10" width="100%" cellspacing="0" cellpadding="5">';
                 $html.='<tr>';
                     $html.='<td class="border" align="center"><b>ELABORADO POR:</b></td>';
                     $html.='<td class="border" align="center"><b>REVISADO POR:</b></td>';
@@ -160,9 +167,33 @@ class Pdf extends \yii\db\ActiveRecord{
                     $html.='<td class="border">Fecha: </td>';
                 $html.='</tr>';
 
-        $html.='</table>';
+        $html.='</table>';*/
         return $html;
 
+    }
+    private function firmas()
+    {
+        $html = <<<EOD
+        <br>
+        <br>
+        <table width="100%" cellspacing="0" cellpadding="5">         
+            <tr> 
+                <td colspan="2"  align="left" style="font-size:10">
+                    Elaborado Por:_________________________________________________________________________________________
+                </td>
+                <td colspan="2"  align="left" style="font-size:10">
+                    Aprobado Por:__________________________________________________________________________________________
+                </td>                
+            </tr> 
+            <tr> 
+                <td align="left" style="font-size:10">Fecha:_________________________________________________________________</td>
+                <td align="left" style="font-size:10">Firma:_________________________________________________________________</td>
+                <td align="left" style="font-size:10">Fecha:_________________________________________________________________</td>
+                <td align="left" style="font-size:10">Firma:_________________________________________________________________</td>
+            </tr> 
+        </table> 
+        EOD;      
+        return $html;
     }
     
     /***FIN UNIDADES ITERACION TITULOS */
@@ -174,8 +205,7 @@ class Pdf extends \yii\db\ActiveRecord{
         $html .= $this->datos_materia_profesor();
         $html .= $this->descripcion_y_evaluacion_reporte();
         $html .= $this->indagacion_reporte();
-        $html .= $this->contenido_habilidades_reporte();       
-        //$html .= $this->lenguaje_y_aprendizaje_reporte();
+        $html .= $this->contenido_habilidades_reporte();  
         $html .= $this->recursos_reporte();
         $html .= $this->reflexion_reporte();
         return $html;
@@ -184,7 +214,11 @@ class Pdf extends \yii\db\ActiveRecord{
     //REPORTE : datos materia profesor
     private function datos_materia_profesor()
     {
-        $periodoId = Yii::$app->user->identity->periodo_id;       
+        $periodoId = Yii::$app->user->identity->periodo_id;  
+        $colorCabeceraFondo = "#BEDBEC";  
+        $curso = $this->planVertDipl->planificacionBloqueUnidad->planCabecera->ismAreaMateria->mallaArea->periodoMalla->malla->opCourseTemplate->name;  
+        $bloque = $this->planVertDipl->planificacionBloqueUnidad->curriculoBloque->last_name;
+      
         $periodo = ScholarisPeriodo::findOne($periodoId);
         $fechaHoy = date('Y-m-d H:i:s');
         $objHelper = new HelperGeneral();
@@ -210,33 +244,27 @@ class Pdf extends \yii\db\ActiveRecord{
         }        
 
         $html= "";
-        $html.='<table style="font-size:10;" width="100%" cellspacing="0" cellpadding="3">';           
-            $html.='<tr>';
-            $html.='<td class="border" align="" style="text-align:center;" colspan="6">';
-            $html.='<b>ISM<br>';
-            $html.='INTERNATIONAL SCHOLASTIC MODEL';
-            $html.='</b> ';
-            $html.='</td>';
-            $html.='</tr>';
-            $html.='<tr>';
-            $html.='<td class="border" align="center" colspan="6">';
-            $html.='<b>PLANIFICADOR DE UNIDADES PROGRAMA DEL DIPLOMA</b>';
-            $html.='</td>';
-            $html.='</tr>';
-            $html.='<tr>';
-                $html.='<td class="border" align=""><b>PROFESOR(ES):</b></td>';
-                $html.='<td class="border" align="" colspan="2">'.$profesores.'</td>';
-                $html.='<td class="border" align=""><b>GRUPO DE ASIGNATURA Y CURSO:</b></td>';
-                $html.='<td class="border" align="" colspan="2">'.$modelScholarisM->nombre.'</td>';
-            $html.='</tr>';
-            $html.='<tr>';
-                $html.='<td class="border" align=""><b>PARTE DEL CURSO Y TEMA:</b></td>';
-                $html.='<td class="border" align="">'.$planBloqueUnidad->unit_title.'</td>';
-                $html.='<td class="border" align=""><b>AÑO ACADEMICO:</b></td>';
-                $html.='<td class="border" align="">'.$planBloqueUnidad->planCabecera->ismAreaMateria->mallaArea->periodoMalla->malla->opCourseTemplate->name.'</td>';
-                $html.='<td class="border" align=""><b>FECHAS:</b></td>';
-                $html.='<td class="border" align="">'.$tiempo['fecha_inicio'].' - '.$tiempo['fecha_final'].'</td>';
-            $html.='</tr>';           
+                $html.='<table style="font-size:10;" width="100%" cellspacing="0" cellpadding="3">';
+                $html.='<tr>';
+                    $html.='<td class="border" colspan="3" style="background-color:'.$colorCabeceraFondo.'"><b>PROFESOR(ES):</b></td>';
+                    $html.='<td class="border" align="">'.$profesores.'</td>';
+                    $html.='<td class="border" colspan="3" style="background-color:'.$colorCabeceraFondo.'"><b>GRUPO DE ASIGNATURA Y CURSO:</b></td>';
+                    $html.='<td class="border" align="" >'.$modelScholarisM->nombre.'</td>';
+                    $html.='<td class="border" style="background-color:'.$colorCabeceraFondo.'"><b>AÑO DEL PD</b></td>';
+                    $html.='<td class="border" align="" >'.$curso.'</td>';
+                $html.='</tr>';
+                $html.='<tr>';
+                    $html.='<td class="border" style="background-color:'.$colorCabeceraFondo.'"><b>NRO. UNIDAD:</b></td>';
+                    $html.='<td class="border" align="">'.$bloque.'</td>';
+                    $html.='<td class="border" style="background-color:'.$colorCabeceraFondo.'"><b>TÍTULO DE LA UNIDAD:</b></td>';
+                    $html.='<td class="border" align="">'.$planBloqueUnidad->unit_title.'</td>';
+                    $html.='<td class="border" style="background-color:'.$colorCabeceraFondo.'"><b>CANTIDAD DE SEMANAS:</b></td>';
+                    $html.='<td class="border" align="">40</td>';
+                    $html.='<td class="border" style="background-color:'.$colorCabeceraFondo.'"><b>FECHAS DE INICIO:</b></td>';
+                    $html.='<td class="border" align="">'.$tiempo['fecha_inicio'].'</td>';
+                    $html.='<td class="border" style="background-color:'.$colorCabeceraFondo.'"><b>FECHAS DE FIN:</b></td>';
+                    $html.='<td class="border" align="">'.$tiempo['fecha_final'].'</td>';
+                $html.='</tr>';           
             $html.='</table>';
             $html.='<br>';
             return $html;
@@ -346,7 +374,7 @@ class Pdf extends \yii\db\ActiveRecord{
         $contenidoImp='';  
         if(count($arrayContenido)>0){
             foreach($arrayContenido as $arraySubContenido){                  
-                $contenidoImp .= '<u><b>'.$arraySubContenido['subtitulo'].'</b></u>';   
+                $contenidoImp .= ''.$arraySubContenido['subtitulo'].'';   
                 $contenidoImp .= '<ul>';                
                 foreach($arraySubContenido['subtitulos'] as $contenido){
                     $contenidoImp .= '<li>♠ '.$contenido['contenido'].'</li>';                    
@@ -412,6 +440,18 @@ class Pdf extends \yii\db\ActiveRecord{
         $textMetacognicion = $this->get_metacognicion($objPlanVertDip->planificacion_bloque_unidad_id);
         $textDiferenciacion = $this->get_diferenciacion($objPlanVertDip->planificacion_bloque_unidad_id);
 
+        $estudianteNEE = $this->get_accion_nee($objPlanVertDip->planificacion_bloque_unidad_id);
+        $estuSobresalientes = $this->get_accion_talentos($objPlanVertDip->planificacion_bloque_unidad_id);
+
+     
+
+        $proceso = '<ul>';
+        foreach ($procesoAprendizaje as $proc) {
+            $proceso .= '<li>'.$proc->opcion->opcion.'</li>';         
+        }  
+        $proceso .= '</ul>';
+
+       
         $html ='<br>';
         $html.='<b>ACCION:</b> Enseñanza y aprendizaje a través de la investigación';
         $html.='<table style="font-size:10;" width="100%" cellspacing="0" cellpadding="5">';
@@ -420,22 +460,18 @@ class Pdf extends \yii\db\ActiveRecord{
                                 <td class="border" style="background-color:'.$colorCabeceraFondo.';"><b>ENFOQUES DEL APRENDIZAJE: </b></td>
                                 <td class="border" style="background-color:'.$colorCabeceraFondo.';"><b>EVALUACIÓN SUMATIVA: </b></td>                                                  
                             </tr>';
-                    $html.='<tr >                       
-                                <td rowspan="3" class="border">';
-                                foreach ($procesoAprendizaje as $proc) {
-                                    $html .= '<li> '.$proc->opcion->opcion.'</li>';
-                                }                                
-                        $html.='</td> 
-                                <td rowspan="3" class="border" >'. $textProcesoApre.'</td>
-                                <td class="border" >'.$enfoqueEvaluacion->sumativa.'</td>                       
-                            </tr>';                   
+                   $html.='<tr> ';                      
+                        $html.= '<td rowspan="3" class="border">'.$proceso.'</td>                        
+                                 <td rowspan="3" class="border" >'. $textProcesoApre.'</td>
+                                 <td class="border" >'.$enfoqueEvaluacion->sumativa.'</td> ';                      
+                    $html.='</tr>';            
                     $html.='<tr>                                
                                 <td class="border" style="background-color:'.$colorCabeceraFondo.';"><b>EVALUACIÓN FORMATIVA: </b></td> 
                             </tr>'; 
                     $html.='<tr>
                                 <td class="border" >'.$enfoqueEvaluacion->formativa.'</td> 
                             </tr>';
-                    //**FILA DE METACOGNICION */        
+                      
                     $html.='<tr>                       
                                 <td class="border" style="background-color:'.$colorCabeceraFondo.';"><b>METACOGNICIÓN: </b></td> 
                                 <td class="border" style="background-color:'.$colorCabeceraFondo.';"><b>DIFERECIACIÓN: </b></td>
@@ -444,17 +480,18 @@ class Pdf extends \yii\db\ActiveRecord{
                     $html.='<tr >                       
                                 <td rowspan="3" class="border">'.$textMetacognicion.'</td>
                                 <td rowspan="3" class="border" >'. $textDiferenciacion.'</td>
-                                <td class="border"></td>                       
+                                <td class="border">'.$estudianteNEE.'</td>                       
                             </tr>';                   
                     $html.='<tr>                                
                                 <td class="border" style="background-color:'.$colorCabeceraFondo.';"><b>ESTUDIANTES CON TALENTOS SOBRESALIENTES: </b></td> 
                             </tr>'; 
                     $html.='<tr>
-                                <td class="border" ></td> 
-                            </tr>';
+                                <td class="border" >'.$estuSobresalientes.'</td> 
+                            </tr>'; 
                     //** fila de LENGUA Y APRENDISAJE */
                     $html.=$this->lenguaje_y_aprendizaje_reporte();
         $html.='</table>'; 
+      
         
         return $html;
     }
@@ -629,7 +666,7 @@ class Pdf extends \yii\db\ActiveRecord{
                         $html.='<td class="border">'.$conexion_tdc.'                                                    
                                     <p><b>Información Detallada:</b></p>'.$objPlanVertDip->conexion_tdc.'  
                                </td>';
-                        $html.='<td class="border">'.$conexion_cas.'                                                    
+                        $html.='<td class="border" >'.$conexion_cas.'                                                    
                                     <p><b>Información Detallada:</b></p>'.$objPlanVertDip->detalle_cas.'  
                                 </td>';       
                     $html.='</tr>';                   
@@ -757,33 +794,36 @@ class Pdf extends \yii\db\ActiveRecord{
     //REPORTE: 6 recursos
     private function recursos_reporte()
     {
+        $colorCabeceraFondo = "#BEDBEC";
         $objPlanVertDip = $this->planVertDipl;
         $html='';
         $html.='<table style="font-size:10;" width="100%" cellspacing="0" cellpadding="5">'; 
                     $html.='<tr>'; 
-                    $html.='<td class="border" align=""><b>RECURSOS</b></td>';                                            
+                    $html.='<td class="border" style="background-color:'.$colorCabeceraFondo.'" ><b>RECURSOS</b></td>';                                            
                     $html.='</tr>';                    
                     $html.='<tr>'; 
-                        $html.='<td class="border" align="">'.$objPlanVertDip->recurso.'</td>';                                            
+                        $html.='<td class="border" >'.$objPlanVertDip->recurso.'</td>';                                            
                     $html.='</tr>';                    
             $html.='</table>';
+            $html.='<br>';
         return $html;
     } 
     //REPORTE 7 - lo que funciono / lo que no funcino / observaciones, cabios y sugerencias
     private function reflexion_reporte()
     {
+        $colorCabeceraFondo = "#BEDBEC";
         $objPlanVertDip = $this->planVertDipl;
         $text_funciono = '<b>LO QUE FUNCIONÓ BIEN: </b>';
         $text_no_funciono = '<b>LO QUE NO FUNCIONÓ BIEN</b>';
         $text_observacion = '<b>OBSERVACION, CAMBIOS Y SUGERENCIAS</b>';       
 
         $html ='<br>';
-        $html ='<b>REFLEXION</b>';        
+        $html ='<b>REFLEXION:</b> Consideración de la planificación, el proceso y el impacto de la indagación';        
         $html.='<table style="font-size:10;" width="100%" cellspacing="0" cellpadding="5">';
                     $html.='<tr>';
-                        $html.='<td class="border" align="center">'.$text_funciono.'</td>'; 
-                        $html.='<td class="border" align="center">'.$text_no_funciono.'</td>';   
-                        $html.='<td class="border" align="center">'.$text_observacion.'</td>';                       
+                        $html.='<td class="border" style="background-color:'.$colorCabeceraFondo.'" >'.$text_funciono.'</td>'; 
+                        $html.='<td class="border" style="background-color:'.$colorCabeceraFondo.'" >'.$text_no_funciono.'</td>';   
+                        $html.='<td class="border" style="background-color:'.$colorCabeceraFondo.'" >'.$text_observacion.'</td>';                       
                     $html.='</tr>';
                     $html.='<tr>';
                         $html.='<td class="border" align="">'.$objPlanVertDip->reflexion_funciono.'</td>'; 
@@ -794,7 +834,38 @@ class Pdf extends \yii\db\ActiveRecord{
             $html.='</table>';
         return $html;
     }
-    
+     /** 5.7 ESTUDIANTES CON NEE **/
+     private function get_accion_nee($planBloqueUnidadId)
+     {
+        $periodoId = Yii::$app->user->identity->periodo_id;
+        $planBloqueUnidad = PlanificacionBloquesUnidad::findOne($planBloqueUnidadId);        
+        $opCourseTemplateId = $planBloqueUnidad->planCabecera->ismAreaMateria->mallaArea->periodoMalla->malla->op_course_template_id;
+       
+        $objScritp = new Scripts();        
+        $nee = $objScritp->get_nee($periodoId, $opCourseTemplateId);  
+
+        $html = '<ul>';
+        if($nee){
+            foreach ($nee as $n){
+                $html .= '<p>';
+                $html .= '<li><b> '.$n['estudiante'].'</b></li>';
+                $html .= $n['curso'].' | '.$n['paralelo'].' | '. $n['materia'].'<br>';
+                $html .= 'grado: ('.$n['grado_nee'].') '.$n['diagnostico_inicia'];
+                $html .= '</p>';
+            }
+        }        
+        return $html;
+    }
+     /*     * * 5.8  ESTUDIANTES CON TALENTOS ESPECIALES*/
+     private function get_accion_talentos($planBloqueUnidadId) 
+     {          
+        $pudDip = \backend\models\PudDip::find()->where([
+            'planificacion_bloques_unidad_id' => $planBloqueUnidadId,
+            'codigo' => 'TALENTOS'
+         ])->one();
+        
+        return $pudDip->opcion_texto;
+    }
 
     private function estilos(){
         $html = '';

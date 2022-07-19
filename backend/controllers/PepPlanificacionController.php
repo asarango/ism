@@ -110,6 +110,7 @@ class PepPlanificacionController extends Controller {
             case 'temas':
                 $temas = $this->get_temas($_GET);
                 $bloques = $this->get_bloques($_GET['op_course_id'], $periodoId);
+                
                 return $this->renderPartial('_ajax-temas', [
                     'temas' => $temas,
                     'bloques' => $bloques
@@ -141,18 +142,27 @@ class PepPlanificacionController extends Controller {
                                     inner join scholaris_periodo p on p.codigo = b.scholaris_periodo_codigo 
                     where 	b.tipo_uso = '$uso'
                                     and p.id = $periodoId
-                                    and b.tipo_bloque in ('PARCIAL', 'EXAMEN')
+                                    and b.tipo_bloque in ('PARCIAL')
                     order by b.orden;";
         $res = $con->createCommand($query)->queryAll();
         return $res;
     }
 
     /**
+     * ACTUALIZA EL BLOQUE
      * Metodo para ingresar informacion por ajax
      * por POST
      */
-    public function actionAjaxPost() {
+    public function actionUpdate() {
         
+        $temaId = $_GET['id'];
+        $bloque = $_POST['bloque'];
+        
+        $model = \backend\models\PepPlanificacionXUnidad::findOne($temaId);
+        $model->bloque_id = $bloque;
+        $model->save();
+        
+        return $this->redirect(['index1', 'op_course_template_id' => $model->op_course_template_id]);
     }
 
 }

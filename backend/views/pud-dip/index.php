@@ -273,8 +273,8 @@ $modelPudBitacora = PudAprobacionBitacora::find()
         
         
          /** FUNCION PARA MODIFICACION DE PUD_DIP */
-        function update_pud_dip_boolean(id) {
-            
+        function update_pud_dip_boolean(id) 
+        {            
 //            var contenido = CKEDITOR.instances['editor-text-unidad'].getData();
             var url = '<?= Url::to(['update-pud-dip']) ?>';
             params = {
@@ -289,7 +289,7 @@ $modelPudBitacora = PudAprobacionBitacora::find()
                 type: 'POST',
                 beforeSend: function () {},
                 success: function () {                    
-                    //location.reload();
+                    location.reload();
 
                 }
             });

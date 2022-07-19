@@ -222,14 +222,14 @@ where hor.clase_id in
         $minimoCaracteres = $modelOpciones->categoria;
 
         $query = "select  coalesce(round(
-            (((7)/*SE SUMA 5 POR DATOS EN DEFAULT (1.1 / 3.1 / 4.1 / 5.3 / 5.5 /5.7/5.8 )*/+
+            (((10)/*SE SUMA 10 POR DATOS EN DEFAULT (1.1 / 3.1 / 4.1 / 5.3 / 5.5 /5.7/5.8/7.1/ 7.2/7.3/ )*/+
             (select case when LENGTH(descripcion_texto_unidad) /*2.1*/ > $minimoCaracteres then 1 else 0 END from planificacion_vertical_diploma pvd where planificacion_bloque_unidad_id = $planBloqueUniId)+
             (select case when LENGTH(habilidades) /*4.2*/ > $minimoCaracteres then 1 else 0 END from planificacion_vertical_diploma pvd where planificacion_bloque_unidad_id = $planBloqueUniId)+
             (select case when count(*) /*5.2*/> 0 then 1 else 0 end  from pud_dip_proceso_aprendizaje pa where es_activo = true and plan_unidad_id = $planBloqueUniId)+
             (select case when LENGTH(recurso) /*6.1*/ > $minimoCaracteres then 1 else 0 END from planificacion_vertical_diploma pvd where planificacion_bloque_unidad_id = $planBloqueUniId)+
-            (select case when LENGTH(reflexion_funciono) /*7.1*/ > $minimoCaracteres then 1 else 0 END from planificacion_vertical_diploma pvd where planificacion_bloque_unidad_id = $planBloqueUniId)+
-            (select case when LENGTH(reflexion_no_funciono) /*7.2*/> $minimoCaracteres then 1 else 0 END from planificacion_vertical_diploma pvd where planificacion_bloque_unidad_id = $planBloqueUniId)+
-            (select case when LENGTH(reflexion_observacion) /*7.3*/> $minimoCaracteres then 1 else 0 END from planificacion_vertical_diploma pvd where planificacion_bloque_unidad_id = $planBloqueUniId)+
+            --(select case when LENGTH(reflexion_funciono) /*7.1*/ > $minimoCaracteres then 1 else 0 END from planificacion_vertical_diploma pvd where planificacion_bloque_unidad_id = $planBloqueUniId)+
+            --(select case when LENGTH(reflexion_no_funciono) /*7.2*/> $minimoCaracteres then 1 else 0 END from planificacion_vertical_diploma pvd where planificacion_bloque_unidad_id = $planBloqueUniId)+
+            --(select case when LENGTH(reflexion_observacion) /*7.3*/> $minimoCaracteres then 1 else 0 END from planificacion_vertical_diploma pvd where planificacion_bloque_unidad_id = $planBloqueUniId)+
             (select case when count(p.categoria) /*5.4*/ > 0 then 1 else 0 end 
                              from planificacion_opciones p, planificacion_vertical_diploma_relacion_tdc pr,
                              planificacion_vertical_diploma pvd 
@@ -241,8 +241,17 @@ where hor.clase_id in
                             planificacion_vertical_diploma pvd 
                             where p.tipo='LENGUAJE_Y_CONOCIMIENTO'  and pvd.id =$planVertDiplId 
                             and pr.vertical_diploma_id = pvd.id   
-                            and pr.relacion_tdc_id  = p.id) ) * 100 )/ 
+                            and pr.relacion_tdc_id  = p.id)+
+            (select case when count(*)>0 then 1 else 0 end /*5.3.1*/from pud_dip pd where codigo = 'METACOGNICION'  and campo_de ='seleccion' and opcion_boolean = true
+                             and planificacion_bloques_unidad_id =$planBloqueUniId)+
+            (select case when count(*)>0 then 1 else 0 end /*5.3.2*/from pud_dip pd where codigo = 'APRENDIZAJE-DIFERENCIADO'  and campo_de ='seleccion' and opcion_boolean = true
+                             and planificacion_bloques_unidad_id =$planBloqueUniId)+
+            (select case when count(*)>0 then 1 else 0 end from pud_dip_evaluaciones pde where plan_unidad_id = $planBloqueUniId and  length(formativa)>0 
+                            and length(sumativa)>0 ) 
+                            
+                            ) * 100 )/ 
                             (select cast(categoria as numeric(18,2))from planificacion_opciones where tipo='PUD_CONTEO_PORCENTAJE'and seccion = 'DIP')
+
                            ,0),0) as porcentaje;
                  ";
 

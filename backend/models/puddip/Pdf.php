@@ -435,6 +435,11 @@ class Pdf extends \yii\db\ActiveRecord{
         ->where(['plan_unidad_id'=>$objPlanVertDip->planificacion_bloque_unidad_id])
         ->one(); 
 
+    //     echo '<pre>';
+    //    print_r($enfoqueEvaluacion);
+    //    die();
+
+
         $objScrip = new Scripts();                 
         $textProcesoApre = $objScrip->get_enfoques($objPlanVertDip->id);
         $textMetacognicion = $this->get_metacognicion($objPlanVertDip->planificacion_bloque_unidad_id);
@@ -463,13 +468,17 @@ class Pdf extends \yii\db\ActiveRecord{
                    $html.='<tr> ';                      
                         $html.= '<td rowspan="3" class="border">'.$proceso.'</td>                        
                                  <td rowspan="3" class="border" >'. $textProcesoApre.'</td>
-                                 <td class="border" >'.$enfoqueEvaluacion->sumativa.'</td> ';                      
+                                 <td class="border" >';
+                                 if($enfoqueEvaluacion){$html.= ''.$enfoqueEvaluacion->sumativa;} 
+                        $html.= '</td> ';                      
                     $html.='</tr>';            
                     $html.='<tr>                                
                                 <td class="border" style="background-color:'.$colorCabeceraFondo.';"><b>EVALUACIÓN FORMATIVA: </b></td> 
                             </tr>'; 
                     $html.='<tr>
-                                <td class="border" >'.$enfoqueEvaluacion->formativa.'</td> 
+                                <td class="border" >';
+                                    if($enfoqueEvaluacion){$html.= ''.$enfoqueEvaluacion->formativa;}
+                    $html.='</td> 
                             </tr>';
                       
                     $html.='<tr>                       
@@ -859,12 +868,15 @@ class Pdf extends \yii\db\ActiveRecord{
      /*     * * 5.8  ESTUDIANTES CON TALENTOS ESPECIALES*/
      private function get_accion_talentos($planBloqueUnidadId) 
      {          
+        $resp = "";
         $pudDip = \backend\models\PudDip::find()->where([
             'planificacion_bloques_unidad_id' => $planBloqueUnidadId,
             'codigo' => 'TALENTOS'
          ])->one();
+
+        if($pudDip){$resp = $pudDip->opcion_texto;}
         
-        return $pudDip->opcion_texto;
+        return $resp;
     }
 
     private function estilos(){

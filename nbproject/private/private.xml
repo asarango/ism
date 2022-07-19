@@ -7,11 +7,7 @@
             <file>file:/var/www/html/ism/academico/backend/views/pep-planificacion/index.php</file>
             <file>file:/var/www/html/ism/academico/backend/models/PepPlanificacionXUnidad.php</file>
             <file>file:/var/www/html/ism/academico/backend/views/pep-planificacion/_ajax-temas.php</file>
-            <file>file:/var/www/html/ism/academico/backend/web/css/coloresPersonalizados.css</file>
-            <file>file:/var/www/html/ism/academico/backend/views/planificacion-desagregacion-cabecera/index.php</file>
             <file>file:/var/www/html/ism/academico/common/config/main-local.php</file>
-            <file>file:/var/www/html/ism/academico/backend/views/planificacion-desagregacion-cabecera/planificacion-pep.php</file>
-            <file>file:/var/www/html/ism/academico/backend/models/helpers/Scripts.php</file>
         </group>
     </open-files>
 </project-private>

@@ -40,7 +40,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             ['class' => 'link']
                     );
                     ?>
-                    
+
                     |
                     <?=
                     Html::a(
@@ -59,25 +59,125 @@ $this->params['breadcrumbs'][] = $this->title;
                 </div><!-- fin de menu derecha -->
             </div>
             <!-- finaliza menu menu  -->
+
+            <!-- inicia cuerpo de card -->        
+
+            <div class="row p-2" style="margin-top: 20px; background-color: #65b2e8"> <!-- ROW INFORMACION GENERAL -->
+                <p>
+                    <a class="" data-bs-toggle="collapse" href="#collapseExample" 
+                       role="button" aria-expanded="false" 
+                       aria-controls="collapseExample"
+                       style="color: #000">
+                        <i class="fas fa-plus-square"></i> Información General
+                    </a>
+
+                </p>
+                <div class="collapse" id="collapseExample">
+                    <div class="card card-body">
+                        <!-- Para el tema de la unidad -->            
+                        <?= $this->render('_info-general', ['tema' => $tema]); ?> 
+                        <hr>
+
+                        <!--inicio para idea central-->
+                        <?= $this->render('_idea-central', ['tema' => $tema, 'registros' => $registros]); ?> 
+                        <!--fin para idea central-->
+
+                        <hr>
+                        <!--inicio para lineas de indagacion-->
+                        <?= $this->render('_linea-indagacion', ['tema' => $tema, 'registros' => $registros]); ?> 
+
+                        <hr>
+                        <!--inicio para conceptos y atributos-->
+                        <?= $this->render('_conceptos', ['tema' => $tema, 'registros' => $registros]); ?> 
+
+
+                        <hr>
+                        <!--inicio para enfoques de aprendizaje-->
+                        <?= $this->render('_enfoques', ['tema' => $tema, 'registros' => $registros]); ?> 
+
+                        <hr>
+                        <!--inicio para accion-->
+                        <?= $this->render('_accion', ['tema' => $tema, 'registros' => $registros]); ?> 
+
+                    </div> <!-- Fin de card-body -->
+                </div>
+            </div><!-- fin de row de información general -->
+
+
+            <div class="row p-2" style="margin-top: 20px; background-color: #65b2e8"> <!-- ROW REFELXION Y PLANIFICACION -->
+                <p>
+                    <a class="" data-bs-toggle="collapse" href="#reflexion" 
+                       role="button" aria-expanded="false" 
+                       aria-controls="reflexion"
+                       style="color: #000">
+                        <i class="fas fa-plus-square"></i> Reflexión y planificación
+                    </a>
+
+                </p>
+                <div class="collapse" id="reflexion">
+                    <div class="card card-body">
+                        <!-- Para el tema de la unidad -->            
+                        <?= $this->render('_reflexion-planificacion', ['tema' => $tema, 'registros' => $registros]); ?> 
+                        <hr>                        
+
+                    </div> <!-- Fin de card-body -->
+                </div>
+            </div><!-- fin de row de reflexion y planificacion-->
             
-            <!-- inicia cuerpo de card -->
-            <div class="row" style="margin-top: 20px">
-                <b><h5><u>Temas de la planificación PEP</u></h5></b>
-                
-                
-                <div id="div-detalle-temas"></div>
-                
-            </div>
+            
+            <!-- ROW DISEÑO E IMPLEMENTACIÓN -->
+            <div class="row p-2" style="margin-top: 20px; background-color: #ff9e18"> 
+                <p>
+                    <a class="" data-bs-toggle="collapse" href="#diseno" 
+                       role="button" aria-expanded="false" 
+                       aria-controls="diseno"
+                       style="color: #000">
+                        <i class="fas fa-plus-square"></i> Diseño e implementación
+                    </a>
+
+                </p>
+                <div class="collapse" id="diseno">
+                    <div class="card card-body">
+                        <!-- Para el tema de la unidad -->            
+                        <?= $this->render('_diseno-implementacion', ['tema' => $tema, 'registros' => $registros]); ?> 
+                        <hr>                        
+
+                    </div> <!-- Fin de card-body -->
+                </div>
+            </div><!-- fin de row de diseño e implementación-->
+
+            
+            <!-- ROW REFLEXIÓN -->
+            <div class="row p-2" style="margin-top: 20px; background-color: #c0cdbc"> 
+                <p>
+                    <a class="" data-bs-toggle="collapse" href="#reflexionc" 
+                       role="button" aria-expanded="false" 
+                       aria-controls="reflexionc"
+                       style="color: #000">
+                        <i class="fas fa-plus-square"></i> Relflexión
+                    </a>
+
+                </p>
+                <div class="collapse" id="reflexionc">
+                    <div class="card card-body">
+                        <!-- Para el tema de la unidad -->            
+                        <?= $this->render('_reflexion', ['tema' => $tema, 'registros' => $registros]); ?> 
+                        <hr>                        
+
+                    </div> <!-- Fin de card-body -->
+                </div>
+            </div><!-- fin de row de REFLEXIÓN -->
+
             <!-- finaliza cuerpo de card -->            
-            
+
         </div>
     </div>
 </div>
 
 <!-- SCRIPT PARA MOSTRAR MATERIAS POR CURSO ESCOGIDO -->
 <script>
-    
-    
+
+
 </script>
 
 

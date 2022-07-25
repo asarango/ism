@@ -16,7 +16,7 @@ foreach ($temas as $tema) {
                 ?>
                 <div class="col-lg-3 col-md-3"><b>Creado el </b><?= $tema->created_at ?></div>
                 <div class="col-lg-3 col-md-3"><b>Bloque </b><?= bloque($tema->bloque_id) ?></div>
-                <div class="col-lg-3 col-md-3">
+                <div class="col-lg-6 col-md-6">
                     <?= 
                         Html::a('<i class="fas fa-cogs"> Configurar</i>',['/pep-detalle/index1',
                             'tema_id' => $tema->id

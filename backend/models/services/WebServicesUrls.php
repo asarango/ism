@@ -18,12 +18,12 @@ class WebServicesUrls extends ActiveRecord{
     public function __construct($service){
 
         if($service == 'odoo'){
-            $this->url = 'http://192.168.20.25/web-service/public/index.php/api';
-//            $this->url = 'http://181.188.210.115:11042/web-service/public/index.php/api';
+//            $this->url = 'http://192.168.20.25/web-service/public/index.php/api';
+            $this->url = 'http://181.188.210.115:11042/web-service/public/index.php/api';
             $this->secretKey = 'esmiaplicacionmaestra';
         }elseif($service == 'academico'){
-            $this->url = 'http://192.168.20.25/ws-academico/public/index.php/api';
-//            $this->url = 'http://181.188.210.115:11042/ws-academico/public/index.php/api';
+//            $this->url = 'http://192.168.20.25/ws-academico/public/index.php/api';
+            $this->url = 'http://181.188.210.115:11042/ws-academico/public/index.php/api';
             $this->secretKey = 'esmiaplicacionmaestra';
         }else{
             return array(

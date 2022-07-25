@@ -691,5 +691,29 @@ where 	pm.scholaris_periodo_id = $periodId
             }
         }
     }
+    
+    
+    /**
+     * METODO PARA USO POR OPCOURSETEMPLATE
+     * @param type $opcourseTemplateId
+     * @return type
+     */
+    public function get_tipo_uso_op_course_template($opcourseTemplateId){
+        $periodoId = \Yii::$app->user->identity->periodo_id;
+        $con = \Yii::$app->db;
+        $query = "select 	c.tipo_usu_bloque  
+                    from 	scholaris_clase c
+                                    inner join op_course_paralelo p on p.id = c.paralelo_id 
+                                    inner join op_course cur on cur.id = p.course_id
+                                    inner join op_section sec on sec.id = cur.section
+                                    inner join scholaris_op_period_periodo_scholaris sop on sop.op_id = sec.period_id 
+                                    inner join scholaris_bloque_actividad b on b.tipo_uso = c.tipo_usu_bloque 
+                    where 	cur.x_template_id = $opcourseTemplateId
+                                    and sop.scholaris_id = $periodoId
+                    limit 1;";
+        $res = $con->createCommand($query)->queryOne();
+        
+        return $res['tipo_usu_bloque'];
+    }
 
 }

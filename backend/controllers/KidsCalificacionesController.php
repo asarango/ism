@@ -6,6 +6,7 @@ use backend\models\KidsCalificaTarea;
 use backend\models\KidsEscalaCalificacion;
 use backend\models\KidsDestrezaTarea;
 use backend\models\ViewKidsTareasSearch;
+use backend\models\ScholarisQuimestre;
 use Yii;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -33,9 +34,18 @@ class KidsCalificacionesController extends Controller{
         $tareaId = $_GET['tarea_id'];
         $modelTarea = KidsDestrezaTarea::findOne($tareaId);
         $claseId = $modelTarea->planDestreza->horaClase->clase_id;
-        $escala = KidsEscalaCalificacion::find()->where(['escala' => 'I'])->one();        
+        $escala = KidsEscalaCalificacion::find()->where(['escala' => 'I'])->one();
+        
+        $quimestreCodigo = $modelTarea->planDestreza->horaClase->planSemanal->semana->bloque->quimestre;
+        $quimestre = ScholarisQuimestre::find()
+        ->where([
+            'codigo' => $quimestreCodigo
+        ])->one();
+
+        $destrezaId = $modelTarea->planDestreza->microDestreza->destreza_id;
 
         $this->genera_espacio_calificacion($tareaId, $escala->id, $claseId);
+        $this->inserta_reporte_quimestral($quimestre->id,$destrezaId,$claseId,$escala->id);
         
 
         return $this->render('calificar', [
@@ -73,7 +83,34 @@ class KidsCalificacionesController extends Controller{
                 and g.id not in (select grupo_id 
                                     from kids_califica_tarea
                                     where tarea_id = $tareaId);";
+        // echo $query;
+        // die();
+
+
         $con->createCommand($query)->execute();
+    }
+
+    /*
+    MÉTODO QUE INSERTA REPORTE QUIMESTRAL
+    */
+    private function inserta_reporte_quimestral($quimestreId, $destrezaId,$claseId,$escalaId){
+        $con = Yii::$app->db;
+        $query = "insert into kids_calificaciones_quimestre(quimestre_id, grupo_id, escala_id, destreza_id)
+        select 	$quimestreId, g.id, $escalaId, $destrezaId
+        from	scholaris_grupo_alumno_clase g
+        where 	g.clase_id = $claseId
+                and g.estado = true
+                and g.id not in (select grupo_id  
+                                    from kids_calificaciones_quimestre 
+                                    where quimestre_id = $quimestreId 
+                                        and grupo_id = g.id  
+                                        and destreza_id = $destrezaId);";
+        // echo $query;
+        // die();
+
+
+        $con->createCommand($query)->execute();
+
     }
 
 
@@ -84,10 +121,23 @@ class KidsCalificacionesController extends Controller{
         $tareaId = $_GET['tarea_id'];
         $escalas = KidsEscalaCalificacion::find()->orderBy('equivalencia')->all();
         $calificaciones = $this->get_calificaciones($tareaId);
+
+        $modelTarea = KidsDestrezaTarea::findOne($tareaId);
+        
+        $quimestreCodigo = $modelTarea->planDestreza->horaClase->planSemanal->semana->bloque->quimestre;
+        $quimestre = ScholarisQuimestre::find()
+        ->where([
+            'codigo' => $quimestreCodigo
+        ])->one();
+
+        $destrezaId = $modelTarea->planDestreza->microDestreza->destreza_id;
+
         
         return $this->renderPartial('_ajax-lista-calificacion',[
             'escalas' => $escalas,
-            'calificaciones' => $calificaciones
+            'calificaciones' => $calificaciones,
+            'quimestreId' => $quimestre->id,
+            'destrezaId' => $destrezaId
         ]);
     }
 
@@ -98,6 +148,8 @@ class KidsCalificacionesController extends Controller{
     public function actionUpdateCalificacion(){
         $escalaId       = $_POST['id'];
         $calificacionId = $_POST['calificacion_id'];
+        $quimestreId = $_POST['quimestre_id'];
+        $destrezaId = $_POST['destreza_id'];
         $hoy            = date('Y-m-d H:i:s');
         $usuario        = Yii::$app->user->identity->usuario;
 
@@ -106,6 +158,10 @@ class KidsCalificacionesController extends Controller{
         $model->updated = $usuario;
         $model->updated_at = $hoy;
         $model->save();
+
+        new \backend\models\kids\CalificacionQuimestral($model->grupo_id,$destrezaId,$quimestreId,$escalaId);
+
+
 
     }
 

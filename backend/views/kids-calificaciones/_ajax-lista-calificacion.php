@@ -77,10 +77,14 @@ use yii\grid\GridView;
 <script>
     //Función para agregar calificación al estudiante
     function califica(escalaId, calificacionId){
+        var quimestreId = '<?=$quimestreId?>';
+        var destrezaId = '<?=$destrezaId?>';
         var url = '<?=Url::to(["update-calificacion"])?>';
         var params = {
             id: escalaId,
-            calificacion_id: calificacionId
+            calificacion_id: calificacionId,
+            quimestre_id: quimestreId,
+            destreza_id: destrezaId,
         };
 
         $.ajax({

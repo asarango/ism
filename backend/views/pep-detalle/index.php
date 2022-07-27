@@ -167,6 +167,16 @@ $this->params['breadcrumbs'][] = $this->title;
                     </div> <!-- Fin de card-body -->
                 </div>
             </div><!-- fin de row de REFLEXIÓN -->
+            
+            
+            <!-- ROW DESTREZAS DEL MINISTERIO DE EDUCACION -->
+            <div class="row p-2" style="margin-top: 20px; margin-bottom: 20px ;"> 
+                <p class="zoom">
+                    <?= Html::a('<i class="fas fa-hand-point-right" style="color: #ab0a3d"> Ir a criterios y destrezas - Ministerio de Educación</i>', ['desagregacion',
+                        'tema_id' => $tema->id
+                    ]) ?>
+                </p>
+            </div><!-- fin de row de Destrezas del ministerio de educacion -->
 
             <!-- finaliza cuerpo de card -->            
 

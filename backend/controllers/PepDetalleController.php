@@ -240,4 +240,17 @@ class PepDetalleController extends Controller {
         return json_encode($response);
         
     }
+    
+    public function actionDesagregacion(){
+        $temaId = $_GET['tema_id'];
+        $tema = \backend\models\PepPlanificacionXUnidad::findOne($temaId);
+        
+        
+        $searchModel = new \backend\models\ViewDestrezaMecBiSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams, $tema->op_course_template_id);
+        
+        return $this->render('desagregacion',[
+            'tema' => $tema
+        ]);
+    }
 }

@@ -188,7 +188,8 @@ class PudDipController extends Controller {
 
     /*     * * Actualiza porcentaje de avance deL PUD del DIP */
 
-    private function pud_dip_actualiza_porcentaje_avance($modelPlanVertDipl) {
+    private function pud_dip_actualiza_porcentaje_avance($modelPlanVertDipl) 
+    {
         $modelPlanBloqUni = PlanificacionBloquesUnidad::findOne($modelPlanVertDipl->planificacion_bloque_unidad_id);
         //consulta para extraer el porcentaje de avance del PUD DIPLOMA
 
@@ -668,6 +669,9 @@ class PudDipController extends Controller {
         $modelPlanVertical = PlanificacionVerticalDiploma::find()->where(['planificacion_bloque_unidad_id' => $planBloqueUnidadId])->one();
         $modelPlanVertical->ultima_seccion = $accion_update;
         $modelPlanVertical->save();
+
+         //guarda el porcentaje de avance del pud dip
+         $this->pud_dip_actualiza_porcentaje_avance($modelPlanVertical);
         
         return $formativa;
         
@@ -897,6 +901,9 @@ class PudDipController extends Controller {
         $modelPlanVertical->ultima_seccion = $accion_update;
         $modelPlanVertical->save();     
 
+         //guarda el porcentaje de avance del pud dip
+         $this->pud_dip_actualiza_porcentaje_avance($modelPlanVertical);
+
         return $mostrar;
     }
     
@@ -929,11 +936,14 @@ class PudDipController extends Controller {
         }                
     }
     
-    private function mostrar_seleccion_metacognicion($planBloqueUnidadId, $titulo) {
+    private function mostrar_seleccion_metacognicion($planBloqueUnidadId, $titulo) 
+    {
         $pudDip = \backend\models\PudDip::find()->where([
             'planificacion_bloques_unidad_id' => $planBloqueUnidadId,
             'codigo' => 'METACOGNICION'
-         ])->all();
+         ])
+         ->orderBy(['opcion_texto'=>SORT_ASC])
+         ->all();
 
         
 
@@ -963,8 +973,7 @@ class PudDipController extends Controller {
             }
             
         }
-        $html .= '</div>'; //FIN ROW SELECCION
-        
+        $html .= '</div>'; //FIN ROW SELECCION        
         $html .= '<hr />'; 
         
 //            $html .= '<div class="row">'; //inicia row de detalle
@@ -1006,7 +1015,9 @@ class PudDipController extends Controller {
         $modelPlanVertical = PlanificacionVerticalDiploma::find()->where(['planificacion_bloque_unidad_id' => $planBloqueUnidadId])->one();
         $modelPlanVertical->ultima_seccion = $accion_update;
         $modelPlanVertical->save();
-        
+
+        //guarda el porcentaje de avance del pud dip
+        $this->pud_dip_actualiza_porcentaje_avance($modelPlanVertical);
         return $mostrar;
     }
     
@@ -1018,7 +1029,9 @@ class PudDipController extends Controller {
                 where 	op.tipo = 'APRENDIZAJE-DIFERENCIADO'
                                 and op.opcion not in (select opcion_texto from pud_dip 
                                 where planificacion_bloques_unidad_id = $planBloqueUnidadId 
-                                and opcion_texto = opcion and codigo = 'APRENDIZAJE-DIFERENCIADO');";
+                                and opcion_texto = opcion and codigo = 'APRENDIZAJE-DIFERENCIADO')
+                                
+                ;";
         $con->createCommand($query)->execute();
         
         $modelDetalle = \backend\models\PudDip::find()->where([
@@ -1041,7 +1054,9 @@ class PudDipController extends Controller {
         $pudDip = \backend\models\PudDip::find()->where([
             'planificacion_bloques_unidad_id' => $planBloqueUnidadId,
             'codigo' => 'APRENDIZAJE-DIFERENCIADO'
-         ])->all();
+         ])
+         ->orderBy(['opcion_texto'=>SORT_ASC])
+         ->all();
         
 
         $html = '';
@@ -1100,14 +1115,20 @@ class PudDipController extends Controller {
     }
     
     
-    
-    
-    
     public function actionUpdatePudDip(){
         $campoDe = $_POST['campo_de'];
         $id = $_POST['id'];            
         
-        $model = \backend\models\PudDip::findOne($id);
+        $model = \backend\models\PudDip::findOne($id);  
+        
+        // //buscal el planVetiDip
+        $modelPlanVertDipl = PlanificacionVerticalDiploma::find()
+        ->where(['planificacion_bloque_unidad_id'=> $model->planificacion_bloques_unidad_id])
+        ->one(); 
+       
+
+        //guarda el porcentaje de avance del pud dip
+        $this->pud_dip_actualiza_porcentaje_avance($modelPlanVertDipl);
         
         if($campoDe == 'seleccion'){            
             $model->opcion_boolean ? $model->opcion_boolean = false : $model->opcion_boolean = true;
@@ -1116,8 +1137,7 @@ class PudDipController extends Controller {
             $model->opcion_texto = $_POST['contenido'];
             $model->save();
             return $this->redirect(['index1', 'plan_bloque_unidad_id' => $model->planificacion_bloques_unidad_id]);
-        }
-                
+        }      
     }
     
 

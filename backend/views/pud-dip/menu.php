@@ -23,6 +23,10 @@ $modelProcApre = backend\models\PudDipProcesoAprendizaje::find()
 ->where(['plan_unidad_id'=>$planUnidad->id, 'es_activo' => true])
 ->all();
 
+$iconoOk = 'fas fa-check';
+$colorOk = 'green';
+$colorNotOk = 'red';
+$numCaracteresOk = $modelOpciones->categoria;
 
 $contador_5_1 = 0;
 $contador_5_3_1 = 0;
@@ -34,9 +38,9 @@ $opcion = '1.1.-';
 if($modelPVD)
 {    
     $opcion=$modelPVD->ultima_seccion;    
-    $contador_5_1 = contador_evaluaciones($planUnidad->id);
-    $contador_5_3_1 = contador_metacognicion($planUnidad->id);
-    $contador_5_3_2 = contador_diferenciacion($planUnidad->id);
+    $contador_5_1 = contador_evaluaciones($planUnidad->id,$numCaracteresOk);
+    $contador_5_3_1 = contador_metacognicion($planUnidad->id,$numCaracteresOk);
+    $contador_5_3_2 = contador_diferenciacion($planUnidad->id,$numCaracteresOk);
     $contador_5_4 = contador_de_consultar_lenguaje_y_aprendizaje_ckeck($modelPVD->id);    
     $contador_5_6 = consultar_conexion_cas_ckeck($modelPVD->id);    
    
@@ -60,10 +64,7 @@ if($modelPVD)
     $modelPVD->ultima_seccion='';
 }
 
-$iconoOk = 'fas fa-check';
-$colorOk = 'green';
-$colorNotOk = 'red';
-$numCaracteresOk = $modelOpciones->categoria;
+
 
 //metodo usado para 5.4.- llamada a lenguaje y aprendizaje
 function contador_de_consultar_lenguaje_y_aprendizaje_ckeck($planVertDiplId) 
@@ -102,13 +103,13 @@ function contador_de_consultar_lenguaje_y_aprendizaje_ckeck($planVertDiplId)
  
  
  //para llamada 5.1
- function contador_evaluaciones($planUnidadId){
+ function contador_evaluaciones($planUnidadId,$numCaracteresOk){
      
      $contador_5_1 = 0;         
      $model = backend\models\PudDipEvaluaciones::find()->where(['plan_unidad_id' => $planUnidadId])->one();
      
      if($model){
-         if(strlen($model->formativa) > 20 && strlen($model->sumativa) > 20){
+         if(strlen($model->formativa) > $numCaracteresOk && strlen($model->sumativa) > $numCaracteresOk){
             $contador_5_1 = 1;
          }         
      }
@@ -119,11 +120,13 @@ function contador_de_consultar_lenguaje_y_aprendizaje_ckeck($planVertDiplId)
  
  //para metacognitivo
  //para conocer si esta planificado el metacognitivo
-function contador_metacognicion($planUnidadId)
+function contador_metacognicion($planUnidadId,$numCaracteresOk)
 {
     $pudDip = backend\models\PudDip::find()->where([
     'planificacion_bloques_unidad_id' => $planUnidadId,
-    'codigo' => 'METACOGNICION' 
+    'codigo' => 'METACOGNICION',
+    //'opcion_boolean'=>true,
+    //'opcion'
     ])->all();
     
     $contador_5_3_1 = 0;
@@ -135,7 +138,7 @@ function contador_metacognicion($planUnidadId)
             $cont++;
         }
         
-        if($pud->campo_de == 'escrito' && strlen($pud->opcion_texto) > 20){
+        if($pud->campo_de == 'escrito' && strlen($pud->opcion_texto) >$numCaracteresOk ){
             $contDetalle = 1;
         }
     }
@@ -151,7 +154,7 @@ function contador_metacognicion($planUnidadId)
 
 //para metacognitivo
  //para conocer si esta planificado el metacognitivo
-function contador_diferenciacion($planUnidadId){
+function contador_diferenciacion($planUnidadId,$numCaracteresOk){
     $pudDip = backend\models\PudDip::find()->where([
     'planificacion_bloques_unidad_id' => $planUnidadId,
     'codigo' => 'APRENDIZAJE-DIFERENCIADO' 
@@ -166,7 +169,7 @@ function contador_diferenciacion($planUnidadId){
             $cont++;
         }
         
-        if($pud->campo_de == 'escrito' && strlen($pud->opcion_texto) > 20){
+        if($pud->campo_de == 'escrito' && strlen($pud->opcion_texto) > $numCaracteresOk){
             $contDetalle = 1;
         }
     }
@@ -369,36 +372,15 @@ function contador_diferenciacion($planUnidadId){
         <b>7.- REFLEXIÓN</b>
         <ul>                                
             <li class="zoom"><a href="#" onclick="ver_detalle('7.1.-');">7.1.- Lo que fuincionó bien
-                <?php
-                    if (strlen($modelPVD->reflexion_funciono)<$numCaracteresOk)
-                    { $iconoColor = $colorNotOk;}
-                    else
-                    { $iconoColor = $colorOk;}
-                    ?>
-                    <i class="<?=$iconoOk;?>" title="FALTA INGRESAR DATOS" style="color: <?=$iconoColor;?>;"></i>
-                    </a>            
-            </li>           
-            <li class="zoom"><a href="#" onclick="ver_detalle('7.2.-');">7.2.- Lo que nó fuincionó bien
-                <?php
-                    if (strlen($modelPVD->reflexion_no_funciono)<$numCaracteresOk)
-                    { $iconoColor = $colorNotOk;}
-                    else
-                    { $iconoColor = $colorOk;}
-                    ?>
-                    <i class="<?=$iconoOk;?>" title="FALTA INGRESAR DATOS" style="color: <?=$iconoColor;?>;"></i>
-                    </a>            
+                <i class="<?=$iconoOk;?>" title="" style="color: green;"></i></a>
             </li>          
+            <li class="zoom"><a href="#" onclick="ver_detalle('7.2.-');">7.2.- Lo que nó fuincionó bien
+                <i class="<?=$iconoOk;?>" title="" style="color: green;"></i></a>
+            </li> 
             <li class="zoom"><a href="#" onclick="ver_detalle('7.3.-');">7.3.- Observaciones, Cambios y sugerencias
-                <?php
-                    if (strlen($modelPVD->reflexion_observacion)<$numCaracteresOk)
-                    { $iconoColor = $colorNotOk;}
-                    else
-                    { $iconoColor = $colorOk;}
-                    ?>
-                    <i class="<?=$iconoOk;?>" title="FALTA INGRESAR DATOS" style="color: <?=$iconoColor;?>;"></i>
-                    </a>            
-            </li>         
-            
+                <i class="<?=$iconoOk;?>" title="" style="color: green;"></i></a>
+            </li>       
+               
         </ul>
     </li>   
 </ul>

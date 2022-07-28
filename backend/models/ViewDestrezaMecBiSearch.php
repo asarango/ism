@@ -45,8 +45,8 @@ class ViewDestrezaMecBiSearch extends ViewDestrezaMecBi
     public function search($params, $opCourseTemplateId)
     {
         $query = ViewDestrezaMecBi::find()
-        ->where(['op_course_template_id' => $opCourseTemplateId])
-        ->orderBy(['fecha_presentacion' => SORT_DESC]);
+        ->where(['op_course_template_id' => $opCourseTemplateId]);
+//        ->orderBy(['fecha_presentacion' => SORT_DESC]);
 
         // add conditions that should always apply here
 

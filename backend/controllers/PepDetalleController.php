@@ -250,7 +250,37 @@ class PepDetalleController extends Controller {
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams, $tema->op_course_template_id);
         
         return $this->render('desagregacion',[
-            'tema' => $tema
+            'tema' => $tema,
+            'temaId' => $temaId,
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider
         ]);
+    }
+    
+    
+    public function actionAgregar(){
+        $destrezaId = $_GET['destreza_id'];
+        $temaId = $_GET['tema_id'];
+        
+//        pep_planificacion_unidad_id, tipo, referencia, campo_de, contenido_texto, contenido_opcion
+        $model = new \backend\models\PepUnidadDetalle();
+        $model->pep_planificacion_unidad_id = $temaId;
+        $model->tipo = 'destreza';
+        $model->referencia = 'mec';
+        $model->campo_de = 'seleccion';
+        $model->contenido_texto = $destrezaId;
+        $model->contenido_opcion = true;
+        $model->save();
+        
+        return $this->redirect(['desagregacion', 'tema_id' => $temaId]);
+    }
+    
+    public function actionQuitar(){
+        $id = $_GET['id'];
+        $model = \backend\models\PepUnidadDetalle::findOne($id);
+        $temaId = $model->pep_planificacion_unidad_id;
+        $model->delete();
+        
+        return $this->redirect(['desagregacion', 'tema_id' => $temaId]);
     }
 }

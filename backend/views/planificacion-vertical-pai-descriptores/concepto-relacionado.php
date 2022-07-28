@@ -55,13 +55,18 @@ $condicion = $condicionClass->aprobacion_planificacion($estado,$isOpen,$bloqueUn
                                                 '<strong>' . $disponible['contenido_es'] . '</strong>',
                                                 ['asignar-contenido', 'plan_unidad_id' => $bloqueUnidad->id,
                                                     'tipo' => 'concepto_relacionado',
+                                                    'tipo2' => 'CONCEPTOS RELACIONADOS',
+                                                    'id_relacion' => $disponible['id'],
                                                     'contenido' => $disponible['contenido_es'],
                                                     'pestana' => 'conceptos_relacionados'],
                                                 ['class' => 'link']
                                         );
                                         ?>
                                     </td>
-                                    <?php
+                                    
+                                    <?php                                 
+                                  
+
 //                                }
                                 ?>
 

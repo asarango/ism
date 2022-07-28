@@ -34,11 +34,12 @@ class PlanificacionBloquesUnidadSubtitulo extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['plan_unidad_id', 'subtitulo'], 'required'],
+            [['plan_unidad_id', 'subtitulo','trazabilidad'], 'required'],
             [['plan_unidad_id', 'orden'], 'default', 'value' => null],
             [['plan_unidad_id', 'orden'], 'integer'],
             [['experiencias', 'evaluacion_formativa', 'diferenciacion'], 'string'],
             [['subtitulo'], 'string', 'max' => 255],
+            [['trazabilidad'], 'string', 'max' => 255],
             [['plan_unidad_id'], 'exist', 'skipOnError' => true, 'targetClass' => PlanificacionBloquesUnidad::className(), 'targetAttribute' => ['plan_unidad_id' => 'id']],
         ];
     }
@@ -56,6 +57,7 @@ class PlanificacionBloquesUnidadSubtitulo extends \yii\db\ActiveRecord
             'experiencias' => 'Experiencias',
             'evaluacion_formativa' => 'Evaluacion Formativa',
             'diferenciacion' => 'Diferenciacion',
+            'trazabilidad'=> 'Trazabilidad',
         ];
     }
 

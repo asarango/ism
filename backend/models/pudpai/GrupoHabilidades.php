@@ -41,11 +41,11 @@ class GrupoHabilidades extends ActiveRecord{
     private function get_hablidades(){
       $con = Yii::$app->db;
       $query = "select 	h.es_titulo2  as contenido
-                    ,h.es_titulo1 
+                    ,h.es_titulo1,h.es_exploracion
                 from 	planificacion_vertical_pai_opciones op 
                     inner join contenido_pai_habilidades h on h.es_exploracion = op.contenido 
                 where 	op.plan_unidad_id = $this->planUnidadId
-                group  by h.es_titulo2,h.es_titulo1 
+                group  by h.es_titulo2,h.es_titulo1,h.es_exploracion 
                 order by h.es_titulo2;";
 
       $res = $con->createCommand($query)->queryAll();
@@ -82,53 +82,23 @@ class GrupoHabilidades extends ActiveRecord{
             $this->html .= '<tr>';
 
             $this->html .= '<td>';
-            $this->html .= '<ul>';            
-            foreach($this->habilidades as $habilidad){
-              if( $habilidad['es_titulo1'] == 'HABILIDADES DE COMUNICACIÓN'){
-                $this->html .= '<li>* '.$habilidad['contenido'].'</li>';
-              }
-            }
-            $this->html .= '</ul>';
+              $this->html .= $this->estructuraContenido('HABILIDADES DE COMUNICACIÓN');
             $this->html .= '</td>';
 
             $this->html .= '<td>';
-            $this->html .= '<ul>';            
-            foreach($this->habilidades as $habilidad){
-              if( $habilidad['es_titulo1'] == 'HABILIDADES DE SOCIALES'){
-                $this->html .= '<li>* '.$habilidad['contenido'].'</li>';
-              }
-            }
-            $this->html .= '</ul>';
+              $this->html .= $this->estructuraContenido('HABILIDADES DE SOCIALES');
             $this->html .= '</td>';
 
             $this->html .= '<td>';
-            $this->html .= '<ul>';            
-            foreach($this->habilidades as $habilidad){
-              if( $habilidad['es_titulo1'] == 'HABILIDADES DE AUTOGESTIÓN'){
-                $this->html .= '<li>* '.$habilidad['contenido'].'</li>';
-              }
-            }
-            $this->html .= '</ul>';
+              $this->html .= $this->estructuraContenido('HABILIDADES DE AUTOGESTIÓN');
             $this->html .= '</td>';
 
             $this->html .= '<td>';
-            $this->html .= '<ul>';            
-            foreach($this->habilidades as $habilidad){
-              if( $habilidad['es_titulo1'] == 'HABILIDADES DE INVESTIGACIÓN'){
-                $this->html .= '<li>* '.$habilidad['contenido'].'</li>';
-              }
-            }
-            $this->html .= '</ul>';
+              $this->html .= $this->estructuraContenido('HABILIDADES DE INVESTIGACIÓN');
             $this->html .= '</td>';
 
             $this->html .= '<td>';
-            $this->html .= '<ul>';            
-            foreach($this->habilidades as $habilidad){
-              if( $habilidad['es_titulo1'] == 'HABILIDADES DE PENSAMIENTO'){
-                $this->html .= '<li>* '.$habilidad['contenido'].'</li>';
-              }
-            }
-            $this->html .= '</ul>';
+              $this->html .= $this->estructuraContenido('HABILIDADES DE PENSAMIENTO');
             $this->html .= '</td>';
 
             $this->html .= '</tr>';
@@ -141,6 +111,32 @@ class GrupoHabilidades extends ActiveRecord{
         $this->html .= '</div>';
       $this->html .= '</div>';
 
+    }
+    //devuelve la estructura de arbol de las habilidades
+    private function estructuraContenido($a_buscar)
+    {      
+        $arrayHabilidades = array();
+        $html = '';
+        foreach($this->habilidades as $habilidad)
+        {
+           if($habilidad['es_titulo1']==$a_buscar && !in_array($habilidad['contenido'],$arrayHabilidades,true))
+           {
+              $arrayHabilidades[]=$habilidad['contenido'];
+           }
+        }       
+        
+        foreach($arrayHabilidades as $contenido)
+        {
+            $html .= '<b>'.$contenido.'</b>';
+              foreach($this->habilidades as $habilidad)
+              {
+                if($habilidad['contenido']==$contenido)
+                {
+                  $html .='<li>'.$habilidad['es_exploracion'].'</li>';              
+                }
+              }
+        }
+        return $html;
     }
     
    

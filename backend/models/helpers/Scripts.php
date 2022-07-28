@@ -666,6 +666,16 @@ where 	pm.scholaris_periodo_id = $periodId
         $res = $con->createCommand($query)->queryAll();
         return $res;
     }
+    //trae el CONTENIDO del plan vertical pai
+    public function selecciona_subtitulos($planUnidadId){
+        $con = Yii::$app->db;
+        $query = "select 	id, plan_unidad_id, subtitulo, orden,trazabilidad 
+                    from 	planificacion_bloques_unidad_subtitulo
+                    where	plan_unidad_id = $planUnidadId
+                    order by orden;";
+        $res = $con->createCommand($query)->queryAll();
+        return $res;
+    }
     
     /**
      * METODO PARA SUBIR ARCHIVOS AL SERVIDOR

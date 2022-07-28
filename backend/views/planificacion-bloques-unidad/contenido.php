@@ -23,6 +23,8 @@ $condicion = $condicionClass->aprobacion_planificacion($estado,$isOpen,$planUnid
 //echo $condicion;
 //die();
 
+$arrayTrazabilidad = array("E.P"=>"E.P","P.P.C"=>"P.P.C","D.I.M.E"=>"D.I.M.E");
+
 ?>
 
 <!-- JS y CSS Ckeditor -->
@@ -35,7 +37,7 @@ $condicion = $condicionClass->aprobacion_planificacion($estado,$isOpen,$planUnid
         <div class="card shadow col-lg-12 col-md-12">
             <div class=" row align-items-center p-2">
                 <div class="col-lg-1">
-                    <h4><img src="ISM/main/images/submenu/herramientas-para-reparar.png" width="64px" style="" class="img-thumbnail"></h4>
+                    <h4><img src="ISM/main/images/submenu/herramientas-para-reparar.png" width="64px"  class="img-thumbnail"></h4>
                 </div>
                 <div class="col-lg-11">
                     <h4><?= Html::encode($this->title) ?></h4>
@@ -110,7 +112,7 @@ $condicion = $condicionClass->aprobacion_planificacion($estado,$isOpen,$planUnid
                                 <?php
                             }
                             ?>
-                            Temas de <?= $planUnidad->unit_title ?>
+                            Temas de: <?='<b>'. $planUnidad->unit_title .'</b>' ?>
                         </h5>
                     </div>
 
@@ -285,49 +287,53 @@ $condicion = $condicionClass->aprobacion_planificacion($estado,$isOpen,$planUnid
                                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                 </div>
                                                 <div class="modal-body">
+                                                
                                                     <?php
                                                     $form = ActiveForm::begin(['action' => ['update-subtitle'],
                                                                 'id' => $subtitulo['id'],
                                                                 'method' => 'post',]);
                                                     ?>
-
-                                                    <?= $form->field($subtitulo, 'id')->hiddenInput()->label(false) ?>
-                                                    <?= $form->field($subtitulo, 'subtitulo')->textInput(['required'=>''])->label('Título') ?>
-                                                    <?= $form->field($subtitulo, 'orden')->textInput(['required'=>''])->label('Orden') ?>
                                                     
+                                                    
+                                                            <?= $form->field($subtitulo, 'id')->hiddenInput()->label(false) ?>
+                                                            <?= $form->field($subtitulo, 'subtitulo')->textInput(['required'=>''])->label('Título') ?>
+                                                            <?= $form->field($subtitulo, 'orden')->textInput(['required'=>''])->label('Orden') ?>
+                                                            <?= $form->field($subtitulo, 'trazabilidad')->dropDownList($arrayTrazabilidad,['prompt'=>'Seleccione Uno']) ?>
+                                                            
 
-                                                    <hr>
-                                                    <div class="form-group">
-                                                        <label for="experiencia">EXPERIENCIAS DE APRENDIZAJE Y ESTRATEGIAS DE ENSEÑANZA:</label>
-                                                        <textarea name="experiencia_update" id="experiencia-editor-update<?= $subtitulo->id ?>" ><?= $subtitulo->experiencias ?></textarea>
-                                                        <script>
-                                                            CKEDITOR.replace("experiencia-editor-update<?= $subtitulo->id ?>", {
-                                                                customConfig: "/ckeditor_settings/config.js"
-                                                            });
-                                                        </script>
-                                                    </div>
-
-                                                    <hr>
-                                                    <div class="form-group">
-                                                        <label for="experiencia">EVALUACIÓN FORMATIVAS:</label>
-                                                        <textarea name="evaluacion_update" id="evaluacion-editor-update<?= $subtitulo->id ?>" ><?= $subtitulo->evaluacion_formativa ?></textarea>
-                                                        <script>
-                                                            CKEDITOR.replace("evaluacion-editor-update<?= $subtitulo->id ?>", {
-                                                                customConfig: "/ckeditor_settings/config.js"
-                                                            });
-                                                        </script>
-                                                    </div>
-
-                                                    <hr>
-                                                    <div class="form-group">
-                                                        <label for="experiencia">DIFERENCIACIÓN:</label>
-                                                        <textarea name="diferenciacion_update" id="diferenciacion-editor-update<?= $subtitulo->id ?>" ><?= $subtitulo->diferenciacion ?></textarea>
-                                                        <script>
-                                                            CKEDITOR.replace("diferenciacion-editor-update<?= $subtitulo->id ?>", {
-                                                                customConfig: "/ckeditor_settings/config.js"
-                                                            });
-                                                        </script>
-                                                    </div>     
+                                                            <hr>
+                                                            <div class="form-group">
+                                                                <label for="experiencia">EXPERIENCIAS DE APRENDIZAJE Y ESTRATEGIAS DE ENSEÑANZA:</label>
+                                                                <textarea name="experiencia_update" id="experiencia-editor-update<?= $subtitulo->id ?>" ><?= $subtitulo->experiencias ?></textarea>
+                                                                <script>
+                                                                    CKEDITOR.replace("experiencia-editor-update<?= $subtitulo->id ?>", {
+                                                                        customConfig: "/ckeditor_settings/config.js"
+                                                                    });
+                                                                </script>
+                                                            </div>
+                                                            <hr>
+                                                            
+                                                            <div class="form-group">
+                                                                <label for="experiencia">EVALUACIÓN FORMATIVAS:</label>
+                                                                <textarea name="evaluacion_update" id="evaluacion-editor-update<?= $subtitulo->id ?>" ><?= $subtitulo->evaluacion_formativa ?></textarea>
+                                                                <script>
+                                                                    CKEDITOR.replace("evaluacion-editor-update<?= $subtitulo->id ?>", {
+                                                                        customConfig: "/ckeditor_settings/config.js"
+                                                                    });
+                                                                </script>
+                                                            </div>
+                                                            <hr>
+                                                         
+                                                            <div class="form-group">
+                                                                <label for="experiencia">DIFERENCIACIÓN:</label>
+                                                                <textarea name="diferenciacion_update" id="diferenciacion-editor-update<?= $subtitulo->id ?>" ><?= $subtitulo->diferenciacion ?></textarea>
+                                                                <script>
+                                                                    CKEDITOR.replace("diferenciacion-editor-update<?= $subtitulo->id ?>", {
+                                                                        customConfig: "/ckeditor_settings/config.js"
+                                                                    });
+                                                                </script>
+                                                            </div> 
+                                                           
 
                                                     <br>
                                                     <div class="form-group">
@@ -404,53 +410,59 @@ $condicion = $condicionClass->aprobacion_planificacion($estado,$isOpen,$planUnid
             </div>
             <div class="modal-body">
                 <?php $form = ActiveForm::begin(); ?>
+                        <?php 
+                            $arrayTrazabilidad = array("E.P"=>"E.P","P.P.C"=>"P.P.C","D.I.M.E"=>"D.I.M.E");
+                        ?>
 
-                <?= $form->field($model, 'plan_unidad_id')->hiddenInput(['value' => $planUnidad->id])->label(false) ?>
+                        <?= $form->field($model, 'plan_unidad_id')->hiddenInput(['value' => $planUnidad->id])->label(false) ?>
 
-                <?= $form->field($model, 'subtitulo')->textInput()->label() ?>
+                        <?= $form->field($model, 'subtitulo')->textInput()->label() ?>
+                        
+                        <?php
+                            $totalSubtitutlos = count($subtitulos) + 1;            
+                            echo $form->field($model, 'orden')->textInput(['value' => $totalSubtitutlos, 'required' => ''])->label() 
+                        ?>
 
-                <?php
-                    $totalSubtitutlos = count($subtitulos) + 1;            
-                    echo $form->field($model, 'orden')->textInput(['value' => $totalSubtitutlos, 'required' => ''])->label() 
-                ?>
+                        <?= $form->field($model, 'trazabilidad')->dropDownList($arrayTrazabilidad,['prompt'=>'Seleccione Opción']) ?>
 
-                <hr>
-                <div class="form-group">
-                    <label for="experiencia">EXPERIENCIAS DE APRENDIZAJE Y ESTRATEGIAS DE ENSEÑANZA:</label>
-                    <textarea name="experiencia" id="experiencia-editor" ></textarea>
-                    <script>
-                        CKEDITOR.replace("experiencia-editor", {
-                            customConfig: "/ckeditor_settings/config.js"
-                        });
-                    </script>
-                </div>
 
-                <hr>
-                <div class="form-group">
-                    <label for="experiencia">EVALUACIÓN FORMATIVAS:</label>
-                    <textarea name="evaluacion" id="evaluacion-editor" ></textarea>
-                    <script>
-                        CKEDITOR.replace("evaluacion-editor", {
-                            customConfig: "/ckeditor_settings/config.js"
-                        });
-                    </script>
-                </div>
+                        <hr>
+                        <div class="form-group">
+                            <label for="experiencia">EXPERIENCIAS DE APRENDIZAJE Y ESTRATEGIAS DE ENSEÑANZA:</label>
+                            <textarea name="experiencia" id="experiencia-editor" ></textarea>
+                            <script>
+                                CKEDITOR.replace("experiencia-editor", {
+                                    customConfig: "/ckeditor_settings/config.js"
+                                });
+                            </script>
+                        </div>
 
-                <hr>
-                <div class="form-group">
-                    <label for="experiencia">DIFERENCIACIÓN:</label>
-                    <textarea name="diferenciacion" id="diferenciacion-editor" ></textarea>
-                    <script>
-                        CKEDITOR.replace("diferenciacion-editor", {
-                            customConfig: "/ckeditor_settings/config.js"
-                        });
-                    </script>
-                </div>               
+                        <hr>
+                        <div class="form-group">
+                            <label for="experiencia">EVALUACIÓN FORMATIVAS:</label>
+                            <textarea name="evaluacion" id="evaluacion-editor" ></textarea>
+                            <script>
+                                CKEDITOR.replace("evaluacion-editor", {
+                                    customConfig: "/ckeditor_settings/config.js"
+                                });
+                            </script>
+                        </div>
 
-                <br>
-                <div class="form-group" style="text-align: end">
-                    <?= Html::submitButton('Agregar', ['class' => 'btn btn-primary']) ?>
-                </div>
+                        <hr>
+                        <div class="form-group">
+                            <label for="experiencia">DIFERENCIACIÓN:</label>
+                            <textarea name="diferenciacion" id="diferenciacion-editor" ></textarea>
+                            <script>
+                                CKEDITOR.replace("diferenciacion-editor", {
+                                    customConfig: "/ckeditor_settings/config.js"
+                                });
+                            </script>
+                        </div>               
+
+                        <br>
+                        <div class="form-group" style="text-align: end">
+                            <?= Html::submitButton('Agregar', ['class' => 'btn btn-primary']) ?>
+                        </div>
 
                 <?php ActiveForm::end(); ?>
             </div>

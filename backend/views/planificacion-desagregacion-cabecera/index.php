@@ -96,9 +96,6 @@ $this->params['breadcrumbs'][] = $this->title;
                     echo $this->render('planificacion-pep', ['cursos' => $cursos]);
                 }
                 ?>
-
-
-
             </div>
         </div>
     </div>

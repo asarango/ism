@@ -31,10 +31,11 @@ class PlanificacionVerticalPaiOpciones extends \yii\db\ActiveRecord
     {
         return [
             [['plan_unidad_id', 'tipo', 'contenido'], 'required'],
-            [['plan_unidad_id'], 'default', 'value' => null],
-            [['plan_unidad_id'], 'integer'],
+            [['plan_unidad_id','id_relacion'], 'default', 'value' => null],
+            [['plan_unidad_id','id_relacion'], 'integer'],
             [['contenido'], 'string'],
             [['tipo'], 'string', 'max' => 50],
+            [['tipo2'], 'string', 'max' => 100],
             [['plan_unidad_id'], 'exist', 'skipOnError' => true, 'targetClass' => PlanificacionBloquesUnidad::className(), 'targetAttribute' => ['plan_unidad_id' => 'id']],
         ];
     }

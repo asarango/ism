@@ -35,8 +35,8 @@ $condicion = $condicionClass->aprobacion_planificacion($estado,$isOpen,$bloqueUn
                         </tr>
                     </thead>
                     <tbody>
-                        <?php
-                        foreach ($contextoGlobalDisponibles as $disponibles) {
+                        <?php   
+                        foreach ($contextoGlobalDisponibles as $disponibles) {                            
                             ?>
                             <tr>
                                 <td style="width:30px; text-align:justify">
@@ -45,6 +45,8 @@ $condicion = $condicionClass->aprobacion_planificacion($estado,$isOpen,$bloqueUn
                                             '<strong>' . $disponibles['contenido_es'] . '</strong>',
                                             ['asignar-contenido', 'plan_unidad_id' => $bloqueUnidad->id,
                                                 'tipo' => $disponibles['tipo'],
+                                                'tipo2' => 'CONTEXTO GOBAL',
+                                                'id_relacion' => $disponibles['id'],
                                                 'contenido' => $disponibles['contenido_es'],
                                                 'pestana' => 'contexto_global'],
                                             ['class' => 'link']

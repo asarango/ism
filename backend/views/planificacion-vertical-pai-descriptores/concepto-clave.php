@@ -35,8 +35,7 @@ $condicion = $condicionClass->aprobacion_planificacion($estado,$isOpen,$bloqueUn
                 <thead>
                     <tr>
                         <th scope="col">#</th>
-                        <th scope="col" style="text-align:center">CONTENIDO</th>
-                        
+                        <th scope="col" style="text-align:center">CONTENIDO</th>                        
                     </tr>
                 </thead>
                 <tbody>
@@ -82,6 +81,8 @@ $condicion = $condicionClass->aprobacion_planificacion($estado,$isOpen,$bloqueUn
                                         '<strong>'.$disponibles['contenido_es'].'</strong>',
                                         ['asignar-contenido','plan_unidad_id' =>$bloqueUnidad->id,
                                             'tipo' => $disponibles['tipo'],
+                                            'tipo2' => 'CONCEPTO CLAVE',
+                                            'id_relacion' => $disponibles['id'],
                                             'contenido' => $disponibles['contenido_es'],
                                             'pestana' => 'concepto_clave'],
                                         ['class' => 'link']
@@ -114,6 +115,7 @@ $condicion = $condicionClass->aprobacion_planificacion($estado,$isOpen,$bloqueUn
                     <?php 
                         $contador= 1;
                         foreach ($conceptosClaveSeleccionados as $seleccionados) {
+
                     ?>
                     <tr>
                         <th><?= $contador ?></th>

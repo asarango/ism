@@ -19,6 +19,7 @@ class CalificacionQuimestral extends ActiveRecord{
     private $grupoId;
     private $destrezaId;
     private $quimestreId;
+    private $escalaActualId;
     private $nuevaEscalaId;
     private $codigoNuevoEscala;
 
@@ -31,33 +32,32 @@ class CalificacionQuimestral extends ActiveRecord{
 
         $escalaNueva = KidsEscalaCalificacion::findOne($nuevaEscalaId);
         $this->codigoNuevoEscala = $escalaNueva->escala;
-
-        $this->consulta_existencia_calificacion();
-    }
-
-
-    private function consulta_existencia_calificacion(){
-
+        
         $existe = KidsCalificacionesQuimestre::find()->where([
             'quimestre_id' => $this->quimestreId,
             'grupo_id' => $this->grupoId,
             'destreza_id' => $this->destrezaId
         ])->one();
+        
+        
+        
+        
+        if(trim($existe->escala->escala) != 'A' ){
+            echo $existe->escala->escala;
+            $this->consulta_existencia_calificacion($existe);
+        }
+       
 
-        // echo '<pre>';
-        // print_r($existe);
-        // die();
+        
+    }
+
+
+    private function consulta_existencia_calificacion($existe){
 
 
         if($existe){
-            echo $existe->escala->escala;
-             if($this->codigoNuevoEscala != 'A'){
-                // echo 'aqui';
                  $existe->escala_id = $this->nuevaEscalaId;
                  $existe->save(false);
-             }else{
-                echo 'es A';
-             }
              
         }else{
             

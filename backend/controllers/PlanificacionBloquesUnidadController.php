@@ -17,11 +17,14 @@ use backend\models\PlanificacionBloquesUnidadSubtitulo;
 use backend\models\PlanificacionBloquesUnidadSubtitulo2;
 use backend\models\diplomaphpv\Pdf;
 use backend\models\diplomaphpv\PdfPh;
+use backend\models\pudpai\PdfPhPai;
+use backend\models\pudpai\PdfPvPai;
+use backend\models\pudpai\Pdf as PudpaiPdf;
+
 use backend\models\helpers\HelperGeneral;
 use backend\models\PlanificacionVerticalDiploma;
 use backend\models\PlanificacionVerticalPaiOpciones;
 use backend\models\PudAprobacionBitacora;
-use backend\models\pudpai\Pdf as PudpaiPdf;
 use backend\models\Usuario;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -221,6 +224,7 @@ class PlanificacionBloquesUnidadController extends Controller{
         $id = $_POST['PlanificacionBloquesUnidadSubtitulo']['id'];
         $subtitulo = $_POST['PlanificacionBloquesUnidadSubtitulo']['subtitulo'];
         $orden = $_POST['PlanificacionBloquesUnidadSubtitulo']['orden'];
+        $trazabilidad = $_POST['PlanificacionBloquesUnidadSubtitulo']['trazabilidad'];
 
         $experiencias =  $_POST['experiencia_update'];
         $evaluaciones =  $_POST['evaluacion_update'];
@@ -232,6 +236,7 @@ class PlanificacionBloquesUnidadController extends Controller{
         $model->experiencias = $experiencias;
         $model->evaluacion_formativa = $evaluaciones;
         $model->diferenciacion = $diferenciacion;
+        $model->trazabilidad = $trazabilidad;
         $model->save();
 
         return $this->redirect(['contenido', 'unidad_id' => $model->plan_unidad_id]);
@@ -302,16 +307,30 @@ class PlanificacionBloquesUnidadController extends Controller{
     }
 
 
-    /****PARA GENERAR PDF DE PLAN VERTICAL DE DIPLOMA */
-    public function actionPdfPv(){
+    /****PARA GENERAR PDF DE PLAN VERTICAL Y HORIZONTAL DE DIPLOMA */
+    public function actionPdfPvDp(){
         $cabeceraId = $_GET['cabecera_id'];
         new Pdf($cabeceraId);
     }
-    /****PARA GENERAR PDF DE PLAN HORIZONTAL DE DIPLOMA */
-    public function actionPdfPh()
+   
+    public function actionPdfPhDp()
     {
         $cabeceraId = $_GET['cabecera_id'];             
         new PdfPh($cabeceraId);       
+    }
+    /****FIN PARA GENERAR PDF DE PLAN HORIZONTAL DE DIPLOMA */
+
+    /****PARA GENERAR PDF DE PLAN VERTICAL Y HORIZONTAL DE PAI */
+    public function actionPdfPvPai()
+    {
+        $cabeceraId = $_GET['cabecera_id'];
+        new PdfPvPai($cabeceraId);
+    }
+   
+    public function actionPdfPhPai()
+    {
+        $cabeceraId = $_GET['cabecera_id'];             
+        new PdfPhPai($cabeceraId);       
     }
     /****FIN PARA GENERAR PDF DE PLAN HORIZONTAL DE DIPLOMA */
 

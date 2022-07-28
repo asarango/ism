@@ -89,7 +89,7 @@ $colorNotOk = 'red';
             <li class="zoom"><a href="#" onclick="ver_detalle('4.3.-');">4.3.- Indicador de habilidad
                 <i class="<?=$iconoOk;?>" title="FALTA INGRESAR DATOS" style="color: green;"></i>
             </a></li>
-            <li class="zoom"><a href="#" onclick="ver_detalle('4.4.-');">4.4.- Como se enseñará<?php
+            <li class="zoom"><a href="#" onclick="ver_detalle('4.4.-');">4.4.- Habilidades<?php
                     if ($pud_dip_porc_avance['cuatro_cuatro']==0 )
                     { $iconoColor = $colorNotOk;}
                     else

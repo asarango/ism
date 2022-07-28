@@ -80,32 +80,6 @@ class PlanificacionDesagregacionCabeceraController extends Controller
             'cursos' => $cursos
         ]);
     }
-    
-    private function get_cursos_docente(){
-        $user = Yii::$app->user->identity->usuario;
-        $periodoId = Yii::$app->user->identity->periodo_id;
-        $con = Yii::$app->db;
-        $query = "select 	t.id 
-                                    ,t.name
-                                    ,sec.code
-                    from	scholaris_clase cla
-                                    inner join op_faculty fac on fac.id = cla.idprofesor 
-                                    inner join res_users use on use.partner_id = fac.partner_id 
-                                    inner join op_course_paralelo par on par.id = cla.paralelo_id 
-                                    inner join op_course cur on cur.id = par.course_id
-                                    inner join op_course_template t on t.id = cur.x_template_id 
-                                    inner join op_section sec on  sec.id = cur.section
-                                    inner join scholaris_op_period_periodo_scholaris sop on sop.op_id = sec.period_id 
-                    where	use.login = '$user'
-                                    and sop.scholaris_id = $periodoId
-                    group by t.id, t.name, sec.code;";
-        
-        $res = $con->createCommand($query)->queryAll();
-        return $res;
-    }
-
-
-
     public function actionListMaterias()
     {
         $objHelper = new HelperGeneral();  

@@ -236,7 +236,7 @@ $condicion = $condicionClass->aprobacion_planificacion($estado,$isOpen,$bloqueUn
                     <li class="nav-item" role="presentation">
                         <button class="nav-link <?= $contenidosActive ?> " id="contenidos-tab" data-bs-toggle="tab" data-bs-target="#contenidos" 
                                 type="button" role="tab" aria-controls="contenidos" style="border-radius: 50% 0% 0 0"   
-                                aria-selected="false">Temarios
+                                aria-selected="false">Contenido
                         </button>
                     </li>
                 </ul>
@@ -357,7 +357,7 @@ $condicion = $condicionClass->aprobacion_planificacion($estado,$isOpen,$bloqueUn
                         <div class="row card shadow" style="margin-top: 15px; margin-bottom: 15px; align-items: center">
 
                             <div class="col-lg-12 col-md-12" style="align-items: center">
-                                <h4 style="text-align:center" >TEMARIOS</h4>
+                                <h4 style="text-align:center" >CONTENIDOS</h4>
 
 
                                 <hr>

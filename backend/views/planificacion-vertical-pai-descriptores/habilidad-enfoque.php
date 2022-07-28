@@ -50,6 +50,8 @@ $condicion = $condicionClass->aprobacion_planificacion($estado,$isOpen,$bloqueUn
                                             '<strong>' . $disponible['es_exploracion'] . '</strong>',
                                             ['asignar-contenido', 'plan_unidad_id' => $bloqueUnidad->id,
                                                 'tipo' => 'habilidad_enfoque',
+                                                'tipo2' => $disponible['es_titulo2'],
+                                                'id_relacion' => $disponible['id'],
                                                 'contenido' => $disponible['es_exploracion'],
                                                 'pestana' => 'habilidad_enfoque'
                                             ],
@@ -102,7 +104,7 @@ $condicion = $condicionClass->aprobacion_planificacion($estado,$isOpen,$bloqueUn
                         <tr>
                             <td><?= $contador ?></td>
                             <td><?= $seleccionada['contenido'] ?></td>
-                            <td><?= 'tipo' ?></td>
+                            <td><?= $seleccionada['tipo2'] ?></td>
                             <?php
                             if ($condicion == false) {
                                 ?>

@@ -2,6 +2,7 @@
 
 namespace backend\controllers;
 
+use backend\models\helpers\Scripts;
 use Yii;
 use backend\models\PlanificacionBloquesUnidad;
 use backend\models\PlanificacionBloquesUnidadSubtitulo;
@@ -110,8 +111,8 @@ class PlanificacionVerticalPaiDescriptoresController extends Controller{
         ])->all();
 
         $temario = array();
-
-        $subtitulos = $this->selecciona_subtitulos($planBloqueUnidadId);
+        $objScripts = new Scripts();
+        $subtitulos = $objScripts->selecciona_subtitulos($planBloqueUnidadId);
 
         foreach($subtitulos as $subtitulo){
             
@@ -283,6 +284,7 @@ order by ic.nombre, id.nombre;";
         $model = new \backend\models\PlanificacionVerticalPaiDescriptores();
         $model->plan_unidad_id = $planBloqueUnidadId;
         $model->descriptor_id = $descriptorId;
+      
         
         $model->save();
         return $this->redirect(['index1', 'unidad_id' => $planBloqueUnidadId, 'pestana' => $pestana]);
@@ -309,11 +311,15 @@ order by ic.nombre, id.nombre;";
         $tipo               = $_GET['tipo'];
         $contenido          = $_GET['contenido'];
         $pestana            = $_GET['pestana'];
+        $id_relacion        = $_GET['id_relacion'];
+        $tipo2              = $_GET['tipo2'];
 
         $model = new PlanificacionVerticalPaiOpciones();
         $model->plan_unidad_id = $planBloqueUnidadId;
         $model->tipo = $tipo;
         $model->contenido = $contenido;
+        $model->id_relacion = $id_relacion ;
+        $model->tipo2 = $tipo2;
         $model->save();
 
         return $this->redirect(['index1',

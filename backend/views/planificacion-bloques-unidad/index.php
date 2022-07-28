@@ -84,12 +84,27 @@ function pud_dip_porcentaje_avance($planVertDiplId,$planBloqueUniId)
                     <!-- inicio de menu derecha -->
                     |
                     <?php
-                    if ($seccion == 'PAI') {
+                    if ($seccion == 'PAI') 
+                    {
+                        echo Html::a(
+                            '<span class="badge rounded-pill" style="background-color: #ff9e18 "><i class="far fa-file-pdf" aria-hidden="true"></i> PDF Plan Vertical</span>',
+                            ['pdf-pv-pai', 'cabecera_id' => $cabecera->id],
+                            ['class' => 'link', 'target' => '_blank']
+                        );
+                        echo ' | '; 
+
+                        echo Html::a(
+                            '<span class="badge rounded-pill" style="background-color: #F08080 "><i class="far fa-file-pdf" aria-hidden="true"></i> PDF Plan Horizontal</span>',
+                            ['pdf-ph-pai', 'cabecera_id' => $cabecera->id],
+                            ['class' => 'link', 'target' => '_blank']
+                        );
+                        echo ' | '; 
                         echo Html::a(
                                 '<span class="badge rounded-pill" style="background-color: #f9b900 "><i class="far fa-calendar" aria-hidden="true"></i> 5.-PCA</span>',
                                 ['pca/index1', 'cabecera_id' => $cabecera->id],
                                 ['class' => 'link']
                         );
+
                     }
 
                     if ($seccion == 'BAS') {
@@ -103,14 +118,14 @@ function pud_dip_porcentaje_avance($planVertDiplId,$planBloqueUniId)
                     if($seccion == 'DIPL'){
                         echo Html::a(
                             '<span class="badge rounded-pill" style="background-color: #ff9e18 "><i class="far fa-file-pdf" aria-hidden="true"></i> PDF Plan Vertical</span>',
-                            ['pdf-pv', 'cabecera_id' => $cabecera->id],
+                            ['pdf-pv-dp', 'cabecera_id' => $cabecera->id],
                             ['class' => 'link', 'target' => '_blank']
                         );
                         echo ' | '; 
 
                         echo Html::a(
                             '<span class="badge rounded-pill" style="background-color: #F08080 "><i class="far fa-file-pdf" aria-hidden="true"></i> PDF Plan Horizontal</span>',
-                            ['pdf-ph', 'cabecera_id' => $cabecera->id],
+                            ['pdf-ph-dp', 'cabecera_id' => $cabecera->id],
                             ['class' => 'link', 'target' => '_blank']
                         );
                         echo ' | ';                        

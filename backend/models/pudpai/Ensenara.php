@@ -98,7 +98,7 @@ class Ensenara extends ActiveRecord{
             $this->html .= '<div class="card" style="width: 95%; margin-top:20px">';
 
             $this->html .= '<div class="card-header">';
-                $this->html .= '<h5 class=""><b>4.4.- ¿COMO ENSEÑARÁ? </b></h5>';   
+                $this->html .= '<h5 class=""><b>4.4.- Habilidades</b></h5>';   
                 $this->html .= '<div class="ocultar">';
                 $this->html .= $this->modal();
                 $this->html .= '</div>';

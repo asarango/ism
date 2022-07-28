@@ -2,6 +2,7 @@
 
 use yii\helpers\Html;
 use yii\helpers\Url;
+use yii\grid\GridView;
 
 /* @var $this yii\web\View */
 /* @var $searchModel backend\models\PlanificacionDesagregacionCabeceraSearch */
@@ -16,7 +17,7 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="pep-detalle-index">
 
     <div class="m-0 vh-50 row justify-content-center align-items-center">
-        <div class="card shadow col-lg-8 col-md-8">
+        <div class="card shadow col-lg-12 col-md-12">
             <div class=" row align-items-center p-2">
                 <div class="col-lg-1">
                     <h4><img src="ISM/main/images/submenu/herramientas-para-reparar.png" width="64px" style="" class="img-thumbnail"></h4>
@@ -62,6 +63,72 @@ $this->params['breadcrumbs'][] = $this->title;
 
             <!-- inicia cuerpo de card -->        
 
+            <div>
+                <?=
+                GridView::widget([
+                    'dataProvider' => $dataProvider,
+                    'filterModel' => $searchModel,
+                    'columns' => [
+                        ['class' => 'yii\grid\SerialColumn'],
+                        /** INICIO BOTONES DE ACCION * */
+                        [
+                            'class' => 'yii\grid\ActionColumn',
+//                    'width' => '150px',
+                            'template' => '{update}',
+                            'buttons' => [
+                                'update' => function ($url, $model) {
+                                    if($model->detalle_id){
+                                        return Html::a('<i class="fas fa-check" style="color: green"></i>', $url, [
+                                            'title' => 'Quitar', 'data-toggle' => 'tooltip', 'role' => 'modal-remote', 'data-pjax' => "0", 'class' => 'hand'
+                                        ]);
+                                    }else{
+                                        return Html::a('<i class="fas fa-ban" style="color: #ab0a3d"></i>', $url, [
+                                            'title' => 'Agregar', 'data-toggle' => 'tooltip', 'role' => 'modal-remote', 'data-pjax' => "0", 'class' => 'hand'
+                                        ]);
+                                    }                                                                        
+                                }
+                            ],
+                            'urlCreator' => function ($action, $model, $key) use($temaId){
+                                
+                                if($model->detalle_id){
+                                    if ($action === 'update') {
+                                        return \yii\helpers\Url::to(['quitar', 'id' => $model->detalle_id]);
+                                    }
+                                }else{
+                                    if ($action === 'update') {
+                                        return \yii\helpers\Url::to(['agregar', 'destreza_id' => $model->destreza_id, 'tema_id' => $temaId]);
+                                    }
+                                }                                
+                            }
+                        ],
+                        /** FIN BOTONES DE ACCION * */
+                        'curso',
+                        'materia',
+                        'criterio_eval_codigo',
+                        'criterio_eval_descripcion',
+                        'destreza_codigo',
+                        'destreza',
+                        'detalle_id',
+//                        [
+//                            'attribute' => 'ism_area_materia_id',
+//                            'format' => 'raw',
+//                            'value' => function ($model) {
+//                                return $model->ismAreaMateria->materia->nombre;
+//                            },
+//                            'filter' => $listaM,
+//                            'filterInputOptions' => [
+//                                'class' => 'form-control',
+//                                'prompt' => 'Seleccione asignatura...'
+//                            ],
+//                        ],
+
+                       
+                        //'idcurso',
+                                   
+                    ],
+                ]);
+                ?>
+            </div>
             
             <!-- finaliza cuerpo de card -->            
 

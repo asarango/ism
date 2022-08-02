@@ -172,6 +172,9 @@ class PepDetalleController extends Controller {
                                                                                 and contenido_texto = op.contenido_es)
                     order by op.id;";
         
+        echo $query;
+        die();
+        
         $con->createCommand($query)->execute();
         
     }

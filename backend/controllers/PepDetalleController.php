@@ -63,11 +63,11 @@ class PepDetalleController extends Controller {
 
     public function actionIndex1() {
         $temaId = $_GET['tema_id'];
-        $tema = \backend\models\PepPlanificacionXUnidad::findOne($temaId);
+        $tema = \backend\models\PepPlanificacionXUnidad::findOne($temaId);                
+        
+        $this->ingresa_todas_opciones($temaId);
         
         $registros = \backend\models\PepUnidadDetalle::find()->where(['pep_planificacion_unidad_id' => $temaId])->orderBy('id')->all();
-        
-        $this->ingresa_todas_opciones($registros, $temaId);
         
         return $this->render('index', [        
            'tema' => $tema,
@@ -75,10 +75,13 @@ class PepDetalleController extends Controller {
         ]);
     }
     
-    private function ingresa_todas_opciones($modelRegistros, $temaId){
+    private function ingresa_todas_opciones($temaId){
+        
+        $modelRegistros = \backend\models\PepUnidadDetalle::find()->where(['pep_planificacion_unidad_id' => $temaId])->orderBy('id')->all();
         
         /* verifica si existe la idea principal */
         $this->ingresa_opciones_generico_texto($temaId, $modelRegistros, 'idea_central', 'info_general','texto');        
+        
         
         /* verifica si existe Líneas de indagación */
         $this->ingresa_opciones_generico_texto($temaId, $modelRegistros, 'linea_indagacion', 'info_general','texto');
@@ -93,7 +96,7 @@ class PepDetalleController extends Controller {
         $this->ingresa_opciones_generico_seleccion($temaId, 'atributos_perfil', 'conceptos_atributos', 'seleccion');  
         
         /* verifica si existe enfoques de aprendizaje */
-        $this->ingresa_opciones_generico_seleccion($temaId, 'enfoques_aprendizaje', 'enfoques_aprendizaje', 'seleccion');   
+        $this->ingresa_opciones_enfoques($temaId, 'enfoques_aprendizaje', 'enfoques_aprendizaje', 'seleccion');   
         
         /* verifica si existe ACCION */
         $this->ingresa_opciones_generico_texto($temaId, $modelRegistros, 'accion', 'info_general','texto');
@@ -157,23 +160,45 @@ class PepDetalleController extends Controller {
         
     }
     
+    
+    private function ingresa_opciones_enfoques($temaId, $tipo, $referencia, $campoDe){
+        $con = \Yii::$app->db;
+        $query = "insert into pep_unidad_detalle (pep_planificacion_unidad_id, tipo, referencia, campo_de, contenido_texto, contenido_opcion) 
+                    select $temaId, '$tipo', '$referencia', '$campoDe' ,op.categoria_principal_es,false 
+                    from pep_opciones op 
+                    where op.tipo = '$tipo'
+                    and op.categoria_principal_es  not in (select   contenido_texto 
+                                                            from    pep_unidad_detalle 
+                                                            where   pep_planificacion_unidad_id = $temaId 
+                                                                    and contenido_texto = op.categoria_principal_es
+                                                                    and tipo = '$tipo') group by op.categoria_principal_es; ";       
+        
+        $query = "insert into pep_unidad_detalle (pep_planificacion_unidad_id, tipo, referencia, campo_de, contenido_texto, contenido_opcion) 
+                    select 	$temaId, '$tipo', op.categoria_principal_es, '$campoDe' ,op.contenido_es,false 
+                    from 	pep_opciones op 
+                    where 	op.tipo = '$tipo' 
+                                    and op.contenido_es  not in (select contenido_texto 
+                                                                    from pep_unidad_detalle 
+                                                                    where pep_planificacion_unidad_id = $temaId
+                                                                        and contenido_texto = op.contenido_es  
+                                                                        and tipo = '$tipo')
+                    order by op.id,op.tipo;";       
+        
+        $con->createCommand($query)->execute();
+    }
+    
     private function ingresa_opciones_generico_seleccion($temaId, $tipo, $referencia, $campoDe){
         
         $con = \Yii::$app->db;
-        $query = "insert into  pep_unidad_detalle (pep_planificacion_unidad_id, tipo, referencia, campo_de, contenido_texto, contenido_opcion)
-                    select $temaId, '$tipo', '$referencia', '$campoDe'
-                                    ,op.contenido_es
-                                    ,false
-                    from 	pep_opciones op
-                    where 	op.tipo = '$tipo'
-                                    and op.contenido_es not in (select  contenido_texto  
-                                                                from 	pep_unidad_detalle
-                                                                where   pep_planificacion_unidad_id = $temaId
-                                                                                and contenido_texto = op.contenido_es)
-                    order by op.id;";
-        
-        echo $query;
-        die();
+        $query = "insert into pep_unidad_detalle (pep_planificacion_unidad_id, tipo, referencia, campo_de, contenido_texto, contenido_opcion) 
+                    select $temaId, '$tipo', '$referencia', '$campoDe' ,op.categoria_principal_es,false 
+                    from pep_opciones op 
+                    where op.tipo = '$tipo'
+                    and op.categoria_principal_es  not in (select   contenido_texto 
+                                                            from    pep_unidad_detalle 
+                                                            where   pep_planificacion_unidad_id = $temaId 
+                                                                    and contenido_texto = op.categoria_principal_es
+                                                                    and tipo = '$tipo') group by op.categoria_principal_es; ";       
         
         $con->createCommand($query)->execute();
         

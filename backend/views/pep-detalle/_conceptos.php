@@ -42,7 +42,7 @@
     
     <!--inicio de atributos de perfil-->
     <div class="col-lg-5 col-md-5">
-        <p class="text-primero"><b><u><i class="fas fa-cogs"> Conceptos relacionados</i></u></b></p>
+        <p class="text-primero"><b><u><i class="fas fa-cogs"> Atributos del perfil</i></u></b></p>
         <?php
         foreach ($registros as $reg) {
             if ($reg->tipo == 'atributos_perfil') {

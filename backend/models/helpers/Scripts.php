@@ -558,8 +558,40 @@ where hor.clase_id in
         return $mes;
     }
 
-    public function get_cursos_x_periodo($periodoId) {
-        
+    public function get_paralelo_x_periodo($periodoId, $userLog) {
+        $con = Yii::$app->db;
+        $query = "select 	par.id as paralelo_id 
+                        ,cur.name as curso
+                        ,par.name as paralelo
+                from	scholaris_clase cla
+                        inner join ism_area_materia am on am.id = cla.ism_area_materia_id 
+                        inner join ism_malla_area ma on ma.id = am.malla_area_id 
+                        inner join ism_periodo_malla pm on pm.id = ma.periodo_malla_id
+                        inner join op_faculty f on f.id = cla.idprofesor 
+                        inner join res_users u on u.partner_id = f.partner_id
+                        inner join op_course_paralelo par on par.id = cla.paralelo_id 
+                        inner join op_course cur on cur.id = par.course_id 
+                where 	pm.scholaris_periodo_id = $periodoId
+                        and u.login = '$userLog'
+                group by cur.name, par.name, par.id
+                order by cur.name, par.name; ";
+        $res = $con->createCommand($query)->queryAll();
+        return $res;
+    }
+
+
+    public function get_alumnos_x_paralelo($paraleloId){
+        $con = Yii::$app->db;
+        $query = "select 	s.last_name 
+                            ,s.first_name 
+                            ,s.middle_name 
+                            ,i.inscription_state 
+                    from 	op_student_inscription i
+                            inner join op_student s on s.id = i.student_id 
+                    where 	i.parallel_id = $paraleloId
+                    order by s.last_name, s.first_name, s.middle_name;";
+        $res = $con->createCommand($query)->queryAll();
+        return $res;
     }
 
     public function mostrarAlumnosNeeClase($id_clase) {

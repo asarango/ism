@@ -71,8 +71,19 @@ $this->title = 'Menu Kids';
                 </div>
 
                 <div class="col-md-4">
-                    <div style="padding-top:20px; padding-left:40px; padding-right:40px " >
-                        <p>Aquí nuestras opciones Kids</p>
+                <div class="zoom" style="text-align:center; margin:15px">
+                        <?=
+                        Html::a(
+                                '<img src="ISM/main/images/kids/calificar.png" width="20%" title="Reporte">  
+                                    <br>Reportes',
+                                [
+                                    'kids-reportes/index1'
+                                ],
+                                [
+                                    'class' => 'link my-text-small'
+                                ]
+                        );
+                        ?>
                     </div>
                 </div>
 

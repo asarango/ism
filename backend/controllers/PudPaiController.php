@@ -99,24 +99,23 @@ class PudPaiController extends Controller{
         }elseif($pestana == '2.3.-'){
             $preguntas = new Preguntas($planUnidadId);
             return $preguntas->html;
-        }elseif($pestana == '3.1.-'){
-            $evaluacion = new Evaluacion($planUnidadId);
-            $this->ingresa_eval_sumativa($planUnidadId);
-            $this->ingresa_sumativa2($planUnidadId);
-            return $evaluacion->html;
         }elseif($pestana == '4.1.-'){
+            $evaluacion = new Evaluacion($planUnidadId);
+            $this->ingresa_evaluacion($planUnidadId);
+            return $evaluacion->html;
+        }elseif($pestana == '3.1.-'){
             $grupos = new GrupoHabilidades($planUnidadId);
             return $grupos->html;
-        }elseif($pestana == '4.2.-'){
+        }elseif($pestana == '3.2.-'){
             $aspectos = new Aspecto($planUnidadId);
             return $aspectos->html;
-        }elseif($pestana == '4.3.-'){
+        }elseif($pestana == '3.3.-'){
             $indicadores = new Indicadores($planUnidadId);
             return $indicadores->html;
-        }elseif($pestana == '4.4.-'){
+        }elseif($pestana == '3.4.-'){
             $ensenara = new Ensenara($planUnidadId);
             return $ensenara->html;
-        }elseif($pestana == '4.5.-'){
+        }elseif($pestana == '3.5.-'){
             $perfiles = new PerfilesBi($planUnidadId);
             return $perfiles->html;
         }elseif($pestana == '5.1.-'){
@@ -133,45 +132,31 @@ class PudPaiController extends Controller{
             return $reflexion->html;
         }
     }
-    private function ingresa_eval_sumativa($planUnidadId){
-        $usuarioLog = Yii::$app->user->identity->usuario;
-        $fechaHoy   = date('Y-m-d H:i:s');
 
-        $con = Yii::$app->db;
-        
-        $querySumativas = "insert into pud_pai (planificacion_bloque_unidad_id, seccion_numero, tipo, criterio_id, contenido, created_at, created, updated_at, updated) 
-                            select 	$planUnidadId, 3, 'eval_sumativa', c.id, 'sin contenido', '$fechaHoy', '$usuarioLog', '$fechaHoy', '$usuarioLog' 
-                            from 	planificacion_vertical_pai_descriptores v
-                                            inner join ism_criterio_descriptor_area maes on maes.id = v.descriptor_id
-                                            inner join ism_criterio c on c.id = maes.id_criterio
-                            where 	v.plan_unidad_id = $planUnidadId
-                                            and c.id not in(
-                                                    select criterio_id from pud_pai 
-                                                    where planificacion_bloque_unidad_id = $planUnidadId and tipo in ('eval_sumativa')
-                                            )
-                            group by c.id, c.nombre 
-                            order by c.id;";
-        
-        $con->createCommand($querySumativas)->execute();
-
-       
+    private function ingresa_evaluacion($planUnidadId)
+    {
+       //creamos los registros para texto sumativa y formativa
+       $this->insert_registros_evaluacion($planUnidadId,'eval_formativa');
+       $this->insert_registros_evaluacion($planUnidadId,'eval_sumativa');
+       $this->insert_registros_evaluacion($planUnidadId,'relacion-suma-eval');  
     }
 
-    private function ingresa_sumativa2($planUnidadId){
+    private function insert_registros_evaluacion($planUnidadId,$tipo)
+    {
 
         $usuarioLog = Yii::$app->user->identity->usuario;
         $fechaHoy   = date('Y-m-d H:i:s');
 
         $pudPai = PudPai::find()->where([
-            'tipo' => 'relacion-suma-eval',
+            'tipo' => $tipo,
             'planificacion_bloque_unidad_id' => $planUnidadId
         ])->one();
 
         if(!$pudPai){
             $model = new PudPai();
             $model->planificacion_bloque_unidad_id = $planUnidadId;
-            $model->seccion_numero = 3;
-            $model->tipo = 'relacion-suma-eval';
+            $model->seccion_numero = 4;
+            $model->tipo = $tipo;
             $model->contenido = 'sin contenido';
             $model->created = $usuarioLog;
             $model->created_at = $fechaHoy;

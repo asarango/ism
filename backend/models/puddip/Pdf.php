@@ -100,7 +100,7 @@ class Pdf extends \yii\db\ActiveRecord{
         $fecha=date('Y-m-d H:i:s'); 
 
         $htmlTabla = <<<EOF
-        <b>ISM<br>
+            <b>ISM<br>
             INTERNATIONAL SCHOLASTIC MODEL
             <br>
             PLANIFICADOR DE UNIDADES PROGRAMA DEL DIPLOMA

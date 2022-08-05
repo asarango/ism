@@ -24,6 +24,8 @@ $condicion = $condicionClass->aprobacion_planificacion($estado,$isOpen,$planUnid
 //die();
 
 $arrayTrazabilidad = array("E.P"=>"E.P","P.P.C"=>"P.P.C","D.I.M.E"=>"D.I.M.E");
+$arrayVerificacion = array("SI"=>"SI","NO"=>"NO","REPLANIFICADO"=>"REPLANIFICADO");
+
 
 ?>
 
@@ -32,7 +34,6 @@ $arrayTrazabilidad = array("E.P"=>"E.P","P.P.C"=>"P.P.C","D.I.M.E"=>"D.I.M.E");
 
 
 <div class="planificacion-desagregacion-cabecera-index">
-
     <div class="m-0 vh-50 row justify-content-center align-items-center">
         <div class="card shadow col-lg-12 col-md-12">
             <div class=" row align-items-center p-2">
@@ -299,6 +300,7 @@ $arrayTrazabilidad = array("E.P"=>"E.P","P.P.C"=>"P.P.C","D.I.M.E"=>"D.I.M.E");
                                                             <?= $form->field($subtitulo, 'subtitulo')->textInput(['required'=>''])->label('Título') ?>
                                                             <?= $form->field($subtitulo, 'orden')->textInput(['required'=>''])->label('Orden') ?>
                                                             <?= $form->field($subtitulo, 'trazabilidad')->dropDownList($arrayTrazabilidad,['prompt'=>'Seleccione Uno']) ?>
+                                                            <?= $form->field($subtitulo, 'verificacion')->dropDownList($arrayVerificacion,['prompt'=>'Seleccione Uno']) ?>
                                                             
 
                                                             <hr>
@@ -410,9 +412,7 @@ $arrayTrazabilidad = array("E.P"=>"E.P","P.P.C"=>"P.P.C","D.I.M.E"=>"D.I.M.E");
             </div>
             <div class="modal-body">
                 <?php $form = ActiveForm::begin(); ?>
-                        <?php 
-                            $arrayTrazabilidad = array("E.P"=>"E.P","P.P.C"=>"P.P.C","D.I.M.E"=>"D.I.M.E");
-                        ?>
+                       
 
                         <?= $form->field($model, 'plan_unidad_id')->hiddenInput(['value' => $planUnidad->id])->label(false) ?>
 
@@ -425,6 +425,7 @@ $arrayTrazabilidad = array("E.P"=>"E.P","P.P.C"=>"P.P.C","D.I.M.E"=>"D.I.M.E");
 
                         <?= $form->field($model, 'trazabilidad')->dropDownList($arrayTrazabilidad,['prompt'=>'Seleccione Opción']) ?>
 
+                        <?= $form->field($model, 'verificacion')->dropDownList($arrayVerificacion,['prompt'=>'Seleccione Opción']) ?>
 
                         <hr>
                         <div class="form-group">

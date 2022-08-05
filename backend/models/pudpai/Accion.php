@@ -60,30 +60,33 @@ class Accion extends ActiveRecord{
                     $this->html .= '<div class="card-body">';
                         $this->html .= '<div class="table table-responsive">';
                         $this->html .= '<table class="table table-hover table-condensed table-bordered">';
-                        $this->html .= '<thead>';            
-                        $this->html .= '<tr valign="top" style="background-color: #eee">';            
-                        $this->html .= '<th><b>CONTENIDOS: </b>
-                        <small style="color: #65b2e8">
-                            copiar OA de MINEDUC. Incluir las habilidades, los conocimientos disciplinarios y los conceptos clave y relacionados elegidos para la unidad.
-                        </small></th>';
-                        
-                        $this->html .= '<th><b>EXPERIENCIAS DE APRENDIZAJE Y ESTRATEGIAS DE ENSEÑANZA: </b>
-                        <small style="color: #65b2e8">
-                            variedad que abarque el espectro de preferencias de los alumnos. 
-                            Basadas en los conocimientos previos y en la indagación. (Todas las actividades a realizar en clase o para la casa)
-                        </small></th>';
+                        $this->html .= '<tr>'; 
+                            $this->html .= '<td align="center" rowspan = "2"><b>CONTENIDOS: </b> </td>';
+                            $this->html .= '<td align="center" rowspan = "2"><b>VERFICACIÓN: (SI/NO/REPLANIFICADO) </b> </td>';
+                            $this->html .= '<td align="center" colspan = "2"><b>PROCESO DE APRENDIZAJE: </b> </td>';
+                        $this->html .= '</tr>'; 
 
-                        $this->html .= '<th><b>EVALUACIÓN FORMATIVAS: </b>
-                        <small style="color: #65b2e8">
-                            genera evidencia de avance y ofrece oportunidades variadas de practicar, de hacer comentarios detallados y adaptar la enseñanza planificada. 
-                            Incluye autoevaluación y coevaluación. Se deben ofrecer comentarios sobre el avance en el desarrollo de habilidades.
-                        </small></th>';
+                        $this->html .= '<tr>
+                                <td><b>EXPERIENCIAS DE APRENDIZAJE Y ESTRATEGIAS DE ENSEÑANZA: </b>
+                                <small><i>
+                                    variedad que abarque el espectro de preferencias de los alumnos. 
+                                    Basadas en los conocimientos previos y en la indagación. (Todas las actividades a realizar en clase o para la casa)
+                                </i></small>
+                                </td>';
 
-                        $this->html .= '<th><b>DIFERENCIACIÓN: </b>
-                        <small style="color: #65b2e8">
-                            de contenido, de proceso (cómo se enseñará y se aprenderá) y de producto (lo que se evaluará). Definir las actividades 
-                            correspondientes a los 3 diferentes estilos de aprendizaje más reconocidos: VISUAL, KINESTÉSICO, AUDITIVO.
-                        </small></th>';                        
+                        // $this->html .= '<th><b>EVALUACIÓN FORMATIVAS: </b>
+                        // <small style="color: #65b2e8">
+                        //     genera evidencia de avance y ofrece oportunidades variadas de practicar, de hacer comentarios detallados y adaptar la enseñanza planificada. 
+                        //     Incluye autoevaluación y coevaluación. Se deben ofrecer comentarios sobre el avance en el desarrollo de habilidades.
+                        // </small></th>';
+
+                        $this->html .= '<td><b>DIFERENCIACIÓN: </b>
+                            <small ><i>
+                                de contenido, de proceso (cómo se enseñará y se aprenderá) y de producto (lo que se evaluará). Definir las actividades 
+                                correspondientes a los 3 diferentes estilos de aprendizaje más reconocidos: VISUAL, KINESTÉSICO, AUDITIVO.
+                            </i></small>
+                            </td>
+                        </tr>';                        
 
                         $this->html .= '</tr>';            
                         $this->html .= '</thead>';       
@@ -92,8 +95,9 @@ class Accion extends ActiveRecord{
                         foreach($temas as $tema){
                             $this->html .= '<tr>';
                             $this->html .= '<td>'.$tema->subtitulo.'</td>';
+                            $this->html .= '<td>'.''.'</td>';
                             $this->html .= '<td>'.$tema->experiencias.'</td>';
-                            $this->html .= '<td>'.$tema->evaluacion_formativa.'</td>';
+                            //$this->html .= '<td>'.$tema->evaluacion_formativa.'</td>';
                             $this->html .= '<td>'.$tema->diferenciacion.'</td>';
                             $this->html .= '</tr>';
                         }            

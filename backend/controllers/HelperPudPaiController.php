@@ -190,166 +190,93 @@ class HelperPudPaiController extends Controller{
      *
      * @return void
      */
-    //metodo usado para la seccion 3.1.- 
-    public function actionMuestraSumativas()
+        
+    //metodo para la seccion 4.1.-
+    public function actionUpdateEvaluacion()
     {
-        $planUnidadId = $_GET['planificacion_bloque_unidad_id'];
-        $sumativas = $this->consulta_sumativas($planUnidadId);        
-
-        $html = '';
-        $html .= '<small style="color: #65b2e8">Resumen de las tareas de evaluación sumativa y criterios de evaluación correspondientes:<hr></small>';
-        foreach($sumativas as $sumativa){
-            if($sumativa['contenido'] == 'sin contenido'){
-                $color = 'red';
-                $titulo = 'SIN TITULO';
-            }else{
-                $color = '';
-                $titulo = $sumativa['titulo'];
-            }
-
-            $html .= '<div class="hi" style="color: '.$color.'">';            
-            $html .= $this->modal_sumativa($sumativa['id'], $sumativa['contenido'], $titulo);            
-            $html .= '<b>Criterio '.$sumativa['criterio'].'</b>: '.$titulo.'<br>';
-            $html .= $sumativa['contenido'].'<hr>';
-            $html .= '</div>';
-        }
-        return $html;
-    }
-    //metodo para la seccion 3.1.-
-    private function modal_sumativa($id, $contenido, $titulo){
-       
-        $html = '<div class="ocultar">';
-        $html .= '<a href="#"  data-bs-toggle="modal" data-bs-target="#modal'.$id.'"> ';
-        $html .= '<i class="fas fa-edit"></i>';        
-        $html .= '</a>';
-        $html .= '</div>';
-
-        $html.= '<div class="modal fade" id="modal'.$id.'" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-        <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">CRITERIO '.$titulo.'</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-
-        </div>
-        <div class="modal-body">
-
-        <hr>';
-
-        $html .= '<input type="text" name="facticas" class="form-control" id="input-titulo-sumativa'.$id.'" 
-                placeholder="Ingrese el tema" value="'.$titulo.'"><br>'; 
-                
-        $html .= '<textarea name="sumativas" id="editor-sumativa'.$id.'" class="form-control">'.$contenido.'</textarea>
-         <script>
-         CKEDITOR.replace("editor-sumativa'.$id.'", {
-         customConfig: "/ckeditor_settings/config.js"
-         })
-         </script>';
-
-        $html .= '</div>
-        <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-        <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="update_sumativa1('.$id.')">Actualizar</button>
-
-        </div>
-        </div>
-        </div>
-        </div>';
-        return $html;
-    }
-    //metodo para la seccion 3.1.-
-    public function actionUpdateSumativas1()
-    {
-        $ultima_seccion = '3.1.-';
+    
         $id = $_POST['id'];
         $titulo = $_POST['titulo'];
         $contenido = $_POST['contenido'];
+
         $fechaHoy = date('Y-m-d H:i:s');
         $usuarioLog = Yii::$app->user->identity->usuario;
+        $tipo ='';
+
+        if($titulo=='RELACION'){$tipo='relacion-suma-eval';}
+        if($titulo=='SUMATIVA'){$tipo='eval_sumativa';}
+        if($titulo=='FORMATIVA'){$tipo ='eval_formativa';}
 
         if($contenido==''){$contenido='-';}
 
-       $model = PudPai::findOne($id);   
-       $planUnidadId= $model->planificacion_bloque_unidad_id;     
+        $model = PudPai::findOne($id);      
+       
         $model->titulo = $titulo;
         $model->contenido = $contenido;
         $model->updated = $usuarioLog;
         $model->updated_at = $fechaHoy;
-        $model->save();
-
-        $this->actualizaCampoUltimaSeccion($ultima_seccion,$planUnidadId);
-    }
-
-
-    private function consulta_sumativas($planUnidadId){
-        $con = Yii::$app->db;
-        $query = "select 	p.id
-                            ,c.criterio 
-                            ,p.titulo 
-                            ,p.contenido 
-                    from 	pud_pai p
-                            inner join scholaris_criterio c on c.id = p.criterio_id 
-                    where 	p.tipo = 'eval_sumativa'
-                            and p.planificacion_bloque_unidad_id = $planUnidadId 
-                    order by c.criterio;";
-        $res = $con->createCommand($query)->queryAll();
-        return $res;
-    }
-    
-    public function actionMuestraSumativas2(){
-        
+        $model->save();       
+       
+    } 
+    //metodo para la seccion 4.1.-    
+    public function actionMuestraEvaluacion()
+    {        
+        $ultima_seccion = '4.1.-';
         $planUnidadId = $_GET['planificacion_bloque_unidad_id'];
+        $tipo = $_GET['tipo'];
+        $titulo = '';
 
-        $model = PudPai::find()->where([
+        $model = PudPai::find()
+        ->where([
             'planificacion_bloque_unidad_id' => $planUnidadId,
-            'tipo' => 'relacion-suma-eval'
+            'tipo' => $tipo
         ])->one();
 
+        if($tipo=='eval_formativa'){$titulo='FORMATIVAS';}
+        if($tipo=='eval_sumativa'){$titulo='SUMATIVAS';}
+        if($tipo=='relacion-suma-eval'){$titulo='RELACION';}
+
         $html = '<div class = "ocultar">';
-        $html .= $this->modal_sumativa2($model->id, $model->contenido);
+                 $html .= $this->modal_evaluacion($model->id, $model->contenido,$titulo);
         $html .='</div>';
-        $html .= '<small style="color: #65b2e8">Relación entre las tareas de evaluación sumativa y el enunciado de la indagación:<hr></small>';
-        $html .= '<p>';
+        $html .= '<br><p>';
         $html .= $model->contenido;
         $html .= '</p>';
 
-        return $html;
-    }
-    
+        $this->actualizaCampoUltimaSeccion($ultima_seccion,$planUnidadId);
 
-    private function modal_sumativa2($id, $contenido){
-        $html = '<a href="#"  data-bs-toggle="modal" data-bs-target="#modalS2'.$id.'"> 
-        <i class="fas fa-edit"></i>';
+         return $html;
+    }    
+
+    private function modal_evaluacion($id, $contenido,$titulo)
+    {
+       
+        $html = '<br><a href="#"  data-bs-toggle="modal" data-bs-target="#modalS2'.$id.'"> 
+                    <i class="fas fa-edit"></i>Editar';
         $html .= '</a>';
 
         $html.= '<div class="modal fade" id="modalS2'.$id.'" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-        <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">RELACIÓN</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-
-        </div>
-        <div class="modal-body">
-
-        <hr>';
-                
-        $html .= '<textarea id="editor-sumativa2'.$id.'" name="sumativas" " class="form-control">'.$contenido.'</textarea>
-         <script>
-         CKEDITOR.replace("editor-sumativa2'.$id.'", {
-         customConfig: "/ckeditor_settings/config.js"
-         })
-         </script>';
-
-        $html .= '</div>
-        <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-        <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="update_sumativa2('.$id.')">Actualizar</button>
-
-        </div>
-        </div>
-        </div>
-        </div>';
+                        <div class="modal-dialog modal-lg">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                            <h5 class="modal-title" id="exampleModalLabel">'.$titulo.'</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>';
+                            $html .= '<div class="modal-body"> <hr>               
+                                        <textarea id="editor-sumativa2'.$id.'" name="sumativas" " class="form-control">'.$contenido.'</textarea>
+                                            <script>
+                                            CKEDITOR.replace("editor-sumativa2'.$id.'", {
+                                            customConfig: "/ckeditor_settings/config.js"
+                                            })
+                                            </script>';
+                        $html .= '</div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="update_evaluacion_relacion('.$id.',\''.$titulo.'\')">Actualizar</button>
+                                    </div>
+                                </div>
+                        </div>
+                </div>';
         return $html;
     }
 
@@ -431,12 +358,16 @@ class HelperPudPaiController extends Controller{
     /***
      * PARA RECURSOS
      */
-    public function actionMuestraRecursos(){
+    public function actionMuestraRecursos()
+    {
         $planUnidadId = $_GET['plan_unidad_id'];
         $pudPai = PudPai::find()->where([
             'planificacion_bloque_unidad_id' => $planUnidadId,
             'seccion_numero' => 7
         ])->all();
+
+        
+
 
         $html = '';
         $html .= '<tr valign="top">';            
@@ -445,7 +376,7 @@ class HelperPudPaiController extends Controller{
         $html .= '<td width="75%">';
         foreach($pudPai as $recurso){
             if($recurso->tipo == 'bibliografico'){
-                $html .= $recurso->contenido. ' ';
+                $html .= $recurso->contenido;                
             }
         }
         $html .= '</td>';
@@ -471,31 +402,33 @@ class HelperPudPaiController extends Controller{
             }
         }
         $html .= '</td>';
-        $html .= '</tr>'; 
+        $html .= '</tr>';       
 
         return $html;
     }
     //7.1.-
-    public function actionUpdateRecurso(){  
-
-                
+    public function actionUpdateRecurso()
+    {  
         $planUnidadId = $_GET['plan_unidad_id'];        
         $bibliografico = $_GET['bibliografico'];
         $tecnologico = $_GET['tecnologico'];
         $otros = $_GET['otros'];
+      
+       
 
-        $biblio = PudPai::find()->where(['planificacion_bloque_unidad_id' => $planUnidadId, 'tipo' => 'bibliografico'])->one();
-        $tecnol = PudPai::find()->where(['planificacion_bloque_unidad_id' => $planUnidadId, 'tipo' => 'tecnologico'])->one();
-        $otro = PudPai::find()->where(['planificacion_bloque_unidad_id' => $planUnidadId, 'tipo' => 'otros'])->one();
+        $obj = PudPai::find()
+        ->where(['planificacion_bloque_unidad_id' => $planUnidadId, 'tipo' => 'bibliografico','seccion_numero'=>'7'])->one(); 
+        $obj->contenido = $bibliografico;
+        $obj->save();     
+      
+        $obj = PudPai::find()
+        ->where(['planificacion_bloque_unidad_id' => $planUnidadId, 'tipo' => 'tecnologico','seccion_numero'=>'7'])->one();
+        $obj->contenido = $tecnologico;
+        $obj->save();
 
-        $biblio->contenido = $bibliografico;
-        $biblio->save();
-
-        $tecnol->contenido = $tecnologico;
-        $tecnol->save();
-
-        $otro->contenido = $otros;
-        $otro->save();
+        $obj = PudPai::find()->where(['planificacion_bloque_unidad_id' => $planUnidadId, 'tipo' => 'otros','seccion_numero'=>'7'])->one();
+        $obj->contenido = $otros;
+        $obj->save();
 
     }   
     ///////////fin de recursos
@@ -888,14 +821,13 @@ class HelperPudPaiController extends Controller{
             $html .= '<tr>';
             $html .= '<td>'.$cat['categoria'].'</td>';
             $html .= '<td>';
-            foreach ($acciones as $acc){
-                if($acc->opcion->categoria == $cat['categoria']){
-                    $html.= '<lu>';
-                    $html.= '<li>'.$acc->opcion->opcion.'</li>';
-                    $html.= '</lu>';
-                }
-            }
-                        
+                foreach ($acciones as $acc){
+                    if($acc->opcion->categoria == $cat['categoria']){
+                        $html.= '<lu>';
+                        $html.= '<li>'.$acc->opcion->opcion.'</li>';
+                        $html.= '</lu>';
+                    }
+                }                        
             $html .= '</td>';
             
             $presencial = $this->get_situacion_aprendizaje($planUnidadId, $categ, 'presencial'); 
@@ -932,16 +864,16 @@ class HelperPudPaiController extends Controller{
                 $html .='</div>';
             $html .= '</td>';
             
-            $remoto = $this->get_situacion_aprendizaje($planUnidadId, $categ, 'remoto');                                    
-            $html .= '<td align="center">';
-                $html .='<div class="ocultar">';
-                    if(!$remoto){
-                        $html .= '<a href="#" onclick="inserta_situacion('.$planUnidadId.', \''.$categ.'\', \'remoto\')"><i class="fas fa-ban" style="color: #ab0a3d"></i></a>';
-                    }else{
-                        $html .= '<a href="#" onclick="elimina_situacion('.$remoto.')"><i class="fas fa-check-circle" style="color: green"></i></a>';
-                    }
-                $html .='</div>';
-            $html .= '</td>';
+            // $remoto = $this->get_situacion_aprendizaje($planUnidadId, $categ, 'remoto');                                    
+            // $html .= '<td align="center">';
+            //     $html .='<div class="ocultar">';
+            //         if(!$remoto){
+            //             $html .= '<a href="#" onclick="inserta_situacion('.$planUnidadId.', \''.$categ.'\', \'remoto\')"><i class="fas fa-ban" style="color: #ab0a3d"></i></a>';
+            //         }else{
+            //             $html .= '<a href="#" onclick="elimina_situacion('.$remoto.')"><i class="fas fa-check-circle" style="color: green"></i></a>';
+            //         }
+            //     $html .='</div>';
+            // $html .= '</td>';
             
             
             $html .= '</tr>';

@@ -28,9 +28,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 </div>
                 <div class="col-lg-11">
                     <h4><?= Html::encode($this->title) ?></h4>
-                    <small><b>BLOQUE Nº: </b> 
 
-                    </small>
                 </div>
             </div>
             <!-- FIN DE CABECERA -->
@@ -66,83 +64,118 @@ $this->params['breadcrumbs'][] = $this->title;
             <!-- inicia cuerpo de card -->
             <div class="row" style="margin-top: 10px; margin-left:1px;margin-right:1px; margin-bottom:5px">
 
-                <div class="table table-responsive">
-                    <table class="table table-condensed table-hover table-bordered">
-                        <thead>
-                            <tr>
+
+                <div class="col-lg-4 col-md-4">
+                    <b><u>Planes Semanales</u></b>
+
+                    <div class="table table-responsive">
+                        <table class="table table-striped table-condensed">
+                            <thead>
+                                <tr>
+                                    <th>CURSO</th>
+                                    <th>DETALLE</th>
+                                    <th>ACCIÓN</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
                                 <?php
-                                foreach ($calendario as $calen) {
-                                    echo '<th class="text-center" style="background: #ccc">';
-                                    echo $calen['nombre'].'<br>';
-                                    echo $calen['fecha'].'<br>';
-                                    echo '</th>';
-                                }
-                                ?>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                            <?php
-                            
-                                foreach ($calendario as $cal){
-                                    $fecha = $cal['fecha'];
-                                    echo '<td class="text-center"> Total actividades: ';
-                                    foreach ($actividades as $act){
-                                        if($fecha == $act['inicio']){
-                                            echo '<b>'.$act['total_actividades'].'</b>';
-                                        }
+                                    foreach ($cursos as $curso){
+                                        $cursoId = $curso['course_template_id'];
+                                        ?>
+                                <tr>
+                                    <td><?= $curso['course_template'] ?></td>
+                                </tr> 
+                                <?php
                                     }
-                                    echo '</td>';
-                                }
-                            
-                            ?>
-                            </tr>
-                            <tr>
-                                <?php
-                                foreach ($calendario as $calen) {
-                                    echo '<td class="text-center">';
-                                    ?>
+                                echo '<pre>';
+                                print_r($cursos);
+                                print_r($planesSemanales);
+                                ?>
+                            </tbody>
+
+                        </table>
+                    </div>                                        
+
+                </div>
+
+                <div class="col-lg-8 col-md-8" style="border-left: solid 1px #0a1f8f; background-color: #eee">
+                    <div class="row" style="margin-left: 10px">
+                        <div class="card table table-responsive">
+                            <table class="table table-condensed table-hover table-bordered" style="margin-top: 10px; margin-bottom: 10px">
+                                <thead>
+                                    <tr>
+                                        <?php
+                                        foreach ($calendario as $calen) {
+                                            echo '<th class="text-center" style="background: #ccc">';
+                                            echo $calen['nombre'] . '<br>';
+                                            echo $calen['fecha'] . '<br>';
+                                            echo '</th>';
+                                        }
+                                        ?>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <?php
+                                        foreach ($calendario as $cal) {
+                                            $fecha = $cal['fecha'];
+                                            echo '<td class="text-center"> Total actividades: ';
+                                            foreach ($actividades as $act) {
+                                                if ($fecha == $act['inicio']) {
+                                                    echo '<b>' . $act['total_actividades'] . '</b>';
+                                                }
+                                            }
+                                            echo '</td>';
+                                        }
+                                        ?>
+                                    </tr>
+                                    <tr>
+                                        <?php
+                                        foreach ($calendario as $calen) {
+                                            echo '<td class="text-center">';
+                                            ?>
                                     <a href="#" onclick="ver_detalle('<?= $calen['fecha'] ?>')">VER DETALLE</a>
-                                <?php
+                                    <?php
                                     echo '</td>';
                                 }
                                 ?>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>                                               
-             
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>      
+                    </div>
+
+
+                    <div class="row" style="margin-left: 10px" id="div-detalle">
+
+                    </div>
+                </div>                                                                                         
+
             </div>
-            
-            <div class="row">
-                <div class="col-lg-2 col-md-2"></div>
-                <div class="col-lg-8 col-md-8" id="div-detalle">
-                    
-                </div>
-                <div class="col-lg-2 col-md-2"></div>
-            </div>
+
             <!-- fin cuerpo de card -->
         </div>
     </div>
 </div>
 
 <script>
-    function ver_detalle(fecha){
+    function ver_detalle(fecha) {
         var url = '<?= yii\helpers\Url::to(['detalle']) ?>';
-        
+
         params = {
-            fecha : fecha
+            fecha: fecha
         };
-        
+
         $.ajax({
-            data : params,
-            url  : url,
+            data: params,
+            url: url,
             type: 'GET',
             beforeSend: function () {},
             success: function (resp) {
-                        $('#div-detalle').html(resp);
-                    }
+                $('#div-detalle').html(resp);
+            }
         });
-        
+
     }
 </script>

@@ -220,11 +220,15 @@ class PlanificacionBloquesUnidadController extends Controller{
         ]);
     }
 
-    public function actionUpdateSubtitle(){
+    public function actionUpdateSubtitle()
+    {
+       
+        
         $id = $_POST['PlanificacionBloquesUnidadSubtitulo']['id'];
         $subtitulo = $_POST['PlanificacionBloquesUnidadSubtitulo']['subtitulo'];
         $orden = $_POST['PlanificacionBloquesUnidadSubtitulo']['orden'];
         $trazabilidad = $_POST['PlanificacionBloquesUnidadSubtitulo']['trazabilidad'];
+        $verificacion = $_POST['PlanificacionBloquesUnidadSubtitulo']['verificacion'];
 
         $experiencias =  $_POST['experiencia_update'];
         $evaluaciones =  $_POST['evaluacion_update'];
@@ -237,10 +241,10 @@ class PlanificacionBloquesUnidadController extends Controller{
         $model->evaluacion_formativa = $evaluaciones;
         $model->diferenciacion = $diferenciacion;
         $model->trazabilidad = $trazabilidad;
+        $model->verificacion = $verificacion;
         $model->save();
 
         return $this->redirect(['contenido', 'unidad_id' => $model->plan_unidad_id]);
-
     }
 
     public function actionCreateSubtitle2(){
@@ -249,11 +253,15 @@ class PlanificacionBloquesUnidadController extends Controller{
         $subtitulo2Contenido    = $_POST['PlanificacionBloquesUnidadSubtitulo2']['contenido'];
         $subtitulo2Orden        = $_POST['PlanificacionBloquesUnidadSubtitulo2']['orden'];
         $planUnidadId           = $_POST['PlanificacionBloquesUnidadSubtitulo2']['plan_unidad_id'];
+        $trazabilidad           = $_POST['PlanificacionBloquesUnidadSubtitulo']['trazabilidad'];
+        $verificacion           = $_POST['PlanificacionBloquesUnidadSubtitulo']['verificacion'];
         
         $model = new PlanificacionBloquesUnidadSubtitulo2();
         $model->subtitulo_id = $subtituloId;
         $model->contenido = $subtitulo2Contenido;
         $model->orden = $subtitulo2Orden;
+        $model->trazabilidad = $trazabilidad;
+        $model->verificacion = $verificacion;
         $model->save();
 
         return $this->redirect(['contenido', 'unidad_id' => $planUnidadId]);

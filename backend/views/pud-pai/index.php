@@ -27,19 +27,14 @@ $modelPudPai = PudPai::find()
 ->where(['planificacion_bloque_unidad_id' => $planUnidad->id])
 ->one();
 
-
-
 $pud_dip_porc_avance = array( "porcentaje" => 0);
-
 
 if($modelPudPai)
 {
     $pud_dip_porc_avance = pud_pai_porcentaje_avance( $planUnidad->id);    
 }
 
-
 $pud_dip_porc_avance['porcentaje'] ? $porcentaje = $pud_dip_porc_avance['porcentaje'] : $porcentaje = 0; // revisar select porque devuelve NULL
-
 
 //guarda el valor del porcentaje de avance en planificacion bloque unidad
 $modelPlanBloqUni = PlanificacionBloquesUnidad::findOne($planUnidad->id);
@@ -54,6 +49,7 @@ function pud_pai_porcentaje_avance( $planBloqueUniId)
     //consulta los los tdc que han sido marcados con check, mas los que aun no estan marcados    
     $obj2 = new backend\models\helpers\Scripts();
     $pud_dip_porc_avance = $obj2->pud_pai_porcentaje_avance($planBloqueUniId);  
+   
 
     return $pud_dip_porc_avance;
 }
@@ -325,17 +321,108 @@ if($modelPudBitacora){$estadoAprobacion = $modelPudBitacora->estado_jefe_coordin
                recargar_pagina();
             }
         });
-    }
+    }  
 
-    //3.1.-
-    function show_sumativas_evaluaciones(){
-        var planUnidadId = '<?= $planUnidad->id ?>';
-        var url = '<?= Url::to(['helper-pud-pai/muestra-sumativas']) ?>';
-
+    //*********************    ACTUALIZA CAMPOS EVALUACION 4.1    ************ */       
+    //metodo para 4.1.-
+    function update_evaluacion_relacion(id,titulo)
+    {
+        var contenido   = CKEDITOR.instances['editor-sumativa2'+id].getData();        
+        var url = '<?= Url::to(['helper-pud-pai/update-evaluacion']) ?>';
+        
         params = {
-            planificacion_bloque_unidad_id: planUnidadId
-        };
+            id: id,
+            titulo: titulo,
+            contenido: contenido
+        }
+        $.ajax({
+            data: params,
+            url: url,
+            type: 'POST',
+            beforeSend: function(){},
+            success: function(response){             
+                //$("#div-prueba").html(response);
+               location.reload();
+            }
+        });
+    }
+    //metodo para 4.1.-
+    function update_evaluacion_formativa(id)
+    {
+        var titulo      = 'no aplica';
+        var contenido   = CKEDITOR.instances['editor-sumativa2'+id].getData();
+        var url = '<?= Url::to(['helper-pud-pai/update-evaluacion']) ?>';
+        params = {
+            id: id,
+            titulo: titulo,
+            contenido: contenido
+        }
+        $.ajax({
+            data: params,
+            url: url,
+            type: 'POST',
+            beforeSend: function(){},
+            success: function(response)
+            {
+               location.reload();
+            }
+        });
+    }
+     //metodo para 4.1.-
+    function update_evaluacion_sumativa(id)
+    {
+        var titulo      = 'no aplica';
+        var contenido   = CKEDITOR.instances['editor-sumativa2'+id].getData();
+        var url = '<?= Url::to(['helper-pud-pai/update-evaluacion']) ?>';
+        params = {
+            id: id,
+            titulo: titulo,
+            contenido: contenido
+        }
+        $.ajax({
+            data: params,
+            url: url,
+            type: 'POST',
+            beforeSend: function(){},
+            success: function(response)
+            {
+               location.reload();
+            }
+        });
+    }
+    //********************* FIN  UPDATE CAMPOS EVALUACION 4.1    ************ */
 
+
+    //*********************    MUESTRA CAMPOS EVALUACION 4.1    ************ */
+    //metodo para 4.1.-
+    function muestra_evaluacion_relacion()
+    {
+        var planUnidadId = '<?= $planUnidad->id ?>';
+        var url = '<?= Url::to(['helper-pud-pai/muestra-evaluacion']) ?>';
+        params = {
+            planificacion_bloque_unidad_id: planUnidadId, 
+            tipo:'relacion-suma-eval'
+        };
+       
+        $.ajax({
+            data: params,
+            url: url,
+            type: 'GET',
+            beforeSend: function(){},
+            success: function(response){
+                $("#div-evaluacion-relacion").html(response);
+            }
+        });
+    }
+    //metodo para 4.1.-
+    function muestra_evaluacion_sumativa()
+    {
+        var planUnidadId = '<?= $planUnidad->id ?>';
+        var url = '<?= Url::to(['helper-pud-pai/muestra-evaluacion']) ?>';
+        params = {
+            planificacion_bloque_unidad_id: planUnidadId,
+            tipo:'eval_sumativa'        
+        };
         $.ajax({
             data: params,
             url: url,
@@ -346,73 +433,29 @@ if($modelPudBitacora){$estadoAprobacion = $modelPudBitacora->estado_jefe_coordin
             }
         });
     }
-    //3.1.-
-    function show_sumativas_evaluaciones2(){
+    //metodo para 4.1.-
+    function muestra_evaluacion_formativa()
+    {
         var planUnidadId = '<?= $planUnidad->id ?>';
-        var url = '<?= Url::to(['helper-pud-pai/muestra-sumativas2']) ?>';
-
+        var url = '<?= Url::to(['helper-pud-pai/muestra-evaluacion']) ?>';
         params = {
-            planificacion_bloque_unidad_id: planUnidadId
+            planificacion_bloque_unidad_id: planUnidadId,
+            tipo:'eval_formativa'             
         };
-
         $.ajax({
             data: params,
             url: url,
             type: 'GET',
             beforeSend: function(){},
             success: function(response){
-                $("#div-evaluacion-sumativa2").html(response);
+                $("#div-evaluacion-formativa").html(response);
             }
         });
     }
-    //metodo para seccion 3.1.-, para mostrar la actializacion 
-    function update_sumativa1(id){
-        var titulo      = $("#input-titulo-sumativa"+id).val();
-        var contenido   = CKEDITOR.instances['editor-sumativa'+id].getData();
-        var url = '<?= Url::to(['helper-pud-pai/update-sumativas1']) ?>';
-        params = {
-            id: id,
-            titulo: titulo,
-            contenido: contenido
-        }
+    
+    //********************* FIN   MUESTRA CAMPOS EVALUACION 4.1    ************ */
 
-        $.ajax({
-            data: params,
-            url: url,
-            type: 'POST',
-            beforeSend: function(){},
-            success: function(response){
-               //show_sumativas_evaluaciones();
-               alert('esto es un aler');
-               location.reload();
-            }
-        });
 
-    }
-
-    function update_sumativa2(id){
-        var titulo      = 'no aplica';
-        var contenido   = CKEDITOR.instances['editor-sumativa2'+id].getData();
-        var url = '<?= Url::to(['helper-pud-pai/update-sumativas1']) ?>';
-        params = {
-            id: id,
-            titulo: titulo,
-            contenido: contenido
-        }
-
-        $.ajax({
-            data: params,
-            url: url,
-            type: 'POST',
-            beforeSend: function(){},
-            success: function(response){
-               //show_sumativas_evaluaciones();
-               //show_sumativas_evaluaciones2();
-               location.reload();
-            }
-        });
-
-    }
     //metodo para la seccion 4.4.-
     function show_ensenara(){
         var planUnidadId = '<?= $planUnidad->id ?>';
@@ -487,14 +530,15 @@ if($modelPudBitacora){$estadoAprobacion = $modelPudBitacora->estado_jefe_coordin
             }
         });
     }
-
+     /// tambien del 7.1.-
     function update_recurso(){
 
         var planUnidadId = '<?= $planUnidad->id ?>';
         var url = '<?= Url::to(['helper-pud-pai/update-recurso']) ?>';
         var bibliografico = CKEDITOR.instances['editor-bibliografico'].getData();
         var tecnologico = CKEDITOR.instances['editor-tecnologico'].getData();
-        var otros = CKEDITOR.instances['editor-otros'].getData();      
+        var otros = CKEDITOR.instances['editor-otros'].getData(); 
+        
 
         if(bibliografico==''){bibliografico = '-';}
         if(tecnologico==''){tecnologico = '-';}

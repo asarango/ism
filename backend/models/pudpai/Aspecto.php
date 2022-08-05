@@ -55,13 +55,13 @@ class Aspecto extends ActiveRecord{
 
     private function get_grupo(){        
 
-      $this->html .= '<h5 class=""><b>4.- ENFOQUES DE APRENDIZAJE </b></h5>';                
+      $this->html .= '<h5 class=""><b>3.- ENFOQUES DE APRENDIZAJE </b></h5>';                
 
       $this->html .= '<div class="" style="align-items: center; display: flex; justify-content: center;">';
             $this->html .= '<div class="card" style="width: 95%; margin-top:20px">';
 
             $this->html .= '<div class="card-header">';
-                $this->html .= '<h5 class=""><b>4.2.- ASPECTOS DEL OBJETIVO </b></h5>';                
+                $this->html .= '<h5 class=""><b>3.2.- ASPECTOS DEL OBJETIVO </b></h5>';                
             $this->html .= '</div>';
                 
             $this->html .= '<div class="card-body">';

@@ -144,6 +144,7 @@ class DeceCasosController extends Controller
 
         if(isset($_GET['id']))// POR get envia desde el leccionario, por tanto lleva id;s clase y estudiante
         {
+            
             $id_estudiante = $_GET['id'];    
             $modelDeceCasos->numero_caso = $this->mostrar_numero_maximo_caso( $periodoId) + 1;
             $modelDeceCasos->id_estudiante =   $id_estudiante ;
@@ -153,7 +154,9 @@ class DeceCasosController extends Controller
             $modelDeceCasos->fecha_inicio = $ahora;
             $modelDeceCasos->motivo = "";
             $modelDeceCasos->detalle = "";
-            $modelDeceCasos->id_usuario = $usuario;   
+            $modelDeceCasos->id_usuario = $usuario; 
+            
+            $modelDeceCasos->save();
 
         }
         if(isset($_POST['id']))//por post envia desde el MOD DECE, id de estudiante
@@ -168,8 +171,13 @@ class DeceCasosController extends Controller
             $modelDeceCasos->fecha_inicio = $ahora;
             $modelDeceCasos->motivo = "";
             $modelDeceCasos->detalle = "";
-            $modelDeceCasos->id_usuario = $usuario; 
+            $modelDeceCasos->id_usuario = $usuario;   
+            
+            $modelDeceCasos->save();
+        
         }          
+
+       
 
         if ($model->load(Yii::$app->request->post()) && $model->save() ) {
            

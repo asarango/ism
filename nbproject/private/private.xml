@@ -4,16 +4,14 @@
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
             <file>file:/var/www/html/ism/academico/backend/models/helpers/CalendarioSemanal.php</file>
-            <file>file:/var/www/html/ism/academico/backend/models/helpers/Condiciones.php</file>
             <file>file:/var/www/html/ism/academico/backend/web/css/coloresPersonalizados.css</file>
             <file>file:/var/www/html/ism/academico/backend/views/ps/index.php</file>
             <file>file:/var/www/html/ism/academico/backend/views/planificacion-vertical-diploma/index.php</file>
             <file>file:/var/www/html/ism/academico/common/config/main-local.php</file>
-            <file>file:/var/www/html/ism/academico/backend/views/layouts/main.php</file>
+            <file>file:/var/www/html/ism/academico/backend/views/ps/_ajax-detalle.php</file>
             <file>file:/var/www/html/ism/academico/backend/views/scholaris-asistencia-profesor/index.php</file>
             <file>file:/var/www/html/ism/academico/backend/controllers/KidsPlanSemanalController.php</file>
             <file>file:/var/www/html/ism/academico/backend/controllers/PsController.php</file>
-            <file>file:/var/www/html/ism/academico/backend/controllers/PudAprobacionController.php</file>
         </group>
     </open-files>
 </project-private>

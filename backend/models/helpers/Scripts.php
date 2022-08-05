@@ -599,6 +599,33 @@ where hor.clase_id in
 
         return $mes;
     }
+    
+    
+    /**
+     * Toma los cursos actualles del periodo por usuario
+     * @param type $periodoId
+     * @param type $userLog
+     * @return type
+     */
+    public function get_cursos_x_periodo($periodoId, $userLog) {
+        $con = Yii::$app->db;
+        $query = "select 	te.id as course_template_id
+                                    ,te.name as course_template
+                    from	scholaris_clase cl 
+                                    inner join op_faculty fa on fa.id = cl.idprofesor
+                                    inner join res_users ru on ru.partner_id = fa.partner_id 
+                                    inner join op_course_paralelo pa on pa.id = cl.paralelo_id 
+                                    inner join op_course oc on oc.id = pa.course_id 
+                                    inner join op_course_template te on te.id = oc.x_template_id 
+                                    inner join op_section sec on sec.id = oc.section
+                                    inner join scholaris_op_period_periodo_scholaris sop on sop.op_id = sec.period_id 
+                    where 	ru.login = '$userLog'
+                                    and sop.scholaris_id = $periodoId
+                    group by te.id, te.name;";
+        $res = $con->createCommand($query)->queryAll();
+        return $res;
+    }
+    
 
     public function get_paralelo_x_periodo($periodoId, $userLog) {
         $con = Yii::$app->db;

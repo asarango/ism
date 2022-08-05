@@ -61,11 +61,29 @@ $colorNotOk = 'red';
     <hr>
 
     <li>
-        <b>3.- EVALUACIÓN</b>
+        <b>3.- ENFOQUES DEL APRENDIZAJE / HABILIDADES</b>
         <ul>                                
-            <li class="zoom"><a href="#" onclick="ver_detalle('3.1.-');">3.1.-Evaluación
-            <?php
-                    if ($pud_dip_porc_avance['tres']==0 )
+            <li class="zoom"><a href="#" onclick="ver_detalle('3.1.-');">3.1.- Grupo de habilidades
+                <i class="<?=$iconoOk;?>" title="FALTA INGRESAR DATOS" style="color: green;"></i>
+            </a></li>
+            <li class="zoom"><a href="#" onclick="ver_detalle('3.2.-');">3.2.- Aspecto del Objetivo
+                <i class="<?=$iconoOk;?>" title="FALTA INGRESAR DATOS" style="color: green;"></i>
+            </a></li>
+            <li class="zoom"><a href="#" onclick="ver_detalle('3.3.-');">3.3.- Indicador de habilidad
+                <i class="<?=$iconoOk;?>" title="FALTA INGRESAR DATOS" style="color: green;"></i>
+            </a></li>
+            <li class="zoom"><a href="#" onclick="ver_detalle('3.4.-');">3.4.- Habilidades<?php
+                    if ($pud_dip_porc_avance['cuatro_cuatro']==0 )
+                    { $iconoColor = $colorNotOk;}
+                    else
+                    { $iconoColor = $colorOk;}
+                    ?>
+                    <i class="<?=$iconoOk;?>" title="" style="color: <?=$iconoColor;?>;"></i>
+                    </a>   
+            </li>
+            <li class="zoom"><a href="#" onclick="ver_detalle('3.5.-');">3.5.- Perfil BI
+                    <?php
+                    if ($pud_dip_porc_avance['cuatro_cinco']==0 )
                     { $iconoColor = $colorNotOk;}
                     else
                     { $iconoColor = $colorOk;}
@@ -76,31 +94,12 @@ $colorNotOk = 'red';
         </ul>
     </li>
     <hr>
-
     <li>
-        <b>4.- ENFOQUES DEL APRENDIZAJE</b>
+        <b>4.- EVALUACIÓN</b>
         <ul>                                
-            <li class="zoom"><a href="#" onclick="ver_detalle('4.1.-');">4.1.- Grupo de habilidades
-                <i class="<?=$iconoOk;?>" title="FALTA INGRESAR DATOS" style="color: green;"></i>
-            </a></li>
-            <li class="zoom"><a href="#" onclick="ver_detalle('4.2.-');">4.2.- Aspecto del Objetivo
-                <i class="<?=$iconoOk;?>" title="FALTA INGRESAR DATOS" style="color: green;"></i>
-            </a></li>
-            <li class="zoom"><a href="#" onclick="ver_detalle('4.3.-');">4.3.- Indicador de habilidad
-                <i class="<?=$iconoOk;?>" title="FALTA INGRESAR DATOS" style="color: green;"></i>
-            </a></li>
-            <li class="zoom"><a href="#" onclick="ver_detalle('4.4.-');">4.4.- Habilidades<?php
-                    if ($pud_dip_porc_avance['cuatro_cuatro']==0 )
-                    { $iconoColor = $colorNotOk;}
-                    else
-                    { $iconoColor = $colorOk;}
-                    ?>
-                    <i class="<?=$iconoOk;?>" title="" style="color: <?=$iconoColor;?>;"></i>
-                    </a>   
-            </li>
-            <li class="zoom"><a href="#" onclick="ver_detalle('4.5.-');">4.5.- Perfil BI
-                    <?php
-                    if ($pud_dip_porc_avance['cuatro_cinco']==0 )
+            <li class="zoom"><a href="#" onclick="ver_detalle('4.1.-');">4.1.-Evaluación
+            <?php
+                    if ($pud_dip_porc_avance['tres']==0 )
                     { $iconoColor = $colorNotOk;}
                     else
                     { $iconoColor = $colorOk;}
@@ -181,10 +180,10 @@ $colorNotOk = 'red';
         ver_detalle( '<?= $opcion?>')      
     } 
 
-    function ver_detalle( pestana ){
+    function ver_detalle( pestana )
+    {
         var planUnidadId = '<?= $planUnidad->id ?>';        
-        var url = '<?= Url::to(['pestana']) ?>';
-       
+        var url = '<?= Url::to(['pestana']) ?>';  
         var params = {
             plan_unidad_id  : planUnidadId,
             pestana         : pestana
@@ -195,18 +194,19 @@ $colorNotOk = 'red';
             url     : url,
             type    : 'GET',
             beforeSend: function(){},
-            success : function(response){
+            success : function(response)
+            {
                 $("#div-detalle").html(response);
                 //todos los metodos se encuentran en pud_pai/index
                 if(pestana == '2.3.-'){                 
                     muestra_preguntas();
-                }else if(pestana == '3.1.-'){
-                    show_sumativas_evaluaciones();
-                    show_sumativas_evaluaciones2();
-                    bloquear_div();
-                }else if(pestana == '4.4.-'){
+                }else if(pestana == '4.1.-'){                                                    
+                    muestra_evaluacion_relacion();                    
+                    muestra_evaluacion_sumativa();
+                    muestra_evaluacion_formativa();
+                }else if(pestana == '3.4.-'){
                     show_ensenara();
-                }else if(pestana == '4.5.-'){
+                }else if(pestana == '3.5.-'){
                     show_perfiles_seleccionados();
                 }else if(pestana == '7.1.-'){
                     show_recursos();
@@ -214,12 +214,10 @@ $colorNotOk = 'red';
                     show_reflexion_seleccionados();
                 }else if(pestana=='6.1.-'){
                     show_servicios_accion_disponibles();
-                    show_servicios_accion_seleccionadas();
-                  
+                    show_servicios_accion_seleccionadas();                  
                 }
                 bloquear_div();
             }
-        });
-        
+        });        
     }
 </script>

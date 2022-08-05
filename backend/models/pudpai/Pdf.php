@@ -2,6 +2,10 @@
 
 namespace backend\models\pudpai;
 
+use backend\models\pudpai\Evaluacion;
+use backend\models\IsmCriterio;
+use backend\models\IsmCriterioLiteral;
+use backend\models\IsmLiteralDescriptores;
 use backend\models\PlanificacionBloquesUnidad;
 use backend\models\PlanificacionBloquesUnidadSubtitulo;
 use backend\models\PlanificacionDesagregacionCriteriosEvaluacion;
@@ -39,7 +43,7 @@ class Pdf extends \yii\db\ActiveRecord {
             'format' => 'A4-L',
             'margin_left' => 10,
             'margin_right' => 10,
-            'margin_top' => 35,
+            'margin_top' => 40,
             'margin_bottom' => 0,
             'margin_header' => 5,
             'margin_footer' => 5,
@@ -53,9 +57,9 @@ class Pdf extends \yii\db\ActiveRecord {
 
         $html = $this->cuerpo();
         $mpdf->WriteHTML($html);
-        // $mpdf->addPage();
-//        $mpdf->addPage();
-        //$mpdf->SetFooter($pie);
+
+        $piePagina=$this->piePagina();
+        $mpdf->SetFooter($piePagina);  
 
         //$mpdf->Output('Planificacion-de-unidad' . '.pdf', 'D');
         $mpdf->Output();
@@ -63,20 +67,56 @@ class Pdf extends \yii\db\ActiveRecord {
     }
 
     private function cabecera() {
-        $html = '';
-        $html .= '<table width="100%" cellspacing="0" cellpadding="10">';
-        $html .= '<tr>';
-        $html .= '<td class="border" align="center" width="20%"><img src="imagenes/instituto/logo/logo2.png" width="60px"></td>';
-        $html .= '<td class="border" align="center" width=""></td>';
-        $html .= '<td class="border" align="right" width="20%">
-                    Código: ISMR20-22 <br>
-                    Versión: 5.0<br>
-                    Fecha: 28/09/021<br>
-                    Página: {PAGENO} / {nb}<br>
-                  </td>';
-        $html .= '</tr>';
-        $html .= '</table>';
+        $codigoISO = 'ISOM20-22';
+        $version ="6.0";
+        $fecha=date('Y-m-d H:i:s'); 
+        $fecha=date('Y-m-d'); 
+        $fecha ='28/06/2022';
+        $html = <<<EOT
+         ' <table width="100%" cellspacing="0" cellpadding="10">
+            <tr>
+                <td class="border" align="center" width="20%">
+                    <img src="imagenes/instituto/logo/logoISM1.png" width="70px"><br><font size = "1">Proceso Académico</font>
+                </td>
+                <td class="border" align="center" width=""></td>
+                <td class="border" align="left" width="20%">
+                            <table style="font-size:10;">
+                            <tr>
+                                <td>Código:</td>
+                                <td>$codigoISO</td> 
+                            </tr>
+                            <tr>
+                                <td>Versión:</td>                            
+                                <td>$version</td>
+                            </tr> 
+                            <tr>
+                                <td>Fecha:</td>
+                                <td>$fecha</td>
+                            </tr> 
+                            <tr>
+                                <td>Pág: </td>
+                                <td>{PAGENO}/{nbpg}</td>
+                            </tr> 
+                        </table>
+                    </td>
+            </tr>
+        </table>'
+        EOT;
         return $html;
+    }
+    private function piePagina()
+    {
+        $html =<<<EOP
+        <table  width="100%">
+            <tr>
+                <td >Basado en el formato estipulado por el Bachillerato Internacional y modificado por el ISM</td>
+                <td ><img src="imagenes/instituto/logo/logoISO.png" width="40px" align = "right"></td>
+            </tr>
+        </table>
+
+        EOP;
+
+        return   $html;     
     }
 
     private function cuerpo() {
@@ -85,12 +125,12 @@ class Pdf extends \yii\db\ActiveRecord {
 
         $html = $this->estilos();
 
-        $html .= '<table width="100%" cellspacing="0" cellpadding="10">';
+        $html .= '<table width="100%" cellspacing="0" cellpadding="5" style ="font-size:10">';
         $html .= '<tr>';
-        $html .= '<td class="border" align="center"><b>ISM</b> <br> International Scholastic Model</td>';
+        $html .= '<td class="border" align="center" style ="font-size:22"><b>ISM</b> <br> International Scholastic Model</td>';
         $html .= '</tr>';
         $html .= '<tr>';
-        $html .= '<td class="border" align="center"><b>PLAN DE UNIDAD PAI</b> <br> AÑO ESCOLAR ' . $periodo->codigo . '</td>';
+        $html .= '<td class="border" align="center" style ="font-size:12"><b>PLAN DE UNIDAD PAI</b> <br> AÑO ESCOLAR ' . $periodo->codigo . '</td>';
         $html .= '</tr>';
         $html .= '<tr>';
         $html .= '<td class="border" align=""><b>1.- DATOS INFORMATIVOS</b></td>';
@@ -137,17 +177,17 @@ class Pdf extends \yii\db\ActiveRecord {
         $html .= '</tr>';
 
         $html .= '<tr>';
-        $html .= '<td class="border" align="center" width="10%"><b>PROFESOR: </b>';
+        $html .= '<td class="border" align="center" width="10%"><b>PROFESOR </b>';
         $html .= '<td class="border" align="center">';
         foreach ($docentes as $docente) {
             $html .= $docente['docente'] . ' | ';
         }
         $html .= '</td>';
-        $html .= '<td class="border" align="center" width="10%"><b>TÍTULO DE LA UNIDAD Nº: </b>';
+        $html .= '<td class="border" align="center" width="10%"><b>TÍTULO DE LA UNIDAD Nº </b>';
         $html .= '<td class="border" align="center">' . $this->planUnidad->unit_title . '</td>';
-        $html .= '<td class="border" align="center" width="10%"><b>DURACIÓN DE LA UNIDAD (EN HORAS): </b>';
+        $html .= '<td class="border" align="center" width="10%"><b>DURACIÓN DE LA UNIDAD (EN HORAS) </b>';
         $html .= '<td class="border" align="center">' . $tiempo['horas'] . '</td>';
-        $html .= '<td class="border" align="center" width="10%"><b>FECHA FINALIZACIÓN </b>';
+        $html .= '<td class="border" align="center" width="10%"><b>FECHA FINALIZACIÓN: </b>';
         $html .= '<td class="border" align="center">' . $tiempo['fecha_final'] . '</td>';
         $html .= '</tr>';
         $html .= '</table>';
@@ -164,7 +204,7 @@ class Pdf extends \yii\db\ActiveRecord {
                 ->all();
 
         $html = '';
-        $html .= '<table class="" width="100%" cellspacing="0" cellpadding="5">';
+        $html .= '<table class="" width="100%" cellspacing="0" cellpadding="5" style ="font-size:10">';
         $html .= '<tr>';
         $html .= '<td class="border" align=""><b>2.- INDAGACIÓN: ESTABLECIMIENTO DEL PROPÓSITO DE LA UNIDAD</b></td>';
         $html .= '</tr>';
@@ -172,11 +212,10 @@ class Pdf extends \yii\db\ActiveRecord {
 
         $html .= '<table class="tamano10" width="100%" cellspacing="0" cellpadding="2">';
         $html .= '<tr>';
-        $html .= '<td class="border" align="center" width="33%"><b>CONCEPTOS CLAVE</b></td>';
+        $html .= '<td class="border" align="center" width="33%"><b>CONCEPTO CLAVE</b></td>';
         $html .= '<td class="border" align="center" width="33%"><b>CONCEPTO(S) RELACIONADO(S)</b></td>';
-        $html .= '<td class="border" align="center" width="34%"><b>CONCEPTO GLOBAL Y EXPLORACIÓN</b></td>';
+        $html .= '<td class="border" align="center" width="34%"><b>CONTEXTO GLOBAL</b></td>';
         $html .= '</tr>';
-
         $html .= '<tr>';
         $html .= '<td class="border" align="center">';
         $html .= '<ul>';
@@ -217,9 +256,15 @@ class Pdf extends \yii\db\ActiveRecord {
         $html .= '</tr>';
         $html .= '</table>';
 
-        $html .= '<table class="tamano10" width="100%" cellspacing="0" cellpadding="2">';
+        $html .= '<table class="tamano10" width="100%" cellspacing="0" cellpadding="5">';
         $html .= '<tr>';
-        $html .= '<td class="border" style="color: #65b2e8"><b style="color: #000">ENUNCIADO DE LA INDAGACIÓN: </b>(expresa claramente una comprensión conceptual importante que tiene un profundo significado y un valor a largo plazo para los alumnos. Incluye claramente un concepto clave, conceptos relacionados y una exploración del contexto global específica, que da una perspectiva creativa y compleja del mundo real; describe una comprensión transferible y a la vez importante para la asignatura; establece un propósito claro para la indagación).</td>';
+        $html .= '<td class="border" align="center"><b style="color: #000">ENUNCIADO DE LA INDAGACIÓN: </b>
+        (expresa claramente una comprensión conceptual importante que tiene un <b><u><i>profundo significado y un valor a largo plazo</i></u></b> para los alumnos. 
+        Incluye claramente un concepto clave, conceptos relacionados y una exploración del contexto global específica, que da una perspectiva 
+        creativa y compleja del mundo real; describe una comprensión <b><u><i>transferible</i></u></b> y a la vez 
+        <b><u><i>importante para la asignatura;</i></u></b> establece un <b><u><i>propósito</i></u></b>
+        claro para la </i></u></b>indagación</i></u></b>).
+        </td>';
         $html .= '</tr>';
         $html .= '<tr>';
         $html .= '<td class="border">' . $this->planUnidad->enunciado_indagacion . '</td>';
@@ -234,27 +279,29 @@ class Pdf extends \yii\db\ActiveRecord {
                 ])
                 ->all();
 
-        $html .= '<table class="tamano10" width="100%" cellspacing="0" cellpadding="2">';
+        $html .= '<table class="tamano10" width="100%" cellspacing="0" cellpadding="5">';
         $html .= '<tr>';
-        $html .= '<td class="border colorAyudas" colspan="2"><b style="color: #000">PREGUNTAS DE INDAGACIÓN: </b>(inspiradas en el enunciado de indagación. Su fin es explorar el enunciado en mayor detalle. Ofrecen andamiajes).</td>';
+        $html .= '<td class="border" align="center" colspan="2"><b>PREGUNTAS DE INDAGACIÓN: </b>
+        (inspiradas en el enunciado de indagación. Su fin es explorar el enunciado en mayor detalle. Ofrecen andamiajes).</td>';
         $html .= '</tr>';
 
         $html .= '<tr>';
-        $html .= '<td class="border colorAyudas" width="20%"><b style="color: #000">Fácticas: </b>(se basan en conocimientos y datos, ayudan a comprender terminología del enunciado, facilitan la comprensión, se pueden buscar)</td>';
+        $html .= '<td class="border"  width="20%"><b style="color: #000">Fácticas: </b>
+        (se basan en conocimientos y datos, ayudan a comprender terminología del enunciado, facilitan la comprensión, se pueden buscar)</td>';
         $html .= '<td class="border">';
         $html .= $this->dos_recorre_preguntas($preguntas, 'facticas');
         $html .= '</td>';
         $html .= '</tr>';
 
         $html .= '<tr>';
-        $html .= '<td class="border colorAyudas" width="20%"><b style="color: #000">Conceptuales: </b>(conectar los datos, comparar y contrastar, explorar contradicciones, comprensión  más  profunda,  transferir  a  otras situaciones, contextos e ideas, analizar y aplicar)</td>';
+        $html .= '<td class="border " width="20%"><b style="color: #000">Conceptuales: </b>(conectar los datos, comparar y contrastar, explorar contradicciones, comprensión  más  profunda,  transferir  a  otras situaciones, contextos e ideas, analizar y aplicar)</td>';
         $html .= '<td class="border">';
         $html .= $this->dos_recorre_preguntas($preguntas, 'conceptuales');
         $html .= '</td>';
         $html .= '</tr>';
 
         $html .= '<tr>';
-        $html .= '<td class="border colorAyudas" width="20%"><b style="color: #000">Debatibles: </b>(promover la discusión, debatir una posición, explorar cuestiones importantes desde múltiples perspectivas, 
+        $html .= '<td class="border " width="20%"><b style="color: #000">Debatibles: </b>(promover la discusión, debatir una posición, explorar cuestiones importantes desde múltiples perspectivas, 
         deliberadamente polémicas, presentar tensión, evaluar)
         </td>';
         $html .= '<td class="border">';
@@ -279,38 +326,113 @@ class Pdf extends \yii\db\ActiveRecord {
         return $html;
     }
 
-    public function tres() {
+    public function cuatro() 
+    {
+        
+        $planUnidadBloq = $this->planUnidad->id;
+        $objEspecificos = $this->consultar_objetivos_especificos($planUnidadBloq);
+
+        $campoSumativa = $this->mostrar_campos_evaluacion('eval_sumativa'); 
+        $campoFormativa = $this->mostrar_campos_evaluacion('eval_formativa'); 
+        $campoRelacion= $this->mostrar_campos_evaluacion('relacion-suma-eval'); 
 
         $html = '';
 
         $html .= '<table class="tamano10" width="100%" cellspacing="0" cellpadding="2">';
         $html .= '<tr>';
-        $html .= '<td class="border" colspan="3"><b>3. EVALUACIÓN</b></td>';
+            $html .= '<td class="border text-center" colspan="3"><b>4. EVALUACIÓN</b></td>';
+        $html .= '</tr>';
+        
+
+        $html .= '<tr>';
+            $html .= '<td class="border colorAyudas" colspan="1"><b style="color: #000">OBJETVOS ESPECÍFICOS Y ASPECTOS: 
+                            </b><br>(copiar la redacción tal como aparece en la guía  de  la  asignatura,  para  cada  año  del PAI)
+                           
+                      </td>';
+            $html .= '<td class="border text-center" ><b>EVALUACIÓN</b></td>';
+          
+            $html .= '<td class="border text-center colorAyudas"><b style="color: #000">OBJETVOS ESPECÍFICOS: 
+                            </b>(se explica claramente qué harán los alumnos para demostrar lo que saben, lo que comprenden y lo que  pueden hacer; 
+                            permite demostrar comprensión de los conceptos, la relación conceptual y el contexto que se describen en el enunciado de la indagación; 
+                            permite demostrar objetivos y aspectos escogidos para  la  unidad;  utiliza  términos  de  instrucción  correctos para  ese  año  del  
+                            PAI,  permite  a  los  alumnos  demostrar  los  descriptores  de  todos  los  niveles  de  logro;  es estimulante pero accesible; 
+                            permite a los alumnos comunicar lo que saben, lo que comprenden y lo que pueden hacer de maneras múltiples y abiertas; permite aplicar 
+                            lo que han aprendido a una variedad de situaciones auténticas o situaciones que simulan el mundo real).
+                       </td>';
         $html .= '</tr>';
 
         $html .= '<tr>';
-        $html .= '<td class="border colorAyudas" colspan="1"><b style="color: #000">OBJETVOS ESPECÍFICOS Y ASPECTOS: </b><br>(copiar la redacción tal como aparece en la guía  de  la  asignatura,  para  cada  año  del PAI)</td>';
-        $html .= '<td class="border colorAyudas" colspan="2"><b style="color: #000">OBJETVOS ESPECÍFICOS: </b>(se explica claramente qué harán los alumnos para demostrar lo que saben, lo que comprenden y lo que  pueden hacer; permite demostrar comprensión de los conceptos, la relación conceptual y el contexto que se describen en el enunciado de la indagación; permite demostrar objetivos y aspectos escogidos para  la  unidad;  utiliza  términos  de  instrucción  correctos para  ese  año  del  PAI,  permite  a  los  alumnos  demostrar  los  descriptores  de  todos  los  niveles  de  logro;  es estimulante pero accesible; permite a los alumnos comunicar lo que saben, lo que comprenden y lo que pueden hacer de maneras múltiples y abiertas; permite aplicar lo que han aprendido a una variedad de situaciones auténticas o situaciones que simulan el mundo real).</td>';
-        $html .= '</tr>';
+                $html .= '<td class="border ">' .  $objEspecificos. 
+                        '</td>';
+                // $html .= '<td class="border" valign="top">';
+                //         $html .= '<p class="colorAyudas">Resumen de las tareas de evaluación sumativa y criterios de evaluación correspondientes:</p><br>';
+                //         $html .= $this->evaluacion_sumativas();
+                // $html .= '</td>';
+                $html .= '<td class="border" valign="top">';                        
+                        $html .='<table >
+                                    <tr>
+                                        <td ><b>EVALUACIÓN FORMATIVA</b><br><br>
+                                        '.$campoFormativa.'<hr>
+                                        </td>
 
-        $html .= '<tr>';
-        $html .= '<td class="border">' . $this->consulta_sumativas() . '</td>';
-
-        $html .= '<td class="border" valign="top">';
-        $html .= '<p class="colorAyudas">Resumen de las tareas de evaluación sumativa y criterios de evaluación correspondientes:</p><br>';
-        $html .= $this->evaluacion_sumativas();
-        $html .= '</td>';
-
-        $html .= '<td class="border" valign="top">';
-        $html .= '<p class="colorAyudas">Relación entre las tareas de evaluación sumativa y el enunciado de la indagación::</p><br>';
-        $html .= $this->evaluacion_sumativas2();
-        $html .= '</td>';
-
+                                    </tr>
+                                    <tr>
+                                        <td ><b>EVALUACIÓN SUMATIVA</b><br><br>
+                                            '.$campoSumativa.'
+                                        </td>
+                                    </tr>
+                                 </table>';
+                $html .= '</td>';
+                $html .= '<td class="border" valign="top">';                       
+                        $html .= $campoRelacion;
+                $html .= '</td>';
         $html .= '</tr>';
 
         $html .= '</table>';
 
         return $html;
+    }
+    //objetivos especificos y aspectos del pai
+    //importante: este metodo es la copia del metodo en la clase PUDPAI/EVALUACION.PHP
+    public function consultar_objetivos_especificos($planUnidadBloq)
+    {
+        $arrayCriterios = array();
+        $con = yii::$app->db;       
+        $criterios = '<p style = "text-align: left">'; 
+
+        $query = "select * from ism_criterio_descriptor_area icda 
+        where id in (select descriptor_id from planificacion_vertical_pai_descriptores pvpd 
+        where plan_unidad_id =$planUnidadBloq order by descriptor_id )
+        order by id_criterio ;";
+
+        $respuesta = $con->createCommand($query)->queryAll();
+        foreach($respuesta as $resp)
+        {
+            if(in_array($resp['id_literal_criterio'],$arrayCriterios,true))
+            {
+                //NO SE PRODUCE NADA;
+            }else{
+                $arrayCriterios[]=$resp['id_literal_criterio'];
+            }
+        }
+        
+        foreach ($arrayCriterios as $criterio)
+        {
+            //consulta descriptor y literal descriptor
+            $literalCriterio = IsmCriterioLiteral::findOne($criterio);            
+            $criterios .= '<b>'.$literalCriterio->criterio->nombre.' - '. $literalCriterio->nombre_espanol.'</b>
+            <br><br>'; 
+            foreach($respuesta as $resp2)            {
+                if($criterio==$resp2['id_literal_criterio'])
+                {   
+                    $descriptor = IsmLiteralDescriptores::findOne($resp2['id_literal_descriptor']);
+                    $criterios .=  $descriptor->descripcion ;  
+                    $criterios .= '<br><br>';                                      
+                }
+            }            
+        }         
+        $criterios .= '</p>'; 
+        return  $criterios;
     }
 
     private function consulta_sumativas() {
@@ -369,12 +491,13 @@ class Pdf extends \yii\db\ActiveRecord {
         return $html;
     }
 
-    private function evaluacion_sumativas2() {
+    private function mostrar_campos_evaluacion($tipo) 
+    {
         $planUnidadId = $this->planUnidad->id;
 
         $model = PudPai::find()->where([
                     'planificacion_bloque_unidad_id' => $planUnidadId,
-                    'tipo' => 'relacion-suma-eval'
+                    'tipo' => $tipo
                 ])->one();
 
         $html = '';
@@ -385,7 +508,7 @@ class Pdf extends \yii\db\ActiveRecord {
         return $html;
     }
 
-    private function cuatro() {
+    private function tres() {
 
         $aspectosClass = new Aspecto($this->planUnidad->id);
         $indicadoresClass = new Indicadores($this->planUnidad->id);
@@ -396,9 +519,9 @@ class Pdf extends \yii\db\ActiveRecord {
 
         $html = '';
 
-        $html .= '<table class="tamano10" width="100%" cellspacing="0" cellpadding="2">';
+        $html .= '<table class="tamano10" width="100%" cellspacing="0" cellpadding="5">';
         $html .= '<tr>';
-        $html .= '<td class="border" colspan="6"><b>4. ENFOQUES DE APRENDIZAJE</b></td>';
+        $html .= '<td class="border" colspan="6"><b>3. ENFOQUES DEl APRENDIZAJE / HABILIDADES</b></td>';
         $html .= '</tr>';
 
         $html .= '<tr>';
@@ -508,23 +631,27 @@ class Pdf extends \yii\db\ActiveRecord {
 
         $html = '';
 
-        $html .= '<table class="tamano10" width="100%" cellspacing="0" cellpadding="2">';
+        $html .= '<table class="tamano10" width="100%" cellspacing="0" cellpadding="3">';
         $html .= '<tr>';
         $html .= '<td class="border" colspan="4"><b>5. ACCIÓN: ENSEÑANZA Y APRENDIZAJE A TRAVÉS DE LA INDAGACIÓN</b></td>';
         $html .= '</tr>';
+        $html .= '<tr>';
+            $html .= '<td rowspan="2" class="border" align="center"><b> CONTENIDOS </b></td>';
+            $html .= '<td rowspan="2" class="border" align="center"><b style="color: #000">VERIFICACIÓN </b>(SI/NO/REPLANIFICADO)</td>';
+            $html .= '<td class="border" align="center" colspan="2"><b>PROCESO DE APRENDIZAJE</b></td>';
+        $html .= '</tr>';
 
         $html .= '<tr>';
-        $html .= '<td class="colorAyudas border"><b style="color: #000">CONTENIDOS: </b>copiar OA de MINEDUC. Incluir las habilidades, los conocimientos disciplinarios y los conceptos clave y relacionados elegidos para la unidad.</td>';
-        $html .= '<td class="colorAyudas border"><b style="color: #000">EXPERIENCIAS DE APRENDIZAJE Y ESTRATEGIAS DE ENSEÑANZA: </b>variedad que abarque el espectro de preferencias de los alumnos. Basadas en los conocimientos previos y en la indagación. (Todas las actividades a realizar en clase o para la casa)</td>';
-        $html .= '<td class="colorAyudas border"><b style="color: #000">EVALUACIÓN FORMATIVA: </b>genera evidencia de avance y ofrece oportunidades variadas de practicar, de hacer comentarios detallados y adaptar la enseñanza planificada. Incluye autoevaluación y coevaluación. Se deben ofrecer comentarios sobre el avance en el desarrollo de habilidades.</td>';
-        $html .= '<td class="colorAyudas border"><b style="color: #000">DIFERENCIACIÓN: </b>de contenido, de proceso (cómo se enseñará y se aprenderá) y de producto (lo que se evaluará). Definir las actividades correspondientes a los 3 diferentes estilos de aprendizaje más reconocidos: VISUAL, KINESTÉSICO, AUDITIVO.</td>';
+        $html .= '<td class="border" align="center"><b style="color: #000">EXPERIENCIAS DE APRENDIZAJE Y ESTRATEGIAS DE ENSEÑANZA: </b>variedad que abarque el espectro de preferencias de los alumnos. Basadas en los conocimientos previos y en la indagación. (Todas las actividades a realizar en clase o para la casa)</td>';
+        $html .= '<td class="border"><b style="color: #000">DIFERENCIACIÓN: </b>de contenido, de proceso (cómo se enseñará y se aprenderá) y de producto (lo que se evaluará). Definir las actividades correspondientes a los 3 diferentes estilos de aprendizaje más reconocidos: VISUAL, KINESTÉSICO, AUDITIVO.</td>';
         $html .= '</tr>';
 
         foreach ($contenidos as $contenido) {
             $html .= '<tr>';
-            $html .= '<td class="border">' . $contenido->subtitulo . '</td>';
+            $html .= '<td class="border" align="center">' . $contenido->subtitulo . '</td>';
+            $html .= '<td class="border" align="center">'.$contenido->verificacion.'</td>';
             $html .= '<td class="border">' . $contenido->experiencias . '</td>';
-            $html .= '<td class="border">' . $contenido->evaluacion_formativa . '</td>';
+            //$html .= '<td class="border">' . $contenido->evaluacion_formativa . '</td>';
             $html .= '<td class="border">' . $contenido->diferenciacion . '</td>';
             $html .= '</tr>';
         }
@@ -543,27 +670,26 @@ class Pdf extends \yii\db\ActiveRecord {
 
         $html = '';
 
-        $html .= '<table class="tamano10" width="100%" cellspacing="0" cellpadding="2">';
+        $html .= '<table class="tamano10" width="100%" cellspacing="0" cellpadding="5">';
         $html .= '<tr>';
-        $html .= '<td class="border colorAyudas" colspan="6"><b style="color: #000">6.	SERVICIO COMO ACCIÓN: </b>(Los tipos de acción son Servicio Directo, Servicio Indirecto, Promoción de una causa, Investigación, etc.)</td>';
+        $html .= '<td class="border" colspan="6"><b style="color: #000">6.	SERVICIO COMO ACCIÓN: </b>(Los tipos de acción son Servicio Directo, Servicio Indirecto, Promoción de una causa, Investigación, etc.)</td>';
         $html .= '</tr>';
 
         $html .= '<tr>';
         $html .= '<td class="border" align="center" rowspan="2"><b>TIPOS DE ACCION</b></td>';
         $html .= '<td class="border" align="center" rowspan="2"><b>ACTIVIDAD DE ACCIÓN</b></td>';
-        $html .= '<td class="border" align="center" colspan="4"><b>SITUACIONES DE APRENDIZAJE</b></td>';
+        $html .= '<td class="border" align="center" colspan="3"><b>SITUACIONES DE APRENDIZAJE</b></td>';
         $html .= '</tr>';
 
         $html .= '<tr>';
-        $html .= '<td class="border" align="center"><b>PRESENCIAL</b></td>';
-        $html .= '<td class="border" align="center"><b>EN LÍNEA</b></td>';
-        $html .= '<td class="border" align="center"><b>COMBINADO</b></td>';
-        $html .= '<td class="border" align="center"><b>REMOTO</b></td>';
+            $html .= '<td class="border" align="center"><b>PRESENCIAL</b></td>';
+            $html .= '<td class="border" align="center"><b>EN LÍNEA</b></td>';
+            $html .= '<td class="border" align="center"><b>COMBINADO</b></td>';
         $html .= '</tr>';
 
         foreach ($categorias as $cat) {
             $categ = $cat['categoria'];
-            $html .= '<tr>';
+        $html .= '<tr>';
             $html .= '<td class="border" align="center">' . $cat['categoria'] . '</td>';
             $html .= '<td class="border" align="center">';
             foreach ($acciones as $acc) {
@@ -574,7 +700,7 @@ class Pdf extends \yii\db\ActiveRecord {
                 }
             }
 
-            $html .= '</td>';
+        $html .= '</td>';
 
             $presencial = $this->get_situacion_aprendizaje($this->planUnidad->id, $categ, 'presencial');
             $html .= '<td align="center" class="border">';
@@ -603,14 +729,14 @@ class Pdf extends \yii\db\ActiveRecord {
             }
             $html .= '</td>';
 
-            $remoto = $this->get_situacion_aprendizaje($this->planUnidad->id, $categ, 'remoto');
-            $html .= '<td align="center" class="border">';
-            if (!$remoto) {
-                $html .= '<i style="color: #ab0a3d"></i>';
-            } else {
-                $html .= '<i style="color: green">X</i>';
-            }
-            $html .= '</td>';
+            // $remoto = $this->get_situacion_aprendizaje($this->planUnidad->id, $categ, 'remoto');
+            // $html .= '<td align="center" class="border">';
+            // if (!$remoto) {
+            //     $html .= '<i style="color: #ab0a3d"></i>';
+            // } else {
+            //     $html .= '<i style="color: green">X</i>';
+            // }
+            //$html .= '</td>';
 
             $html .= '</tr>';
         }
@@ -650,9 +776,9 @@ class Pdf extends \yii\db\ActiveRecord {
     public function siete() {
         $html = '';
 
-        $html .= '<table class="tamano10" width="100%" cellspacing="0" cellpadding="2">';
+        $html .= '<table class="tamano10" width="100%" cellspacing="0" cellpadding="10">';
         $html .= '<tr>';
-        $html .= '<td class="border colorAyudas" colspan="2"><b style="color: #000">7. ATENCIÓN A LAS NECESIDADES EDUCATIVAS ESPECIALES: </b>(Detalle  las estrategias de trabajo a realizar para cada caso, las especificadas por el Tutor Psicólogo  y las propias de su asignatura o enseñanza)</td>';
+        $html .= '<td class="border" colspan="2"><b style="color: #000">7. ATENCIÓN A LAS NECESIDADES EDUCATIVAS ESPECIALES: </b>(Detalle  las estrategias de trabajo a realizar para cada caso, las especificadas por el Tutor Psicólogo  y las propias de su asignatura o enseñanza)</td>';
         $html .= '</tr>';
 
         $html .= '<tr>';
@@ -678,24 +804,27 @@ class Pdf extends \yii\db\ActiveRecord {
     public function ocho() {
         $html = '';
 
-        $html .= '<table class="tamano10" width="100%" cellspacing="0" cellpadding="2">';
+        $html .= '<table class="tamano10" width="100%" cellspacing="0" cellpadding="5">';
         $html .= '<tr>';
-        $html .= '<td class="border colorAyudas" colspan="2"><b style="color: #000">8. RECURSOS: </b>En esta sección especificar claramente cada recurso que se utilizará. Podría mejorarse incluyendo recursos que pudieran utilizarse para llevar a cabo la diferenciación, así como también agregando, por ejemplo, oradores y entornos que pudieran generar mayor profundidad en el trabajo reflexivo sobre el enunciado de la unidad.</td>';
+        $html .= '<td class="border" colspan="2"><b style="color: #000">8. RECURSOS: </b>
+        <i>En esta sección especificar claramente cada recurso que se utilizará. Podría mejorarse incluyendo 
+        recursos que pudieran utilizarse para llevar a cabo la diferenciación, así como también agregando, por ejemplo, oradores y 
+        entornos que pudieran generar mayor profundidad en el trabajo reflexivo sobre el enunciado de la unidad</i>.</td>';
         $html .= '</tr>';
 
         $html .= '<tr>';
-        $html .= '<td width="20%" class="border"><b>BIBLIOGRÁFICO: </b></td>';
-        $html .= '<td class="border">' . $this->busca_pud_pai('bibliografico') . '</td>';
+        $html .= '<td width="20%" class="border" align="center"><b>BIBLIOGRÁFICO: </b></td>';
+        $html .= '<td class="border" >' . $this->busca_pud_pai('bibliografico') . '</td>';
         $html .= '</tr>';
 
         $html .= '<tr>';
-        $html .= '<td class="border"><b>TECNOLÓGICO: </b></td>';
-        $html .= '<td class="border">' . $this->busca_pud_pai('tecnologico') . '</td>';
+        $html .= '<td class="border" align="center"><b>TECNOLÓGICO: </b></td>';
+        $html .= '<td class="border" >' . $this->busca_pud_pai('tecnologico') . '</td>';
         $html .= '</tr>';
 
         $html .= '<tr>';
-        $html .= '<td class="border"><b>OTROS: </b></td>';
-        $html .= '<td class="border">' . $this->busca_pud_pai('otros') . '</td>';
+        $html .= '<td class="border" align="center"><b>OTROS: </b></td>';
+        $html .= '<td class="border" >' . $this->busca_pud_pai('otros') . '</td>';
         $html .= '</tr>';
 
         $html .= '</table>';
@@ -706,15 +835,17 @@ class Pdf extends \yii\db\ActiveRecord {
     public function nueve() {
         $html = '';
 
-        $html .= '<table class="tamano10" width="100%" cellspacing="0" cellpadding="2">';
+        $html .= '<table class="tamano10" width="100%" cellspacing="0" cellpadding="5">';
         $html .= '<tr>';
-        $html .= '<td class="border colorAyudas" colspan="2"><b style="color: #000">9. REFLEXIÓN: </b>(Consideración de la planificación, el proceso y el impacto de la indagación. En el proceso de reflexión, garantizar dar respuesta a varias de la preguntas planteadas en cada momento.)</td>';
+        $html .= '<td class="border" colspan="3"><b style="color: #000">9. REFLEXIÓN: </b>
+        <i>(Consideración de la planificación, el proceso y el impacto de la indagación. En el proceso de reflexión, 
+        garantizar dar respuesta a varias de la preguntas planteadas en cada momento.)</i></td>';
         $html .= '</tr>';
 
         $html .= '<tr>';
-        $html .= '<td width="33%" class="border"><b>ANTES DE ENSEÑAR LA UNIDAD</b></td>';
-        $html .= '<td width="33%" class="border"><b>MIENTRAS SE ENSEÑA LA UNIDAD</b></td>';
-        $html .= '<td width="34%" class="border"><b>DESPUÉS DE ENSEÑAR LA UNIDAD</b></td>';
+        $html .= '<td width="33%" class="border" align="center"><b>ANTES DE ENSEÑAR LA UNIDAD</b></td>';
+        $html .= '<td width="33%" class="border" align="center"><b>MIENTRAS SE ENSEÑA LA UNIDAD</b></td>';
+        $html .= '<td width="34%" class="border" align="center"><b>DESPUÉS DE ENSEÑAR LA UNIDAD</b></td>';
         $html .= '</tr>';
 
         $html .= '<tr>';
@@ -732,7 +863,7 @@ class Pdf extends \yii\db\ActiveRecord {
         $html = '';
         foreach ($this->pudPai as $pud) {
             if ($pud->tipo == $tipo && ($tipo == 'antes' || $tipo == 'mientras' || $tipo == 'despues')) {
-                $html .= '<b><u>' . $pud->contenido . '</u></b><br>';
+                $html .= '* ' . $pud->contenido . '<br>';
                 $html .= $pud->respuesta . '<br>';
             } elseif ($pud->tipo == $tipo) {
                 $html .= $pud->contenido;
@@ -745,15 +876,15 @@ class Pdf extends \yii\db\ActiveRecord {
     public function diez() {
         $html = '';
 
-        $html .= '<table class="tamano10" width="100%" cellspacing="0" cellpadding="2">';
+        $html .= '<table class="tamano10" width="100%" cellspacing="0" cellpadding="5">';
         $html .= '<tr>';
         $html .= '<td class="border colorAyudas" colspan="3"><b style="color: #000">10. FIRMAS DE RESPONSABILIDAD</td>';
         $html .= '</tr>';
 
         $html .= '<tr>';
-        $html .= '<td width="33%" class="border"><b>FIRMAS DE DOCENTE</b></td>';
-        $html .= '<td width="33%" class="border"><b>FIRMAS DE JEFE DE ÁREA</b></td>';
-        $html .= '<td width="34%" class="border"><b>FIRMAS DE COORDINACIÓN</b></td>';
+        $html .= '<td width="33%" class="border" align="center"><b>FIRMAS DE DOCENTE</b></td>';
+        $html .= '<td width="33%" class="border" align="center"><b>FIRMAS DE JEFE DE ÁREA</b></td>';
+        $html .= '<td width="34%" class="border" align="center"><b>FIRMAS DE COORDINACIÓN</b></td>';
         $html .= '</tr>';
 
         $html .= '<tr>';

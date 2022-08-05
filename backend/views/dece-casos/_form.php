@@ -1,5 +1,7 @@
 <?php
 
+
+
 use backend\models\DeceCasos;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
@@ -39,7 +41,7 @@ $modelCasosHist = DeceCasos::find()
     ->where(['id_estudiante' => $model->id_estudiante])
     ->andWhere(['id_periodo' => $model->id_periodo])
     ->all();
-
+  
 //buscamos el numero de seguimientos que tiene el alumno
 $modelRegSeguimiento = DeceRegistroSeguimiento::find()
     ->where(['id_caso' => $model->id])
@@ -164,8 +166,9 @@ $modelRegSeguimiento = DeceRegistroSeguimiento::find()
                         <td><b>Editar</b></td>
                         <td><b>Ver</b></td>
                     </tr>
-                    <?php
+                    <?php                   
                     foreach ($modelRegSeguimiento as $modelReg) {
+                       
                     ?>
                         <tr>
                             <td><?= $modelReg->caso->numero_caso ?></td>

@@ -33,7 +33,7 @@ class ServicioAccion extends ActiveRecord{
     }
 
     private function generate_response(){
-        $this->html .= '<h5 class=""><b>6.- SERVICIOS COMO ACCIÓN: </b><small class="my-text-small" style="color: #65b2e8">
+        $this->html .= '<br><h5 class=""><b>6.- SERVICIOS COMO ACCIÓN: </b><small class="my-text-small" style="color: #65b2e8">
         (Los servicios de acción son Servicio Directo, Servicio Indirecto, Promoción de una causa, Investigación, etc. )
         </small></h5>';
 
@@ -65,7 +65,7 @@ class ServicioAccion extends ActiveRecord{
                     $this->html .= '<th class="text-center">Presencial</th>';
                     $this->html .= '<th class="text-center">En Línea</th>';
                     $this->html .= '<th class="text-center">Combinado</th>';                    
-                    $this->html .= '<th class="text-center">Remoto</th>';
+                    //$this->html .= '<th class="text-center">Remoto</th>';
                     $this->html .= '</tr>';
                     $this->html .= '</thead>';
                     $this->html .= '<tbody id="body-como-accion">';

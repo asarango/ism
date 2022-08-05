@@ -40,6 +40,7 @@ class PlanificacionBloquesUnidadSubtitulo extends \yii\db\ActiveRecord
             [['experiencias', 'evaluacion_formativa', 'diferenciacion'], 'string'],
             [['subtitulo'], 'string', 'max' => 255],
             [['trazabilidad'], 'string', 'max' => 255],
+            [['verificacion'], 'string', 'max' => 20],
             [['plan_unidad_id'], 'exist', 'skipOnError' => true, 'targetClass' => PlanificacionBloquesUnidad::className(), 'targetAttribute' => ['plan_unidad_id' => 'id']],
         ];
     }
@@ -58,6 +59,7 @@ class PlanificacionBloquesUnidadSubtitulo extends \yii\db\ActiveRecord
             'evaluacion_formativa' => 'Evaluacion Formativa',
             'diferenciacion' => 'Diferenciacion',
             'trazabilidad'=> 'Trazabilidad',
+            'verificacion'=>'Verificación',
         ];
     }
 

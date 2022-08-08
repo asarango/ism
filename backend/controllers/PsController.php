@@ -89,16 +89,17 @@ class PsController extends Controller {
             'calendario' => $calendario,
             'actividades' => $actividades,
             'cursos' => $cursos,
-            'planesSemanales' => $planesSemanales
+            'planesSemanales' => $planesSemanales,
+            'desde' => $desde                
         ]);                
     }
     
     private function get_planes_semanales($desde, $hasta){
         $con = Yii::$app->db;
-        $query = "select 	p.id 
+        $query = "select 	p.id as planificacion_id
                                 ,p.op_course_template_id
                                 ,o.categoria_principal_es 
-                                ,w.id 
+                                ,w.id as plan_semanal_id
                                 ,w.experiencias_aprendizaje 
                                 ,w.evaluacion_continua 
                                 ,w.es_aprobado 
@@ -184,6 +185,69 @@ where 	ac.inicio = '$fecha'
 		and date_part('dow', '$fecha'::timestamp) = dia.numero;";
         $res = $con->createCommand($query)->queryAll();
         return $res;
+    }
+    
+    
+    
+    public function actionConfigurar(){
+        $usuario = Yii::$app->user->identity->usuario;
+        $hoy = date("Y-m-d H:i:s");
+        
+        $planificacionId = $_GET['planificacion_id'];
+        //$opCourseTemplateId = $_GET['op_course_template_id'];
+        
+        
+        $plan = \backend\models\PepPlanSemanal::find()->where([
+            'pep_planificacion_id' => $planificacionId
+        ])->one();
+        
+        if(!$plan){
+            $model = new \backend\models\PepPlanSemanal();
+            $model->pep_planificacion_id = $planificacionId;
+            $model->experiencias_aprendizaje = 'No conf';
+            $model->evaluacion_continua = 'No conf';
+            $model->es_aprobado = false;
+            $model->created_at = $hoy;
+            $model->created = $usuario;
+            $model->updated_at = $hoy;
+            $model->updated = $usuario;
+            $model->save();
+        }else{
+            $model = $plan;
+        }
+        
+        return $this->render('configuracion',[
+            'model' => $model
+        ]);
+        
+    }
+    
+    
+    public function actionUpdate(){
+        $usuario = Yii::$app->user->identity->usuario;
+        $hoy = date("Y-m-d H:i:s");
+        
+        $planSemanalId = $_POST['plan_semanal_id'];
+        $experiencia = $_POST['experiencia'];
+        $evaluacion  = $_POST['evaluacion'];
+        
+        $model = \backend\models\PepPlanSemanal::findOne($planSemanalId);
+        
+        $model->experiencias_aprendizaje = $experiencia;
+        $model->evaluacion_continua = $evaluacion;
+        $model->updated_at = $hoy;
+        $model->updated = $usuario;
+        if($model->save()){
+            $resp = array(
+                'status' => 'ok'           
+            );
+        }else{
+            $resp = array(
+                'status' => 'error'            
+            );
+        }
+        
+        return json_encode($resp);
     }
 
 }

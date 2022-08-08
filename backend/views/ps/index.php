@@ -52,7 +52,27 @@ $this->params['breadcrumbs'][] = $this->title;
 
                 <div class="col-lg-6 col-md-6" style="text-align: right;">
                     <!-- inicio de menu derecha -->
-
+                    |
+                    <?php
+                    
+                    $fechaAnterior = date("Y-m-d",strtotime($desde."- 7 days"));
+                    $fechaSiguiente = date("Y-m-d",strtotime($desde."+ 7 days"));
+                    
+                    echo Html::a(
+                            '<span class="badge rounded-pill" style="background-color: #ff9e18"><i class="fa fa-briefcase" aria-hidden="true"></i> Anterior</span>',
+                            ['index1', 'desde' => $fechaAnterior],
+                            ['class' => 'link']
+                    );
+                    ?>
+                    
+                    |
+                    <?=
+                    Html::a(
+                            '<span class="badge rounded-pill" style="background-color: #65b2e8"><i class="fa fa-briefcase" aria-hidden="true"></i> Siguiente</span>',
+                            ['index1', 'desde' => $fechaSiguiente],
+                            ['class' => 'link']
+                    );
+                    ?>
 
                 </div><!-- fin de menu derecha -->
             </div>
@@ -72,25 +92,61 @@ $this->params['breadcrumbs'][] = $this->title;
                         <table class="table table-striped table-condensed">
                             <thead>
                                 <tr>
-                                    <th>CURSO</th>
-                                    <th>DETALLE</th>
-                                    <th>ACCIÓN</th>
+                                    <th class="text-center">CURSO</th>
+                                    <th class="text-center">PLAN</th>
+                                    <th class="text-center">APROB</th>
+                                    <th class="text-center">ACCIÓN</th>
                                 </tr>
                             </thead>
 
                             <tbody>
                                 <?php
-                                    foreach ($cursos as $curso){
-                                        $cursoId = $curso['course_template_id'];
+                                foreach ($cursos as $curso) {
+                                    $cursoId = $curso['course_template_id'];
+                                    ?>
+                                    <tr>
+                                        <td><?= $curso['course_template'] ?></td>
+
+                                        <?php
+                                            echo '<pre>';
+//                                            print_r($planesSemanales);
+//                                            die();
+                                        foreach ($planesSemanales as $ps) {
+                                            if ($curso['course_template_id'] == $ps['op_course_template_id']) {
+                                                if (!is_null($ps['experiencias_aprendizaje']) || !is_null($ps['evaluacion_continua'])) {
+                                                    echo '<td class="text-center">';
+                                                    echo '<i class="fas fa-check-circle" style="color: green"></i>';
+                                                    echo '</td>';
+                                                    echo '<td class="text-center">';
+                                                    if($ps['es_aprobado']){
+                                                        echo '<i class="fas fa-thumbs-up" style="color: green"></i>';
+                                                    }else{
+                                                        echo '<i class="fas fa-thumbs-down" style="color: #ab0a3d"></i>';
+                                                    }
+                                                    
+                                                    echo '</td>';
+                                                } else {
+                                                    echo '<td class="text-center">';
+                                                    echo '<i class="fas fa-times-circle" style="color: #ab0a3d"></i>';
+                                                    echo '</td>';
+                                                    echo '<td class="text-center">';
+                                                    echo '<i class="fas fa-thumbs-down" style="color: #ab0a3d"></i>';
+                                                    echo '</td>';
+                                                }
+
+                                                echo '<td class="text-center">';
+                                                echo Html::a('<i class="fas fa-cogs" style="color: #0a1f8f"></i>', ['configurar',
+                                                    'planificacion_id' => $ps['planificacion_id'],
+                                                    'op_course_template_id' => $ps['op_course_template_id']
+                                                ]);
+                                                echo '</td>';
+                                            }
+                                        }
                                         ?>
-                                <tr>
-                                    <td><?= $curso['course_template'] ?></td>
-                                </tr> 
-                                <?php
-                                    }
-                                echo '<pre>';
-                                print_r($cursos);
-                                print_r($planesSemanales);
+
+                                    </tr> 
+                                    <?php                                    
+                                }
                                 ?>
                             </tbody>
 

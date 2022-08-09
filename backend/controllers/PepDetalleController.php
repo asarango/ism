@@ -63,11 +63,17 @@ class PepDetalleController extends Controller {
 
     public function actionIndex1() {
         $temaId = $_GET['tema_id'];
-        $tema = \backend\models\PepPlanificacionXUnidad::findOne($temaId);                
+        $opCourseTemplateId = $_GET['op_course_template_id'];
+        $tema = \backend\models\PepPlanificacionXUnidad::find([
+            'tema_transdisciplinar_id' => $temaId,
+            'op_course_template_id' => $opCourseTemplateId
+        ])->one();
         
         $this->ingresa_todas_opciones($temaId);
         
         $registros = \backend\models\PepUnidadDetalle::find()->where(['pep_planificacion_unidad_id' => $temaId])->orderBy('id')->all();
+        
+        
         
         return $this->render('index', [        
            'tema' => $tema,

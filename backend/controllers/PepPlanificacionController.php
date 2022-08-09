@@ -113,7 +113,8 @@ class PepPlanificacionController extends Controller {
                 
                 return $this->renderPartial('_ajax-temas', [
                     'temas' => $temas,
-                    'bloques' => $bloques
+                    'bloques' => $bloques,
+                    'op_course_template_id' => $_GET['op_course_id']
                 ]);
                 break;
         }

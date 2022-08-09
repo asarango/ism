@@ -19,7 +19,8 @@ foreach ($temas as $tema) {
                 <div class="col-lg-6 col-md-6">
                     <?= 
                         Html::a('<i class="fas fa-cogs"> Configurar</i>',['/pep-detalle/index1',
-                            'tema_id' => $tema->id
+                            'tema_id' => $tema->id,
+                            'op_course_template_id' => $op_course_template_id
                         ]);
                     ?>                    
                 </div>               

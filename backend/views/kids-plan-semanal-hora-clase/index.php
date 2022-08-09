@@ -127,14 +127,35 @@ $hoy = date('d-m-Y');
                                 foreach($modelDestrezas as $destrezaSel){
                                     ?>
                                     <div class="card shadow p-3 " style="margin-top:10px">
-                                        <div style="text-align:end">
-                                            <!-- BOTON AGREGAR TAREA -->
-                                            <a type="button" data-bs-toggle="modal" data-bs-target="#tareaModal<?=$destrezaSel['id'] ?>">
-                                                + Tarea/Evaluación &nbsp;
-                                                <i class="fas fa-sticky-note" style="color:#65b2e8" title="Agregar Tarea"></i>
-                                            </a>
 
-                                                <!-- MODAL AGREGAR TAREA -->
+                                    <div class="row">
+
+                                        <div class="col-md-3 col-sm-12">
+
+                                            <?=
+                                            Html::a(
+                                                '<i class="fas fa-trash" style="color:#ab0a3d; font-size:15px" title="Eliminar"></i>',
+                                                [
+                                                    'elimina-destreza',
+                                                    'destreza_id' => $destrezaSel['id']
+                                                ],
+                                                [
+                                                    'class' => 'link'
+                                                ]
+                                            );
+                                            ?>
+
+                                            
+                                        </div>
+
+                                        <div class="col-md-9 col-sm-12">
+                                            <div style="text-align:end">
+                                                <!-- BOTON AGREGAR TAREA -->
+                                                <a type="button" data-bs-toggle="modal" data-bs-target="#tareaModal<?=$destrezaSel['id'] ?>">
+                                                    + Tarea/Evaluación &nbsp;
+                                                    <i class="fas fa-sticky-note" style="color:#65b2e8" title="Agregar Tarea"></i>
+                                                </a>
+                                                    <!-- MODAL AGREGAR TAREA -->
                                                 <div class="modal fade" id="tareaModal<?=$destrezaSel['id'] ?>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                                     <div class="modal-dialog modal-lg">
                                                         <div class="modal-content">
@@ -219,7 +240,11 @@ $hoy = date('d-m-Y');
                                                         </div>
                                                     </div>
                                                 </div>
+                                            </div>
                                         </div>
+                                    </div>
+
+                                    <hr>
 
                                         <!-- MUESTRA INFORMACIÓN DESTREZA - AMBITO Y TAREAS -->
                                         <strong class="text-segundo">Ámbito:</strong>

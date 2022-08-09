@@ -34,6 +34,7 @@ class PdfLibreta extends \yii\db\ActiveRecord {
     }
 
     private function generate_pdf() {
+        
         $mpdf = new mPDF([
             'mode' => 'utf-8',
             'format' => 'A4-L',
@@ -43,8 +44,9 @@ class PdfLibreta extends \yii\db\ActiveRecord {
             'margin_bottom' => 0,
             'margin_header' => 5,
             'margin_footer' => 5,
+            'bodyBackgroundColor' => 5
         ]);
-
+        // die('aqui llega');
         $cabecera = '<h1>oliiii</h1>';
         // $cabecera = $this->cabecera();
         //$pie = $this->genera_pie_pdf();

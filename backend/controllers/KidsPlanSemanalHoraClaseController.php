@@ -195,6 +195,12 @@ class KidsPlanSemanalHoraClaseController extends Controller
 
     }
 
+     //Función para destreza
+    public function actionEliminaDestreza(){
+        print_r($_GET);
+        die();
+    }
+
     // /**
     //  * Displays a single KidsPlanSemanalHoraClase model.
     //  * @param integer $id

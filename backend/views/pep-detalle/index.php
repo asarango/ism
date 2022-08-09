@@ -56,7 +56,16 @@ $this->params['breadcrumbs'][] = $this->title;
 
                 <div class="col-lg-6 col-md-6" style="text-align: right;">
                     <!-- inicio de menu derecha -->
+                    |
+                    <?=
+                    Html::a(
+                            '<span class="badge rounded-pill" style="background-color: #ab0a3d"><i class="fa fa-briefcase" aria-hidden="true"></i> Generar PDF</span>',
+                            ['pdf', 'planificacion_id' => $tema->id],
+                            ['class' => 'link']
+                    );
+                    ?>
 
+                    |
                 </div><!-- fin de menu derecha -->
             </div>
             <!-- finaliza menu menu  -->
@@ -140,7 +149,11 @@ $this->params['breadcrumbs'][] = $this->title;
                 <div class="collapse" id="diseno">
                     <div class="card card-body">
                         <!-- Para el tema de la unidad -->            
-                        <?= $this->render('_diseno-implementacion', ['tema' => $tema, 'registros' => $registros]); ?> 
+                        <?= $this->render('_diseno-implementacion', [
+                                'tema' => $tema, 
+                                'registros' => $registros,
+                                'planesSemanales' => $planesSemanales
+                            ]); ?> 
                         <hr>                        
 
                     </div> <!-- Fin de card-body -->

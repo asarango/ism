@@ -63,21 +63,20 @@ class PepDetalleController extends Controller {
 
     public function actionIndex1() {
         $temaId = $_GET['tema_id'];
+        
         $opCourseTemplateId = $_GET['op_course_template_id'];
-        $tema = \backend\models\PepPlanificacionXUnidad::find([
-            'tema_transdisciplinar_id' => $temaId,
-            'op_course_template_id' => $opCourseTemplateId
-        ])->one();
+        $tema = \backend\models\PepPlanificacionXUnidad::findOne($temaId);
         
         $this->ingresa_todas_opciones($temaId);
         
         $registros = \backend\models\PepUnidadDetalle::find()->where(['pep_planificacion_unidad_id' => $temaId])->orderBy('id')->all();
         
-        
+        $planesSemanales = \backend\models\PepPlanSemanal::find()->where(['pep_planificacion_id' => $tema->id])->all();
         
         return $this->render('index', [        
            'tema' => $tema,
-           'registros' => $registros
+           'registros' => $registros,
+           'planesSemanales' => $planesSemanales
         ]);
     }
     
@@ -316,5 +315,9 @@ class PepDetalleController extends Controller {
         $model->delete();
         
         return $this->redirect(['desagregacion', 'tema_id' => $temaId]);
+    }
+    
+    public function actionPdf(){
+        print_r($_GET['planificacion_id']);
     }
 }

@@ -108,40 +108,84 @@ $this->params['breadcrumbs'][] = $this->title;
                                         <td><?= $curso['course_template'] ?></td>
 
                                         <?php
-                                            echo '<pre>';
+//                                            echo '<pre>';
 //                                            print_r($planesSemanales);
 //                                            die();
-                                        foreach ($planesSemanales as $ps) {
-                                            if ($curso['course_template_id'] == $ps['op_course_template_id']) {
-                                                if (!is_null($ps['experiencias_aprendizaje']) || !is_null($ps['evaluacion_continua'])) {
-                                                    echo '<td class="text-center">';
-                                                    echo '<i class="fas fa-check-circle" style="color: green"></i>';
-                                                    echo '</td>';
-                                                    echo '<td class="text-center">';
-                                                    if($ps['es_aprobado']){
-                                                        echo '<i class="fas fa-thumbs-up" style="color: green"></i>';
-                                                    }else{
-                                                        echo '<i class="fas fa-thumbs-down" style="color: #ab0a3d"></i>';
-                                                    }
-                                                    
-                                                    echo '</td>';
-                                                } else {
-                                                    echo '<td class="text-center">';
-                                                    echo '<i class="fas fa-times-circle" style="color: #ab0a3d"></i>';
-                                                    echo '</td>';
-                                                    echo '<td class="text-center">';
+//                                            
+                                           if($planesSemanales['semana_id']){
+                                                echo '<td class="text-center">';
+                                                if($planesSemanales['experiencias_aprendizaje'] == 'No conf' || $planesSemanales['evaluacion_continua'] == 'No conf'){
+                                                    echo '<i class="fas fa-pause-circle"></i>';
+                                                echo '</td>';
+                                                echo '<td class="text-center">';
+                                                if($planesSemanales['es_aprobado']){
+                                                    echo '<i class="fas fa-thumbs-up" style="color: green"></i>';
+                                                }else{
                                                     echo '<i class="fas fa-thumbs-down" style="color: #ab0a3d"></i>';
-                                                    echo '</td>';
                                                 }
 
+                                                echo '</td>';
+                                                }else{
+                                                    echo '<i class="fas fa-check-circle" style="color: green"></i>';
+                                                echo '</td>';
                                                 echo '<td class="text-center">';
-                                                echo Html::a('<i class="fas fa-cogs" style="color: #0a1f8f"></i>', ['configurar',
-                                                    'planificacion_id' => $ps['planificacion_id'],
-                                                    'op_course_template_id' => $ps['op_course_template_id']
+                                                if($planesSemanales['es_aprobado']){
+                                                    echo '<i class="fas fa-thumbs-up" style="color: green"></i>';
+                                                }else{
+                                                    echo '<i class="fas fa-thumbs-down" style="color: #ab0a3d"></i>';
+                                                }
+
+                                                echo '</td>';
+                                                }
+                                                
+                                           }else{
+                                                echo '<td class="text-center">';
+                                                echo '<i class="fas fa-times-circle" style="color: #ab0a3d"></i>';
+                                                echo '</td>';
+                                                echo '<td class="text-center">';
+                                                echo '<i class="fas fa-thumbs-down" style="color: #ab0a3d"></i>';
+                                                echo '</td>';
+                                           }
+                                                echo '<td class="text-center">';
+                                                echo Html::a('<i class="fas fa-cogs" style="color: #0a1f8f"></i>', ['configurar',                                                   
+                                                    'op_course_template_id' => $curso['course_template_id'],
+                                                    'semana_id' => $semana['semana_id'],
+                                                    'pep_planificacion_id' => $planesSemanales['planificacion_id'],
                                                 ]);
                                                 echo '</td>';
-                                            }
-                                        }
+                                           
+//                                        foreach ($planesSemanales as $ps) {
+//                                            if ($curso['course_template_id'] == $ps['op_course_template_id']) {
+//                                                if (!is_null($ps['experiencias_aprendizaje']) || !is_null($ps['evaluacion_continua']) || !is_null($ps['semana_id'])) {
+//                                                    echo '<td class="text-center">';
+//                                                    echo '<i class="fas fa-check-circle" style="color: green"></i>';
+//                                                    echo '</td>';
+//                                                    echo '<td class="text-center">';
+//                                                    if($ps['es_aprobado']){
+//                                                        echo '<i class="fas fa-thumbs-up" style="color: green"></i>';
+//                                                    }else{
+//                                                        echo '<i class="fas fa-thumbs-down" style="color: #ab0a3d"></i>';
+//                                                    }
+//                                                    
+//                                                    echo '</td>';
+//                                                } else {
+//                                                    echo '<td class="text-center">';
+//                                                    echo '<i class="fas fa-times-circle" style="color: #ab0a3d"></i>';
+//                                                    echo '</td>';
+//                                                    echo '<td class="text-center">';
+//                                                    echo '<i class="fas fa-thumbs-down" style="color: #ab0a3d"></i>';
+//                                                    echo '</td>';
+//                                                }
+//
+//                                                echo '<td class="text-center">';
+//                                                echo Html::a('<i class="fas fa-cogs" style="color: #0a1f8f"></i>', ['configurar',
+//                                                    'planificacion_id' => $ps['planificacion_id'],
+//                                                    'op_course_template_id' => $ps['op_course_template_id'],
+//                                                    'semana_id' => $semana['semana_id']
+//                                                ]);
+//                                                echo '</td>';
+//                                            }
+//                                        }
                                         ?>
 
                                     </tr> 

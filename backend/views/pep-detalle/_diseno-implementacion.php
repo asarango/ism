@@ -3,24 +3,18 @@
 
 <!--inicio de Diseñar experiencias de aprendizaje-->
 <p class="text-primero"><b><u>Diseñar experiencias de aprendizaje interesantes:</u></b></p>
-<div class="form-group"> 
-    <div id="editor-experiencias">
+
+<div class="card p-2" style="border-color: #ff9e18">
+    <ul>
         <?php
-            foreach ($registros as $reg){
-                if($reg->tipo == 'experiencias_aprendizaje'){
-                    echo $reg->contenido_texto;
-                    $registroId = $reg->id;
-                }
-            }            
+            foreach($planesSemanales as $exp){
+               echo '<li><b>'.$exp->semana->nombre_semana.'</b>' .$exp->experiencias_aprendizaje.'</li>';
+            }
         ?>
-    </div>
-    
-    <button type="submit" class="btn btn-outline-warning" 
-            style="margin-top: 10px"
-            onclick="grabarExperiencias(<?= $registroId ?>)">
-        Guardar
-    </button>
+    </ul>
 </div>
+
+
 <!--fin de experiencias de aprendizaje-->
 
 <hr>
@@ -30,6 +24,8 @@
 <div class="form-group"> 
     <div id="editor-agencia">
         <?php
+                
+        
             foreach ($registros as $reg){
                 if($reg->tipo == 'agencia_alumnos'){
                     echo $reg->contenido_texto;
@@ -76,24 +72,16 @@
 <br>
 <!--inicio de Evaluación continua-->
 <p class="text-primero"><b><u>Evaluación continua:</u></b></p>
-<div class="form-group"> 
-    <div id="editor-eval-continua">
+<div class="card p-2" style="border-color: #ff9e18">
+    <ul>
         <?php
-            foreach ($registros as $reg){
-                if($reg->tipo == 'evaluacion_continua'){
-                    echo $reg->contenido_texto;
-                    $registroId = $reg->id;
-                }
-            }            
+            foreach($planesSemanales as $exp){
+               echo '<li><b>'.$exp->semana->nombre_semana.'</b>' .$exp->evaluacion_continua.'</li>';
+            }
         ?>
-    </div>
-    
-    <button type="submit" class="btn btn-outline-warning" 
-            style="margin-top: 10px"
-            onclick="grabarEvaluacionCon(<?= $registroId ?>)">
-        Guardar
-    </button>
+    </ul>
 </div>
+
 <!--fin de evaluación continua-->
 
 

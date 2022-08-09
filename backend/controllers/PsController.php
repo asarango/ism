@@ -77,29 +77,62 @@ class PsController extends Controller {
         $calendario = $helper->fechas;
         /*******************************/
         
-        $actividades = $this->get_actividades_semanal($desde, $hasta, $usuarioLog); /** Actividades de la semana del docente **/             
+        $actividades = $this->get_actividades_semanal($desde, $hasta, $usuarioLog); /** Actividades de la semana del docente **/      
+        
+        /******* PARA BUSCAR LA SEMANA ID *******/
+        $semana = $this->get_semana_id($periodoId, $usuarioLog, $desde);
+        
+        if(!isset($semana['semana_id'])){
+            return $this->redirect(['/site/error2', 
+                'error' => 'No existe confirguración para la siguiente semana. Por favor comunícate con el Administrador del sitio.']);
+        }
+        /////////**********///////////////////
         
         /***** PARA LOS PLANES SEMANALES ******/
         $helper = new \backend\models\helpers\Scripts();
         $cursos = $helper->get_cursos_x_periodo($periodoId, $usuarioLog);
-        $planesSemanales = $this->get_planes_semanales($desde, $hasta);
-        /**************************************/
+        $planesSemanales = $this->get_planes_semanales($desde, $hasta, $semana['semana_id']);
+        /**************************************/        
         
         return $this->render('index',[
             'calendario' => $calendario,
             'actividades' => $actividades,
             'cursos' => $cursos,
             'planesSemanales' => $planesSemanales,
-            'desde' => $desde                
+            'desde' => $desde,            
+            'semana' => $semana            
         ]);                
     }
     
-    private function get_planes_semanales($desde, $hasta){
+    private function get_semana_id($periodoId, $usuario, $desde){
+        $con = Yii::$app->db;
+        $query = "select 	bs.id as semana_id 
+                                    ,bs.semana_numero 
+                                    ,bs.nombre_semana 
+                    from 	scholaris_clase cl 
+                                    inner join op_faculty fa on fa.id = cl.idprofesor 
+                                    inner join ism_area_materia am on am.id = cl.ism_area_materia_id 
+                                    inner join ism_malla_area ma on ma.id = am.malla_area_id 
+                                    inner join ism_periodo_malla pm on pm.id = ma.periodo_malla_id 
+                                    inner join res_users ru on ru.partner_id = fa.partner_id 
+                                    inner join scholaris_bloque_comparte bc on cast(bc.valor as varchar) = cl.tipo_usu_bloque 
+                                    inner join scholaris_bloque_actividad ba on ba.tipo_uso = cast(bc.valor as varchar)
+                                    inner join scholaris_bloque_semanas bs on bs.bloque_id = ba.id 
+                    where	pm.scholaris_periodo_id = $periodoId
+                                    and ru.login = '$usuario'
+                                    and bs.fecha_inicio = '$desde' 
+                    limit 1;";
+        $res = $con->createCommand($query)->queryOne();
+        return $res;
+    }
+    
+    private function get_planes_semanales($desde, $hasta, $semanaId){
         $con = Yii::$app->db;
         $query = "select 	p.id as planificacion_id
                                 ,p.op_course_template_id
                                 ,o.categoria_principal_es 
                                 ,w.id as plan_semanal_id
+                                ,w.semana_id
                                 ,w.experiencias_aprendizaje 
                                 ,w.evaluacion_continua 
                                 ,w.es_aprobado 
@@ -108,9 +141,12 @@ class PsController extends Controller {
                                 inner join scholaris_bloque_semanas s on s.bloque_id = b.id 
                                 inner join pep_opciones o on o.id = p.tema_transdisciplinar_id 
                                 left join pep_plan_semanal w on w.pep_planificacion_id = p.id 
+                                        and w.semana_id = '$semanaId'
                 where           s.fecha_inicio >= '$desde'
                                 and s.fecha_finaliza <= '$hasta';";
-        $res = $con->createCommand($query)->queryAll();
+
+        
+        $res = $con->createCommand($query)->queryOne();
         return $res;
     }
     
@@ -139,6 +175,7 @@ class PsController extends Controller {
                 where 	ac.inicio between '$desde' and '$hasta'
                                 and u.login = '$usuario'
                 group by ac.inicio;";
+        
         $res = $con->createCommand($query)->queryAll();
         return $res;
     }
@@ -193,17 +230,16 @@ where 	ac.inicio = '$fecha'
         $usuario = Yii::$app->user->identity->usuario;
         $hoy = date("Y-m-d H:i:s");
         
-        $planificacionId = $_GET['planificacion_id'];
-        //$opCourseTemplateId = $_GET['op_course_template_id'];
-        
-        
-        $plan = \backend\models\PepPlanSemanal::find()->where([
-            'pep_planificacion_id' => $planificacionId
-        ])->one();
+        $planificacionId = $_GET['pep_planificacion_id'];
+        $semanaId = $_GET['semana_id'];
+        $opCourseTemplateId = $_GET['op_course_template_id'];
+                
+        $plan = $this->buscar_plan_semanal($semanaId, $opCourseTemplateId);
         
         if(!$plan){
             $model = new \backend\models\PepPlanSemanal();
             $model->pep_planificacion_id = $planificacionId;
+            $model->semana_id = $semanaId;
             $model->experiencias_aprendizaje = 'No conf';
             $model->evaluacion_continua = 'No conf';
             $model->es_aprobado = false;
@@ -213,13 +249,24 @@ where 	ac.inicio = '$fecha'
             $model->updated = $usuario;
             $model->save();
         }else{
-            $model = $plan;
+            $model = \backend\models\PepPlanSemanal::findOne($plan['id']);            
         }
         
         return $this->render('configuracion',[
             'model' => $model
         ]);
         
+    }
+    
+    private function buscar_plan_semanal($semanId, $opCourseTemplateId){
+        $con = \Yii::$app->db;
+        $query = "select 	s.id 
+                    from 	pep_plan_semanal s
+                                    inner join pep_planificacion_x_unidad p on p.id = s.pep_planificacion_id 
+                    where 	s.semana_id = $semanId
+                                    and p.op_course_template_id = $opCourseTemplateId;";
+        $res = $con->createCommand($query)->queryOne();
+        return $res;
     }
     
     

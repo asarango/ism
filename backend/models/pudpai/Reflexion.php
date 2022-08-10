@@ -32,11 +32,10 @@ class Reflexion extends ActiveRecord{
         $this->institutoId = Yii::$app->user->identity->instituto_defecto;
 
         $this->html = '';
-        $this->seccion_numero = '8';
-        $this->actualizaCampoUltimaSeccion('8.1.-',$planUnidadId);
+        $this->seccion_numero = '9';
+        $this->actualizaCampoUltimaSeccion('9.1.-',$planUnidadId);
 
         $this->ingresa_recursos();
-        //$this->consulta_recursos();
         $this->get_accion();
     }
 
@@ -99,7 +98,7 @@ class Reflexion extends ActiveRecord{
                 $this->html .= '<div class="card" style="width: 90%; margin-top:20px">';
                 
                     $this->html .= '<div class="card-header">';                    
-                        $this->html .= '<h5 class=""><b>8.1.- REFLEXIÓN: </b></h5>';                        
+                        $this->html .= '<h5 class=""><b>9.1.- REFLEXIÓN: </b></h5>';                        
                         $this->html .= '<small style="color: #65b2e8">(Consideración de la planificación, el proceso y el impacto de la indagación. En el proceso de reflexión, garantizar dar respuesta a varias de la preguntas planteadas en cada momento.)</small>';
                     $this->html .= '</div>';
                         

@@ -33,8 +33,8 @@ class Recursos extends ActiveRecord{
         $this->institutoId = Yii::$app->user->identity->instituto_defecto;
 
         $this->html = '';
-        $this->seccion_numero = 7;
-        $this->actualizaCampoUltimaSeccion('7.1.-',$planUnidadId);
+        $this->seccion_numero = 8;
+        $this->actualizaCampoUltimaSeccion('8.1.-',$planUnidadId);
 
         $this->ingresa_recursos();
         $this->consulta_recursos();
@@ -62,7 +62,8 @@ class Recursos extends ActiveRecord{
         $this->validate_recurso('otros');
     }
 
-    private function validate_recurso($tipo){
+    private function validate_recurso($tipo)
+    {
         $pudPai = PudPai::find()->where([
             'planificacion_bloque_unidad_id' => $this->planUnidadId,
             'tipo' => $tipo,
@@ -99,7 +100,7 @@ class Recursos extends ActiveRecord{
                 $this->html .= '<div class="card" style="width: 90%; margin-top:20px">';
                 
                     $this->html .= '<div class="card-header">';                    
-                        $this->html .= '<h5 class=""><b>7.1.- RECURSOS: </b></h5>';                        
+                        $this->html .= '<h5 class=""><b>8.1.- RECURSOS: </b></h5>';                        
                         $this->html .= '<small style="color: #65b2e8">En esta sección especificar claramente cada recurso que se utilizará. Podría mejorarse incluyendo recursos que pudieran utilizarse para llevar a cabo la diferenciación, así como también agregando, por ejemplo, oradores y entornos que pudieran generar mayor profundidad en el trabajo reflexivo sobre el enunciado de la unidad.</small>';
                     $this->html .= '</div>';
                         
@@ -107,19 +108,17 @@ class Recursos extends ActiveRecord{
                         $this->html .= '<div class="ocultar">';
                         $this->html .= $this->modal();
                         $this->html .='</div>';
-                        $this->html .= '<div class="table table-responsive">';     
-
-                        $this->html .= '<table class="table table-hover table-condensed table-bordered" id="table-recursos">';  
-
-                        $this->html .= '</table>';            
-                        $this->html .= '</div>';
-
+                            $this->html .= '<div class="table table-responsive">';   
+                                    $this->html .= '<table class="table table-hover table-condensed table-bordered" id="table-recursos">';  
+                                    $this->html .= '</table>';            
+                            $this->html .= '</div>';
                     $this->html .= '</div>';
                 $this->html .= '</div>';
             $this->html .= '</div>';
     }
 
-    private function modal(){
+    private function modal()
+    {
         $html = '<a href="#"  data-bs-toggle="modal" data-bs-target="#facticasModal"> 
                               <span class="badge rounded-pill" 
                               style="background-color: #ab0a3d"><i class="fa fa-briefcase" aria-hidden="true"></i> 
@@ -169,28 +168,27 @@ class Recursos extends ActiveRecord{
                         </script>';
                     $html .= '</div><hr>'; //fin de tecnologico
 
-                    $html .= '<div class="form-group">'; // inicia otros
-                        $html .= '<label class=""><b>OTROS:</b></label>';            
-                        $html .= '<textarea name="otros" id="editor-otros">';
-                        foreach($this->recursos as $recurso){
-                          if($recurso->tipo == 'otros'){
-                            $html .= $recurso->contenido;
-                          }
-                        }
-                        $html .= '</textarea>
-                        <script>
-                            CKEDITOR.replace("editor-otros", {
-                                customConfig: "/ckeditor_settings/config.js"
-                            })
-                        </script>';
-                    $html .= '</div>'; //fin de otros
+                        $html .= '<div class="form-group">'; // inicia otros
+                            $html .= '<label class=""><b>OTROS:</b></label>';            
+                            $html .= '<textarea name="otros" id="editor-otros">';
+                            foreach($this->recursos as $recurso){
+                            if($recurso->tipo == 'otros'){
+                                $html .= $recurso->contenido;
+                            }
+                            }
+                            $html .= '</textarea>
+                            <script>
+                                CKEDITOR.replace("editor-otros", {
+                                    customConfig: "/ckeditor_settings/config.js"
+                                })
+                            </script>';
+                        $html .= '</div>'; //fin de otros
                                     
                       
                     $html .= '</div>
                     <div class="modal-footer">
-                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                      <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal" onclick="update_recurso();">Actualizar</button>
-                      
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                            <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal" onclick="update_recurso();">Actualizar</button>                      
                     </div>
                   </div>
                 </div>

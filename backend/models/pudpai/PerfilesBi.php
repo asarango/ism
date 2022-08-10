@@ -167,7 +167,6 @@ class PerfilesBi extends ActiveRecord{
                                 $html .= '<tbody id="table-perfiles-disponibles"></tbody>';
                             $html .= '</table>';
                         $html .= '</div>';
-
                       
                     $html .= '</div>';// fin de modal-body
 

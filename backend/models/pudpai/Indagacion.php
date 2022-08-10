@@ -49,10 +49,14 @@ class Indagacion extends ActiveRecord{
             $this->html .= '<div class="card-body">';
                 // inicia row
                 $this->html .= '<div class="row">';
-                $this->html .= '<div class="col-lg-3 col-md-3 text-center border"><b><u>RELACIONADOS</u></b></div>';
-                $this->html .= '<div class="col-lg-3 col-md-3 text-center border"><b><u>CLAVE</u></b></div>';
-                $this->html .= '<div class="col-lg-6 col-md-6 text-center border"><b><u>GLOBAL Y EXPLORACIÓN</u></b></div>';                                                    
+                $this->html .= '<div class="col-lg-3 col-md-3 text-center border" style="background-color: #ab0a3d; color: #eee" >
+                                <b><u>CONCEPTO CLAVE</u></b></div>';
+                $this->html .= '<div class="col-lg-3 col-md-3 text-center border" style="background-color: #ab0a3d; color: #eee">
+                                <b><u>CONCEPTO(S) RELACIONADO(S)</u></b></div>';
+                $this->html .= '<div class="col-lg-6 col-md-6 text-center border" style="background-color: #ab0a3d; color: #eee">
+                                <b><u>CONTEXTO GLOBAL</u></b></div>';                                                    
                 $this->html .= '</div>';
+                $this->html .= '<br>';
                 //******finaliza row
 
                 // inicia row
@@ -64,11 +68,12 @@ class Indagacion extends ActiveRecord{
                 
                 $this->html .= '<div class="row">';
                 $this->html .= '<div class="col-lg-3 col-md-3 text-center border">';
+                
                 $this->html .= '<ul>';
                 foreach($conceptos as $clave){
                     if($clave->tipo == 'concepto_clave'){
                         $this->html .= '<li>';
-                        $this->html .= $clave->contenido;
+                        $this->html .= '* '.$clave->contenido;
                         $this->html .= '</li>';
                     }                    
                 }
@@ -80,7 +85,7 @@ class Indagacion extends ActiveRecord{
                 foreach($conceptos as $clave){
                     if($clave->tipo == 'concepto_relacionado'){
                         $this->html .= '<li>';
-                        $this->html .= $clave->contenido;
+                        $this->html .= '* '.$clave->contenido;
                         $this->html .= '</li>';
                     }                    
                 }
@@ -93,7 +98,7 @@ class Indagacion extends ActiveRecord{
                 foreach($conceptos as $clave){
                     if($clave->tipo == 'contexto_global'){
                         $this->html .= '<li>';
-                        $this->html .= $clave->contenido;
+                        $this->html .= '* '.$clave->contenido;
                         $this->html .= '</li>';
                     }                    
                 }

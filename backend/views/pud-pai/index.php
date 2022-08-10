@@ -48,9 +48,7 @@ function pud_pai_porcentaje_avance( $planBloqueUniId)
     $pud_dip_porc_avance = 0;
     //consulta los los tdc que han sido marcados con check, mas los que aun no estan marcados    
     $obj2 = new backend\models\helpers\Scripts();
-    $pud_dip_porc_avance = $obj2->pud_pai_porcentaje_avance($planBloqueUniId);  
-   
-
+    $pud_dip_porc_avance = $obj2->pud_pai_porcentaje_avance($planBloqueUniId); 
     return $pud_dip_porc_avance;
 }
 //consulta para extraer los mensajes del coordinador cuando se halla enviado el PUD
@@ -455,8 +453,88 @@ if($modelPudBitacora){$estadoAprobacion = $modelPudBitacora->estado_jefe_coordin
     
     //********************* FIN   MUESTRA CAMPOS EVALUACION 4.1    ************ */
 
+    
+    //etodo para la seccion 3.0    
+    function update_habilidades_nuevo_formato(id_pudpai)
+    {
+        var idPlanUnidad = '<?= $planUnidad->id ?>';
+        var url = '<?= Url::to(['helper-pud-pai/update-habilidades-nuevo-formato']) ?>';
+        //var id_pudpai = $("#id_pudpai"+id_pudpai).val();
+        var actividad = CKEDITOR.instances['editor-actividad'+id_pudpai].getData();
+        var id_relacion = $("#id_relacion"+id_pudpai).val();
 
-    //metodo para la seccion 4.4.-
+        if(actividad==''){actividad='-';}
+
+        var params = {
+            actividad    :   actividad,
+            id_relacion :id_relacion,
+            id_pudpai : id_pudpai,
+            idPlanUnidad    : idPlanUnidad,
+        };
+
+        $.ajax({
+            data: params,
+            url: url,
+            type: 'GET',
+            beforeSend: function(){},
+            success: function(){
+                //show_ensenara();
+                recargar_pagina();
+            }
+        });
+    }
+    //etodo para la seccion 3.0    
+    function update_habilidades_perfil(id_pudpai)
+    {
+        var idPlanUnidad = '<?= $planUnidad->id ?>';
+        var url = '<?= Url::to(['helper-pud-pai/update-habilidades-nuevo-formato']) ?>';
+        //var id_pudpai = $("#id_pudpai"+id_pudpai).val();
+        var actividad = CKEDITOR.instances['editor-actividad'+id_pudpai].getData();
+        var id_relacion = $("#id_relacion"+id_pudpai).val();
+
+        if(actividad==''){actividad='-';}
+
+        var params = {
+            actividad    :   actividad,
+            id_relacion :id_relacion,
+            id_pudpai : id_pudpai,
+            idPlanUnidad    : idPlanUnidad,
+        };
+
+        $.ajax({
+            data: params,
+            url: url,
+            type: 'GET',
+            beforeSend: function(){},
+            success: function(){
+                //show_ensenara();
+                recargar_pagina();
+            }
+        });
+    }
+    function guardar_perfil(idPlanVerticalPai, idPerfil)
+    {
+        var url = '<?= Url::to(['helper-pud-pai/insert-perfiles']) ?>';
+       //alert(idPlanVerticalPai+ ' - ' + idPerfil);
+
+        var params = {
+            idPlanVerticalPai : idPlanVerticalPai,
+            idPerfil : idPerfil,
+        };
+
+        $.ajax({
+            data: params,
+            url: url,
+            type: 'POST',
+            beforeSend: function(){},
+            success: function(response){
+                recargar_pagina();
+            }
+        });
+
+    }
+
+    //metodo para la seccion 3.4.-
     function show_ensenara(){
         var planUnidadId = '<?= $planUnidad->id ?>';
         var url = '<?= Url::to(['helper-pud-pai/muestra-ensenara']) ?>';
@@ -475,7 +553,7 @@ if($modelPudBitacora){$estadoAprobacion = $modelPudBitacora->estado_jefe_coordin
         });
     }
 
-    //metodo para la seccion 4.4.-
+    //metodo para la seccion 3.4.-
     function update_ensenara(){
         var planUnidadId = '<?= $planUnidad->id ?>';
         var url = '<?= Url::to(['helper-pud-pai/update-ensenara']) ?>';
@@ -531,8 +609,8 @@ if($modelPudBitacora){$estadoAprobacion = $modelPudBitacora->estado_jefe_coordin
         });
     }
      /// tambien del 7.1.-
-    function update_recurso(){
-
+    function update_recurso()
+    {
         var planUnidadId = '<?= $planUnidad->id ?>';
         var url = '<?= Url::to(['helper-pud-pai/update-recurso']) ?>';
         var bibliografico = CKEDITOR.instances['editor-bibliografico'].getData();
@@ -544,7 +622,8 @@ if($modelPudBitacora){$estadoAprobacion = $modelPudBitacora->estado_jefe_coordin
         if(tecnologico==''){tecnologico = '-';}
         if(otros==''){otros = '-';}
 
-        var params = {
+        var params = 
+        {
             plan_unidad_id: planUnidadId,
             bibliografico : bibliografico,
             tecnologico: tecnologico,
@@ -585,7 +664,8 @@ if($modelPudBitacora){$estadoAprobacion = $modelPudBitacora->estado_jefe_coordin
     }
 
     //para reflexion: 8.1.-
-    function show_reflexion_disponibles(){
+    function show_reflexion_disponibles()
+    {
         var planUnidadId = '<?= $planUnidad->id ?>';
         var url = '<?= Url::to(['helper-pud-pai/show-reflexion-disponibles']) ?>';
 
@@ -710,7 +790,6 @@ if($modelPudBitacora){$estadoAprobacion = $modelPudBitacora->estado_jefe_coordin
                     
                 }
             });
-
 
         }
         // metodo 4.5.-

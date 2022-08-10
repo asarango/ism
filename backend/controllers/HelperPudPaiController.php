@@ -2,6 +2,7 @@
 namespace backend\controllers;
 
 use backend\models\PlanificacionOpciones;
+use backend\models\PlanificacionVerticalPaiOpciones;
 use Yii;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -280,12 +281,42 @@ class HelperPudPaiController extends Controller{
         return $html;
     }
 
+    //para el tipo 3.0
+                          
+    public function actionMuestraHabilidadesNuevoFormato()
+    {
+        $ultima_seccion = '3.1.-';
+        $planUnidadId = $_GET['planUnidadId'];
+        $ensenara = PudPai::find()->where([
+            'planificacion_bloque_unidad_id' => $planUnidadId,
+            'seccion_numero' => 3
+        ])->all();
 
-    /**
-     * PARA ENSENARA
-     *
-     * @return void
-     */
+        $html = '<tr>';
+            $html .= $this->muestra_habilidades_nuevo_formato();
+        $html .= '</tr>';
+
+        $this->actualizaCampoUltimaSeccion($ultima_seccion,$planUnidadId);   
+        return $html;
+    }
+
+    public function actionUpdateHabilidadesNuevoFormato()
+    {
+        $ultima_seccion = '3.0.-';   
+        
+        $idPlanUnidad = $_GET['idPlanUnidad'];        
+        $actividad = $_GET['actividad'];
+        $id_pudpai = $_GET['id_pudpai'];
+        $id_relacion = $_GET['id_relacion'];     
+
+        $obj = PlanificacionVerticalPaiOpciones::findOne($id_pudpai);       
+
+        $obj->actividad = $actividad;
+        $obj->save();
+        $this->actualizaCampoUltimaSeccion($ultima_seccion,$idPlanUnidad);  
+    }
+      
+
     //metodo usado en la seccion 4.4.-
     public function actionMuestraEnsenara()
     {
@@ -307,6 +338,7 @@ class HelperPudPaiController extends Controller{
         $this->actualizaCampoUltimaSeccion($ultima_seccion,$planUnidadId);   
         return $html;
     }
+  
     //metodo usado en la seccion 4.4.-
     private function busca_ensenara($ensenara, $tipo)
     {
@@ -363,11 +395,8 @@ class HelperPudPaiController extends Controller{
         $planUnidadId = $_GET['plan_unidad_id'];
         $pudPai = PudPai::find()->where([
             'planificacion_bloque_unidad_id' => $planUnidadId,
-            'seccion_numero' => 7
+            'seccion_numero' => 8
         ])->all();
-
-        
-
 
         $html = '';
         $html .= '<tr valign="top">';            
@@ -412,32 +441,30 @@ class HelperPudPaiController extends Controller{
         $planUnidadId = $_GET['plan_unidad_id'];        
         $bibliografico = $_GET['bibliografico'];
         $tecnologico = $_GET['tecnologico'];
-        $otros = $_GET['otros'];
-      
-       
+        $otros = $_GET['otros'];        
 
         $obj = PudPai::find()
-        ->where(['planificacion_bloque_unidad_id' => $planUnidadId, 'tipo' => 'bibliografico','seccion_numero'=>'7'])->one(); 
+        ->where(['planificacion_bloque_unidad_id' => $planUnidadId, 'tipo' => 'bibliografico','seccion_numero'=>'8'])->one(); 
         $obj->contenido = $bibliografico;
         $obj->save();     
       
         $obj = PudPai::find()
-        ->where(['planificacion_bloque_unidad_id' => $planUnidadId, 'tipo' => 'tecnologico','seccion_numero'=>'7'])->one();
+        ->where(['planificacion_bloque_unidad_id' => $planUnidadId, 'tipo' => 'tecnologico','seccion_numero'=>'8'])->one();
         $obj->contenido = $tecnologico;
         $obj->save();
 
-        $obj = PudPai::find()->where(['planificacion_bloque_unidad_id' => $planUnidadId, 'tipo' => 'otros','seccion_numero'=>'7'])->one();
+        $obj = PudPai::find()->where(['planificacion_bloque_unidad_id' => $planUnidadId, 'tipo' => 'otros','seccion_numero'=>'8'])->one();
         $obj->contenido = $otros;
         $obj->save();
-
     }   
-    ///////////fin de recursos
+    //*** fin de recursos
 
 
     /***
      * PARA REFLEXION
      */
-    public function actionShowReflexionDisponibles(){
+    public function actionShowReflexionDisponibles()
+    {
         $planUnidadId = $_GET['plan_unidad_id'];
         $disponibles = $this->consulta_reflexion_disponible($planUnidadId);
         
@@ -450,7 +477,8 @@ class HelperPudPaiController extends Controller{
         return $html;
     }
 
-    private function muestra_pregunta($disponibles, $categoria){
+    private function muestra_pregunta($disponibles, $categoria)
+    {
 
         if($categoria == 'antes'){
             $color = '#0a1f8f';
@@ -506,7 +534,7 @@ class HelperPudPaiController extends Controller{
 
         $model = new PudPai();
         $model->planificacion_bloque_unidad_id = $planUnidadId;
-        $model->seccion_numero = 8;
+        $model->seccion_numero = 9;
         $model->tipo = $tipo;
         $model->contenido = $opcion->opcion;
         $model->created_at = $fechaHoy;
@@ -518,13 +546,12 @@ class HelperPudPaiController extends Controller{
     }
 
 
-    public function actionShowReflexionSeleccionados(){
-
+    public function actionShowReflexionSeleccionados()
+    {
         $planUnidadId = $_GET['plan_unidad_id'];
-
         $reflexiones = PudPai::find()->where([
             'planificacion_bloque_unidad_id' => $planUnidadId,
-            'seccion_numero' => 8,
+            'seccion_numero' => 9,
         ])
         ->orderBy('tipo')
         ->all();
@@ -623,7 +650,7 @@ class HelperPudPaiController extends Controller{
     ///////////fin de reflexion
 
 
-    ///////////incicio de perfiles
+    //*** incicio de perfiles
     public function actionShowPerfilesDisponibles()
     {
         $planUnidadId = $_GET['plan_unidad_id'];           
@@ -673,7 +700,8 @@ class HelperPudPaiController extends Controller{
         return $html;
     }
 
-    private function consulta_perfil_disponible($planUnidadId, $tipo){
+    private function consulta_perfil_disponible($planUnidadId, $tipo)
+    {
         $con = Yii::$app->db;
         $query = "select op.categoria 
                     from planificacion_opciones op 
@@ -708,6 +736,17 @@ class HelperPudPaiController extends Controller{
         $model->updated = $userLog;
         $model->save();
 
+    }
+    //utilizado para la nueva forma del 3.1.-
+    public function actionInsertPerfiles()
+    {
+        $idPlanVerticalPai = $_POST['idPlanVerticalPai'];
+        $idPerfil = $_POST['idPerfil'];
+
+        $model = PlanificacionVerticalPaiOpciones::findOne($idPlanVerticalPai);       
+
+        $model->id_pudpai_perfil = $idPerfil;
+        $model->save();
     }
     //metodo usado para 4.5.-
     public function actionShowPerfilesSeleccionados()

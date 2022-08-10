@@ -111,9 +111,38 @@ class GrupoHabilidades extends ActiveRecord{
         $this->html .= '</div>';
       $this->html .= '</div>';
 
+
     }
     //devuelve la estructura de arbol de las habilidades
     private function estructuraContenido($a_buscar)
+    {      
+        $arrayHabilidades = array();
+        $html = '';
+        foreach($this->habilidades as $habilidad)
+        {
+           if($habilidad['es_titulo1']==$a_buscar && !in_array($habilidad['contenido'],$arrayHabilidades,true))
+           {
+              $arrayHabilidades[]=$habilidad['contenido'];
+           }
+        }       
+        
+        foreach($arrayHabilidades as $contenido)
+        {
+            $html .= '<b>'.$contenido.'</b>';
+              foreach($this->habilidades as $habilidad)
+              {
+                if($habilidad['contenido']==$contenido)
+                {
+                  $html .='<li>'.$habilidad['es_exploracion'].'</li>';              
+                }
+              }
+        }
+        return $html;
+    }
+
+   
+    //devuelve la estructura de arbol de las habilidades
+    private function estructuraContenidoNuevo($a_buscar)
     {      
         $arrayHabilidades = array();
         $html = '';

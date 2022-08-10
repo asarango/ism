@@ -10,6 +10,7 @@ use backend\models\pudpai\Datos;
 use backend\models\pudpai\Ensenara;
 use backend\models\pudpai\Evaluacion;
 use backend\models\pudpai\GrupoHabilidades;
+use backend\models\pudpai\Habilidades;
 use backend\models\pudpai\Indagacion;
 use backend\models\pudpai\Indicadores;
 use backend\models\pudpai\Pdf;
@@ -104,30 +105,35 @@ class PudPaiController extends Controller{
             $this->ingresa_evaluacion($planUnidadId);
             return $evaluacion->html;
         }elseif($pestana == '3.1.-'){
-            $grupos = new GrupoHabilidades($planUnidadId);
-            return $grupos->html;
-        }elseif($pestana == '3.2.-'){
-            $aspectos = new Aspecto($planUnidadId);
-            return $aspectos->html;
-        }elseif($pestana == '3.3.-'){
-            $indicadores = new Indicadores($planUnidadId);
-            return $indicadores->html;
-        }elseif($pestana == '3.4.-'){
-            $ensenara = new Ensenara($planUnidadId);
-            return $ensenara->html;
-        }elseif($pestana == '3.5.-'){
-            $perfiles = new PerfilesBi($planUnidadId);
-            return $perfiles->html;
-        }elseif($pestana == '5.1.-'){
+            $habilidades = new Habilidades($planUnidadId);
+            return $habilidades->html;
+        }
+        // elseif($pestana == '3.1.-'){
+        //     $grupos = new GrupoHabilidades($planUnidadId);
+        //     return $grupos->html;
+        // }elseif($pestana == '3.2.-'){
+        //     $aspectos = new Aspecto($planUnidadId);
+        //     return $aspectos->html;
+        // }elseif($pestana == '3.3.-'){
+        //     $indicadores = new Indicadores($planUnidadId);
+        //     return $indicadores->html;
+        // }elseif($pestana == '3.4.-'){
+        //     $ensenara = new Ensenara($planUnidadId);
+        //     return $ensenara->html;
+        // }elseif($pestana == '3.5.-'){
+        //     $perfiles = new PerfilesBi($planUnidadId);
+        //     return $perfiles->html;
+        // }
+        elseif($pestana == '5.1.-'){
             $accion = new Accion($planUnidadId);
             return $accion->html; 
         }elseif($pestana == '6.1.-'){
             $servicio = new ServicioAccion($planUnidadId);
             return $servicio->html; 
-        }elseif($pestana == '7.1.-'){
+        }elseif($pestana == '8.1.-'){
             $recursos = new Recursos($planUnidadId);
             return $recursos->html; 
-        }elseif($pestana == '8.1.-'){
+        }elseif($pestana == '9.1.-'){
             $reflexion = new Reflexion($planUnidadId);
             return $reflexion->html;
         }

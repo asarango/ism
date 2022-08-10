@@ -56,6 +56,7 @@ class Pdf extends \yii\db\ActiveRecord {
         $mpdf->showImageErrors = true;
 
         $html = $this->cuerpo();
+        
         $mpdf->WriteHTML($html);
 
         $piePagina=$this->piePagina();
@@ -119,7 +120,8 @@ class Pdf extends \yii\db\ActiveRecord {
         return   $html;     
     }
 
-    private function cuerpo() {
+    private function cuerpo() 
+    {
         $periodoId = Yii::$app->user->identity->periodo_id;
         $periodo = ScholarisPeriodo::findOne($periodoId);
 
@@ -141,12 +143,11 @@ class Pdf extends \yii\db\ActiveRecord {
         $html .= $this->tres();
         $html .= $this->cuatro();
         $html .= $this->cinco();
-        $html .= $this->seis();
+        $html .= $this->seis(); 
         $html .= $this->siete();
         $html .= $this->ocho();
         $html .= $this->nueve();
-        $html .= $this->diez();
-
+        $html .= $this->diez();      
         return $html;
     }
 
@@ -345,19 +346,17 @@ class Pdf extends \yii\db\ActiveRecord {
         
 
         $html .= '<tr>';
-            $html .= '<td class="border colorAyudas" colspan="1"><b style="color: #000">OBJETVOS ESPECÍFICOS Y ASPECTOS: 
+            $html .= '<td class="border" colspan="1" width="33%" align="center"><b style="color: #000">OBJETVOS ESPECÍFICOS Y ASPECTOS: 
                             </b><br>(copiar la redacción tal como aparece en la guía  de  la  asignatura,  para  cada  año  del PAI)
                            
                       </td>';
-            $html .= '<td class="border text-center" ><b>EVALUACIÓN</b></td>';
+            $html .= '<td class="border" align="center" width="33%"><b>EVALUACIÓN</b></td>';
           
-            $html .= '<td class="border text-center colorAyudas"><b style="color: #000">OBJETVOS ESPECÍFICOS: 
-                            </b>(se explica claramente qué harán los alumnos para demostrar lo que saben, lo que comprenden y lo que  pueden hacer; 
-                            permite demostrar comprensión de los conceptos, la relación conceptual y el contexto que se describen en el enunciado de la indagación; 
-                            permite demostrar objetivos y aspectos escogidos para  la  unidad;  utiliza  términos  de  instrucción  correctos para  ese  año  del  
-                            PAI,  permite  a  los  alumnos  demostrar  los  descriptores  de  todos  los  niveles  de  logro;  es estimulante pero accesible; 
-                            permite a los alumnos comunicar lo que saben, lo que comprenden y lo que pueden hacer de maneras múltiples y abiertas; permite aplicar 
-                            lo que han aprendido a una variedad de situaciones auténticas o situaciones que simulan el mundo real).
+            $html .= '<td class="border" width="33%" align="center"><b>RELACION ENTRE LAS TAREAS DE EVALUACIÓN
+                            SUMATIVAS Y EL ENUNCIADO DE LA INDAGACIÓN: </b>
+                            <br>
+                            Relación entre las tareas de evaluación formativa y sumativa con base en el enunciado de la indagación. 
+                            Resumen de las tareas de evaluación formativa y sumativa con base en los criterios de evaluación correspondientes.
                        </td>';
         $html .= '</tr>';
 
@@ -502,7 +501,9 @@ class Pdf extends \yii\db\ActiveRecord {
 
         $html = '';
         $html .= '<p>';
-        $html .= $model->contenido;
+
+        $model ? $html .= $model->contenido: $html .= '';
+        
         $html .= '</p>';
 
         return $html;
@@ -520,65 +521,65 @@ class Pdf extends \yii\db\ActiveRecord {
         $html = '';
 
         $html .= '<table class="tamano10" width="100%" cellspacing="0" cellpadding="5">';
-        $html .= '<tr>';
-        $html .= '<td class="border" colspan="6"><b>3. ENFOQUES DEl APRENDIZAJE / HABILIDADES</b></td>';
-        $html .= '</tr>';
+            $html .= '<tr>';
+                    $html .= '<td class="border" colspan="6"><b>3. ENFOQUES DEl APRENDIZAJE / HABILIDADES</b></td>';
+            $html .= '</tr>';
 
-        $html .= '<tr>';
-        $html .= '<td width="16%" align="center" class="border"><b>CATEGORÍA DE HABILIDADES</b></td>';
-        $html .= '<td width="16%" align="center" class="border"><b>COMUNICACIÓN</b></td>';
-        $html .= '<td width="16%" align="center" class="border"><b>SOCIALES</b></td>';
-        $html .= '<td width="16%" align="center" class="border"><b>AUTOGESTIÓN</b></td>';
-        $html .= '<td width="16%" align="center" class="border"><b>INVESTIGACIÓN</b></td>';
-        $html .= '<td width="17%" align="center" class="border"><b>PENSAMIENTO</b></td>';
-        $html .= '</tr>';
-
-        $html .= '<tr>';
-        $html .= '<td class="border"><b>Grupo de habilidades</b></td>';
-        $html .= '<td class="border">' . $this->cuatro_busca_habilidades($habilidades, 'HABILIDADES DE COMUNICACIÓN') . '</td>';
-        $html .= '<td class="border">' . $this->cuatro_busca_habilidades($habilidades, 'HABILIDADES DE SOCIALES') . '</td>';
-        $html .= '<td class="border">' . $this->cuatro_busca_habilidades($habilidades, 'HABILIDADES DE AUTOGESTIÓN') . '</td>';
-        $html .= '<td class="border">' . $this->cuatro_busca_habilidades($habilidades, 'HABILIDADES DE INVESTIGACIÓN') . '</td>';
-        $html .= '<td class="border">' . $this->cuatro_busca_habilidades($habilidades, 'HABILIDADES DE PENSAMIENTO') . '</td>';
-        $html .= '</tr>';
-
-        $html .= '<tr>';
-        $html .= '<td class="border"><b>Aspecto del Objetivo</b></td>';
-        $html .= '<td class="border">' . $this->cuatro_busca_habilidades($aspectos, 'HABILIDADES DE COMUNICACIÓN') . '</td>';
-        $html .= '<td class="border">' . $this->cuatro_busca_habilidades($aspectos, 'HABILIDADES DE SOCIALES') . '</td>';
-        $html .= '<td class="border">' . $this->cuatro_busca_habilidades($aspectos, 'HABILIDADES DE AUTOGESTIÓN') . '</td>';
-        $html .= '<td class="border">' . $this->cuatro_busca_habilidades($aspectos, 'HABILIDADES DE INVESTIGACIÓN') . '</td>';
-        $html .= '<td class="border">' . $this->cuatro_busca_habilidades($aspectos, 'HABILIDADES DE PENSAMIENTO') . '</td>';
-        $html .= '</tr>';
-
-        $html .= '<tr>';
-        $html .= '<td class="border"><b>Indicadores de la habilidad</b></td>';
-        $html .= '<td class="border">' . $this->cuatro_busca_habilidades($indicadores, 'HABILIDADES DE COMUNICACIÓN') . '</td>';
-        $html .= '<td class="border">' . $this->cuatro_busca_habilidades($indicadores, 'HABILIDADES DE SOCIALES') . '</td>';
-        $html .= '<td class="border">' . $this->cuatro_busca_habilidades($indicadores, 'HABILIDADES DE AUTOGESTIÓN') . '</td>';
-        $html .= '<td class="border">' . $this->cuatro_busca_habilidades($indicadores, 'HABILIDADES DE INVESTIGACIÓN') . '</td>';
-        $html .= '<td class="border">' . $this->cuatro_busca_habilidades($indicadores, 'HABILIDADES DE PENSAMIENTO') . '</td>';
-        $html .= '</tr>';
-
-        $html .= '<tr>';
-        $html .= '<td class="border"><b>Cómo se enseñará explícitamente la habilidad (Actividades)</b></td>';
-        $html .= '<td class="border">' . $this->cuatro_busca_tipos_planificacion($this->pudPai, 'ensenara_comunicacion') . '</td>';
-        $html .= '<td class="border">' . $this->cuatro_busca_tipos_planificacion($this->pudPai, 'ensenara_sociales') . '</td>';
-        $html .= '<td class="border">' . $this->cuatro_busca_tipos_planificacion($this->pudPai, 'ensenara_autogestion') . '</td>';
-        $html .= '<td class="border">' . $this->cuatro_busca_tipos_planificacion($this->pudPai, 'ensenara_investigacion') . '</td>';
-        $html .= '<td class="border">' . $this->cuatro_busca_tipos_planificacion($this->pudPai, 'ensenara_pensamiento') . '</td>';
-        $html .= '</tr>';
-
-        $html .= '<tr>';
-        $html .= '<td class="border"><b>Perfil BI</b></td>';
-        $html .= '<td class="border">' . $this->cuatro_busca_tipos_planificacion($this->pudPai, 'comunicacion') . '</td>';
-        $html .= '<td class="border">' . $this->cuatro_busca_tipos_planificacion($this->pudPai, 'social') . '</td>';
-        $html .= '<td class="border">' . $this->cuatro_busca_tipos_planificacion($this->pudPai, 'autogestion') . '</td>';
-        $html .= '<td class="border">' . $this->cuatro_busca_tipos_planificacion($this->pudPai, 'investigacion') . '</td>';
-        $html .= '<td class="border">' . $this->cuatro_busca_tipos_planificacion($this->pudPai, 'pensamiento') . '</td>';
-        $html .= '</tr>';
-
+            $html .= '<tr>';
+                    $html .= '<td width="25%" align="center" class="border"><b>HABILIDAD</b></td>';
+                    $html .= '<td width="25%" align="center" class="border"><b>EXPLORACIÓN</b></td>';
+                    $html .= '<td width="25%" align="center" class="border"><b>SOCIALES</b></td>';
+                    $html .= '<td width="25%" align="center" class="border"><b>AUTOGESTIÓN</b></td>';
+            $html .= '</tr>';
+           
+                $html .=  $this->tipo_habilidades();
         $html .= '</table>';
+
+        // $html .= '<tr>';      
+        //     $html .= '<td class="border">' . $this->cuatro_busca_habilidades($habilidades, 'HABILIDADES DE COMUNICACIÓN') . '</td>';
+        //     $html .= '<td class="border">' . $this->cuatro_busca_habilidades($habilidades, 'HABILIDADES DE SOCIALES') . '</td>';
+        //     $html .= '<td class="border">' . $this->cuatro_busca_habilidades($habilidades, 'HABILIDADES DE AUTOGESTIÓN') . '</td>';
+        //     $html .= '<td class="border">' . $this->cuatro_busca_habilidades($habilidades, 'HABILIDADES DE INVESTIGACIÓN') . '</td>';
+        //     $html .= '<td class="border">' . $this->cuatro_busca_habilidades($habilidades, 'HABILIDADES DE PENSAMIENTO') . '</td>';
+        // $html .= '</tr>';
+
+        // $html .= '<tr>';
+        // $html .= '<td class="border"><b>Aspecto del Objetivo</b></td>';
+        // $html .= '<td class="border">' . $this->cuatro_busca_habilidades($aspectos, 'HABILIDADES DE COMUNICACIÓN') . '</td>';
+        // $html .= '<td class="border">' . $this->cuatro_busca_habilidades($aspectos, 'HABILIDADES DE SOCIALES') . '</td>';
+        // $html .= '<td class="border">' . $this->cuatro_busca_habilidades($aspectos, 'HABILIDADES DE AUTOGESTIÓN') . '</td>';
+        // $html .= '<td class="border">' . $this->cuatro_busca_habilidades($aspectos, 'HABILIDADES DE INVESTIGACIÓN') . '</td>';
+        // $html .= '<td class="border">' . $this->cuatro_busca_habilidades($aspectos, 'HABILIDADES DE PENSAMIENTO') . '</td>';
+        // $html .= '</tr>';
+
+        // $html .= '<tr>';
+        // $html .= '<td class="border"><b>Indicadores de la habilidad</b></td>';
+        // $html .= '<td class="border">' . $this->cuatro_busca_habilidades($indicadores, 'HABILIDADES DE COMUNICACIÓN') . '</td>';
+        // $html .= '<td class="border">' . $this->cuatro_busca_habilidades($indicadores, 'HABILIDADES DE SOCIALES') . '</td>';
+        // $html .= '<td class="border">' . $this->cuatro_busca_habilidades($indicadores, 'HABILIDADES DE AUTOGESTIÓN') . '</td>';
+        // $html .= '<td class="border">' . $this->cuatro_busca_habilidades($indicadores, 'HABILIDADES DE INVESTIGACIÓN') . '</td>';
+        // $html .= '<td class="border">' . $this->cuatro_busca_habilidades($indicadores, 'HABILIDADES DE PENSAMIENTO') . '</td>';
+        // $html .= '</tr>';
+
+        // $html .= '<tr>';
+        // $html .= '<td class="border"><b>Cómo se enseñará explícitamente la habilidad (Actividades)</b></td>';
+        // $html .= '<td class="border">' . $this->cuatro_busca_tipos_planificacion($this->pudPai, 'ensenara_comunicacion') . '</td>';
+        // $html .= '<td class="border">' . $this->cuatro_busca_tipos_planificacion($this->pudPai, 'ensenara_sociales') . '</td>';
+        // $html .= '<td class="border">' . $this->cuatro_busca_tipos_planificacion($this->pudPai, 'ensenara_autogestion') . '</td>';
+        // $html .= '<td class="border">' . $this->cuatro_busca_tipos_planificacion($this->pudPai, 'ensenara_investigacion') . '</td>';
+        // $html .= '<td class="border">' . $this->cuatro_busca_tipos_planificacion($this->pudPai, 'ensenara_pensamiento') . '</td>';
+        // $html .= '</tr>';
+
+        // $html .= '<tr>';
+        // $html .= '<td class="border"><b>Perfil BI</b></td>';
+        // $html .= '<td class="border">' . $this->cuatro_busca_tipos_planificacion($this->pudPai, 'comunicacion') . '</td>';
+        // $html .= '<td class="border">' . $this->cuatro_busca_tipos_planificacion($this->pudPai, 'social') . '</td>';
+        // $html .= '<td class="border">' . $this->cuatro_busca_tipos_planificacion($this->pudPai, 'autogestion') . '</td>';
+        // $html .= '<td class="border">' . $this->cuatro_busca_tipos_planificacion($this->pudPai, 'investigacion') . '</td>';
+        // $html .= '<td class="border">' . $this->cuatro_busca_tipos_planificacion($this->pudPai, 'pensamiento') . '</td>';
+        // $html .= '</tr>';
+
+        //$html .= '</table>';
 
         return $html;
     }
@@ -606,6 +607,54 @@ class Pdf extends \yii\db\ActiveRecord {
 
         return $html;
     }
+    private function get_habilidades()
+    {
+      $con = Yii::$app->db;
+      $idBloqueUnidad = $this->planUnidad->id; 
+
+      $query = "select 	h.es_titulo2  as contenido
+                ,h.es_titulo1,h.es_exploracion,op.actividad,
+                (select categoria  from planificacion_opciones po where id = op.id_pudpai_perfil)
+                ,op.id_relacion,op.id
+                from 	planificacion_vertical_pai_opciones op 
+                inner join contenido_pai_habilidades h on h.es_exploracion = op.contenido 
+                where 	op.plan_unidad_id = $idBloqueUnidad
+                group  by h.es_titulo2,h.es_titulo1,h.es_exploracion,op.actividad,op.id_pudpai_perfil,op.id_relacion ,op.id 
+                order by h.es_titulo1;";
+
+      $res = $con->createCommand($query)->queryAll();
+       
+      return $res;
+    }
+    private function tipo_habilidades()
+    {
+        $habilidades = $this->get_habilidades();
+        $html = '';
+        
+        foreach($habilidades as $hab)
+        {
+            $html .='<tr>'; 
+                $html .='<td class="border">'; 
+                    $html .=$hab['es_titulo1']; 
+                $html .='</td>';
+
+                $html .='<td class="border">'; 
+                    $html .='* '.$hab['es_exploracion']; 
+                $html .='</td>';
+
+                $html .='<td class="border">';
+                    $html .=$hab['actividad'];
+                $html .='</td>';
+
+                $html .='<td class="border">'; 
+                    $html .=$hab['categoria']; 
+                $html .='</td>';
+            $html .='</tr>';          
+        }        
+      
+       
+        return $html;
+    }  
 
     private function cuatro_get_hablidades() {
         $planUnidadId = $this->planUnidad->id;
@@ -661,87 +710,89 @@ class Pdf extends \yii\db\ActiveRecord {
         return $html;
     }
 
-    public function seis() {
+    public function seis() 
+    {
 
         $categorias = $this->get_categoria($this->planUnidad->id);
         $acciones = \backend\models\PudPaiServicioAccion::find()->where([
                     'planificacion_bloque_unidad_id' => $this->planUnidad->id
-                ])->all();
+                ])->all();          
 
-        $html = '';
+        $html = '';    
 
-        $html .= '<table class="tamano10" width="100%" cellspacing="0" cellpadding="5">';
-        $html .= '<tr>';
-        $html .= '<td class="border" colspan="6"><b style="color: #000">6.	SERVICIO COMO ACCIÓN: </b>(Los tipos de acción son Servicio Directo, Servicio Indirecto, Promoción de una causa, Investigación, etc.)</td>';
-        $html .= '</tr>';
-
-        $html .= '<tr>';
-        $html .= '<td class="border" align="center" rowspan="2"><b>TIPOS DE ACCION</b></td>';
-        $html .= '<td class="border" align="center" rowspan="2"><b>ACTIVIDAD DE ACCIÓN</b></td>';
-        $html .= '<td class="border" align="center" colspan="3"><b>SITUACIONES DE APRENDIZAJE</b></td>';
-        $html .= '</tr>';
-
-        $html .= '<tr>';
-            $html .= '<td class="border" align="center"><b>PRESENCIAL</b></td>';
-            $html .= '<td class="border" align="center"><b>EN LÍNEA</b></td>';
-            $html .= '<td class="border" align="center"><b>COMBINADO</b></td>';
-        $html .= '</tr>';
-
-        foreach ($categorias as $cat) {
-            $categ = $cat['categoria'];
-        $html .= '<tr>';
-            $html .= '<td class="border" align="center">' . $cat['categoria'] . '</td>';
-            $html .= '<td class="border" align="center">';
-            foreach ($acciones as $acc) {
-                if ($acc->opcion->categoria == $cat['categoria']) {
-                    $html .= '<lu>';
-                    $html .= '<li>' . $acc->opcion->opcion . '</li>';
-                    $html .= '</lu>';
-                }
-            }
-
-        $html .= '</td>';
-
-            $presencial = $this->get_situacion_aprendizaje($this->planUnidad->id, $categ, 'presencial');
-            $html .= '<td align="center" class="border">';
-            if (!$presencial) {
-                $html .= '<i style="color: #ab0a3d"></i>';
-            } else {
-                $html .= '<i style="color: green">X</i>';
-            }
-            $html .= '</td>';
-
-            $enLinea = $this->get_situacion_aprendizaje($this->planUnidad->id, $categ, 'en_linea');
-            $html .= '<td align="center" class="border">';
-            if (!$enLinea) {
-                $html .= '<i style="color: #ab0a3d"></i>';
-            } else {
-                $html .= '<i style="color: green">X</i>';
-            }
-            $html .= '</td>';
-
-            $combinado = $this->get_situacion_aprendizaje($this->planUnidad->id, $categ, 'combinado');
-            $html .= '<td align="center" class="border">';
-            if (!$combinado) {
-                $html .= '<i style="color: #ab0a3d"></i>';
-            } else {
-                $html .= '<i style="color: green">X</i>';
-            }
-            $html .= '</td>';
-
-            // $remoto = $this->get_situacion_aprendizaje($this->planUnidad->id, $categ, 'remoto');
-            // $html .= '<td align="center" class="border">';
-            // if (!$remoto) {
-            //     $html .= '<i style="color: #ab0a3d"></i>';
-            // } else {
-            //     $html .= '<i style="color: green">X</i>';
-            // }
-            //$html .= '</td>';
-
+        $html .= '<table class="tamano10 border" width="100%" cellspacing="0" cellpadding="5">';
+            $html .= '<tr>';
+                $html .= '<td class="border" colspan="6"><b style="color: #000">
+                                6.	SERVICIO COMO ACCIÓN: </b>(Los tipos de acción son Servicio Directo, Servicio Indirecto, 
+                                Promoción de una causa, Investigación, etc.)</td>';
             $html .= '</tr>';
-        }
+
+            $html .= '<tr>';
+                $html .= '<td class="border" align="center" rowspan="2"><b>TIPOS DE ACCION</b></td>';
+                $html .= '<td class="border" align="center" rowspan="2"><b>ACTIVIDAD DE ACCIÓN</b></td>';
+                $html .= '<td class="border" align="center" colspan="3"><b>SITUACIONES DE APRENDIZAJE</b></td>';
+            $html .= '</tr>';
+
+            $html .= '<tr>';
+                $html .= '<td class="border" align="center"><b>PRESENCIAL</b></td>';
+                $html .= '<td class="border" align="center"><b>EN LÍNEA</b></td>';
+                $html .= '<td class="border" align="center"><b>COMBINADO</b></td>';
+            $html .= '</tr>';
+
+            
+            
+            foreach ($categorias as $cat) 
+            {
+                $categ = $cat['categoria'];
+                 $html .= '<tr>';
+                    $html .= '<td class="border" align="center">' . $categ. '</td>';
+                    $html .= '<td class="border" align="center">';
+                    foreach ($acciones as $acc) 
+                    {
+                         if ($acc->opcion->categoria == $cat['categoria']) 
+                         {
+                             $html .= '<ul>';
+                             $html .= '<li>' . $acc->opcion->opcion . '</li>';
+                             $html .= '</ul>';
+                         }
+                    }
+                    $html .= '</td>';                    
+
+                $presencial = $this->get_situacion_aprendizaje($this->planUnidad->id, $categ, 'presencial');
+                    $html .= '<td align="center" class="border">';
+                    if (!$presencial) {
+                        $html .= '<i style="color: #ab0a3d"></i>';
+                    } else {
+                        $html .= '<i style="color: green">X</i>';
+                    }
+                    $html .= '</td>';                   
+
+                $enLinea = $this->get_situacion_aprendizaje($this->planUnidad->id, $categ, 'en_linea');
+                    $html .= '<td align="center" class="border">';
+                    if (!$enLinea) {
+                        $html .= '<i style="color: #ab0a3d"></i>';
+                    } else {
+                        $html .= '<i style="color: green">X</i>';
+                    }
+                    $html .= '</td>';                    
+
+                $combinado = $this->get_situacion_aprendizaje($this->planUnidad->id, $categ, 'combinado');
+                    $html .= '<td align="center" class="border">';
+                    if (!$combinado) {
+                        $html .= '<i style="color: #ab0a3d"></i>';
+                    } else {
+                        $html .= '<i style="color: green">X</i>';
+                    }
+                    $html .= '</td>';
+                $html .= '</tr>';
+
+               
+            } //fin for
+            
 
         $html .= '</table>';
+
+     
 
         return $html;
     }

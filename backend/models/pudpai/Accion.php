@@ -94,11 +94,11 @@ class Accion extends ActiveRecord{
                         $this->html .= '<tbody>';
                         foreach($temas as $tema){
                             $this->html .= '<tr>';
-                            $this->html .= '<td>'.$tema->subtitulo.'</td>';
-                            $this->html .= '<td>'.''.'</td>';
-                            $this->html .= '<td>'.$tema->experiencias.'</td>';
-                            //$this->html .= '<td>'.$tema->evaluacion_formativa.'</td>';
-                            $this->html .= '<td>'.$tema->diferenciacion.'</td>';
+                                $this->html .= '<td align = "center">'.$tema->subtitulo.'</td>';
+                                $this->html .= '<td align = "center">'.$tema->verificacion.'</td>';
+                                $this->html .= '<td>'.$tema->experiencias.'</td>';
+                                //$this->html .= '<td>'.$tema->evaluacion_formativa.'</td>';
+                                $this->html .= '<td>'.$tema->diferenciacion.'</td>';
                             $this->html .= '</tr>';
                         }            
                         $this->html .= '</tbody>';      

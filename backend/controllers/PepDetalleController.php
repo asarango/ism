@@ -318,6 +318,10 @@ class PepDetalleController extends Controller {
     }
     
     public function actionPdf(){
-        print_r($_GET['planificacion_id']);
+        $planUnidadId = $_GET['planificacion_id'];
+        
+        $pdf = new \backend\models\pudpep\PdfPlanT($planUnidadId);
+        
+        
     }
 }

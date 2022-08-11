@@ -31,7 +31,12 @@ class PdfPh extends \yii\db\ActiveRecord
     {             
         $user = Yii::$app->user->identity->usuario;
         $periodoId = Yii::$app->user->identity->periodo_id;
-        $objHelper = new HelperGeneral();       
+        $objHelper = new HelperGeneral();  
+        echo '<pre>';
+        print_r($user);
+        print_r($periodoId);
+ 
+        die();     
         $this->cursos = $objHelper->get_cursos_docente($user,$periodoId);    
         $this->planCabecera = PlanificacionDesagregacionCabecera::findOne($cabeceraId);                  
         $this->generate_pdf();
@@ -145,7 +150,7 @@ class PdfPh extends \yii\db\ActiveRecord
         //$objPlanVerticalDiploma = new PlanificacionVerticalDiploma();
         $objHelper = new HelperGeneral();
         $cursoId = $this->cursos;
-        $arrayAsignaturas = $objHelper->query_asignaturas_x_nivel($cursoId[0]['id']); //toma las asignaturas
+        $arrayAsignaturas = $objHelper->query_asignaturas_x_nivel($cursoId[0]['id']); //toma las asignaturas      
       
         $html = '' ;     
         

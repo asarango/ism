@@ -13,6 +13,7 @@ use backend\models\pudpai\GrupoHabilidades;
 use backend\models\pudpai\Habilidades;
 use backend\models\pudpai\Indagacion;
 use backend\models\pudpai\Indicadores;
+use backend\models\pudpai\Necesidades;
 use backend\models\pudpai\Pdf;
 use backend\models\pudpai\PerfilesBi;
 use backend\models\pudpai\Preguntas;
@@ -76,7 +77,8 @@ class PudPaiController extends Controller{
         return true;
     }
 
-    public function actionIndex1(){
+    public function actionIndex1()
+    {
         $planBloqueUnidadId = $_GET['plan_bloque_unidad_id'];
 
         $planUnidad = PlanificacionBloquesUnidad::findOne($planBloqueUnidadId);
@@ -130,6 +132,9 @@ class PudPaiController extends Controller{
         }elseif($pestana == '6.1.-'){
             $servicio = new ServicioAccion($planUnidadId);
             return $servicio->html; 
+        }elseif($pestana == '7.1.-'){
+            $accion = new Necesidades($planUnidadId);
+            return $accion->html; 
         }elseif($pestana == '8.1.-'){
             $recursos = new Recursos($planUnidadId);
             return $recursos->html; 

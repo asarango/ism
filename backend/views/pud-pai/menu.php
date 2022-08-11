@@ -120,6 +120,16 @@ $colorNotOk = 'red';
             </ul>
     </li>
     <hr>
+    <li>
+            <b>7.- NECESIDADES EDUCATIVAS</b>
+            <ul>                                
+                <li class="zoom"><a href="#" onclick="ver_detalle('7.1.-');">7.1.- Necesidades Educativas
+                    <i class="<?=$iconoOk;?>" title="FALTA INGRESAR DATOS" style="color: green;">
+                </i>
+                </a></li>            
+            </ul>
+    </li>
+    <hr>
 
     <li>
         <b>8.- RECURSOS</b>
@@ -188,10 +198,8 @@ $colorNotOk = 'red';
                     muestra_evaluacion_formativa();
                 }else if(pestana == '3.1.-'){
                     
-                }else if(pestana == '3.4.-'){
-                    show_ensenara();
-                }else if(pestana == '3.5.-'){
-                    show_perfiles_seleccionados();
+                }else if(pestana == '7.1.-'){
+                    
                 }else if(pestana == '8.1.-'){
                     show_recursos();
                 }else if(pestana == '9.1.-'){

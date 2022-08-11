@@ -44,7 +44,7 @@ class Pdf extends \yii\db\ActiveRecord {
             'margin_left' => 10,
             'margin_right' => 10,
             'margin_top' => 40,
-            'margin_bottom' => 0,
+            'margin_bottom' => 10,
             'margin_header' => 5,
             'margin_footer' => 5,
         ]);
@@ -823,8 +823,66 @@ class Pdf extends \yii\db\ActiveRecord {
     }
     
     
+    //** inicio siete */
+    private function buscar_nee_x_materia()
+    {
+       
+        $idCurso = $this->planUnidad->planCabecera->ismAreaMateria->mallaArea->periodoMalla->malla->opCourseTemplate->id ;      
+        $idMateria= $this->planUnidad->planCabecera->ismAreaMateria->materia->id ;
+        $idPeriodo=  Yii::$app->user->identity->periodo_id; 
+        $con = Yii::$app->db;
 
-    public function siete() {
+        $query = "select 	s.id 
+                            ,concat(s.first_name, ' ', s.middle_name, ' ', s.last_name) as student
+                            ,nxc.grado_nee 
+                            ,nxc.diagnostico_inicia 
+                            ,nxc.diagnostico_finaliza 
+                            ,nxc.recomendacion_clase 
+                    from 	scholaris_clase cl
+                            inner join op_course_paralelo pa on pa.id = cl.paralelo_id 
+                            inner join op_course cu on cu.id = pa.course_id
+                            inner join ism_area_materia am on am.id = cl.ism_area_materia_id 
+                            inner join ism_malla_area ma on ma.id = am.malla_area_id 
+                            inner join ism_periodo_malla pm on pm.id = ma.periodo_malla_id
+                            inner join nee_x_clase nxc ON nxc.clase_id = cl.id 
+                            inner join nee nee on nee.id = nxc.nee_id 
+                            inner join op_student s on s.id = nee.student_id 
+                    where 	cu.x_template_id = $idCurso
+                            and pm.scholaris_periodo_id = $idPeriodo
+                            and am.materia_id = $idMateria;";                           
+        
+        $resp = $con->createCommand($query)->queryAll();     
+        return $resp;
+    }
+    private function getIniciales($nombre)
+    {
+        $name = '';
+        $explode = explode(' ',$nombre);
+        foreach($explode as $x){
+            $name .=  $x[0];
+        }
+        
+        return $name;    
+    }
+    private function devulve_lista_estudiante($arregloEstudiantes,$grado)
+    {
+        $html ='<ul>';
+        foreach($arregloEstudiantes as $array)
+        {
+            if($array['grado_nee']==$grado)
+            {
+                $iniciales = $this->getIniciales($array['student']);                
+                $html .='<li>'; 
+                    $html .='<b>'.$iniciales.': </b>'.'<b>Diagnóstico:</b> '.$array['diagnostico_inicia'].' / <b>Recomendación:</b> '.$array['recomendacion_clase']; 
+                $html .='<li>'; 
+            }            
+        }
+        $html .='</ul>';
+        return $html;
+    }
+    public function siete() 
+    {
+        $estudiantesNee = $this->buscar_nee_x_materia();
         $html = '';
 
         $html .= '<table class="tamano10" width="100%" cellspacing="0" cellpadding="10">';
@@ -833,24 +891,25 @@ class Pdf extends \yii\db\ActiveRecord {
         $html .= '</tr>';
 
         $html .= '<tr>';
-        $html .= '<td width="20%" class="border" align="center"><b>GRADO 1</b></td>';
-        $html .= '<td class="border"></td>';
+        $html .= '<td width="20%" class="border" align="center"><b>GRADO 1</b></td>';        
+        $html .= '<td class="border">'.$this->devulve_lista_estudiante($estudiantesNee,1).'</td>';
         $html .= '</tr>';
 
         $html .= '<tr>';
         $html .= '<td class="border" align="center"><b>GRADO 2</b></td>';
-        $html .= '<td class="border"></td>';
+        $html .= '<td class="border">'.$this->devulve_lista_estudiante($estudiantesNee,2).'</td>';
         $html .= '</tr>';
 
         $html .= '<tr>';
         $html .= '<td class="border" align="center"><b>GRADO 3</b></td>';
-        $html .= '<td class="border"></td>';
+        $html .= '<td class="border">'.$this->devulve_lista_estudiante($estudiantesNee,3).'</td>';
         $html .= '</tr>';
 
         $html .= '</table>';
 
         return $html;
     }
+    //** fin siete */
 
     public function ocho() {
         $html = '';

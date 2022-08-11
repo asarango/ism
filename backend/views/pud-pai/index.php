@@ -88,7 +88,9 @@ if($modelPudBitacora){$estadoAprobacion = $modelPudBitacora->estado_jefe_coordin
                         <h6>
                             (
                             Curso: <?= $planUnidad->planCabecera->ismAreaMateria->mallaArea->periodoMalla->malla->opCourseTemplate->name ?> |
-                            Materia: <?= $planUnidad->planCabecera->ismAreaMateria->materia->nombre ?>
+                            Id: <?= $planUnidad->planCabecera->ismAreaMateria->mallaArea->periodoMalla->malla->opCourseTemplate->id ?> |
+                            Materia: <?= $planUnidad->planCabecera->ismAreaMateria->materia->nombre ?> |
+                            Id: <?= $planUnidad->planCabecera->ismAreaMateria->materia->id ?> 
                             )
                         </h6>
                     </small>

@@ -208,8 +208,8 @@ $condicion = $condicionClass->aprobacion_planificacion($estado,$isOpen,$bloqueUn
                                     <?php
                                     if (count($criteriosSeleccionados) == 0) {
                                         echo '<span class="badge rounded-pill bg-danger">
-                        <i class="fas fa-exclamation-triangle" style="color:white"></i>
-                        </span>';
+                                            <i class="fas fa-exclamation-triangle" style="color:white"></i>
+                                            </span>';
                                     }
                                     ?>
                         </button>

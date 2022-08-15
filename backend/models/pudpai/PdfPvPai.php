@@ -198,12 +198,14 @@ class PdfPvPai extends \yii\db\ActiveRecord
     private function iteracion_por_materia()
     {
         $html = '';
+        $idPeriodo = Yii::$app->user->identity->periodo_id;
         $con = yii::$app->db;
         $idMateria = $this->planCabecera->ismAreaMateria->materia->id;
         $query ="select p.id as id_cabecera
         from planificacion_desagregacion_cabecera p, ism_area_materia a,ism_materia m
         where p.ism_area_materia_id = a.id 
         and a.materia_id = m.id 
+        and p.scholaris_periodo_id  = $idPeriodo
         and m.id=$idMateria;";
 
         $arrayIdCabecera = $con->createCommand($query)->queryAll();
@@ -386,28 +388,27 @@ class PdfPvPai extends \yii\db\ActiveRecord
         $respuesta = $con->createCommand($query)->queryAll();
         foreach($respuesta as $resp)
         {
-            if(in_array($resp['id_criterio'],$arrayCriterios,true))
+            if(in_array($resp['id_literal_criterio'],$arrayCriterios,true))
             {
                 //NO SE PRODUCE NADA;
             }else{
-                $arrayCriterios[]=$resp['id_criterio'];
+                $arrayCriterios[]=$resp['id_literal_criterio'];
             }
         }
         
         foreach ($arrayCriterios as $criterio)
         {
-            $modelCriterio = IsmCriterio::findOne($criterio);
-            
-            $criterios .= '<ul><b>'.$modelCriterio->nombre.'</b>';
+            $literalCriterio = IsmCriterioLiteral::findOne($criterio); 
+            $criterios .= '<ul><b>'.$literalCriterio->criterio->nombre.' - '. $literalCriterio->nombre_espanol.'</b>
+            <br><br>';
             foreach($respuesta as $resp)
             {
-                if($criterio==$resp['id_criterio'])
+                if($criterio==$resp['id_literal_criterio'])
                 {
                     //consulta descriptor y literal descriptor
                     $descriptor = IsmLiteralDescriptores::findOne($resp['id_literal_descriptor']);
                     $criterios .= '<li>'. $descriptor->descripcion .'</li>'; 
                 }
-
             } 
             $criterios .= '</ul><br>'; 
         }
@@ -469,6 +470,7 @@ class PdfPvPai extends \yii\db\ActiveRecord
 
         $html = $this->estilos();
         $materia = $this->planCabecera->ismAreaMateria->materia->nombre;
+        $anioEscolar =  $this->planCabecera->ismAreaMateria->mallaArea->periodoMalla->scholarisPeriodo->nombre;
         $texto = '"La finalidad de la planificación vertical es establecer una secuencia en el aprendizaje 
                 que garantice la continuidad y la progresión a lo largo de cada año del programa, e incluso 
                 para los futuros estudios de los alumnos" (De los principios a la práctica, 2014). Esta planificacion
@@ -483,13 +485,13 @@ class PdfPvPai extends \yii\db\ActiveRecord
                     <td align="center">ISM <br>International Scholastic Model</td>               
                 </tr>
                 <tr >
-                    <td align="center">PLANIFICACIÓN VERTICAL</td>               
+                    <td align="center">PLANIFICACIÓN VERTICAL </td>               
                 </tr>
                 <tr >
-                    <td align="center">AÑO ESCOLAR</td>               
+                    <td align="center">AÑO ESCOLAR $anioEscolar </td>               
                 </tr>
                 <tr >
-                    <td align="">GRUPO DE ASIGNATURA DE:  $materia </td>               
+                    <td align="">GRUPO DE ASIGNATURA DE:  <b>$materia</b> </td>               
                 </tr>
                 <tr >
                     <td align="">$texto</td>               

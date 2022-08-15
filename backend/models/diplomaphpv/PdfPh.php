@@ -32,13 +32,10 @@ class PdfPh extends \yii\db\ActiveRecord
         $user = Yii::$app->user->identity->usuario;
         $periodoId = Yii::$app->user->identity->periodo_id;
         $objHelper = new HelperGeneral();  
-        echo '<pre>';
-        print_r($user);
-        print_r($periodoId);
- 
-        die();     
-        $this->cursos = $objHelper->get_cursos_docente($user,$periodoId);    
-        $this->planCabecera = PlanificacionDesagregacionCabecera::findOne($cabeceraId);                  
+           
+          
+        $this->planCabecera = PlanificacionDesagregacionCabecera::findOne($cabeceraId);        
+        $this->cursos = $objHelper->get_cursos_docente_reporte($user,$periodoId,$this->planCabecera->ismAreaMateria->mallaArea->periodoMalla->malla->opCourseTemplate->id);            
         $this->generate_pdf();
     }
     

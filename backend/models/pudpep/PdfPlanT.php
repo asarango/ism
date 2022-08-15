@@ -18,6 +18,7 @@ class PdfPlanT extends \yii\db\ActiveRecord{
     private $unidad;
     private $detalle;
     private $periodoId;
+    private $planesSemanales;
 
     public function __construct($planUnidadId){
         
@@ -30,6 +31,8 @@ class PdfPlanT extends \yii\db\ActiveRecord{
         
         $this->opCourseTemplateId = $this->unidad->op_course_template_id;
         
+        $this->planesSemanales = \backend\models\PepPlanSemanal::find()->where(['pep_planificacion_id' => $planUnidadId])->all();
+        
         $this->generate_pdf();
     }
 
@@ -40,7 +43,7 @@ class PdfPlanT extends \yii\db\ActiveRecord{
             'margin_left' => 10,
             'margin_right' => 10,
             'margin_top' => 2,
-            'margin_bottom' => 0,
+            'margin_bottom' => 10,
             'margin_header' => 2,
             'margin_footer' => 0,
         ]);
@@ -112,8 +115,12 @@ class PdfPlanT extends \yii\db\ActiveRecord{
         $html .= $this->informacion(); 
         $html .= $this->informacion2(); 
         $html .= $this->reflexion_planificacion(); 
-//        $html .= $this->dos(); 
-//        $html .= $this->dos_detalle(); 
+        $html .= $this->diseno_implementacion_info(); 
+        $html .= $this->diseno_implementacion(); 
+        $html .= $this->reflexion_info(); 
+        $html .= $this->reflexion(); 
+        $html .= $this->mec(); 
+        
 
         return $html;
     }
@@ -290,7 +297,7 @@ class PdfPlanT extends \yii\db\ActiveRecord{
         
         /********* para reflexiones iniciales**************/
         $html.= '<div style="margin-top:10px; background-color: #a3d3fd; padding:10px">';
-        $html.= '<img src="imagenes/bi/linea.png" width="20px" style="border-radius:50px"> <b>Reflexiones iniciales</b>';
+        $html.= '<img src="imagenes/bi/iniciales.png" width="20px" style="border-radius:50px"> <b>Reflexiones iniciales</b>';
         
         $html.= '<div style="margin-top:10px; background-color: #fff; padding:10px">';
         foreach ($this->detalle as $det){
@@ -302,7 +309,81 @@ class PdfPlanT extends \yii\db\ActiveRecord{
         $html.= '</div>';
         /*******fin de reflexiones ************/
         
+        /********* para conocimientos previos**************/
+        $html.= '<div style="margin-top:10px; background-color: #a3d3fd; padding:10px">';
+        $html.= '<img src="imagenes/bi/conocimientosprevios.png" width="20px" style="border-radius:50px"> <b>Conocimientos previos</b>';
+        
+        $html.= '<div style="margin-top:10px; background-color: #fff; padding:10px">';
+        foreach ($this->detalle as $det){
+            if($det->tipo == 'conocimientos_previos'){
+                $html.= $det->contenido_texto;
+            }
+        }
+        $html.= '</div>';
+        $html.= '</div>';
+        /*******fin de conocimientos previos ************/
+
+        /********* para conexiones trans**************/
+        $html.= '<div style="margin-top:10px; background-color: #a3d3fd; padding:10px">';
+        $html.= '<img src="imagenes/bi/conexionespasado.png" width="20px" style="border-radius:50px"> <b>Conexiones transdisciplinarias y con el pasado</b>';
+        
+        $html.= '<div style="margin-top:10px; background-color: #fff; padding:10px">';
+        foreach ($this->detalle as $det){
+            if($det->tipo == 'transdisciplinarias_pasado'){
+                $html.= $det->contenido_texto;
+            }
+        }
+        $html.= '</div>';
+        $html.= '</div>';
+        /*******fin de conexiones trans ************/
+        
+        /********* para Objetivos de aprendizaje y criterios de logro**************/
+        $html.= '<div style="margin-top:10px; background-color: #a3d3fd; padding:10px">';
+        $html.= '<img src="imagenes/bi/objetivos.png" width="20px" style="border-radius:50px"> <b>Objetivos de aprendizaje y criterios de logro</b>';
+        
+        $html.= '<div style="margin-top:10px; background-color: #fff; padding:10px">';
+        foreach ($this->detalle as $det){
+            if($det->tipo == 'objetivos_aprendizaje'){
+                $html.= $det->contenido_texto;
+            }
+        }
+        $html.= '</div>';
+        $html.= '</div>';
+        /*******fin de Objetivos de aprendizaje y criterios de logro ************/
+
+        
+        /********* para Preguntas de los maestros**************/
+        $html.= '<div style="margin-top:10px; background-color: #a3d3fd; padding:10px">';
+        $html.= '<img src="imagenes/bi/preguntas.png" width="20px" style="border-radius:50px"> <b>Preguntas de los maestros</b>';
+        
+        $html.= '<div style="margin-top:10px; background-color: #fff; padding:10px">';
+        foreach ($this->detalle as $det){
+            if($det->tipo == 'preguntas_maestros'){
+                $html.= $det->contenido_texto;
+            }
+        }
+        $html.= '</div>';
+        $html.= '</div>';
+        /*******fin de Preguntas de los maestros ************/
+
+        /********* para Preguntas de los alumnos**************/
+        $html.= '<div style="margin-top:10px; background-color: #a3d3fd; padding:10px">';
+        $html.= '<img src="imagenes/bi/preguntas.png" width="20px" style="border-radius:50px"> <b>Preguntas de los alumnos</b>';
+        
+        $html.= '<div style="margin-top:10px; background-color: #fff; padding:10px">';
+        foreach ($this->detalle as $det){
+            if($det->tipo == 'preguntas_alumnos'){
+                $html.= $det->contenido_texto;
+            }
+        }
+        $html.= '</div>';
+        $html.= '</div>';
+        /*******fin de Preguntas de los alumnos ************/
+
+        
         return $html;
+        
+        
     }
     
     
@@ -331,7 +412,7 @@ class PdfPlanT extends \yii\db\ActiveRecord{
         
         $html .= '<style>';
         $html .= '.border {
-                    border: 0.1px solid black;
+                    border: 0.1px solid #fff;
                   }
                   
                   .centrarTexto {
@@ -369,6 +450,319 @@ class PdfPlanT extends \yii\db\ActiveRecord{
         $html .= '</style>';
         return $html;
     }
+    
+    /******************************* fin de  INFORMACION GENERAL *****************************************/
+    
+    
+    /******************************* PARA DISEÑO E IMPLEMENTACION *****************************************/
+    
+    private function diseno_implementacion_info(){
+        $hoy = date("Y-m-d");
+        $html = '';
+        $html .= '<h3 style="text-align: center;">DISEÑO E IMPLEMENTACIÓN</h3>'; 
+        $html .= '<h5 style="text-align: center;">Unidad de indagación o indagación en una asignatura específica (dentro o fuera del programa de indagación)</h5>'; 
+        $html .= '<table width="100%" cellspacing="2" cellpadding="4" style="background-color: #eee; border: solid 1px #ccc">'; 
+        $html .= '<tr>'; 
+        $html .= '<td><b>Tema transdisciplinario / idea central:</b></td>'; 
+        $html .= '<td colspan="3">';
+        $html .= $this->unidad->temaTransdisciplinar->categoria_principal_es.' / ';
+        foreach ($this->detalle as $det){
+            if($det->tipo == 'idea_central'){
+                $html.= $det->contenido_texto;
+            }
+        }
+        $html .= '</td>'; 
+        $html .= '</tr>'; 
+        $html .= '<tr>'; 
+        $html .= '<td class="" align="" width="20%"><b>Equipo docente colaborativo:</b></td>';
+        $html .= '<td class="" align="" width="50%">';
+        $docentes = $this->get_docentes();
+        foreach ($docentes as $docente){
+            $html .= $docente['docente'].' | ';
+        }         
+        $html .= '</td>';
+        $html .= '<td class="" align="" width="10%"><b>Curso / grado escolar:</b>'.$this->unidad->opCourseTemplate->name.'</td>';
+        $html .= '<td class="" align="" width=""><b>Fecha:</b>'.$hoy.'</td>';
+        $html .= '</tr>'; 
+        $html .= '</table>';
+        return $html;
+    }
+    
+    
+    private function diseno_implementacion(){
+        $html = '';
+        
+        /********* para Diseñar experiencias de aprendizaje interesantes**************/
+        $html.= '<div style="margin-top:10px; background-color: #ffed9f; padding:10px">';
+        $html.= '<img src="imagenes/bi/experiencias.png" width="20px" style="border-radius:50px"> <b>Diseñar experiencias de aprendizaje interesantes</b>';
+        
+        $html.= '<div style="margin-top:10px; background-color: #fff; padding:10px">';        
+               
+        foreach ($this->planesSemanales as $det){
+            $html.= '<b>'.$det->semana->nombre_semana.'</b>' .$det->experiencias_aprendizaje.'<br>';
+        }
+        $html.= '</div>';
+        $html.= '</div>';
+        /*******fin de Diseñar experiencias de aprendizaje interesantes ************/
+        
+        /********* para Apoyo a la agencia de los alumnos**************/
+        $html.= '<div style="margin-top:10px; background-color: #ffed9f; padding:10px">';
+        $html.= '<img src="imagenes/bi/apoyo.png" width="20px" style="border-radius:50px"> <b>Apoyo a la agencia de los alumnos</b>';
+        
+        $html.= '<div style="margin-top:10px; background-color: #fff; padding:10px">';
+        foreach ($this->detalle as $det){
+            if($det->tipo == 'agencia_alumnos'){
+                $html.= $det->contenido_texto;
+            }
+        }
+        $html.= '</div>';
+        $html.= '</div>';
+        /*******fin de Apoyo a la agencia de los alumnos ************/
+
+        
+        /********* para Preguntas de los maestros y los alumnos**************/
+        $html.= '<div style="margin-top:10px; background-color: #ffed9f; padding:10px">';
+        $html.= '<img src="imagenes/bi/preguntas.png" width="20px" style="border-radius:50px"> <b>Preguntas de los maestros y los alumnos</b>';
+        
+        $html.= '<div style="margin-top:10px; background-color: #fff; padding:10px">';
+        foreach ($this->detalle as $det){
+            if($det->tipo == 'preguntas_maestros'){
+                $html.= $det->contenido_texto;
+            }
+        }
+        $html.= '</div>';
+        $html.= '</div>';
+        /*******fin de Preguntas de los maestros y los alumnos ************/
+
+        
+        /********* para Evaluación continua**************/
+        $html.= '<div style="margin-top:10px; background-color: #ffed9f; padding:10px">';
+        $html.= '<img src="imagenes/bi/evaluacion_continua.png" width="20px" style="border-radius:50px"> <b>Evaluación continua</b>';
+        
+        $html.= '<div style="margin-top:10px; background-color: #fff; padding:10px">';        
+               
+        foreach ($this->planesSemanales as $det){
+            $html.= '<b>'.$det->semana->nombre_semana.'</b>' .$det->evaluacion_continua.'<br>';
+        }
+        $html.= '</div>';
+        $html.= '</div>';
+        /*******fin de Evaluación continua ************/
+        
+        
+         /********* para Hacer un uso flexible de los recursos**************/
+        $html.= '<div style="margin-top:10px; background-color: #ffed9f; padding:10px">';
+        $html.= '<img src="imagenes/bi/uso_flexible.png" width="20px" style="border-radius:50px"> <b>Hacer un uso flexible de los recursos</b>';
+        
+        $html.= '<div style="margin-top:10px; background-color: #fff; padding:10px">';
+        foreach ($this->detalle as $det){
+            if($det->tipo == 'recursos'){
+                $html.= $det->contenido_texto;
+            }
+        }
+        $html.= '</div>';
+        $html.= '</div>';
+        /*******fin de Hacer un uso flexible de los recursos ************/
+         
+        
+        /********* para Autoevaluación de los alumnos y comentarios de compañeros**************/
+        $html.= '<div style="margin-top:10px; background-color: #ffed9f; padding:10px">';
+        $html.= '<img src="imagenes/bi/autoeval_alumnos.png" width="20px" style="border-radius:50px"> <b>Autoevaluación de los alumnos y comentarios de compañeros</b>';
+        
+        $html.= '<div style="margin-top:10px; background-color: #fff; padding:10px">';
+        foreach ($this->detalle as $det){
+            if($det->tipo == 'autoevaluacion'){
+                $html.= $det->contenido_texto;
+            }
+        }
+        $html.= '</div>';
+        $html.= '</div>';
+        /*******fin de Autoevaluación de los alumnos y comentarios de compañeros ************/
+        
+        
+        
+        /********* para Reflexión continua de todos los maestros**************/
+        $html.= '<div style="margin-top:10px; background-color: #ffed9f; padding:10px">';
+        $html.= '<img src="imagenes/bi/reflexion.png" width="20px" style="border-radius:50px"> <b>Reflexión continua de todos los maestros</b>';
+        
+        $html.= '<div style="margin-top:10px; background-color: #fff; padding:10px">';
+        foreach ($this->detalle as $det){
+            if($det->tipo == 'reflexion_maestros'){
+                $html.= $det->contenido_texto;
+            }
+        }
+        $html.= '</div>';
+        $html.= '</div>';
+        /*******fin de Reflexión continua de todos los maestros ************/
+        
+        
+        /********* para Reflexiones adicionales específicas de una asignatura**************/
+        $html.= '<div style="margin-top:10px; background-color: #ffed9f; padding:10px">';
+        $html.= '<img src="imagenes/bi/reflexion.png" width="20px" style="border-radius:50px"> <b>Reflexiones adicionales específicas de una asignatura</b>';
+        
+        $html.= '<div style="margin-top:10px; background-color: #fff; padding:10px">';
+        foreach ($this->detalle as $det){
+            if($det->tipo == 'adicionales'){
+                $html.= $det->contenido_texto;
+            }
+        }
+        $html.= '</div>';
+        $html.= '</div>';
+        /*******fin de Reflexiones adicionales específicas de una asignatura ************/
+                
+        return $html;
+           
+    }
+    /******************************* FIN DISEÑO E IMPLEMENTACION *****************************************/
+    
+    
+    
+    
+    /******************************* PARA REFLEXIÓN *****************************************/
+    
+    private function reflexion_info(){
+        $hoy = date("Y-m-d");
+        $html = '';
+        $html .= '<h3 style="text-align: center;">REFLEXIÓN</h3>'; 
+        $html .= '<table width="100%" cellspacing="2" cellpadding="4" style="background-color: #eee; border: solid 1px #ccc">'; 
+        $html .= '<tr>'; 
+        $html .= '<td><b>Tema transdisciplinario / idea central:</b></td>'; 
+        $html .= '<td colspan="3">';
+        $html .= $this->unidad->temaTransdisciplinar->categoria_principal_es.' / ';
+        foreach ($this->detalle as $det){
+            if($det->tipo == 'idea_central'){
+                $html.= $det->contenido_texto;
+            }
+        }
+        $html .= '</td>'; 
+        $html .= '</tr>'; 
+        $html .= '<tr>'; 
+        $html .= '<td class="" align="" width="20%"><b>Equipo docente colaborativo:</b></td>';
+        $html .= '<td class="" align="" width="50%">';
+        $docentes = $this->get_docentes();
+        foreach ($docentes as $docente){
+            $html .= $docente['docente'].' | ';
+        }         
+        $html .= '</td>';
+        $html .= '<td class="" align="" width="10%"><b>Curso / grado escolar:</b>'.$this->unidad->opCourseTemplate->name.'</td>';
+        $html .= '<td class="" align="" width=""><b>Fecha:</b>'.$hoy.'</td>';
+        $html .= '</tr>'; 
+        $html .= '</table>';
+        return $html;
+    }
+    
+    private function reflexion(){
+        $html = '';
+        
+        /***************para Reflexiones de los maestros *****************/
+        $html.= '<div style="margin-top:10px; background-color: #c8dbab; padding:10px">';
+        $html.= '<img src="imagenes/bi/reflexion.png" width="20px" style="border-radius:50px"> <b>Reflexiones de los maestros</b>';
+        
+        $html.= '<div style="margin-top:10px; background-color: #fff; padding:10px">';
+        foreach ($this->detalle as $det){
+            if($det->tipo == 'reflexion_maestros'){
+                $html.= $det->contenido_texto;
+            }
+        }
+        $html.= '</div>';
+        $html.= '</div>';
+        /***************fin Reflexiones de los maestros *****************/
+        
+        
+        /***************para Reflexiones de los alumnos *****************/
+        $html.= '<div style="margin-top:10px; background-color: #c8dbab; padding:10px">';
+        $html.= '<img src="imagenes/bi/refle_alumnos.png" width="20px" style="border-radius:50px"> <b>Reflexiones de los alumnos</b>';
+        
+        $html.= '<div style="margin-top:10px; background-color: #fff; padding:10px">';
+        foreach ($this->detalle as $det){
+            if($det->tipo == 'reflexion_alumnos'){
+                $html.= $det->contenido_texto;
+            }
+        }
+        $html.= '</div>';
+        $html.= '</div>';
+        /***************fin Reflexiones de los alumnos *****************/
+        
+        /***************para Reflexiones sobre la evaluación *****************/
+        $html.= '<div style="margin-top:10px; background-color: #c8dbab; padding:10px">';
+        $html.= '<img src="imagenes/bi/refle_eval.png" width="20px" style="border-radius:50px"> <b>Reflexiones sobre la evaluación</b>';
+        
+        $html.= '<div style="margin-top:10px; background-color: #fff; padding:10px">';
+        foreach ($this->detalle as $det){
+            if($det->tipo == 'reflexion_evaluacion'){
+                $html.= $det->contenido_texto;
+            }
+        }
+        $html.= '</div>';
+        $html.= '</div>';
+        /***************fin Reflexiones sobre la evaluación *****************/
+        
+        
+                
+        return $html;
+           
+    }
+    
+    /**************************** FIN DE REFLEXIÓN *************************************************/
+    
+    
+    private function mec(){
+        $hoy = date("Y-m-d");
+        $html = '';
+        $html .= '<h3 style="text-align: center;">CRITERIOS DE EVALUACIÓN Y DESTREZAS</h3>'; 
+        $html .= '<table width="100%" cellspacing="0" cellpadding="2" style="background-color: #eee;">'; 
+        $html .= '<thead>';
+        $html .= '<tr>';
+        $html .= '<th rowspan="2" class="text-center border tamano10">ASIGNATURA</th>';
+        $html .= '<th colspan="2" class="text-center border tamano10">CRITERIO DE EVALUACIÓN</th>';
+        $html .= '<th colspan="2" class="text-center border tamano10">DESTREZAS</th>';
+        $html .= '</tr>';
+        
+        $html .= '<tr>';
+        $html .= '<th colspan="" class="text-center border tamano10">Código</th>';
+        $html .= '<th colspan="" class="text-center border tamano10">Descripción</th>';
+        $html .= '<th colspan="" class="text-center border tamano10">Código</th>';
+        $html .= '<th colspan="" class="text-center border tamano10">Descripción</th>';
+        $html .= '</tr>';
+        $html .= '</thead>';
+        
+        $html .= '<tbody>';
+        
+        $destrezas = $this->get_destrezas();
+        foreach ($destrezas as $destreza){
+            $html.= '<tr>';
+            $html.= '<td width="20%" class="tamano10 border">'.$destreza['asignatura'].'</td>';
+            $html.= '<td width="5%" class="centrarTexto tamano10 border">'.$destreza['criterio_evaluacion_code'].'</td>';
+            $html.= '<td width="35%" class="tamano10 border">'.$destreza['criterio_evaluacion'].'</td>';
+            $html.= '<td width="5%" class="centrarTexto tamano10 border">'.$destreza['destreza_code'].'</td>';
+            $html.= '<td width="35%" class="tamano10 border text-center">'.$destreza['destreza'].'</td>';
+            $html.= '</tr>';
+        }
+                
+        $html .= '</tbody>';
+        $html .= '</table>';
+        return $html;
+    }
+    
+
+    
+    private function get_destrezas(){
+        $con = Yii::$app->db;
+        $unidadId = $this->unidad->id;
+        $query = "select 	ce.code as criterio_evaluacion_code
+                                ,ce.description as criterio_evaluacion
+                                ,cm.code as destreza_code
+                                ,cm.description as destreza
+                                ,asi.name as asignatura
+                from 	pep_unidad_detalle pu
+                                inner join curriculo_mec cm on cm.id = cast(pu.contenido_texto as integer)
+                                inner join curriculo_mec ce on ce.code = cm.belongs_to 
+                                inner join curriculo_mec_asignatutas asi on asi.id = cm.asignatura_id 
+                where 	pu.pep_planificacion_unidad_id = $unidadId
+                                and tipo = 'destreza';";
+        $res = $con->createCommand($query)->queryAll();
+        return $res;        
+    }
+    
 }
 
 

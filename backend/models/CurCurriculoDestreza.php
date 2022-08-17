@@ -12,8 +12,11 @@ use Yii;
  * @property string $codigo
  * @property string $nombre
  * @property bool $imprescindible
+ * @property int $criterio_evaluacion_id
  *
  * @property CurCurriculoAmbito $ambito
+ * @property KidsCalificacionesQuimestre[] $kidsCalificacionesQuimestres
+ * @property KidsMicroDestreza[] $kidsMicroDestrezas
  */
 class CurCurriculoDestreza extends \yii\db\ActiveRecord
 {
@@ -26,22 +29,14 @@ class CurCurriculoDestreza extends \yii\db\ActiveRecord
     }
 
     /**
-     * @return \yii\db\Connection the database connection used by this AR class.
-     */
-    public static function getDb()
-    {
-        return Yii::$app->get('db1');
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function rules()
     {
         return [
             [['ambito_id', 'codigo', 'nombre', 'imprescindible'], 'required'],
-            [['ambito_id'], 'default', 'value' => null],
-            [['ambito_id'], 'integer'],
+            [['ambito_id', 'criterio_evaluacion_id'], 'default', 'value' => null],
+            [['ambito_id', 'criterio_evaluacion_id'], 'integer'],
             [['nombre'], 'string'],
             [['imprescindible'], 'boolean'],
             [['codigo'], 'string', 'max' => 30],
@@ -61,6 +56,7 @@ class CurCurriculoDestreza extends \yii\db\ActiveRecord
             'codigo' => 'Codigo',
             'nombre' => 'Nombre',
             'imprescindible' => 'Imprescindible',
+            'criterio_evaluacion_id' => 'Criterio Evaluacion ID',
         ];
     }
 
@@ -70,5 +66,21 @@ class CurCurriculoDestreza extends \yii\db\ActiveRecord
     public function getAmbito()
     {
         return $this->hasOne(CurCurriculoAmbito::className(), ['id' => 'ambito_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getKidsCalificacionesQuimestres()
+    {
+        return $this->hasMany(KidsCalificacionesQuimestre::className(), ['destreza_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getKidsMicroDestrezas()
+    {
+        return $this->hasMany(KidsMicroDestreza::className(), ['destreza_id' => 'id']);
     }
 }

@@ -58,6 +58,17 @@ $termina = $kidsPlanSemanal->kidsUnidadMicro->fecha_termina;
                             );
                             ?>    
                             |
+                            <?=
+                            Html::a(
+                                    '<span class="badge rounded-pill" style="background-color: #ab0a3d">
+                                    <i class="fa fa-briefcase" aria-hidden="true"></i> PDF</span>',
+                                    [
+                                        'pdf',
+                                        'plan_semanal_id'=> $kidsPlanSemanal->id
+                                    ]
+                            );
+                            ?>    
+                            |
                            
                         </p>
                     </div>

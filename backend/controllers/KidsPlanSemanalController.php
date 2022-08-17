@@ -2,6 +2,7 @@
 
 namespace backend\controllers;
 
+use backend\models\kids\PdfPlanSemanal;
 use backend\models\KidsPca;
 use Yii;
 use backend\models\KidsPlanSemanal;
@@ -313,5 +314,12 @@ class KidsPlanSemanalController extends Controller
         $res = $con->createCommand($query)->queryOne();
 
         return $res['total_destrezas'];
+    }
+
+    public function actionPdf(){
+        $planSemanalId = $_GET['plan_semanal_id'];
+        new PdfPlanSemanal($planSemanalId);
+
+        
     }
 }

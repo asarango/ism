@@ -27,7 +27,7 @@ class PcaPdf extends \yii\db\ActiveRecord{
         $this->pcaId = $pcaId;
         $this->html = '';       
         $this->modelPca = \backend\models\KidsPca::findOne($this->pcaId);    
-        $this->opCourseTemplateId = $this->modelPca->ismAreaMateria->mallaArea->periodoMalla->malla->opCourseTemplate->id;
+        $this->opCourseTemplateId = $this->modelPca->opCourse->x_template_id;
         $this->genera_pfd();       
     }
 
@@ -51,14 +51,10 @@ class PcaPdf extends \yii\db\ActiveRecord{
         $mpdf->SetHtmlHeader($cabecera);
         $mpdf->showImageErrors = true;
 
-        //foreach ($modelAlmunos as $data) {
-
+     
         $html = $this->cuerpo();
-//
+
         $mpdf->WriteHTML($html);
-        // $mpdf->addPage();
-        //}
-//        $mpdf->addPage();
         $mpdf->SetFooter($pie);
 
         $mpdf->Output('Libreta' . "curso" . '.pdf', 'D');
@@ -170,15 +166,17 @@ class PcaPdf extends \yii\db\ActiveRecord{
         $html .= 'PREBÁSICA';
         $html .= '</td>';
             
-        $html .= '<td width="50%" class="border"><b>ASIGNATURA:</b> ';
-        $html .= $this->modelPca->ismAreaMateria->materia->nombre;
+        // $html .= '<td width="50%" class="border"><b>ASIGNATURA:</b> ';
+        // $html .= $this->modelPca->ismAreaMateria->materia->nombre;
+        $html .= '<td class="border">';
+        $html .= ' ';
         $html .= '</td>';
         
         $html .= '</tr>';
                 
         $html .= '<tr>';
-        $html .= '<td width="50%" class="border"><b>GRADO / CURSO:</b> ';
-        $html .= $this->modelPca->ismAreaMateria->mallaArea->periodoMalla->malla->opCourseTemplate->name;
+        $html .= '<td width="50%" class="border"><b>GRADO / CURSO:</b>';
+        $html .= $this->modelPca->opCourse->name;
         $html .= '</td>';        
         
         $helpers = new \backend\models\helpers\HelperGeneral();

@@ -177,6 +177,22 @@ class HelperGeneral extends ActiveRecord{
         
         return $res;
     }
+
+
+    public function query_docentes_x_curso($opCourseId){
+        
+        $query = "select 	concat(f.x_first_name, ' ', f.last_name) as docente 
+        from	scholaris_clase cla
+                inner join op_course_paralelo par on par.id = cla.paralelo_id
+                inner join op_faculty f on f.id = cla.idprofesor 
+        where 	par.course_id = $opCourseId
+        group by f.x_first_name, f.last_name 
+        order by f.x_first_name, f.last_name ;";               
+
+        $res =  $this->consultaBD($query);         
+        
+        return $res;
+    }
     
 }
 

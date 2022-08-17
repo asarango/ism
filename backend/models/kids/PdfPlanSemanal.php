@@ -219,19 +219,59 @@ class PdfPlanSemanal extends \yii\db\ActiveRecord
     private function uno()
     {
 
+        $detalle = $this->get_detalle();
+        
         $html = '';
         $html .= '<table width="100%" cellspacing="0" cellpadding="10" style="margin-top: 15px;">';
         $html .= '<tr>';
         $html .= '<td width="" class="border centrarTexto" style="background-color: #eee"><b>FECHA</b></td>';
         $html .= '<td width="" class="border centrarTexto" style="background-color: #eee"><b>HORA</b></td>';
+        $html .= '<td width="" class="border centrarTexto" style="background-color: #eee"><b>ÁMBITO/RINCÓN</b></td>';
         $html .= '<td width="" class="border centrarTexto" style="background-color: #eee"><b>DESTREZAS</b></td>';
         $html .= '<td width="" class="border centrarTexto" style="background-color: #eee"><b>ACTIVIDADES</b></td>';
         $html .= '<td width="" class="border centrarTexto" style="background-color: #eee"><b>TAREAS / EVALUACIÓN</b></td>';
-
         $html .= '</tr>';
+
+        foreach( $detalle as $det ){
+            $html .= '<tr>';
+            $html .= '<td class="border">'.$det['fecha'].'</td>';
+            $html .= '<td class="border">'.$det['hora'].'</td>';
+            $html .= '<td class="border">'.$det['ambito'].'</td>';
+            $html .= '<td class="border">'.$det['destreza'].'</td>';
+            $html .= '<td class="border">'.$det['actividades'].'</td>';
+            $html .= '<td class="border">'.$det['titulo'].'</td>';
+            $html .= '</tr>';
+        }
+
         $html .= '</table>';
 
         return $html;
+    }
+
+    private function get_detalle(){
+        
+        $username = $this->user->login;
+        $con = Yii::$app->db;
+        $query = "select 	pse.fecha 
+                            ,hor.sigla as hora 
+                            ,amb.nombre as ambito
+                            ,des.nombre as destreza
+                            ,pse.actividades 
+                            ,tar.titulo 
+                    from	kids_plan_semanal_hora_clase pse
+                            inner join kids_plan_semanal kps on kps.id = pse.plan_semanal_id 
+                            inner join kids_plan_semanal_hora_destreza khc on khc.hora_clase_id = pse.id
+                            inner join scholaris_horariov2_detalle det on det.id = pse.detalle_id 
+                            inner join scholaris_horariov2_hora hor on hor.id = det.hora_id
+                            inner join kids_micro_destreza kmd on kmd.id = khc.micro_destreza_id 
+                            inner join cur_curriculo_destreza des on des.id = kmd.destreza_id 
+                            inner join cur_curriculo_ambito amb on amb.id = des.ambito_id 
+                            left join kids_destreza_tarea tar on tar.plan_destreza_id = khc.id 
+                    where 	pse.plan_semanal_id = $this->planSemanalId
+                            and pse.created = '$username'
+                    order by pse.fecha, hor.numero;";
+        $res = $con->createCommand($query)->queryAll();
+        return $res;
     }
 
 

@@ -168,7 +168,8 @@ class SiteController extends Controller {
                 where 	o.menu_id = $menuId
                                 and ro.rol_id = $rolId
                                 and o.operacion ilike '%-index'
-                order by o.nombre;";
+                order by o.nombre;";        
+
         $res = $con->createCommand($query)->queryAll();
         return $res;
     }

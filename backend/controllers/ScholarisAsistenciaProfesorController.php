@@ -70,7 +70,8 @@ class ScholarisAsistenciaProfesorController extends Controller {
      * Lists all ScholarisAsistenciaProfesor models.
      * @return mixed
      */
-    public function actionIndex() {
+    public function actionIndex() 
+    {
         $usuario = Yii::$app->user->identity->usuario;
         $periodoId = Yii::$app->user->identity->periodo_id;
 
@@ -78,10 +79,6 @@ class ScholarisAsistenciaProfesorController extends Controller {
 
         $scripts = new \backend\models\helpers\Scripts();
         $model = $scripts->sql_mostrar_clases_x_profesor();
-        
-//        echo '<pre>';
-//        print_r($model);
-//        die();
         
         $scriptsKids = new ScriptsKids();
         

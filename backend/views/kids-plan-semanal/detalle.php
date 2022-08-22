@@ -101,12 +101,22 @@ $termina = $kidsPlanSemanal->kidsUnidadMicro->fecha_termina;
 
                 <!--comienza cuerpo de documento-->
                <div class="row" style="text-align:center; margin-top:10px">
-                    <div class="col-md-12 col-sm-12">
+                    <div class="col-md-9 col-sm-9">
                         <h4><?=$kidsPlanSemanal->semana->nombre_semana?> - <?=$kidsPlanSemanal->kidsUnidadMicro->experiencia?></h4>
                         <p><strong><i class="far fa-calendar"></i>&nbsp;<?=$inicia?> 
                                 / 
                                 <i class="far fa-calendar"></i>&nbsp;<?=$termina?></strong></p>
                     </div>
+                   
+                   <div class="col-md-2 col-sm-2">
+                       <b>Código: </b>ISMR20-41<br>
+                       <b>Versión: </b>2.0<br>
+                       <b>Fecha: </b>28/09/021
+                   </div>
+                   
+                   <div class="col-md-1 col-sm-1">
+                       <img src="imagenes/iso/iso.png" class="img-thumbnail">
+                   </div>
                </div>
 
                <div class="row">

@@ -23,21 +23,19 @@ $activeContentObjetivo = '';
 $activeTabCoordina = '';
 $activeContentCoordina = '';
 
-if(!isset($pestana)){
+if (!isset($pestana)) {
     $activeTabPlan = 'active';
     $activeContentPlan = 'show active';
-}elseif($pestana == 'objetivos'){
+} elseif ($pestana == 'objetivos') {
     $activeTabObjetivo = 'active';
     $activeContentObjetivo = 'show active';
-}elseif($pestana == 'coordinador'){
+} elseif ($pestana == 'coordinador') {
     $activeTabCoordina = 'active';
     $activeContentCoordina = 'show active';
-}elseif($pestana == 'plan'){
+} elseif ($pestana == 'plan') {
     $activeTabPlan = 'active';
     $activeContentPlan = 'show active';
 }
-
-
 ?>
 
 <div class="kids-experiencia-index1">
@@ -78,40 +76,53 @@ if(!isset($pestana)){
                         </p>
                     </div>
                     <div class="col-md-12 col-sm-12">
-                            <h5 style="color:white"><?= $this->title ?></h5>
+                        <h5 style="color:white"><?= $this->title ?></h5>
                     </div>
                 </div>
                 <!-- Comienza cuerpo  -->
-                <div class="row"  style="background-color:#fff; font-size:12px; margin-top:10px">
-                    <div class="col-md-12 col-sm-12">
-                        <strong><i class="fas fa-lightbulb"></i> EXPERIENCIAS DE APRENDIZAJE: </strong><?= $micro['experiencia'] ?>
-                    </div>
-                    <div class="col-lg-12 col-md-12 col-sm-12">
-                        <div class="row">
 
-                            <div class="col-lg-6 col-md-6 col-sm-6">
-                                <strong><i class="fas fa-user"></i> DOCENTE: </strong>
-                                <?php
-                                foreach ($datos['docentes'] as $docen) {
-                                    echo $docen['docente'] . ' ';
-                                }
-                                ?>
+                <div class="row">
+                    <div class="col-lg-9 col-md-9">
+                        <div class="row"  style="background-color:#fff; font-size:12px; margin-top:10px">
+                            <div class="col-md-12 col-sm-12">
+                                <strong><i class="fas fa-lightbulb"></i> EXPERIENCIAS DE APRENDIZAJE: </strong><?= $micro['experiencia'] ?>
                             </div>
+                            <div class="col-lg-12 col-md-12 col-sm-12">
+                                <div class="row">
 
-                            <div class="col-lg-6 col-md-6 col-sm-6" >
-                                <strong><i class="fas fa-list-ol"></i> SUBNIVEL: </strong><?= $datos['subnivel'] ?>
-                            </div>
-                            
-                            <div class="col-lg-6 col-md-6 col-sm-6">
-                                <strong><i class="fas fa-calendar"></i> FECHA INICIO: </strong><?= $micro['fecha_inicia'] ?>
-                            </div>
+                                    <div class="col-lg-6 col-md-6 col-sm-6">
+                                        <strong><i class="fas fa-user"></i> DOCENTE: </strong>
+                                        <?php
+                                        foreach ($datos['docentes'] as $docen) {
+                                            echo $docen['docente'] . ' ';
+                                        }
+                                        ?>
+                                    </div>
 
-                            <div class="col-lg-6 col-md-6 col-sm-6" >
-                                <strong><i class="fas fa-calendar"></i> FECHA FIN: </strong><?= $micro['fecha_termina'] ?>
+                                    <div class="col-lg-6 col-md-6 col-sm-6" >
+                                        <strong><i class="fas fa-list-ol"></i> SUBNIVEL: </strong><?= $datos['subnivel'] ?>
+                                    </div>
+
+                                    <div class="col-lg-6 col-md-6 col-sm-6">
+                                        <strong><i class="fas fa-calendar"></i> FECHA INICIO: </strong><?= $micro['fecha_inicia'] ?>
+                                    </div>
+
+                                    <div class="col-lg-6 col-md-6 col-sm-6" >
+                                        <strong><i class="fas fa-calendar"></i> FECHA FIN: </strong><?= $micro['fecha_termina'] ?>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                    <div class="col-lg-2 col-md-2">
+                        <b>Código: </b>ISMR20-17<br>
+                        <b>Versión: </b>4.0<br>
+                        <b>Fecha: </b>28/09/021<br>
+                    </div>
+                    <div class="col-lg-1 col-md-1">
+                        <img src="imagenes/iso/iso.png" class="img-thumbnail">
+                    </div>
+                </div>                                
                 <!-- Fin de encabezado -->
 
                 <!--comienza cuerpo de documento-->
@@ -119,9 +130,9 @@ if(!isset($pestana)){
                     <div class="col-md-12 col-sm-12" style="padding-left:0px">
                         <nav>
                             <div class="nav nav-tabs" id="nav-tab" role="tablist">
-                                <button class="nav-link <?=$activeTabPlan ?>" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-home" type="button" role="tab" aria-controls="nav-home" aria-selected="true">PLAN DE EXPERIENCIA</button>
-                                <button class="nav-link <?=$activeTabObjetivo ?>" id="objetivo-tab" data-bs-toggle="tab" data-bs-target="#nav-objetivo-tab" type="button" role="tab" aria-controls="nav-profile" aria-selected="false">OBJETIVOS INTEGRADORES</button>
-                                <button class="nav-link <?=$activeTabCoordina ?>" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-profile" type="button" role="tab" aria-controls="nav-profile" aria-selected="false">OBSERVACIONES DEL COORDINADOR</button>
+                                <button class="nav-link <?= $activeTabPlan ?>" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-home" type="button" role="tab" aria-controls="nav-home" aria-selected="true">PLAN DE EXPERIENCIA</button>
+                                <button class="nav-link <?= $activeTabObjetivo ?>" id="objetivo-tab" data-bs-toggle="tab" data-bs-target="#nav-objetivo-tab" type="button" role="tab" aria-controls="nav-profile" aria-selected="false">OBJETIVOS INTEGRADORES</button>
+                                <button class="nav-link <?= $activeTabCoordina ?>" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-profile" type="button" role="tab" aria-controls="nav-profile" aria-selected="false">OBSERVACIONES DEL COORDINADOR</button>
                             </div>
                         </nav>
                     </div>
@@ -131,25 +142,29 @@ if(!isset($pestana)){
                     <div class="col-md-12 col-sm-12">
 
                         <div class="tab-content" id="nav-tabContent">
-                            <div class="tab-pane fade <?=$activeContentPlan ?>" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+                            <div class="tab-pane fade <?= $activeContentPlan ?>" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
                                 <?=
                                 $this->render('plan-experiencia', [
                                     'micro' => $micro
                                 ]);
                                 ?>
                             </div>
-                            <div class="tab-pane fade <?=$activeContentObjetivo ?>" id="nav-objetivo-tab" role="tabpanel" aria-labelledby="nav-objetivo-tab">
-                                <?=$this->render('objetivos-integradores',[
+                            <div class="tab-pane fade <?= $activeContentObjetivo ?>" id="nav-objetivo-tab" role="tabpanel" aria-labelledby="nav-objetivo-tab">
+                                <?=
+                                $this->render('objetivos-integradores', [
                                     'micro' => $micro,
                                     'objetivosDisponibles' => $objetivosDisponibles,
                                     'objetivosSeleccionados' => $objetivosSeleccionados
-                                ]); ?>
+                                ]);
+                                ?>
                             </div>
-                            <div class="tab-pane fade <?=$activeContentCoordina ?>" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
-                                <?= $this->render('observaciones-coordinador',[
+                            <div class="tab-pane fade <?= $activeContentCoordina ?>" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
+                                <?=
+                                $this->render('observaciones-coordinador', [
                                     'observacionCoordinador' => $observacionCoordinador,
                                     'micro' => $micro
-                                ]); ?>
+                                ]);
+                                ?>
                             </div>
                         </div> 
 
@@ -166,10 +181,10 @@ if(!isset($pestana)){
 </div>
 
 <script>
-  $("#nav-profile-tab").on("click",function(){
-    //Scroll automatico
-    $("html, body").animate({
-        scrollTop: "300px"
+    $("#nav-profile-tab").on("click", function () {
+        //Scroll automatico
+        $("html, body").animate({
+            scrollTop: "300px"
+        });
     });
-  });  
 </script>

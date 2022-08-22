@@ -30,9 +30,30 @@ $this->params['breadcrumbs'][] = $this->title;
             'sigla',
             'nombre',
             'desde',
-            //'hasta',
+            'hasta',
 
-            ['class' => 'yii\grid\ActionColumn'],
+            /** INICIO BOTONES DE ACCION * */
+                        [
+                            'class' => 'yii\grid\ActionColumn',
+//                    'width' => '150px',
+                            'template' => '{update}',
+                            'buttons' => [
+                                'update' => function ($url, $model) {
+                                    return Html::a('<i class="fas fa-edit"></i>', $url, [
+                                        'title' => 'Actualizar', 'data-toggle' => 'tooltip', 'role' => 'modal-remote', 'data-pjax' => "0", 'class' => 'hand'
+                                    ]);
+                                }
+                            ],
+                            'urlCreator' => function ($action, $model, $key) {
+                                if ($action === 'update') {
+                                    return \yii\helpers\Url::to(['update', 'id' => $key]);
+                                }
+//                        else if ($action === 'update') {
+//                            return \yii\helpers\Url::to(['update', 'id' => $key]);
+//                        }
+                            }
+                        ],
+                        /** FIN BOTONES DE ACCION * */
         ],
     ]); ?>
 </div>

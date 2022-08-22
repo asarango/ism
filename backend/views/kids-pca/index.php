@@ -51,13 +51,25 @@ $curso = $modelPca->opCourse->name;
                             ?>    
                             |
                         </p>
-                    </div>
+                    </div>                    
 
-                    <div class="col-md-12 col-sm-12">
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-9 col-sm-9">
                         <h5 style="color:white"><?= $this->title ?></h5>
                             <strong>CURSO: <?=$curso?></strong>
                     </div>
-
+                    
+                    <div class="col-lg-2 col-md-2">
+                        <b>Código:</b> ISMR20-17 <br>
+                        <b>Versión:</b> 4.0 <br>
+                        <b>Fecha:</b> 28/09/021 <br>
+                    </div>
+                    
+                    <div class="col-lg-1 col-md-1">
+                        <img src="imagenes/iso/iso.png" class="img-thumbnail">
+                    </div>
                 </div>
                 <!-- Fin de encabezado -->
 

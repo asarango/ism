@@ -61,7 +61,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     Html::a(
                             '<span class="badge rounded-pill" style="background-color: #ab0a3d"><i class="fa fa-briefcase" aria-hidden="true"></i> Generar PDF</span>',
                             ['pdf', 'planificacion_id' => $tema->id],
-                            ['class' => 'link']
+                            ['class' => 'link','target' => '_blank']
                     );
                     ?>
 

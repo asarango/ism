@@ -45,8 +45,12 @@ $this->params['breadcrumbs'][] = $this->title;
                     |
                     <?=
                     Html::a(
-                            '<span class="badge rounded-pill" style="background-color: #65b2e8"><i class="fa fa-briefcase" aria-hidden="true"></i> Detalle</span>',
-                            ['index1', 'tema_id' => $tema->id],
+                            '<span class="badge rounded-pill" style="background-color: #65b2e8">'
+                            . '<i class="fa fa-briefcase" aria-hidden="true"></i> Detalle</span>',
+                            ['index1', 
+                                'tema_id' => $tema->id,
+                                'op_course_template_id'=> $tema->op_course_template_id
+                            ],
                             ['class' => 'link']
                     );
                     ?>

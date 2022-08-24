@@ -62,7 +62,7 @@ $numEstSinAsistir = ScholarisAsistenciaAlumnosNovedades::find()
 
     <div class="m-0 vh-50 row justify-content-center align-items-center">
 
-        <div class="card shadow col-lg-11 col-md-11">
+        <div class="card shadow col-lg-12 col-md-12">
 
             <div class=" row align-items-center p-2">
                 <div class="col-lg-1">
@@ -129,6 +129,7 @@ $numEstSinAsistir = ScholarisAsistenciaAlumnosNovedades::find()
                                             </tr>
                                         </table>
                                      </th>
+                                     <th>NAT</th>
                                     <th>Estudiantes <span>(<?= count($modelGrupo);?>)</span></th>
                                     <th>Novedades
                                         <table>
@@ -173,9 +174,9 @@ $numEstSinAsistir = ScholarisAsistenciaAlumnosNovedades::find()
                                             if($nee['grado_nee']==1){$color = 'green';}
                                             if($nee['grado_nee']==2){$color = 'orange';}
                                             if($nee['grado_nee']==3){$color = 'red';} 
-                                            echo '<td class="text-center"><i class="fas fa-circle btn-n" data-bs-toggle="modal" data-bs-target="#exampleModal" style="font-size:15px;color:' . $color . '; display:none" title="Grado: '.$nee['grado_nee'].'/ Fecha: '.$nee['fecha_inicia'].'/ Det: '.$nee['diagnostico_inicia'].'"></i></td>';  
+                                            echo '<td class="text-center"><i class="fas fa-circle btn-n" data-bs-toggle="modal" data-bs-target="#exampleModal'.$nee['id'].'" style="font-size:15px;color:' . $color . '; display:none" title="Grado: '.$nee['grado_nee'].'/ Fecha: '.$nee['fecha_inicia'].'/ Det: '.$nee['diagnostico_inicia'].'"></i></td>';  
                                            
-                                            echo '<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" >';
+                                            echo '<div class="modal fade" id="exampleModal'.$nee['id'].'" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" >';
                                             echo '<div class="modal-dialog modal-dialog-centered" >';
                                                 echo '<div class="modal-content" style="background:#FFFFFF" role="dialog">';
                                                 echo '<div class="modal-header">';
@@ -206,6 +207,37 @@ $numEstSinAsistir = ScholarisAsistenciaAlumnosNovedades::find()
                                     }else{
                                         echo '<td></td>';
                                     }                                 
+                                    
+                                    if($alumno['student_state'] == 'N'){
+                                        
+                                        echo '<td class="text-center"><a data-bs-toggle="modal" data-bs-target="#exampleModalTr'.$alumno['id'].'">N</a></td>';  
+                                        echo '<div class="modal fade" id="exampleModalTr'.$alumno['id'].'" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" >';
+                                            echo '<div class="modal-dialog modal-dialog-centered" >';
+                                                echo '<div class="modal-content" style="background:#FFFFFF" role="dialog">';
+                                                echo '<div class="modal-header">';
+                                                    echo '<h5 class="modal-title" id="exampleModalLabel">'.$alumno['last_name'] . ' ' . $alumno['first_name'].'</h5>';
+                                                    echo '<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>';
+                                                echo '</div>';
+                                                echo '<div class="modal-body">';
+                                                    echo 'Instituto procedencia: '.$alumno['x_origin_institute'];
+                                                    echo '<br/>';
+                                                    echo 'Resultados: ';
+                                                    echo '<br/>';
+                                                    echo 'Observaciones: ';   
+                                                    echo '<br/>'; 
+                                                    echo 'Recomendaciones: ';   
+                                                    echo '<br/>';                                                 
+                                                echo '</div>';
+                                                // echo '<div class="modal-footer">';
+                                                //     echo '<button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cerrar</button>';                                                    
+                                                // echo '</div>';
+                                                echo '</div>';
+                                            echo '</div>';
+                                            echo '</div>';   
+                                    }else{
+                                        echo '<td>'.$alumno['student_state'].'</td>';
+                                    }
+                                    
 
                                     //******** ESTUDIANTES  *****************//
                                     echo '<td>' . $alumno['last_name'] . ' ' . $alumno['first_name'] . '</td>';
@@ -319,6 +351,7 @@ $numEstSinAsistir = ScholarisAsistenciaAlumnosNovedades::find()
         </div>
     </div>
 </div>
+
 
 
 <!--/********************************************************************************************************************* */-->

@@ -86,9 +86,18 @@ class ComportamientoController extends Controller {
         $modelClase = ScholarisClase::find()->where(['id' => $modelAsistencia->clase_id])->one();
                
         $query = "select sgac.id,sgac.clase_id,sgac.estudiante_id,os.last_name,os.first_name,os.middle_name 
-                            from op_student os, scholaris_grupo_alumno_clase sgac 
-                            where os.id = sgac.estudiante_id
-                            and sgac.clase_id = $modelAsistencia->clase_id order by os.last_name,os.first_name,os.middle_name;";
+                         ,i.student_state
+                         ,i.transfer_from_id  
+                         ,os.x_origin_institute
+                from	op_student os
+                                inner join scholaris_grupo_alumno_clase sgac on os.id = sgac.estudiante_id
+                                inner join op_student_inscription i on i.student_id = sgac.estudiante_id
+                                inner join op_course_paralelo par on par.id = i.parallel_id
+                                inner join op_course cur on cur.id = par.course_id
+                                inner join op_section sec on sec.id = cur.section
+                                inner join scholaris_op_period_periodo_scholaris sop on sop.op_id = sec.period_id 
+                where 	sgac.clase_id = $modelAsistencia->clase_id
+                                and sop.scholaris_id = $periodoId;";
 
         $modelGrupo = $con->createCommand($query)->queryAll();        
 

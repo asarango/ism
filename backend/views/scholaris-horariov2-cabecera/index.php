@@ -1,7 +1,7 @@
 <?php
 
 use yii\helpers\Html;
-use kartik\grid\GridView;
+use yii\grid\GridView;
 
 /* @var $this yii\web\View */
 /* @var $searchModel backend\models\ScholarisHorariov2CabeceraSearch */
@@ -23,45 +23,36 @@ $this->params['breadcrumbs'][] = $this->title;
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => [
-            ['class' => 'kartik\grid\SerialColumn'],
+            ['class' => 'yii\grid\SerialColumn'],
 
             'id',
             'descripcion',
             'periodo_id',
 
             /** INICIO BOTONES DE ACCION * */
-                [
-                    'class' => 'kartik\grid\ActionColumn',
-                    'dropdown' => false,
-                    'width' => '150px',
-                    'vAlign' => 'middle',
-                    'template' => '{view}{update}{construir}',
-                    'buttons' => [
-                        'construir' => function($url, $model) {
-                            return Html::a('<span class="glyphicon glyphicon-wrench"></span>', $url, [
-                                        'title' => 'Construir_horario', 'data-toggle' => 'tooltip', 'role' => 'modal-remote', 'data-pjax' => "0", 'class' => 'hand'
-                            ]);
-                        },
-//                        'destreza' => function($url, $model) {
-//                            return Html::a('<span class="glyphicon glyphicon-tasks"></span>', $url, [
-//                                        'title' => 'Destrezas', 'data-toggle' => 'tooltip', 'role' => 'modal-remote', 'data-pjax' => "0", 'class' => 'hand'
-//                            ]);
-//                        },'evaluacion' => function($url, $model) {
-//                            return Html::a('<span class="glyphicon glyphicon-ok-circle"></span>', $url, [
-//                                        'title' => 'Evaluaciones', 'data-toggle' => 'tooltip', 'role' => 'modal-remote', 'data-pjax' => "0", 'class' => 'hand'
-//                            ]);
+               /** INICIO BOTONES DE ACCION * */
+                        [
+                            'class' => 'yii\grid\ActionColumn',
+//                    'width' => '150px',
+                            'template' => '{update}',
+                            'buttons' => [
+                                'update' => function ($url, $model) {
+                                    return Html::a('<i class="fas fa-edit"></i>', $url, [
+                                        'title' => 'Actualizar', 'data-toggle' => 'tooltip', 'role' => 'modal-remote', 'data-pjax' => "0", 'class' => 'hand'
+                                    ]);
+                                }
+                            ],
+                            'urlCreator' => function ($action, $model, $key) {
+                                if ($action === 'update') {
+                                    return \yii\helpers\Url::to(['update', 'id' => $key]);
+                                }
+                                
+//                        else if ($action === 'update') {
+//                            return \yii\helpers\Url::to(['update', 'id' => $key]);
 //                        }
-                    ],
-                    'urlCreator' => function($action, $model, $key) {
-                        if ($action === 'view') {
-                            return \yii\helpers\Url::to(['plan-curriculo-objetivos/index1', 'id' => $key]);                        
-                        } else if ($action === 'update') {
-                            return \yii\helpers\Url::to(['scholaris-clase-aux/update', 'id' => $key]);
-                        }else if ($action === 'construir') {
-                            return \yii\helpers\Url::to(['scholaris-horariov2-detalle/index1', 'id' => $key]);
-                        }    
-                    }
-                ],
+                            }
+                        ],
+                        /** FIN BOTONES DE ACCION * */
             /** FIN BOTONES DE ACCION * */
         ],
     ]); ?>

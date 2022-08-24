@@ -194,6 +194,17 @@ class HelperGeneral extends ActiveRecord{
         return $res;
     }
     
+    
+    
+    public function get_dia_fecha($fecha){
+        $dias = array('Domingo','Lunes','Martes','Miercoles','Jueves','Viernes','Sabado');
+        $dia = $dias[date('N', strtotime($fecha))];
+        
+        return $dia;
+        
+    }
+    
+    
 }
 
 

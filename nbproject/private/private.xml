@@ -3,16 +3,15 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/var/www/html/ism/academico/backend/models/pudpep/PdfPlanT.php</file>
-            <file>file:/var/www/html/ism/academico/backend/models/services/WebServicesUrls.php</file>
-            <file>file:/var/www/html/ism/academico/backend/models/PepPlanificacionXUnidad.php</file>
+            <file>file:/var/www/html/ism/academico/backend/views/scholaris-horariov2-cabecera/index.php</file>
+            <file>file:/var/www/html/ism/academico/backend/controllers/AprobacionPlanSemanalController.php</file>
             <file>file:/var/www/html/ism/academico/backend/web/css/coloresPersonalizados.css</file>
+            <file>file:/var/www/html/ism/academico/backend/views/aprobacion-plan-semanal/index.php</file>
+            <file>file:/var/www/html/ism/academico/backend/views/planificacion-desagregacion-cabecera/index.php</file>
             <file>file:/var/www/html/ism/academico/common/config/main-local.php</file>
-            <file>file:/var/www/html/ism/academico/backend/views/layouts/main.php</file>
-            <file>file:/var/www/html/ism/academico/backend/views/pep-detalle/_diseno-implementacion.php</file>
-            <file>file:/var/www/html/ism/academico/backend/models/PepOpciones.php</file>
-            <file>file:/var/www/html/ism/academico/backend/controllers/PepDetalleController.php</file>
-            <file>file:/var/www/html/ism/academico/backend/views/pep-detalle/index.php</file>
+            <file>file:/var/www/html/ism/academico/backend/views/scholaris-horariov2-cabecera/update.php</file>
+            <file>file:/var/www/html/ism/academico/backend/views/scholaris-clase/_form.php</file>
+            <file>file:/var/www/html/ism/academico/backend/models/helpers/Scripts.php</file>
         </group>
     </open-files>
 </project-private>

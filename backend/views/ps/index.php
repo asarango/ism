@@ -10,12 +10,14 @@ use yii\helpers\Html;
 /* @var $searchModel backend\models\PlanificacionDesagregacionCriteriosEvaluacionSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Planificación Semanal';
+$this->title = 'Planificación Semanal | ' . $semana['nombre_semana'];
 $this->params['breadcrumbs'][] = $this->title;
 
 // echo '<pre>';
 // print_r($seccion);
 // die();
+
+$helper = new \backend\models\helpers\HelperGeneral();
 ?>
 
 <div class="planificacion-vertical-pai-criterios-index">
@@ -28,6 +30,9 @@ $this->params['breadcrumbs'][] = $this->title;
                 </div>
                 <div class="col-lg-11">
                     <h4><?= Html::encode($this->title) ?></h4>
+                    <small>
+                        <?=  ' | desde: ' . $desde . ' | hasta: ' . $hasta .' | '?>
+                    </small>
 
                 </div>
             </div>
@@ -54,17 +59,16 @@ $this->params['breadcrumbs'][] = $this->title;
                     <!-- inicio de menu derecha -->
                     |
                     <?php
-                    
-                    $fechaAnterior = date("Y-m-d",strtotime($desde."- 7 days"));
-                    $fechaSiguiente = date("Y-m-d",strtotime($desde."+ 7 days"));
-                    
+                    $fechaAnterior = date("Y-m-d", strtotime($desde . "- 7 days"));
+                    $fechaSiguiente = date("Y-m-d", strtotime($desde . "+ 7 days"));
+
                     echo Html::a(
                             '<span class="badge rounded-pill" style="background-color: #ff9e18"><i class="fa fa-briefcase" aria-hidden="true"></i> Anterior</span>',
                             ['index1', 'desde' => $fechaAnterior],
                             ['class' => 'link']
                     );
                     ?>
-                    
+
                     |
                     <?=
                     Html::a(
@@ -82,14 +86,73 @@ $this->params['breadcrumbs'][] = $this->title;
             <hr>
 
             <!-- inicia cuerpo de card -->
-            <div class="row" style="margin-top: 10px; margin-left:1px;margin-right:1px; margin-bottom:5px">
 
+            <div class="row">
+                <div class="col-lg-9 col-md-9">
+                    <div class="card" style="padding: 20px; margin-bottom: 20px; border: solid 1px #ab0a3d">
+                        
+                        <p style="color: #ab0a3d">
+                            <b><u>Detalle de actividades de la semana</u></b>
+                        </p>
+                        
+                        <div class="table table-responsive" style="font-size: 10px">
 
-                <div class="col-lg-4 col-md-4">
-                    <b><u>Planes Semanales</u></b>
+                        <table class="table table-condensed table-striped table-hover table-bordered">
+                            <thead>
+                                <tr>
+                                    <th class="text-center" width="5%">DÍA</th>
+                                    <th class="text-center" width="5%">HORA</th>
+                                    <th class="text-center" width="10%">ASIGNATURA</th>
+                                    <th class="text-center" width="15%">TÍTULO</th>
+                                    <th class="text-center" width="23%">ENSEÑANZAS</th>
+                                    <th class="text-center" width="19%">TAREAS</th>
+                                    <th class="text-center" width="8%">INSUMO</th>
+                                    <th class="text-center" width="5%">ES CAL</th>
+                                    <th class="text-center" width="5%">TIPO</th>
+                                    <th class="text-center" width="5%"></th>
+                                </tr>
+                            </thead>
+                            <?php
+                            foreach ($actividades as $actividad) {
 
-                    <div class="table table-responsive">
-                        <table class="table table-striped table-condensed">
+                                $dia = $helper->get_dia_fecha($actividad['inicio']);
+                                ?>
+                                <tr>
+                                    <td><?= $dia ?></td>
+                                    <td class="text-center"><?= $actividad['sigla'] ?></td>
+                                    <td><?= $actividad['materia'] ?></td>
+                                    <td><?= $actividad['title'] ?></td>
+                                    <td><?= $actividad['enseñanza'] ?></td>
+                                    <td><?= $actividad['tareas'] ?></td>
+                                    <td><?= $actividad['nombre_nacional'] ?></td>
+                                    <td class="text-center"><?= $actividad['es_calificado'] ?></td>
+                                    <td class="text-center"><?= $actividad['tipo_calificacion'] ?></td>
+                                    <td class="text-center">
+                                        <?= 
+                                            Html::a('<i class="fas fa-edit"></i>',['scholaris-actividad/actividad',
+                                                'actividad' => $actividad['id']
+                                            ]);
+                                        ?>
+                                    </td>
+                                </tr>
+                                <?php
+                            }
+                            ?>
+                        </table>
+
+                    </div>
+                    </div>
+                    
+                </div> 
+<!--                fin de div card de actividades-->
+                
+                <div class="col-lg-3 col-md-3">
+                    <div class="card" style="padding: 10px; border: solid 1px #0a1f8f; background-color: #eee;">
+                        
+                        <p style="color: #0a1f8f"><b><u>Detalle de plan semanal</u></b></p>
+                        
+                        <div class="table table-responsive">
+                        <table class="table table-striped table-condensed" style="font-size: 10px; color: black">
                             <thead>
                                 <tr>
                                     <th class="text-center">CURSO</th>
@@ -105,55 +168,54 @@ $this->params['breadcrumbs'][] = $this->title;
                                     $cursoId = $curso['course_template_id'];
                                     ?>
                                     <tr>
-                                        <td><?= $curso['course_template'] ?></td>
+                                        <td class="" style="color: black"><?= $curso['course_template'] ?></td>
 
                                         <?php
 //                                            echo '<pre>';
 //                                            print_r($planesSemanales);
 //                                            die();
 //                                            
-                                           if($planesSemanales['semana_id']){
-                                                echo '<td class="text-center">';
-                                                if($planesSemanales['experiencias_aprendizaje'] == 'No conf' || $planesSemanales['evaluacion_continua'] == 'No conf'){
-                                                    echo '<i class="fas fa-pause-circle"></i>';
+                                        if ($planesSemanales['semana_id']) {
+                                            echo '<td class="text-center">';
+                                            if ($planesSemanales['experiencias_aprendizaje'] == 'No conf' || $planesSemanales['evaluacion_continua'] == 'No conf') {
+                                                echo '<i class="fas fa-pause-circle"></i>';
                                                 echo '</td>';
                                                 echo '<td class="text-center">';
-                                                if($planesSemanales['es_aprobado']){
+                                                if ($planesSemanales['es_aprobado']) {
                                                     echo '<i class="fas fa-thumbs-up" style="color: green"></i>';
-                                                }else{
+                                                } else {
                                                     echo '<i class="fas fa-thumbs-down" style="color: #ab0a3d"></i>';
                                                 }
 
                                                 echo '</td>';
-                                                }else{
-                                                    echo '<i class="fas fa-check-circle" style="color: green"></i>';
+                                            } else {
+                                                echo '<i class="fas fa-check-circle" style="color: green"></i>';
                                                 echo '</td>';
                                                 echo '<td class="text-center">';
-                                                if($planesSemanales['es_aprobado']){
+                                                if ($planesSemanales['es_aprobado']) {
                                                     echo '<i class="fas fa-thumbs-up" style="color: green"></i>';
-                                                }else{
+                                                } else {
                                                     echo '<i class="fas fa-thumbs-down" style="color: #ab0a3d"></i>';
                                                 }
 
                                                 echo '</td>';
-                                                }
-                                                
-                                           }else{
-                                                echo '<td class="text-center">';
-                                                echo '<i class="fas fa-times-circle" style="color: #ab0a3d"></i>';
-                                                echo '</td>';
-                                                echo '<td class="text-center">';
-                                                echo '<i class="fas fa-thumbs-down" style="color: #ab0a3d"></i>';
-                                                echo '</td>';
-                                           }
-                                                echo '<td class="text-center">';
-                                                echo Html::a('<i class="fas fa-cogs" style="color: #0a1f8f"></i>', ['configurar',                                                   
-                                                    'op_course_template_id' => $curso['course_template_id'],
-                                                    'semana_id' => $semana['semana_id'],
-                                                    'pep_planificacion_id' => $planesSemanales['planificacion_id'],
-                                                ]);
-                                                echo '</td>';
-                                           
+                                            }
+                                        } else {
+                                            echo '<td class="text-center">';
+                                            echo '<i class="fas fa-times-circle" style="color: #ab0a3d"></i>';
+                                            echo '</td>';
+                                            echo '<td class="text-center">';
+                                            echo '<i class="fas fa-thumbs-down" style="color: #ab0a3d"></i>';
+                                            echo '</td>';
+                                        }
+                                        echo '<td class="text-center">';
+                                        echo Html::a('<i class="fas fa-cogs" style="color: black"></i>', ['configurar',
+                                            'op_course_template_id' => $curso['course_template_id'],
+                                            'semana_id' => $semana['semana_id'],
+                                            'pep_planificacion_id' => $planesSemanales['planificacion_id'],
+                                        ]);
+                                        echo '</td>';
+
 //                                        foreach ($planesSemanales as $ps) {
 //                                            if ($curso['course_template_id'] == $ps['op_course_template_id']) {
 //                                                if (!is_null($ps['experiencias_aprendizaje']) || !is_null($ps['evaluacion_continua']) || !is_null($ps['semana_id'])) {
@@ -189,70 +251,19 @@ $this->params['breadcrumbs'][] = $this->title;
                                         ?>
 
                                     </tr> 
-                                    <?php                                    
-                                }
-                                ?>
+    <?php
+}
+?>
                             </tbody>
 
                         </table>
-                    </div>                                        
-
+                    </div>  
+                    </div>
                 </div>
-
-                <div class="col-lg-8 col-md-8" style="border-left: solid 1px #0a1f8f; background-color: #eee">
-                    <div class="row" style="margin-left: 10px">
-                        <div class="card table table-responsive">
-                            <table class="table table-condensed table-hover table-bordered" style="margin-top: 10px; margin-bottom: 10px">
-                                <thead>
-                                    <tr>
-                                        <?php
-                                        foreach ($calendario as $calen) {
-                                            echo '<th class="text-center" style="background: #ccc">';
-                                            echo $calen['nombre'] . '<br>';
-                                            echo $calen['fecha'] . '<br>';
-                                            echo '</th>';
-                                        }
-                                        ?>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <?php
-                                        foreach ($calendario as $cal) {
-                                            $fecha = $cal['fecha'];
-                                            echo '<td class="text-center"> Total actividades: ';
-                                            foreach ($actividades as $act) {
-                                                if ($fecha == $act['inicio']) {
-                                                    echo '<b>' . $act['total_actividades'] . '</b>';
-                                                }
-                                            }
-                                            echo '</td>';
-                                        }
-                                        ?>
-                                    </tr>
-                                    <tr>
-                                        <?php
-                                        foreach ($calendario as $calen) {
-                                            echo '<td class="text-center">';
-                                            ?>
-                                    <a href="#" onclick="ver_detalle('<?= $calen['fecha'] ?>')">VER DETALLE</a>
-                                    <?php
-                                    echo '</td>';
-                                }
-                                ?>
-                                </tr>
-                                </tbody>
-                            </table>
-                        </div>      
-                    </div>
-
-
-                    <div class="row" style="margin-left: 10px" id="div-detalle">
-
-                    </div>
-                </div>                                                                                         
-
             </div>
+
+
+
 
             <!-- fin cuerpo de card -->
         </div>

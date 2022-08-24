@@ -94,6 +94,7 @@ class ScholarisHorariov2CabeceraController extends Controller
      */
     public function actionUpdate($id)
     {
+        $periodo = Yii::$app->user->identity->periodo_id;
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
@@ -102,6 +103,7 @@ class ScholarisHorariov2CabeceraController extends Controller
 
         return $this->render('update', [
             'model' => $model,
+            'periodo' => $periodo
         ]);
     }
 

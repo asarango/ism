@@ -70,12 +70,7 @@ class PsController extends Controller {
             $desde = $this->calcula_fecha_desde();
         }
                 
-        $hasta = date("Y-m-d", strtotime($desde."+ 4 days")); /** fecha hasta **/ 
-        
-        /** Para tomar el calendario de la semana **/
-        $helper = new \backend\models\helpers\CalendarioSemanal($desde, $hasta, $usuarioLog); 
-        $calendario = $helper->fechas;
-        /*******************************/
+        $hasta = date("Y-m-d", strtotime($desde."+ 4 days")); /** fecha hasta **/         
         
         $actividades = $this->get_actividades_semanal($desde, $hasta, $usuarioLog); /** Actividades de la semana del docente **/      
         
@@ -83,23 +78,25 @@ class PsController extends Controller {
         $semana = $this->get_semana_id($periodoId, $usuarioLog, $desde);
         
         if(!isset($semana['semana_id'])){
-            return $this->redirect(['/site/error2', 
-                'error' => 'No existe confirguración para la siguiente semana. Por favor comunícate con el Administrador del sitio.']);
+            $desde = date("Y-m-d", strtotime($desde."- 7 days"));
+            return $this->redirect(['index1', 'desde' => $desde ]);
         }
+      
         /////////**********///////////////////
         
         /***** PARA LOS PLANES SEMANALES ******/
         $helper = new \backend\models\helpers\Scripts();
         $cursos = $helper->get_cursos_x_periodo($periodoId, $usuarioLog);
         $planesSemanales = $this->get_planes_semanales($desde, $hasta, $semana['semana_id']);
-        /**************************************/        
+        /**************************************/
+     
         
         return $this->render('index',[
-            'calendario' => $calendario,
             'actividades' => $actividades,
             'cursos' => $cursos,
             'planesSemanales' => $planesSemanales,
             'desde' => $desde,            
+            'hasta' => $hasta,            
             'semana' => $semana            
         ]);                
     }
@@ -166,15 +163,27 @@ class PsController extends Controller {
     
     private function get_actividades_semanal($desde, $hasta, $usuario){
         $con = Yii::$app->db;
-        $query = "select substring(cast(ac.inicio as varchar),0,11) as inicio 
-		,count(ac.id) as total_actividades
-                from	scholaris_actividad ac
-                                inner join scholaris_clase cl on cl.id = ac.paralelo_id
-                                inner join op_faculty f on f.id = cl.idprofesor 
-                                inner join res_users u on u.partner_id = f.partner_id
-                where 	ac.inicio between '$desde' and '$hasta'
-                                and u.login = '$usuario'
-                group by ac.inicio;";
+        $query = "select act.id            
+                ,act.inicio 
+		,hor.sigla 
+		,mat.nombre as materia
+		,act.title 
+                ,act.descripcion as enseñanza
+		,act.tareas
+		,tip.nombre_nacional 
+		,act.calificado as es_calificado
+		,act.tipo_calificacion 
+from 	scholaris_actividad act
+		inner join scholaris_clase cla on cla.id = act.paralelo_id 
+		inner join op_faculty fac on fac.id = cla.idprofesor 
+		inner join res_users rus on rus.partner_id = fac.partner_id  
+		inner join scholaris_horariov2_hora hor on hor.id = act.hora_id 
+		inner join ism_area_materia am on am.id = cla.ism_area_materia_id 
+		inner join ism_materia mat on mat.id = am.materia_id 
+		inner join scholaris_tipo_actividad tip on tip.id = act.tipo_actividad_id 
+where 	act.inicio between '$desde' and '$hasta'
+		and rus.login = '$usuario'
+order by act.inicio, hor.numero;";
         
         $res = $con->createCommand($query)->queryAll();
         return $res;

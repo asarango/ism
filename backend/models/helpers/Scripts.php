@@ -855,5 +855,29 @@ where 	pm.scholaris_periodo_id = $periodId
         
         return $res['tipo_usu_bloque'];
     }
+    
+    
+    
+    
+    public function get_docentes_x_coordinador_academico($coordinadorId, $periodoId){
+        $con = \Yii::$app->db;
+        $query = "select 	fac.id
+                                ,concat(fac.last_name, ' ', fac.x_first_name) as docente 
+                                ,sc.tipo_usu_bloque 
+                from	scholaris_clase sc
+                                inner join op_institute_authorities aut on aut.id = sc.coordinador_academico_id 
+                                inner join usuario u on u.usuario = aut.usuario 
+                                inner join res_users ru on ru.login = u.usuario 
+                                inner join op_faculty fac on fac.id = sc.idprofesor 
+                                inner join ism_area_materia am on am.id = sc.ism_area_materia_id 
+                                inner join ism_malla_area ma on ma.id = am.malla_area_id 
+                                inner join ism_periodo_malla pm on pm.id = ma.periodo_malla_id 
+                where 	ru.login = '$coordinadorId'
+                                and pm.scholaris_periodo_id = $periodoId
+                group by fac.id, fac.last_name, fac.x_first_name, sc.tipo_usu_bloque 
+                order by fac.last_name, fac.x_first_name ;";
+        $res = $con->createCommand($query)->queryAll();
+        return $res;
+    }
 
 }

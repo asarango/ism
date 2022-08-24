@@ -53,13 +53,13 @@ class PlanUnidadNee extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'nee_x_unidad_id' => 'Nee X Unidad ID',
-            'curriculo_bloque_unidad_id' => 'Curriculo Bloque Unidad ID',
+            'curriculo_bloque_unidad_id' => 'Currículo Bloque Unidad ID',
             'destrezas' => 'Destrezas',
             'actividades' => 'Actividades',
             'recursos' => 'Recursos',
-            'indicadores_evaluacion' => 'Indicadores Evaluacion',
-            'tecnicas_instrumentos' => 'Tecnicas Instrumentos',
-            'detalle_pai_dip' => 'Detalle Pai Dip',
+            'indicadores_evaluacion' => 'Indicadores Evaluación',
+            'tecnicas_instrumentos' => 'Técnicas Instrumentos',
+            'detalle_pai_dip' => 'Detalle',
         ];
     }
 

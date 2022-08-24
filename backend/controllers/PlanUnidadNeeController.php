@@ -78,7 +78,7 @@ class PlanUnidadNeeController extends Controller
         // ]);
         return $this->redirect(['index']);
     }   
-    public function actionLlamarForm($idNeeXCase,$idBloque)
+    public function actionLlamarForm($idNeeXCase,$idBloque,$seccion)
     {
        
         //buscar en plan unidad nee, si tiene id de neexclase
@@ -88,17 +88,17 @@ class PlanUnidadNeeController extends Controller
        
          if($modelPlanUnidNee)
          {
-            return $this->redirect(['update', 'id' => $modelPlanUnidNee->id]);
+            return $this->redirect(['update', 'id' => $modelPlanUnidNee->id,'seccion'=>$seccion]);
          }
          else
          {            
-             $model = new PlanUnidadNee();    
+            $model = new PlanUnidadNee();    
                   
-             $model->nee_x_unidad_id = $idNeeXCase;
-             $model->curriculo_bloque_unidad_id = $idBloque;            
+            $model->nee_x_unidad_id = $idNeeXCase;
+            $model->curriculo_bloque_unidad_id = $idBloque;            
             $model->save();               
             
-            return $this->redirect(['update', 'id' =>$model->id]);
+            return $this->redirect(['update', 'id' =>$model->id,'seccion'=>$seccion]);
          }        
     }
 
@@ -127,7 +127,7 @@ class PlanUnidadNeeController extends Controller
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionUpdate($id)
+    public function actionUpdate($id,$seccion)
     {
         $model = $this->findModel($id);
 
@@ -137,6 +137,7 @@ class PlanUnidadNeeController extends Controller
 
         return $this->render('update', [
             'model' => $model,
+            'seccion'=>$seccion
         ]);
     }
 

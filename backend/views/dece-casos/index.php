@@ -105,14 +105,12 @@ $this->params['breadcrumbs'][] = $this->title;
                                             <td><strong><?=$caso['seguimiento']?></strong></td>
                                             <td>
                                                 <?= Html::a(
-                                                    '<span class="badge  rounded-pill" style="background-color:red;">Ver Casos</span>',
-                                                    ['dece-casos/create','id'=>$caso['id_estudiante'],'id_clase'=>0],                                                   
+                                                    '<span class="badge  rounded-pill" style="background-color:red;">Ver</span>',
+                                                    ['dece-casos/historico','id'=>$caso['id_estudiante'],'id_clase'=>0],                                                   
                                                     ['class' => 'link']
                                                 ); ?>
                                             </td>
-
                                         </tr>
-
                                     <?php
                                     } //fin for
                                     ?>

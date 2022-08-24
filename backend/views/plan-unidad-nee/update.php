@@ -35,7 +35,7 @@ $modelBloque = CurriculoMecBloque::findOne($model->curriculo_bloque_unidad_id);
                         <?php
                             $nombreAlumnno  = $modelNee->nee->student->last_name . ' ' . $modelNee->nee->student->middle_name . ' ' . $modelNee->nee->student->first_name;
                         ?>
-                        <h6>Estudiante: <?=$nombreAlumnno?></h6>
+                        <!-- <h6>Estudiante: <?=$nombreAlumnno?></h6> -->
                         <h6>Bloque: <?=$modelBloque->shot_name;?></h6>
                     </div>
                 </div><!-- FIN DE CABECERA -->
@@ -46,23 +46,26 @@ $modelBloque = CurriculoMecBloque::findOne($model->curriculo_bloque_unidad_id);
                             ['class' => 'link']
                 ); ?>
                 <hr>
+                <h5>Datos Estudiante Seleccionado</h5>
                
                 <table class="table table-striped table-hover ">
-                    <tr>
+                    <tr class="border">
                         <td><b>Estudiante</b></td>
                         <td><b>Grado</b></td>
                         <td><b>Diagnóstico</b></td>
                         <td><b>Recomendación</b></td>
                     </tr>
-                    <tr>
+                    <tr class="border">
                         <td><?= $nombreAlumnno ?></td>
                         <td><?= $modelNee->grado_nee ?></td>
                         <td><?= $modelNee->diagnostico_inicia?></td>
                         <td><?= $modelNee->recomendacion_clase ?></td>
                     </td>
                 </table>
+                <h5 >Planificación Unidad Nee</h5>
                 <?= $this->render('_form', [
                     'model' => $model,
+                    'seccion'=>$seccion
                 ]) ?>
 
             </div>

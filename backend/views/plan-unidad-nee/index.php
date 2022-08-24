@@ -68,8 +68,8 @@ $idBloque6 = CurriculoMecBloque::find()
                             <?php
                             foreach ($modelCursos as $curso) {
                                 $modelNeeClase = NeeXClase::find()
-                                    ->where(['clase_id' => $curso['clase_id']])
-                                    ->all();
+                                ->where(['clase_id' => $curso['clase_id']])
+                                ->all();
                             ?>
                                 <tr>
                                     <td style="color:red; font-size:12px;"><?= $curso['materia'] ?></td>
@@ -104,6 +104,14 @@ $idBloque6 = CurriculoMecBloque::find()
                                                 <?php
                                                 foreach ($modelNeeClase as $nee) {
                                                     $nombreAlumnno = $nee->nee->student->last_name . ' ' . $nee->nee->student->middle_name . ' ' . $nee->nee->student->first_name;
+                                                    //busca si ya se tiene ingresada informacion en el plan unidad
+                                                    $modelPUN = PlanUnidadNee::find()
+                                                    ->select('curriculo_bloque_unidad_id')
+                                                    ->where(['nee_x_unidad_id'=>$nee['id']])
+                                                    ->asArray()
+                                                    ->all();                                           
+                                                                                                      
+
                                                 ?>
 
                                                     <tr>
@@ -111,35 +119,83 @@ $idBloque6 = CurriculoMecBloque::find()
                                                         <td><?= $nee['grado_nee'] ?></td>
                                                         <td><?= $nee['diagnostico_inicia'] ?></td>
                                                         <td><?= $nee['recomendacion_clase'] ?></td>
+                                                        <?php
+                                                            //Permite revisar si en cada modulo, algo se ha ingresado de informacion
+                                                            //si tiene info, cambiara el boton a color verde
+                                                            $colorBoton = '#9e28b5';
+                                                            foreach($modelPUN as $model)
+                                                            {
+                                                                if(in_array("1",$model))
+                                                                {
+                                                                    $colorBoton = 'green';
+                                                                }
+                                                            } 
+                                                        ?>
                                                         <td> <?= Html::a(
-                                                                    '<span class="badge  rounded-pill" style="background-color:#9e28b5 ;">
+                                                                    '<span class="badge  rounded-pill" style="background-color: '.$colorBoton.';">
                                                                 <i class="fas fa-eye"></i>
                                                             </span>',
-                                                                    ['llamar-form', 'idNeeXCase' => $nee['id'],'idBloque'=>$idBloque1->id ],
+                                                                    ['llamar-form', 'idNeeXCase' => $nee['id'],'idBloque'=>$idBloque1->id,'seccion'=>$curso['code']  ],
                                                                     ['class' => 'link']
                                                                 ); ?>
                                                         </td>
+                                                        <?php
+                                                            //Permite revisar si en cada modulo, algo se ha ingresado de informacion
+                                                            //si tiene info, cambiara el boton a color verde
+                                                            $colorBoton = '#9e28b5';
+                                                            foreach($modelPUN as $model)
+                                                            {
+                                                                if(in_array("2",$model))
+                                                                {
+                                                                    $colorBoton = 'green';                                                                   
+                                                                }
+                                                            } 
+                                                        ?>
                                                         <td> <?= Html::a(
-                                                                    '<span class="badge  rounded-pill" style="background-color:#9e28b5;">
+                                                                    '<span class="badge  rounded-pill" style="background-color: '.$colorBoton.';">
                                                                 <i class="fas fa-eye"></i>
                                                             </span>',
-                                                                     ['llamar-form', 'idNeeXCase' => $nee['id'],'idBloque'=>$idBloque2->id ],
+                                                                     ['llamar-form', 'idNeeXCase' => $nee['id'],'idBloque'=>$idBloque2->id,'seccion'=>$curso['code'] ],
                                                                     ['class' => 'link']
                                                                 ); ?>
                                                         </td>
+                                                        <?php
+                                                            //Permite revisar si en cada modulo, algo se ha ingresado de informacion
+                                                            //si tiene info, cambiara el boton a color verde
+                                                            $colorBoton = '#9e28b5';
+                                                            foreach($modelPUN as $model)
+                                                            {
+                                                                if(in_array("3",$model))
+                                                                {
+                                                                    $colorBoton = 'green';
+                                                                }
+                                                            } 
+                                                        ?>
                                                         <td> <?= Html::a(
-                                                                    '<span class="badge  rounded-pill" style="background-color:#9e28b5;">
+                                                                    '<span class="badge  rounded-pill" style="background-color: '.$colorBoton.';">
                                                                     <i class="fas fa-eye"></i>
                                                             </span>',
-                                                                     ['llamar-form', 'idNeeXCase' => $nee['id'],'idBloque'=>$idBloque3->id ],
+                                                                     ['llamar-form', 'idNeeXCase' => $nee['id'],'idBloque'=>$idBloque3->id,'seccion'=>$curso['code'] ],
                                                                     ['class' => 'link']
                                                                 ); ?>
                                                         </td>
+                                                        <?php
+                                                            //Permite revisar si en cada modulo, algo se ha ingresado de informacion
+                                                            //si tiene info, cambiara el boton a color verde
+                                                            $colorBoton = '#9e28b5';
+                                                            foreach($modelPUN as $model)
+                                                            {
+                                                                if(in_array("4",$model))
+                                                                {
+                                                                    $colorBoton = 'green';
+                                                                }
+                                                            } 
+                                                        ?>
                                                         <td> <?= Html::a(
-                                                                    '<span class="badge  rounded-pill" style="background-color:#9e28b5;">
-                                                                    <i class="fas fa-eye"></i>->id
+                                                                    '<span class="badge  rounded-pill" style="background-color: '.$colorBoton.';">
+                                                                    <i class="fas fa-eye"></i>
                                                             </span>',
-                                                                     ['llamar-form', 'idNeeXCase' => $nee['id'],'idBloque'=>$idBloque4->id ],
+                                                                     ['llamar-form', 'idNeeXCase' => $nee['id'],'idBloque'=>$idBloque4->id,'seccion'=>$curso['code'] ],
                                                                     ['class' => 'link']
                                                                 ); ?>
                                                         </td>
@@ -147,21 +203,45 @@ $idBloque6 = CurriculoMecBloque::find()
                                                         if($curso['code']=='PEP' || $curso['code']=='KIDS' )
                                                         {
                                                         ?>
+                                                            <?php
+                                                                //Permite revisar si en cada modulo, algo se ha ingresado de informacion
+                                                                //si tiene info, cambiara el boton a color verde
+                                                                $colorBoton = '#9e28b5';
+                                                                foreach($modelPUN as $model)
+                                                                {
+                                                                    if(in_array("5",$model))
+                                                                    {
+                                                                        $colorBoton = 'green';
+                                                                    }
+                                                                } 
+                                                            ?>
                                                             <td>
                                                                     <?= Html::a(
-                                                                            '<span class="badge  rounded-pill" style="background-color:#9e28b5;">
+                                                                            '<span class="badge  rounded-pill" style="background-color: '.$colorBoton.';">
                                                                             <i class="fas fa-eye"></i>
                                                                     </span>',
-                                                                             ['llamar-form', 'idNeeXCase' => $nee['id'],'idBloque'=>$idBloque5->id ],
+                                                                             ['llamar-form', 'idNeeXCase' => $nee['id'],'idBloque'=>$idBloque5->id,'seccion'=>$curso['code'] ],
                                                                             ['class' => 'link']
                                                                         ); ?>
                                                             </td>
+                                                            <?php
+                                                                //Permite revisar si en cada modulo, algo se ha ingresado de informacion
+                                                                //si tiene info, cambiara el boton a color verde
+                                                                $colorBoton = '#9e28b5';
+                                                                foreach($modelPUN as $model)
+                                                                {
+                                                                    if(in_array("6",$model))
+                                                                    {
+                                                                        $colorBoton = 'green';
+                                                                    }
+                                                                } 
+                                                            ?>
                                                             <td>
                                                                     <?= Html::a(
-                                                                            '<span class="badge  rounded-pill" style="background-color:#9e28b5;">
+                                                                            '<span class="badge  rounded-pill" style="background-color: '.$colorBoton.';">
                                                                             <i class="fas fa-eye"></i>
                                                                     </span>',
-                                                                             ['llamar-form', 'idNeeXCase' => $nee['id'],'idBloque'=>$idBloque6->id ],
+                                                                             ['llamar-form', 'idNeeXCase' => $nee['id'],'idBloque'=>$idBloque6->id,'seccion'=>$curso['code'] ],
                                                                             ['class' => 'link']
                                                                         ); ?>
                                                             </td>

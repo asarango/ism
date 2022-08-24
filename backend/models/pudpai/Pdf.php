@@ -11,6 +11,7 @@ use backend\models\PlanificacionBloquesUnidadSubtitulo;
 use backend\models\PlanificacionDesagregacionCriteriosEvaluacion;
 use backend\models\PlanificacionVerticalPaiDescriptores;
 use backend\models\PlanificacionVerticalPaiOpciones;
+use backend\models\PlanUnidadNee;
 use backend\models\PudPai;
 use backend\models\pudpep\DatosInformativos;
 use backend\models\ScholarisPeriodo;
@@ -832,8 +833,10 @@ class Pdf extends \yii\db\ActiveRecord {
         $idPeriodo=  Yii::$app->user->identity->periodo_id; 
         $con = Yii::$app->db;
 
-        $query = "select 	s.id 
-                            ,concat(s.first_name, ' ', s.middle_name, ' ', s.last_name) as student
+        $query = 'select 	s.id 
+                            ,nxc.id as "idnxc"
+                            ,nxc.clase_id as "idClase"';
+                    $query .=",concat(s.first_name, ' ', s.middle_name, ' ', s.last_name) as student
                             ,nxc.grado_nee 
                             ,nxc.diagnostico_inicia 
                             ,nxc.diagnostico_finaliza 
@@ -849,7 +852,8 @@ class Pdf extends \yii\db\ActiveRecord {
                             inner join op_student s on s.id = nee.student_id 
                     where 	cu.x_template_id = $idCurso
                             and pm.scholaris_periodo_id = $idPeriodo
-                            and am.materia_id = $idMateria;";                           
+                            and am.materia_id = $idMateria;";  
+                                                 
         
         $resp = $con->createCommand($query)->queryAll();     
         return $resp;
@@ -871,10 +875,19 @@ class Pdf extends \yii\db\ActiveRecord {
         {
             if($array['grado_nee']==$grado)
             {
+                $modelPNU = PlanUnidadNee::find()
+                ->where(['nee_x_unidad_id'=>$array['idnxc'],'curriculo_bloque_unidad_id'=>1])
+                ->one();               
+
                 $iniciales = $this->getIniciales($array['student']);                
                 $html .='<li>'; 
                     $html .='<b>'.$iniciales.': </b>'.'<b>Diagnóstico:</b> '.$array['diagnostico_inicia'].' / <b>Recomendación:</b> '.$array['recomendacion_clase']; 
-                $html .='<li>'; 
+                $html .='</li>'; 
+               $html .='<li>'; 
+                        $html .='<b>Plan Unidad Nee: </b>';
+                        if($modelPNU){ $html.=$modelPNU->detalle_pai_dip; }
+                $html .='</li>';   
+                             
             }            
         }
         $html .='</ul>';

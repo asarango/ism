@@ -70,11 +70,13 @@ class Pdf extends \yii\db\ActiveRecord{
             'format' => 'A4-L',
             'margin_left' => 10,
             'margin_right' => 10,
-            'margin_top' => 25,
-            'margin_bottom' => 0,
+            'margin_top' => 40,
+            'margin_bottom' => 10,
             'margin_header' => 5,
             'margin_footer' => 5,
         ]);
+
+      
         $cabecera = $this->versionIso();        
         $mpdf->SetHtmlHeader($cabecera);
         $mpdf->showImageErrors = true; 

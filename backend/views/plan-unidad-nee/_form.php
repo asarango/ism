@@ -6,6 +6,8 @@ use yii\widgets\ActiveForm;
 /* @var $this yii\web\View */
 /* @var $model backend\models\PlanUnidadNee */
 /* @var $form yii\widgets\ActiveForm */
+
+
 ?>
 <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
 
@@ -16,25 +18,41 @@ use yii\widgets\ActiveForm;
     <?= $form->field($model, 'nee_x_unidad_id')->hiddenInput()->label(false) ?>
 
     <?= $form->field($model, 'curriculo_bloque_unidad_id')->hiddenInput()->label(false) ?>
-   
-    <?= $form->field($model, 'destrezas')->textarea(['rows' => 6]) ?>
-   
-    <?= $form->field($model, 'actividades')->textarea(['rows' => 6]) ?>
-   
-    <?= $form->field($model, 'recursos')->textarea(['rows' => 6]) ?>
 
-    <?= $form->field($model, 'indicadores_evaluacion')->textarea(['rows' => 6]) ?>
-
+     <!-- INGRESA CUANDO ES PEP O KIDS -->
     <?php 
-    if (false){
+    if ($seccion == 'PRES' || $seccion == 'BAS')
+    {
     ?>
+    
+    <?= $form->field($model, 'destrezas')->textarea(['rows' => 3]) ?>
+   
+    <?= $form->field($model, 'actividades')->textarea(['rows' => 3]) ?>
+   
+    <?= $form->field($model, 'recursos')->textarea(['rows' => 3]) ?>
 
-    <?= $form->field($model, 'tecnicas_instrumentos')->textarea(['rows' => 6]) ?>
+    <?= $form->field($model, 'indicadores_evaluacion')->textarea(['rows' => 3]) ?>
 
-    <?= $form->field($model, 'detalle_pai_dip')->textarea(['rows' => 6]) ?>
+   
+        <?php if($seccion == 'BAS')
+        {
+        ?>
+            <?= $form->field($model, 'tecnicas_instrumentos')->textarea(['rows' => 3]) ?>            
     <?php 
+        }
     }
     ?>
+    <!-- INGRESA CUANDO ES DIP O PAI -->
+     <?php 
+    if ($seccion =='DIPL' || $seccion == 'PAI')
+    {
+    ?>
+            <?= $form->field($model, 'detalle_pai_dip')->textarea(['rows' => 3]) ?>
+    <?php 
+        
+    }
+    ?>
+
     <br>
 
     <div class="form-group">

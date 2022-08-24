@@ -140,47 +140,10 @@ class DeceCasosController extends Controller
         $usuario = Yii::$app->user->identity->usuario;
         $periodoId = Yii::$app->user->identity->periodo_id;
         $ahora = date('Y-m-d H:i:s');
-        $modelDeceCasos = new DeceCasos();
+        $modelDeceCasos = new DeceCasos();      
 
-        if(isset($_GET['id']))// POR get envia desde el leccionario, por tanto lleva id;s clase y estudiante
+        if ($model->load(Yii::$app->request->post()) && $model->save() ) 
         {
-            
-            $id_estudiante = $_GET['id'];    
-            $modelDeceCasos->numero_caso = $this->mostrar_numero_maximo_caso( $periodoId) + 1;
-            $modelDeceCasos->id_estudiante =   $id_estudiante ;
-            $modelDeceCasos->id_clase =   $_GET['id_clase'];  ;
-            $modelDeceCasos->id_periodo =   $periodoId;
-            $modelDeceCasos->estado = 'PENDIENTE';
-            $modelDeceCasos->fecha_inicio = $ahora;
-            $modelDeceCasos->motivo = "";
-            $modelDeceCasos->detalle = "";
-            $modelDeceCasos->id_usuario = $usuario; 
-            
-            $modelDeceCasos->save();
-
-        }
-        if(isset($_POST['id']))//por post envia desde el MOD DECE, id de estudiante
-        {
-            $id_estudiante = $_POST['id'];        
-            
-            $modelDeceCasos->numero_caso = $this->mostrar_numero_maximo_caso( $periodoId) + 1;
-            $modelDeceCasos->id_estudiante =   $id_estudiante ;
-            $modelDeceCasos->id_clase =   0 ;
-            $modelDeceCasos->id_periodo =   $periodoId;
-            $modelDeceCasos->estado = 'PENDIENTE';
-            $modelDeceCasos->fecha_inicio = $ahora;
-            $modelDeceCasos->motivo = "";
-            $modelDeceCasos->detalle = "";
-            $modelDeceCasos->id_usuario = $usuario;   
-            
-            $modelDeceCasos->save();
-        
-        }          
-
-       
-
-        if ($model->load(Yii::$app->request->post()) && $model->save() ) {
-           
             if($model->id_clase>0)
             {
                 return $this->redirect(['update','id'=>$model->id]);
@@ -191,6 +154,35 @@ class DeceCasosController extends Controller
         return $this->render('create', [           
             'model' => $modelDeceCasos
         ]);
+    }   
+
+    public function actionHistorico()
+    {
+       
+        $model = new DeceCasos();
+        $usuario = Yii::$app->user->identity->usuario;
+        $periodoId = Yii::$app->user->identity->periodo_id;
+        $ahora = date('Y-m-d H:i:s');
+        $modelDeceCasos = new DeceCasos();
+
+        if(isset($_GET['id']))// POR get envia desde el leccionario, por tanto lleva id;s clase y estudiante
+        {
+            $id_estudiante = $_GET['id'];    
+            $modelDeceCasos->numero_caso = $this->mostrar_numero_maximo_caso( $periodoId) + 1;
+            $modelDeceCasos->id_estudiante =   $id_estudiante ;
+            $modelDeceCasos->id_clase =   0 ;
+            $modelDeceCasos->id_periodo =   $periodoId;
+            $modelDeceCasos->estado = 'PENDIENTE';
+            $modelDeceCasos->fecha_inicio = $ahora;
+            $modelDeceCasos->motivo = "";
+            $modelDeceCasos->detalle = "";
+            $modelDeceCasos->id_usuario = $usuario; 
+            
+            $modelDeceCasos->save();
+        }  
+        return $this->render('historicos', [           
+            'model' => $modelDeceCasos
+        ]);           
     }
     private function mostrar_numero_maximo_caso($id_periodo)
     {

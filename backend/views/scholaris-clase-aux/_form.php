@@ -9,7 +9,7 @@
 
     <label class="">Docente:</label>
     <select name="idprofesor" class="form-control" required="">
-        <option value="<?= $model->id ?>"><?= $model->profesor->last_name.' '.$model->profesor->x_first_name ?></option>
+        <option value="<?= $model->idprofesor ?>"><?= $model->profesor->last_name.' '.$model->profesor->x_first_name ?></option>
         <?php
         foreach ($modelDocentes as $docente) {
             ?>

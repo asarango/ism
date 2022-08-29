@@ -5,6 +5,7 @@ namespace backend\controllers;
 use Yii;
 use backend\models\DeceCasos;
 use backend\models\DeceCasosSearch;
+use Exception;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -134,22 +135,39 @@ class DeceCasosController extends Controller
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
-    public function actionCreate()
+    public function actionCreate($idEstudiante)
     {
         $model = new DeceCasos();
+        $hora = date('H:i:s');
+        //la fecha de ingreso viene vacio cuando es un nuevo, por eso guarda solo cuando hay fecha de ingreso
+        //quiere decir que vino desde la pantalla de de CREACION
+        if ($model->load(Yii::$app->request->post()) && isset($_POST['fecha_inicio']))
+        {
+            $model->fecha_inicio = $_POST['fecha_inicio']. ' '.$hora;
+            $model->save();            
+            return $this->redirect(['historico','id'=>$model->id_estudiante]);
+        }
+ 
         $usuario = Yii::$app->user->identity->usuario;
         $periodoId = Yii::$app->user->identity->periodo_id;
         $ahora = date('Y-m-d H:i:s');
-        $modelDeceCasos = new DeceCasos();      
+        $ahora = date('Y-m-d');
 
-        if ($model->load(Yii::$app->request->post()) && $model->save() ) 
+        $modelDeceCasos = new DeceCasos(); 
+        $modelDeceCasos->id_usuario = $usuario;
+        $modelDeceCasos->detalle = '-';
+        if($idEstudiante==0)//si es igual a cero, es porque biene de INDEX, CREAR CASOS
         {
-            if($model->id_clase>0)
-            {
-                return $this->redirect(['update','id'=>$model->id]);
-            }
-            return $this->redirect(['index']);
-        }
+            $modelDeceCasos->id_estudiante = $_POST['idAlumno'];
+        }else
+        {
+            $modelDeceCasos->id_estudiante = $idEstudiante;
+        }        
+        $modelDeceCasos->id_periodo = $periodoId;
+        $modelDeceCasos->id_clase= 0;
+        $modelDeceCasos->fecha_inicio= $ahora;
+        $modelDeceCasos->numero_caso = $this->mostrar_numero_maximo_caso($periodoId,$idEstudiante) + 1;
+       
 
         return $this->render('create', [           
             'model' => $modelDeceCasos
@@ -158,17 +176,15 @@ class DeceCasosController extends Controller
 
     public function actionHistorico()
     {
-       
-        $model = new DeceCasos();
         $usuario = Yii::$app->user->identity->usuario;
         $periodoId = Yii::$app->user->identity->periodo_id;
         $ahora = date('Y-m-d H:i:s');
         $modelDeceCasos = new DeceCasos();
 
-        if(isset($_GET['id']))// POR get envia desde el leccionario, por tanto lleva id;s clase y estudiante
+        if(isset($_GET['id']))
         {
             $id_estudiante = $_GET['id'];    
-            $modelDeceCasos->numero_caso = $this->mostrar_numero_maximo_caso( $periodoId) + 1;
+            $modelDeceCasos->numero_caso = $this->mostrar_numero_maximo_caso($periodoId,$id_estudiante) + 1;
             $modelDeceCasos->id_estudiante =   $id_estudiante ;
             $modelDeceCasos->id_clase =   0 ;
             $modelDeceCasos->id_periodo =   $periodoId;
@@ -184,10 +200,11 @@ class DeceCasosController extends Controller
             'model' => $modelDeceCasos
         ]);           
     }
-    private function mostrar_numero_maximo_caso($id_periodo)
+    private function mostrar_numero_maximo_caso($id_periodo,$idEstudiante)
     {
         $resp = DeceCasos::find()
         ->where(['id_periodo'=>$id_periodo])
+        ->andWhere(['id_estudiante'=>$idEstudiante])
         ->max('numero_caso');
         
         return $resp;
@@ -195,12 +212,18 @@ class DeceCasosController extends Controller
 
     public function actionUpdate($id)
     {
-        $model = $this->findModel($id);
+        $fechaActual = date('Y-m-d');
+        $hora = date('H:i:s');
+        $model = $this->findModel($id);           
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['update', 'id' => $model->id]);
+        if ($model->load(Yii::$app->request->post()) &&  isset($_POST['fecha_fin']))
+        { 
+            $model->fecha_fin = $_POST['fecha_fin'].' '.$hora;  
+            $model->save();
+            return $this->redirect(['historico','id'=>$model->id_estudiante]);
         }
 
+        $model->fecha_fin = $fechaActual;
         return $this->render('update', [
             'model' => $model,
         ]);

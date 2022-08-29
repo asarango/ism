@@ -71,7 +71,7 @@ class AprobacionPlanSemanalController extends Controller{
         $docentes = $script->get_docentes_x_coordinador_academico($userLog, $periodoId);
                 
         $uso = $docentes[0]['tipo_usu_bloque'];
-        
+                
         $semanas = $this->get_semanas($uso);
         
         return $this->render('index',[
@@ -94,7 +94,80 @@ class AprobacionPlanSemanalController extends Controller{
         return $res;
     }
     
+    public function actionAjaxDetalle(){
+        $idProfesor = $_POST['fac_id'];
+        $semanaId   = $_POST['semana_id'];
+        
+        $semana = \backend\models\ScholarisBloqueSemanas::findOne($semanaId);
+        $actividades = $this->get_actividades($idProfesor, $semanaId, $semana->fecha_inicio, $semana->fecha_finaliza);
+        $docente = \backend\models\OpFaculty::findOne($idProfesor);
+        $resUser = \backend\models\ResUsers::find()->where(['partner_id' => $docente->partner_id])->one();
+        
+        $planSemanal = \backend\models\PepPlanSemanal::find()->where([
+            'created' => $resUser->login,
+            'semana_id' => $semanaId
+        ])->one();
+        
+        return $this->renderPartial('ajax-detalle',[
+            'actividades' => $actividades,
+            'docente' => $docente,
+            'semana' => $semana,
+            'planSemanal' => $planSemanal
+        ]);
+        
+    }
     
+    private function get_actividades($idProfesor, $semanaId, $fechaDesde, $fechaHasta){
+        $con = Yii::$app->db;
+        $query = "select 	act.id ,act.inicio 
+                                ,hor.sigla
+                                ,mat.nombre as materia
+                                ,act.title 
+                                ,act.descripcion 
+                                ,act.tareas 
+                                ,tip.nombre_nacional 
+                                ,act.calificado 
+                                ,act.tipo_calificacion 
+                                ,concat(fac.x_first_name,' ',fac.last_name) as docente
+                from	scholaris_actividad act
+                                inner join scholaris_bloque_actividad blo on blo.id = act.bloque_actividad_id
+                                inner join scholaris_bloque_semanas sem on sem.bloque_id = blo.id 
+                                inner join scholaris_clase cla on cla.id = act.paralelo_id 
+                                inner join op_faculty fac on fac.id = cla.idprofesor 
+                                inner join ism_area_materia am on am.id = cla.ism_area_materia_id 
+                                inner join ism_materia mat on mat.id = am.materia_id 
+                                inner join scholaris_horariov2_hora hor on hor.id = act.hora_id 
+                                inner join scholaris_tipo_actividad tip on tip.id = act.tipo_actividad_id 
+                where 	sem.id = $semanaId
+                        and act.inicio between '$fechaDesde' and '$fechaHasta' 
+                                and fac.id = $idProfesor
+                order by act.inicio;";
+//        echo $query;
+//        die();
+        $res = $con->createCommand($query)->queryAll();
+        return $res;
+    }
+    
+    
+    public function actionUpdateRetro(){
+       
+        $planSemanalId      = $_POST['plan_semanal_id'];
+        $retroalimentacion  = $_POST['retroalimentacion'];
+        
+        $model = \backend\models\PepPlanSemanal::findOne($planSemanalId);
+        $model->retroalimentacion = $retroalimentacion;
+        
+        $model->save();
+    }
+    
+    public function actionAprobar(){
+        $hoy = date('Y-m-d H:i:s');
+        $planSemanalId = $_POST['plan_semanal_id'];
+        $model = \backend\models\PepPlanSemanal::findOne($planSemanalId);
+        $model->es_aprobado = true;
+        $model->fecha_aprobacion = $hoy;
+        $model->save();
+    }
     
     
 }

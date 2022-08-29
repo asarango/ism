@@ -98,16 +98,21 @@ class AprobacionPlanSemanalController extends Controller{
         $idProfesor = $_POST['fac_id'];
         $semanaId   = $_POST['semana_id'];
         
-        
         $semana = \backend\models\ScholarisBloqueSemanas::findOne($semanaId);
         $actividades = $this->get_actividades($idProfesor, $semanaId, $semana->fecha_inicio, $semana->fecha_finaliza);
         $docente = \backend\models\OpFaculty::findOne($idProfesor);
+        $resUser = \backend\models\ResUsers::find()->where(['partner_id' => $docente->partner_id])->one();
         
+        $planSemanal = \backend\models\PepPlanSemanal::find()->where([
+            'created' => $resUser->login,
+            'semana_id' => $semanaId
+        ])->one();
         
         return $this->renderPartial('ajax-detalle',[
             'actividades' => $actividades,
             'docente' => $docente,
-            'semana' => $semana
+            'semana' => $semana,
+            'planSemanal' => $planSemanal
         ]);
         
     }
@@ -141,6 +146,27 @@ class AprobacionPlanSemanalController extends Controller{
 //        die();
         $res = $con->createCommand($query)->queryAll();
         return $res;
+    }
+    
+    
+    public function actionUpdateRetro(){
+       
+        $planSemanalId      = $_POST['plan_semanal_id'];
+        $retroalimentacion  = $_POST['retroalimentacion'];
+        
+        $model = \backend\models\PepPlanSemanal::findOne($planSemanalId);
+        $model->retroalimentacion = $retroalimentacion;
+        
+        $model->save();
+    }
+    
+    public function actionAprobar(){
+        $hoy = date('Y-m-d H:i:s');
+        $planSemanalId = $_POST['plan_semanal_id'];
+        $model = \backend\models\PepPlanSemanal::findOne($planSemanalId);
+        $model->es_aprobado = true;
+        $model->fecha_aprobacion = $hoy;
+        $model->save();
     }
     
     

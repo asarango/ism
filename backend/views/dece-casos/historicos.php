@@ -7,6 +7,7 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use backend\models\DeceMotivos;
 use backend\models\DeceRegistroSeguimiento;
+use backend\models\PlanificacionOpciones;
 
 /* @var $this yii\web\View */
 /* @var $model backend\models\DeceCasos */
@@ -39,9 +40,14 @@ $modelCasosHist = DeceCasos::find()
 
 //buscamos el numero de seguimientos que tiene el alumno
 $modelRegSeguimiento = DeceRegistroSeguimiento::find()
-    ->where(['id_caso' => $model->id])
+    ->where(['id_estudiante' => $model->id_estudiante])
     ->orderBy(['estado' => SORT_DESC, 'fecha_inicio' => SORT_ASC])
     ->all();
+
+//busca el path de los archivos donde se guardan los datos de dece
+$modelPathArchivo = PlanificacionOpciones::find()
+->where(['tipo'=>'VER_ARCHIVO'])
+->one();
 
 ?>
 <script src="//cdn.ckeditor.com/4.19.0/full/ckeditor.js"></script>
@@ -51,7 +57,7 @@ $modelRegSeguimiento = DeceRegistroSeguimiento::find()
         <div class="card shadow col-lg-10 col-md-10">
             <div class=" row align-items-center p-2">
                 <div class="col-lg-1">
-                    <h3><img src="ISM/main/images/submenu/menu.png" width="64px" class="img-thumbnail"></h3>                    
+                    <h3><img src="ISM/main/images/submenu/autismo.png" width="64px" class="img-thumbnail"></h3>                    
                 </div>
                 
                 <div class="col-lg-11">
@@ -113,18 +119,16 @@ $modelRegSeguimiento = DeceRegistroSeguimiento::find()
                 <hr>
                 <div class="row">
                     <div class="col">
-                        <legend><b>Estudiante: </b>
-                            <?php $nombreEstudiante = $model->estudiante->middle_name . ' ' . $model->estudiante->first_name . ' ' . $model->estudiante->last_name ?>
-                            <?php $periodo = $model->periodo->nombre ?>
-                            <span style="color:red"><?= $nombreEstudiante ?><span>
-                        </legend>
+                        <span><b>Estudiante: </b>
+                            <?php $nombreEstudiante = $model->estudiante->last_name.' '.$model->estudiante->middle_name . ' ' . $model->estudiante->first_name?>
+                           <span style="color:red"><?= $nombreEstudiante ?><span>
+                        </span>
                     </div>
                     <div class="col">
-                        <legend><b>Periodo: </b>
-                            <?php $nombreEstudiante = $model->estudiante->middle_name . ' ' . $model->estudiante->first_name . ' ' . $model->estudiante->last_name ?>
+                        <span><b>Periodo: </b>
                             <?php $periodo = $model->periodo->nombre ?>
                             <span style="color:red"><?= $periodo ?><span>
-                        </legend>
+                        </span>
                     </div>
                 </div>
                 <hr>
@@ -134,12 +138,12 @@ $modelRegSeguimiento = DeceRegistroSeguimiento::find()
                             <table>
                                 <tr>
                                     <td>
-                                        <h4 style="color:red">Casos</h4>
+                                        <h5 style="color:red">Casos</h5>
                                     </td>
                                     <td>
                                         <?= Html::a(
                                             '<span class="badge  rounded-pill" style="background-color:blue;">Crear Casos</span>',
-                                            ['create'],
+                                            ['create','idEstudiante'=>$model->id_estudiante],
                                             ['class' => 'link']
                                         ); ?>
                                     </td>
@@ -147,7 +151,7 @@ $modelRegSeguimiento = DeceRegistroSeguimiento::find()
                             </table>
 
 
-                            <div style="overflow-x:scroll;overflow-y:scroll;">
+                            <div style="overflow:scroll;">
                                 <table class="table table-success table-striped table-bordered my-text-small">
                                     <tr class="table-primary">
                                         <td><b>Caso</b></td>
@@ -164,8 +168,8 @@ $modelRegSeguimiento = DeceRegistroSeguimiento::find()
                                     ?>
                                         <tr>
                                             <td><?= $modelReg->numero_caso ?></td>
-                                            <td><?= substr($modelReg->fecha_inicio, 0, 10) ?></td>
-                                            <td><?= substr($modelReg->fecha_fin, 0, 10) ?></td>
+                                            <td><?= $modelReg->fecha_inicio ?></td>
+                                            <td><?= $modelReg->fecha_fin ?></td>
                                             <td><?= $modelReg->estado ?></td>
                                             <td><?= $modelReg->motivo ?></td>
                                             <td>
@@ -180,20 +184,20 @@ $modelRegSeguimiento = DeceRegistroSeguimiento::find()
 
                                             <td>
                                                 <!--boton VER  boton llama modal -->
-                                                <button type="button" class="rounded-pill" data-bs-toggle="modal" data-bs-target="<?php echo "#staticBackdrop$modelReg->id"; ?>">
+                                                <button type="button" class="rounded-pill" data-bs-toggle="modal" data-bs-target="<?php echo "#staticBackdrop_caso_$modelReg->id"; ?>">
                                                     <i class="fas fa-glasses" style="color:blueviolet;"></i>
                                                 </button>
                                                 <!-- Modal -->
-                                                <div class="modal fade" id="<?php echo "staticBackdrop$modelReg->id"; ?>" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                                <div class="modal fade" id="<?php echo "staticBackdrop_caso_$modelReg->id"; ?>" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
                                                     <div class="modal-dialog modal-dialog-scrollable modal-lg">
                                                         <div class="modal-content">
                                                             <div class="modal-header">
-                                                                <h5 class="modal-title" id="staticBackdropLabel"><b>Dece Caso : <?= $modelReg->id ?></b></h5>
+                                                                <h5 class="modal-title" id="staticBackdropLabel"><b>Dece Caso : <?= $modelReg->numero_caso ;?></b></h5>
                                                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                             </div>
                                                             <div class="modal-body">
                                                                 <table class="table table-striped table-hover">
-                                                                    <tr>
+                                                                    <!-- <tr>
                                                                         <td><b>Fecha Creación: </b></td>
                                                                         <td><?= substr($modelReg->fecha_inicio, 0, 10) ?></td>
                                                                     </tr>
@@ -204,7 +208,7 @@ $modelRegSeguimiento = DeceRegistroSeguimiento::find()
                                                                     <tr>
                                                                         <td><b>Estado: </b></td>
                                                                         <td><?= $modelReg->estado ?></td>
-                                                                    </tr>
+                                                                    </tr> -->
                                                                     <tr>
                                                                         <td><b>Motivo: </b></td>
                                                                         <td><?= $modelReg->motivo ?></td>
@@ -217,7 +221,6 @@ $modelRegSeguimiento = DeceRegistroSeguimiento::find()
                                                             </div>
                                                             <div class="modal-footer">
                                                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-
                                                             </div>
                                                         </div>
                                                     </div>
@@ -229,10 +232,15 @@ $modelRegSeguimiento = DeceRegistroSeguimiento::find()
                                     ?>
                                 </table>
                             </div>
+                        </div>   <!-- fin dif casos -->
+                        
+                        <div>
+                            <hr>
+                            <h6>Ejes de Acción</h6>
+                            <hr>
                         </div>
-                        <hr>
                         <div class="row">
-                            <h5 style="color:red">Seguimientos </h5>
+                            <h6 style="color:red">Acompañamiento</h6>
                             <div style="overflow-x:scroll;overflow-y:scroll;">
                                 <table class="table table-success table-striped table-bordered my-text-small">
                                     <tr class="table-primary">
@@ -251,9 +259,9 @@ $modelRegSeguimiento = DeceRegistroSeguimiento::find()
                                     ?>
                                         <tr>
                                             <td><?= $modelReg->caso->numero_caso ?></td>
-                                            <td><?= $modelReg->id ?></td>
-                                            <td><?= substr($modelReg->fecha_inicio, 0, 10) ?></td>
-                                            <td><?= substr($modelReg->fecha_fin, 0, 10) ?></td>
+                                            <td><?= $modelReg->numero_seguimiento ?></td>
+                                            <td><?= $modelReg->fecha_inicio?></td>
+                                            <td><?= $modelReg->fecha_fin?></td>
                                             <td><?= $modelReg->estado ?></td>
                                             <td><?= $modelReg->motivo ?></td>
                                             <td>
@@ -268,30 +276,29 @@ $modelRegSeguimiento = DeceRegistroSeguimiento::find()
 
                                             <td>
                                                 <!--boton VER  boton llama modal -->
-                                                <button type="button" class="rounded-pill" data-bs-toggle="modal" data-bs-target="<?php echo "#staticBackdrop$modelReg->id"; ?>">
+                                                <button type="button" class="rounded-pill" data-bs-toggle="modal" data-bs-target="<?php echo "#staticBackdrop_seg_$modelReg->id"; ?>">
                                                     <i class="fas fa-glasses" style="color:blueviolet;"></i>
                                                 </button>
                                                 <!-- Modal -->
-                                                <div class="modal fade" id="<?php echo "staticBackdrop$modelReg->id"; ?>" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                                <div class="modal fade" id="<?php echo "staticBackdrop_seg_$modelReg->id"; ?>" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
                                                     <div class="modal-dialog modal-dialog-scrollable modal-lg">
                                                         <div class="modal-content">
                                                             <div class="modal-header">
-                                                                <h5 class="modal-title" id="staticBackdropLabel"><b>Dece Caso : <?= $modelReg->id_caso ?></b></h5>
+                                                                <h5 class="modal-title" id="staticBackdropLabe2"><b>Seguimiento : <?= $modelReg->numero_seguimiento; ?></b></h5>                                                            
+
+                                                                <h6 class="modal-title" id="staticBackdropLabe3"><b>Caso : <?= $modelReg->id_caso; ?></b></h6>
                                                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                             </div>
+
                                                             <div class="modal-body">
-                                                                <table class="table table-striped table-hover">
-                                                                    <tr>
-                                                                        <td><b>Número Caso: </b></td>
-                                                                        <td><?= $modelReg->caso->numero_caso ?></td>
-                                                                    </tr>
-                                                                    <tr>
+                                                                <table class="table table-striped table-hover">                                                                    
+                                                                    <!-- <tr>
                                                                         <td><b>Fecha Creación: </b></td>
-                                                                        <td><?= substr($modelReg->fecha_inicio, 0, 10) ?></td>
+                                                                        <td><?= $modelReg->fecha_inicio ?></td>
                                                                     </tr>
                                                                     <tr>
                                                                         <td><b>Última Modificación: </b></td>
-                                                                        <td><?= substr($modelReg->fecha_fin, 0, 10)  ?></td>
+                                                                        <td><?= $modelReg->fecha_fin ?></td>
                                                                     </tr>
                                                                     <tr>
                                                                         <td><b>Estado: </b></td>
@@ -300,7 +307,7 @@ $modelRegSeguimiento = DeceRegistroSeguimiento::find()
                                                                     <tr>
                                                                         <td><b>Motivo: </b></td>
                                                                         <td><?= $modelReg->motivo ?></td>
-                                                                    </tr>
+                                                                    </tr> -->
                                                                     <tr>
                                                                         <td><b>Pronunciamiento: </b></td>
                                                                         <td><?= $modelReg->pronunciamiento ?></td>
@@ -330,7 +337,8 @@ $modelRegSeguimiento = DeceRegistroSeguimiento::find()
                                                                         <td><b>Archivo: </b></td>
                                                                         <td><a target="_blank" href="<?= $modelPathArchivo->opcion . $arrayArchivo[0] . '/' . $arrayArchivo[1] ?>">
                                                                                 <?= $arrayArchivo[1] ?>
-                                                                            </a></td>
+                                                                            </a>
+                                                                        </td>
                                                                     </tr>
                                                                 </table>
                                                             </div>
@@ -349,7 +357,82 @@ $modelRegSeguimiento = DeceRegistroSeguimiento::find()
                                 </table>
                             </div>
 
-                        </div>
+                        </div> <!-- fin acompaniamiento -->
+                        <div class="row">
+                            ************************************************************************************
+                            <h6 style="color:red"> Detección</h6>
+                            <div style="overflow-x:scroll;overflow-y:scroll;">
+                                <table class="table table-success table-striped table-bordered my-text-small">
+                                    <tr class="table-primary">
+                                        <td><b>Caso</b></td>
+                                        <td><b>No. Seg.</b></td>
+                                        <td><b>Fecha Creación</b></td>
+                                        <td><b>Última Modificación</b></td>
+                                        <td><b>Estado</b></td>
+                                        <td><b>Motivo</b></td>
+                                        <td><b>Editar</b></td>
+                                        <td><b>Ver</b></td>
+                                    </tr>
+                                    <?php
+                                    foreach ($modelRegDeteccion as $modelReg) {
+                                    ?>
+
+                                    <?php
+                                    }
+                                    ?>
+                                </table>
+                            </div>
+                        </div> <!-- fin Deteccion -->
+                        <div class="row">
+                            ************************************************************************************
+                            <h6 style="color:red"> Derivación</h6>
+                            <div style="overflow-x:scroll;overflow-y:scroll;">
+                                <table class="table table-success table-striped table-bordered my-text-small">
+                                    <tr class="table-primary">
+                                        <td><b>Caso</b></td>
+                                        <td><b>No. Seg.</b></td>
+                                        <td><b>Fecha Creación</b></td>
+                                        <td><b>Última Modificación</b></td>
+                                        <td><b>Estado</b></td>
+                                        <td><b>Motivo</b></td>
+                                        <td><b>Editar</b></td>
+                                        <td><b>Ver</b></td>
+                                    </tr>
+                                    <?php
+                                    foreach ($modelRegDerivacion as $modelReg) {
+                                    ?>
+
+                                    <?php
+                                    }
+                                    ?>
+                                </table>
+                            </div>
+                        </div> <!-- fin Derivacion -->
+                        <div class="row">
+                            ************************************************************************************
+                            <h6 style="color:red"> Intervención</h6>
+                            <div style="overflow-x:scroll;overflow-y:scroll;">
+                                <table class="table table-success table-striped table-bordered my-text-small">
+                                    <tr class="table-primary">
+                                        <td><b>Caso</b></td>
+                                        <td><b>No. Seg.</b></td>
+                                        <td><b>Fecha Creación</b></td>
+                                        <td><b>Última Modificación</b></td>
+                                        <td><b>Estado</b></td>
+                                        <td><b>Motivo</b></td>
+                                        <td><b>Editar</b></td>
+                                        <td><b>Ver</b></td>
+                                    </tr>
+                                    <?php
+                                    foreach ($modelRegIntervencion as $modelReg) {
+                                    ?>
+
+                                    <?php
+                                    }
+                                    ?>
+                                </table>
+                            </div>
+                        </div> <!-- fin Intervencio -->
                     </div>
                 </div>
             </div>

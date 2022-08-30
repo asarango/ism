@@ -100,7 +100,8 @@ $modelAsistProfesor = ScholarisAsistenciaProfesor::find()
                     <div class="col-lg-10 col-md-10">                       
                          
                             <div>
-                                <span style="font-size:20px;">EJES DE ACCION</span>
+                                <span style="font-size:20px;">EJES DE ACCIÓN</span>
+                                
                                 <br>   
                                 |                         
                                 <?=
@@ -122,7 +123,7 @@ $modelAsistProfesor = ScholarisAsistenciaProfesor::find()
                                 <?=
                                     Html::a(
                                         '<span class="badge rounded-pill" style="background-color: red"><i class="fa fa-briefcase" aria-hidden="true"></i>Derivación</span>',
-                                        ['dece-registro-seguimiento/create', 'id_estudiante' => $model->id_estudiante,'id_clase' =>$model->id_clase,'id_caso'=>$model->id ],
+                                        ['dece-derivacion/create', 'id_estudiante' => $model->id_estudiante,'id_clase' =>$model->id_clase,'id_caso'=>$model->id ],
                                         ['class' => 'link']
                                     );
                                 ?>
@@ -142,6 +143,8 @@ $modelAsistProfesor = ScholarisAsistenciaProfesor::find()
 
                     </div><!-- fin de menu derecha -->
                 </div>
+                <hr>
+                <span style="font-size:15px;">Datos Caso: <?=$model->numero_caso?></span>
                 <!-- finaliza menu menu  -->
                 <hr>
 

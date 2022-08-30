@@ -374,11 +374,11 @@ $modelPathArchivo = PlanificacionOpciones::find()
                                         <td><b>Ver</b></td>
                                     </tr>
                                     <?php
-                                    foreach ($modelRegDeteccion as $modelReg) {
+                                    //foreach ($modelRegDeteccion as $modelReg) {
                                     ?>
 
                                     <?php
-                                    }
+                                    //}
                                     ?>
                                 </table>
                             </div>
@@ -399,11 +399,11 @@ $modelPathArchivo = PlanificacionOpciones::find()
                                         <td><b>Ver</b></td>
                                     </tr>
                                     <?php
-                                    foreach ($modelRegDerivacion as $modelReg) {
+                                    //foreach ($modelRegDerivacion as $modelReg) {
                                     ?>
 
                                     <?php
-                                    }
+                                   // }
                                     ?>
                                 </table>
                             </div>
@@ -424,11 +424,11 @@ $modelPathArchivo = PlanificacionOpciones::find()
                                         <td><b>Ver</b></td>
                                     </tr>
                                     <?php
-                                    foreach ($modelRegIntervencion as $modelReg) {
+                                    //foreach ($modelRegIntervencion as $modelReg) {
                                     ?>
 
                                     <?php
-                                    }
+                                   // }
                                     ?>
                                 </table>
                             </div>

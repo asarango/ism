@@ -40,16 +40,14 @@ if ($modelGrupo) // si el grupo existe viene de leccionario
 
             <div class=" row align-items-center p-2">
                 <div class="col-lg-2">
-                    <h4><img src="ISM/main/images/submenu/retroalimentacion.png" width="64px" class="img-thumbnail"></h4>
+                    <h4><img src="ISM/main/images/submenu/retroalimentacion.png" width="100px" class="img-thumbnail"></h4>
                 </div>
                 <div class="col-lg-10">
                     <h1><?= Html::encode($this->title) ?></h1>
                     <h3><?= 'Asociado al Número de Caso: ' . $model->caso->numero_caso ?></h5>
                 </div>
             </div>
-            <div class=" row align-items-center p-2">
-                <p>
-                   
+            <div class=" row align-items-center p-2">                
                     <?php
                     if ($modelGrupo) // si el grupo existe viene de leccionario
                     {
@@ -62,7 +60,7 @@ if ($modelGrupo) // si el grupo existe viene de leccionario
                         );
                     ?>
 
-                <?php
+                    <?php
                     }else{?>
                         <?=
                         Html::a(
@@ -75,7 +73,6 @@ if ($modelGrupo) // si el grupo existe viene de leccionario
                     
                         <?php
                     }?>
-                </p>
             </div>
             <hr>
 

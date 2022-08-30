@@ -8,11 +8,10 @@
             <file>file:/var/www/html/ism/academico/backend/controllers/AprobacionPlanSemanalController.php</file>
             <file>file:/var/www/html/ism/academico/backend/web/css/coloresPersonalizados.css</file>
             <file>file:/var/www/html/ism/academico/backend/views/aprobacion-plan-semanal/index.php</file>
-            <file>file:/var/www/html/ism/academico/backend/views/planificacion-desagregacion-cabecera/index.php</file>
             <file>file:/var/www/html/ism/academico/common/config/main-local.php</file>
             <file>file:/var/www/html/ism/academico/backend/views/scholaris-horariov2-cabecera/update.php</file>
+            <file>file:/var/www/html/ism/academico/backend/views/layouts/main.php</file>
             <file>file:/var/www/html/ism/academico/backend/views/scholaris-clase/_form.php</file>
-            <file>file:/var/www/html/ism/academico/backend/models/helpers/Scripts.php</file>
         </group>
     </open-files>
 </project-private>

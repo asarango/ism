@@ -168,7 +168,7 @@ $this->params['breadcrumbs'][] = $this->title;
                        role="button" aria-expanded="false" 
                        aria-controls="reflexionc"
                        style="color: #000">
-                        <i class="fas fa-plus-square"></i> Relflexión
+                        <i class="fas fa-plus-square"></i> Reflexión
                     </a>
 
                 </p>

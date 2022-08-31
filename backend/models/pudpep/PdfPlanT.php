@@ -257,8 +257,8 @@ class PdfPlanT extends \yii\db\ActiveRecord{
         $html.= '</tr>';
         $html.= '</thead>';
         $html.= '<tbody>';
-        foreach ($this->detalle as $det){
-            if($det->tipo == 'enfoques_aprendizaje'){
+        foreach ($this->detalle as $det ){
+            if($det->tipo == 'enfoques_aprendizaje' && $det->contenido_opcion == true){
                 $html.= '<tr>';
                 $html.= '<td><b>'.$det->referencia.'</b></td>';
                 $html.= '<td>'.$det->contenido_texto.'</td>';

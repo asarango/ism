@@ -214,15 +214,16 @@ class PepDetalleController extends Controller {
         $con = \Yii::$app->db;
         $query = "insert into pep_unidad_detalle (pep_planificacion_unidad_id, tipo, referencia, campo_de, contenido_texto, contenido_opcion) 
                     select $temaId, '$tipo', '$referencia', '$campoDe' ,op.contenido_es, false 
-                    from pep_opciones op 
+                    from    pep_opciones op 
+                            inner join pep_opciones opr on opr.contenido_es = op.contenido_es
                     where op.tipo = '$tipo'
                     and op.categoria_principal_es  not in (select   contenido_texto 
                                                             from    pep_unidad_detalle 
                                                             where   pep_planificacion_unidad_id = $temaId 
                                                                     and contenido_texto = op.contenido_es
-                                                                    and tipo = '$tipo') group by op.contenido_es; ";       
+                                                                    and tipo = '$tipo') group by op.contenido_es, opr.categoria_principal_es "
+                . "order by opr.categoria_principal_es; ";       
       
-        
         $con->createCommand($query)->execute();
         
     }

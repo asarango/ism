@@ -65,20 +65,23 @@ class PsController extends Controller {
         
         /** Para tomar la fecha desde **/
         if(isset($_GET['desde'])){
-            $desde = $_GET['desde'];            
+            $desde = $_GET['desde'];       
         }else{
             $desde = $this->calcula_fecha_desde();
+            
         }
                 
-        $hasta = date("Y-m-d", strtotime($desde."+ 4 days")); /** fecha hasta **/         
         
+        $hasta = date("Y-m-d", strtotime($desde."+ 4 days")); /** fecha hasta **/         
+
         $actividades = $this->get_actividades_semanal($desde, $hasta, $usuarioLog); /** Actividades de la semana del docente **/      
         
         /******* PARA BUSCAR LA SEMANA ID *******/
         $semana = $this->get_semana_id($periodoId, $usuarioLog, $desde);
         
+        
         if(!isset($semana['semana_id'])){
-            $desde = date("Y-m-d", strtotime($desde."- 7 days"));
+            $desde = date("Y-m-d", strtotime($desde."+ 7 days"));
             return $this->redirect(['index1', 'desde' => $desde ]);
         }
       
@@ -119,6 +122,7 @@ class PsController extends Controller {
                                     and ru.login = '$usuario'
                                     and bs.fecha_inicio = '$desde' 
                     limit 1;";
+        
         $res = $con->createCommand($query)->queryOne();
         return $res;
     }

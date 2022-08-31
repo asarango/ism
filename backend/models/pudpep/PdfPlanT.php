@@ -208,7 +208,7 @@ class PdfPlanT extends \yii\db\ActiveRecord{
         $html.= '<td>';
         $html.= '<ul>';
         foreach ($this->detalle as $det){
-            if($det->tipo == 'concepto_clave'){
+            if($det->tipo == 'concepto_clave' && $det->contenido_opcion == true){
                 $html.= '<li>'.$det->contenido_texto.'</li>';
             }
         }
@@ -218,7 +218,7 @@ class PdfPlanT extends \yii\db\ActiveRecord{
         $html.= '<td>';
         $html.= '<ul>';
         foreach ($this->detalle as $det){
-            if($det->tipo == 'concepto_relacionado'){
+            if($det->tipo == 'concepto_relacionado' && $det->contenido_opcion == true){
                 $html.= '<li>'.$det->contenido_texto.'</li>';
             }
         }
@@ -228,7 +228,7 @@ class PdfPlanT extends \yii\db\ActiveRecord{
         $html.= '<td>';
         $html.= '<ul>';
         foreach ($this->detalle as $det){
-            if($det->tipo == 'atributos_perfil'){
+            if($det->tipo == 'atributos_perfil' && $det->contenido_opcion == true){
                 $html.= '<li>'.$det->contenido_texto.'</li>';
             }
         }

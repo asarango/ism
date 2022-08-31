@@ -95,7 +95,7 @@ class PepDetalleController extends Controller {
         $this->ingresa_opciones_generico_seleccion($temaId, 'concepto_clave', 'conceptos_atributos', 'seleccion');
         
         /* verifica si existe Conceptos relacionados */
-        $this->ingresa_opciones_generico_seleccion($temaId, 'concepto_relacionado', 'conceptos_atributos', 'seleccion');
+        $this->ingresa_opciones_conceptos_relacionados($temaId, 'concepto_relacionado', 'conceptos_atributos', 'seleccion');
         
         /* verifica si existe atributos del perfil de la comunidad de aprendizaje */
         $this->ingresa_opciones_generico_seleccion($temaId, 'atributos_perfil', 'conceptos_atributos', 'seleccion');  
@@ -208,6 +208,26 @@ class PepDetalleController extends Controller {
         $con->createCommand($query)->execute();
         
     }
+    
+    private function ingresa_opciones_conceptos_relacionados($temaId, $tipo, $referencia, $campoDe){
+        
+        $con = \Yii::$app->db;
+        $query = "insert into pep_unidad_detalle (pep_planificacion_unidad_id, tipo, referencia, campo_de, contenido_texto, contenido_opcion) 
+                    select $temaId, '$tipo', '$referencia', '$campoDe' ,op.contenido_es, false 
+                    from pep_opciones op 
+                    where op.tipo = '$tipo'
+                    and op.categoria_principal_es  not in (select   contenido_texto 
+                                                            from    pep_unidad_detalle 
+                                                            where   pep_planificacion_unidad_id = $temaId 
+                                                                    and contenido_texto = op.contenido_es
+                                                                    and tipo = '$tipo') group by op.contenido_es; ";       
+      
+        
+        $con->createCommand($query)->execute();
+        
+    }
+    
+    
     
     
     private function ingresa_opciones_generico_texto($temaId, $modelRegistros, $tipo, $referencia, $campoDe){        

@@ -107,13 +107,14 @@ class SentenciasClase extends \yii\db\ActiveRecord {
     
     public function get_horas_horario($cabecera){
         $con = Yii::$app->db;
-        $query = "select hor.id
-                                    ,hor.sigla
+        $query = "select hor.id, hor.desde, hor.hasta ,hor.sigla
                     from 	scholaris_horariov2_detalle det
                                     inner join scholaris_horariov2_hora hor on hor.id = det.hora_id
                     where	det.cabecera_id = $cabecera
                     group by hor.id, hor.sigla
                     order by hor.numero;";
+//        echo $query;
+//        die();
         $res = $con->createCommand($query)->queryAll();
         return $res; 
     }

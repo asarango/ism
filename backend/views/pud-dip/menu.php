@@ -122,6 +122,7 @@ function contador_de_consultar_lenguaje_y_aprendizaje_ckeck($planVertDiplId)
  //para conocer si esta planificado el metacognitivo
 function contador_metacognicion($planUnidadId,$numCaracteresOk)
 {
+    
     $pudDip = backend\models\PudDip::find()->where([
     'planificacion_bloques_unidad_id' => $planUnidadId,
     'codigo' => 'METACOGNICION',

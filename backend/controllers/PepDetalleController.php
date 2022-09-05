@@ -2,6 +2,7 @@
 
 namespace backend\controllers;
 
+use backend\models\PepUnidadDetalle;
 use Yii;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -287,28 +288,70 @@ class PepDetalleController extends Controller {
         }else{
             $response = array(
                 'status' => 'error',
-            );
-            
-        }
-        
-        return json_encode($response);
-        
+            );            
+        }        
+        return json_encode($response);        
     }
     
     public function actionDesagregacion(){
         $temaId = $_GET['tema_id'];
-        $tema = \backend\models\PepPlanificacionXUnidad::findOne($temaId);
-        
+        $tema = \backend\models\PepPlanificacionXUnidad::findOne($temaId);       
         
         $searchModel = new \backend\models\ViewDestrezaMecBiSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams, $tema->op_course_template_id);
+        $destrezasSeleccionadas = $this->destrezasSeleccionadas($temaId);
         
         return $this->render('desagregacion',[
             'tema' => $tema,
             'temaId' => $temaId,
+            'destrezasSeleccionadas' => $destrezasSeleccionadas,
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider
         ]);
+    }
+    public function actionMostrarDestrezas()
+    {
+        $temaId = $_GET['tema_id'];
+        $tema = \backend\models\PepPlanificacionXUnidad::findOne($temaId);  
+       
+        $destrezasSeleccionadas = $this->destrezasSeleccionadas($temaId);
+        
+        return $this->render('destrezas',[
+            'tema' => $tema,
+            'temaId' => $temaId,
+            'destrezasSeleccionadas' => $destrezasSeleccionadas,           
+        ]);
+    }
+
+    public function destrezasSeleccionadas($idUnidad)
+    {
+        // $con = Yii::$app->db;
+        
+        // $query = "select id, pep_planificacion_unidad_id, tipo, referencia, campo_de, contenido_texto, contenido_opcion 
+        //           from pep_unidad_detalle pud where pep_planificacion_unidad_id  = '$idUnidad' and tipo ='destreza';";  
+        
+        // $respuesta = $con->createCommand($query)->queryAll();
+
+        $respuesta = $this->get_destrezas($idUnidad);
+        return $respuesta;
+    }
+    private function get_destrezas($unidadId)
+    {
+        $con = Yii::$app->db;       
+        $query = "select 	ce.code as criterio_evaluacion_code
+                                ,ce.description as criterio_evaluacion
+                                ,cm.code as destreza_code
+                                ,cm.description as destreza
+                                ,asi.name as asignatura
+                from 	pep_unidad_detalle pu
+                                inner join curriculo_mec cm on cm.id = cast(pu.contenido_texto as integer)
+                                inner join curriculo_mec ce on ce.code = cm.belongs_to 
+                                inner join curriculo_mec_asignatutas asi on asi.id = cm.asignatura_id 
+                where 	pu.pep_planificacion_unidad_id = $unidadId
+                                and tipo = 'destreza';";
+                             
+        $res = $con->createCommand($query)->queryAll();
+        return $res;        
     }
     
     
@@ -338,11 +381,10 @@ class PepDetalleController extends Controller {
         return $this->redirect(['desagregacion', 'tema_id' => $temaId]);
     }
     
-    public function actionPdf(){
-        $planUnidadId = $_GET['planificacion_id'];
-        
-        $pdf = new \backend\models\pudpep\PdfPlanT($planUnidadId);
-        
+    public function actionPdf()
+    {
+        $planUnidadId = $_GET['planificacion_id'];        
+        $pdf = new \backend\models\pudpep\PdfPlanT($planUnidadId);        
         
     }
 }

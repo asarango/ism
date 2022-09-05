@@ -77,12 +77,17 @@ class ScholarisBloqueActividadController extends Controller
         $searchModel = new ScholarisBloqueActividadSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams, $modelPeriodo->codigo, $instituto);
         
-        $modelComparte = \backend\models\ScholarisBloqueComparte::find()->all();
+        $modelComparte = \backend\models\ScholarisBloqueComparte::find()
+        ->asArray()
+        ->orderBy(['id'=>SORT_ASC])
+        ->all();
+
+      
 
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
-            'modelComparte' => $modelComparte
+            'modelComparte' => $modelComparte,
         ]);
     }
 

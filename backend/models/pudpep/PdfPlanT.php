@@ -759,6 +759,7 @@ class PdfPlanT extends \yii\db\ActiveRecord{
                                 inner join curriculo_mec_asignatutas asi on asi.id = cm.asignatura_id 
                 where 	pu.pep_planificacion_unidad_id = $unidadId
                                 and tipo = 'destreza';";
+                             
         $res = $con->createCommand($query)->queryAll();
         return $res;        
     }

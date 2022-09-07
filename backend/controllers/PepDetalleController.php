@@ -2,6 +2,7 @@
 
 namespace backend\controllers;
 
+use backend\models\PepOpciones;
 use backend\models\PepUnidadDetalle;
 use Yii;
 use yii\web\Controller;
@@ -70,9 +71,12 @@ class PepDetalleController extends Controller {
         
         $this->ingresa_todas_opciones($temaId);
         
-        $registros = \backend\models\PepUnidadDetalle::find()->where(['pep_planificacion_unidad_id' => $temaId])->orderBy('id')->all();
+        $registros = \backend\models\PepUnidadDetalle::find()
+        ->where(['pep_planificacion_unidad_id' => $temaId])
+        ->orderBy('id')->all();
         
         $planesSemanales = \backend\models\PepPlanSemanal::find()->where(['pep_planificacion_id' => $tema->id])->all();
+       
         
         return $this->render('index', [        
            'tema' => $tema,
@@ -218,13 +222,14 @@ class PepDetalleController extends Controller {
                     from    pep_opciones op 
                             inner join pep_opciones opr on opr.contenido_es = op.contenido_es
                     where op.tipo = '$tipo'
-                    and op.categoria_principal_es  not in (select   contenido_texto 
+                    and op.contenido_es  not in (select   contenido_texto 
                                                             from    pep_unidad_detalle 
                                                             where   pep_planificacion_unidad_id = $temaId 
                                                                     and contenido_texto = op.contenido_es
                                                                     and tipo = '$tipo') group by op.contenido_es, opr.categoria_principal_es "
-                . "order by opr.categoria_principal_es; ";       
-      
+                . "order by opr.categoria_principal_es; ";  
+        
+               
         $con->createCommand($query)->execute();
         
     }
@@ -291,6 +296,58 @@ class PepDetalleController extends Controller {
             );            
         }        
         return json_encode($response);        
+    }
+
+    public function actionCreateConceptoRelacionado()
+    {
+        
+        $resp = false;
+        $conceptoClase = $_GET['conceptoClave'];
+        $conceptoRelacionado = $_GET['conceptoRelacionado']; 
+        $temaId = $_GET['temaId'];        
+        
+        if(!($this->buscar_concepto('concepto_relacionado',$conceptoRelacionado)))
+        {     
+            //CREA EL ITEM EN LAS OPCIONES   
+            $model = new PepOpciones();
+            $model->tipo = 'concepto_relacionado';
+            $model->categoria_principal_es = $conceptoClase;
+            $model->categoria_secundaria_es = '¿Cómo se está transformando?';
+            $model->contenido_es = $conceptoRelacionado;
+            $model->campo_de = 'texto';
+            $model->es_activo = true;
+
+            $model->save();
+
+            //AGREGA EL ITEM EN EL LISTADO DE LA PLANIFICACION
+            $model = new PepUnidadDetalle();
+            $model->pep_planificacion_unidad_id = $temaId;
+            $model->tipo = 'concepto_relacionado';
+            $model->referencia='conceptos_atributos';
+            $model->campo_de='seleccion';
+            $model->contenido_texto = $conceptoRelacionado;
+            $model->contenido_opcion = true;
+
+            $model->save();
+            $resp = true;
+        }
+        return $resp;
+              
+    }
+    private function buscar_concepto($tipoConcepto,$nombreConcepto)
+    {
+        //busca si ya existe el concepto relacionado
+        $resp=false;
+        $model= PepOpciones::find()
+        ->where(['tipo'=>$tipoConcepto])
+        ->andWhere(['contenido_es'=>$nombreConcepto])
+        ->one();
+
+        if($model)
+        {
+            $resp = true;
+        }
+        return $resp;
     }
     
     public function actionDesagregacion(){

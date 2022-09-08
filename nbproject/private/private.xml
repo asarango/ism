@@ -3,13 +3,10 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/var/www/html/ism/academico/backend/models/SentenciasClase.php</file>
-            <file>file:/var/www/html/ism/academico/backend/controllers/ScholarisClaseAuxController.php</file>
-            <file>file:/var/www/html/ism/academico/backend/views/scholaris-clase-aux/update.php</file>
             <file>file:/var/www/html/ism/academico/backend/web/css/coloresPersonalizados.css</file>
             <file>file:/var/www/html/ism/academico/common/config/main-local.php</file>
-            <file>file:/var/www/html/ism/academico/backend/views/ps/configuracion.php</file>
-            <file>file:/var/www/html/ism/academico/backend/controllers/PsController.php</file>
+            <file>file:/var/www/html/ism/academico/backend/views/layouts/main.php</file>
+            <file>file:/var/www/html/ism/academico/backend/web/ISM/main/hamburger/style.css</file>
         </group>
     </open-files>
 </project-private>

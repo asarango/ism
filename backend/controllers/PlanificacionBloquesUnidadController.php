@@ -248,20 +248,21 @@ class PlanificacionBloquesUnidadController extends Controller{
     }
 
     public function actionCreateSubtitle2(){
+//        echo '<pre>';
+//        print_r($_POST);
+//        die();
+        
         
         $subtituloId            = $_POST['PlanificacionBloquesUnidadSubtitulo2']['subtitulo_id'];
         $subtitulo2Contenido    = $_POST['PlanificacionBloquesUnidadSubtitulo2']['contenido'];
         $subtitulo2Orden        = $_POST['PlanificacionBloquesUnidadSubtitulo2']['orden'];
         $planUnidadId           = $_POST['PlanificacionBloquesUnidadSubtitulo2']['plan_unidad_id'];
-        $trazabilidad           = $_POST['PlanificacionBloquesUnidadSubtitulo']['trazabilidad'];
-        $verificacion           = $_POST['PlanificacionBloquesUnidadSubtitulo']['verificacion'];
         
         $model = new PlanificacionBloquesUnidadSubtitulo2();
         $model->subtitulo_id = $subtituloId;
         $model->contenido = $subtitulo2Contenido;
         $model->orden = $subtitulo2Orden;
-        $model->trazabilidad = $trazabilidad;
-        $model->verificacion = $verificacion;
+
         $model->save();
 
         return $this->redirect(['contenido', 'unidad_id' => $planUnidadId]);

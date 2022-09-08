@@ -80,7 +80,6 @@ $this->params['breadcrumbs'][] = $this->title;
                        style="color: #000">
                         <i class="fas fa-plus-square"></i> Información General
                     </a>
-
                 </p>
                 <div class="collapse" id="collapseExample">
                     <div class="card card-body">
@@ -168,7 +167,7 @@ $this->params['breadcrumbs'][] = $this->title;
                        role="button" aria-expanded="false" 
                        aria-controls="reflexionc"
                        style="color: #000">
-                        <i class="fas fa-plus-square"></i> Relflexión
+                        <i class="fas fa-plus-square"></i> Reflexión
                     </a>
 
                 </p>

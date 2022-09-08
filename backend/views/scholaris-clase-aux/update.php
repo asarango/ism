@@ -164,7 +164,7 @@ function horarios($modelDias, $modelHoras, $paralelo, $clase, $cabecera) {
 
     foreach ($modelHoras as $hora) {
         echo '<tr>';
-        echo '<td style="color: white">' . $hora['sigla'] . '</td>';
+        echo '<td style="color: white">' . $hora['sigla'] . '<br>'.$hora['desde']. '<br>'.$hora['hasta'].'</td>';
         foreach ($modelDias as $d) {
             $materia = recuperaMateria($paralelo, $d->id, $hora['id']);
 

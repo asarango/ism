@@ -2,6 +2,8 @@
 
 namespace backend\controllers;
 
+use backend\models\PepOpciones;
+use backend\models\PepUnidadDetalle;
 use Yii;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -69,9 +71,12 @@ class PepDetalleController extends Controller {
         
         $this->ingresa_todas_opciones($temaId);
         
-        $registros = \backend\models\PepUnidadDetalle::find()->where(['pep_planificacion_unidad_id' => $temaId])->orderBy('id')->all();
+        $registros = \backend\models\PepUnidadDetalle::find()
+        ->where(['pep_planificacion_unidad_id' => $temaId])
+        ->orderBy('id')->all();
         
         $planesSemanales = \backend\models\PepPlanSemanal::find()->where(['pep_planificacion_id' => $tema->id])->all();
+       
         
         return $this->render('index', [        
            'tema' => $tema,
@@ -95,7 +100,7 @@ class PepDetalleController extends Controller {
         $this->ingresa_opciones_generico_seleccion($temaId, 'concepto_clave', 'conceptos_atributos', 'seleccion');
         
         /* verifica si existe Conceptos relacionados */
-        $this->ingresa_opciones_generico_seleccion($temaId, 'concepto_relacionado', 'conceptos_atributos', 'seleccion');
+        $this->ingresa_opciones_conceptos_relacionados($temaId, 'concepto_relacionado', 'conceptos_atributos', 'seleccion');
         
         /* verifica si existe atributos del perfil de la comunidad de aprendizaje */
         $this->ingresa_opciones_generico_seleccion($temaId, 'atributos_perfil', 'conceptos_atributos', 'seleccion');  
@@ -209,6 +214,28 @@ class PepDetalleController extends Controller {
         
     }
     
+    private function ingresa_opciones_conceptos_relacionados($temaId, $tipo, $referencia, $campoDe){
+        
+        $con = \Yii::$app->db;
+        $query = "insert into pep_unidad_detalle (pep_planificacion_unidad_id, tipo, referencia, campo_de, contenido_texto, contenido_opcion) 
+                    select $temaId, '$tipo', '$referencia', '$campoDe' ,op.contenido_es, false 
+                    from    pep_opciones op 
+                            inner join pep_opciones opr on opr.contenido_es = op.contenido_es
+                    where op.tipo = '$tipo'
+                    and op.contenido_es  not in (select   contenido_texto 
+                                                            from    pep_unidad_detalle 
+                                                            where   pep_planificacion_unidad_id = $temaId 
+                                                                    and contenido_texto = op.contenido_es
+                                                                    and tipo = '$tipo') group by op.contenido_es, opr.categoria_principal_es "
+                . "order by opr.categoria_principal_es; ";  
+        
+               
+        $con->createCommand($query)->execute();
+        
+    }
+    
+    
+    
     
     private function ingresa_opciones_generico_texto($temaId, $modelRegistros, $tipo, $referencia, $campoDe){        
                         
@@ -266,28 +293,122 @@ class PepDetalleController extends Controller {
         }else{
             $response = array(
                 'status' => 'error',
-            );
-            
+            );            
+        }        
+        return json_encode($response);        
+    }
+
+    public function actionCreateConceptoRelacionado()
+    {
+        
+        $resp = false;
+        $conceptoClase = $_GET['conceptoClave'];
+        $conceptoRelacionado = $_GET['conceptoRelacionado']; 
+        $temaId = $_GET['temaId'];        
+        
+        if(!($this->buscar_concepto('concepto_relacionado',$conceptoRelacionado)))
+        {     
+            //CREA EL ITEM EN LAS OPCIONES   
+            $model = new PepOpciones();
+            $model->tipo = 'concepto_relacionado';
+            $model->categoria_principal_es = $conceptoClase;
+            $model->categoria_secundaria_es = '¿Cómo se está transformando?';
+            $model->contenido_es = $conceptoRelacionado;
+            $model->campo_de = 'texto';
+            $model->es_activo = true;
+
+            $model->save();
+
+            //AGREGA EL ITEM EN EL LISTADO DE LA PLANIFICACION
+            $model = new PepUnidadDetalle();
+            $model->pep_planificacion_unidad_id = $temaId;
+            $model->tipo = 'concepto_relacionado';
+            $model->referencia='conceptos_atributos';
+            $model->campo_de='seleccion';
+            $model->contenido_texto = $conceptoRelacionado;
+            $model->contenido_opcion = true;
+
+            $model->save();
+            $resp = true;
         }
-        
-        return json_encode($response);
-        
+        return $resp;
+              
+    }
+    private function buscar_concepto($tipoConcepto,$nombreConcepto)
+    {
+        //busca si ya existe el concepto relacionado
+        $resp=false;
+        $model= PepOpciones::find()
+        ->where(['tipo'=>$tipoConcepto])
+        ->andWhere(['contenido_es'=>$nombreConcepto])
+        ->one();
+
+        if($model)
+        {
+            $resp = true;
+        }
+        return $resp;
     }
     
     public function actionDesagregacion(){
         $temaId = $_GET['tema_id'];
-        $tema = \backend\models\PepPlanificacionXUnidad::findOne($temaId);
-        
+        $tema = \backend\models\PepPlanificacionXUnidad::findOne($temaId);       
         
         $searchModel = new \backend\models\ViewDestrezaMecBiSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams, $tema->op_course_template_id);
+        $destrezasSeleccionadas = $this->destrezasSeleccionadas($temaId);
         
         return $this->render('desagregacion',[
             'tema' => $tema,
             'temaId' => $temaId,
+            'destrezasSeleccionadas' => $destrezasSeleccionadas,
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider
         ]);
+    }
+    public function actionMostrarDestrezas()
+    {
+        $temaId = $_GET['tema_id'];
+        $tema = \backend\models\PepPlanificacionXUnidad::findOne($temaId);  
+       
+        $destrezasSeleccionadas = $this->destrezasSeleccionadas($temaId);
+        
+        return $this->render('destrezas',[
+            'tema' => $tema,
+            'temaId' => $temaId,
+            'destrezasSeleccionadas' => $destrezasSeleccionadas,           
+        ]);
+    }
+
+    public function destrezasSeleccionadas($idUnidad)
+    {
+        // $con = Yii::$app->db;
+        
+        // $query = "select id, pep_planificacion_unidad_id, tipo, referencia, campo_de, contenido_texto, contenido_opcion 
+        //           from pep_unidad_detalle pud where pep_planificacion_unidad_id  = '$idUnidad' and tipo ='destreza';";  
+        
+        // $respuesta = $con->createCommand($query)->queryAll();
+
+        $respuesta = $this->get_destrezas($idUnidad);
+        return $respuesta;
+    }
+    private function get_destrezas($unidadId)
+    {
+        $con = Yii::$app->db;       
+        $query = "select 	ce.code as criterio_evaluacion_code
+                                ,ce.description as criterio_evaluacion
+                                ,cm.code as destreza_code
+                                ,cm.description as destreza
+                                ,asi.name as asignatura
+                from 	pep_unidad_detalle pu
+                                inner join curriculo_mec cm on cm.id = cast(pu.contenido_texto as integer)
+                                inner join curriculo_mec ce on ce.code = cm.belongs_to 
+                                inner join curriculo_mec_asignatutas asi on asi.id = cm.asignatura_id 
+                where 	pu.pep_planificacion_unidad_id = $unidadId
+                                and tipo = 'destreza';";
+                             
+        $res = $con->createCommand($query)->queryAll();
+        return $res;        
     }
     
     
@@ -317,11 +438,10 @@ class PepDetalleController extends Controller {
         return $this->redirect(['desagregacion', 'tema_id' => $temaId]);
     }
     
-    public function actionPdf(){
-        $planUnidadId = $_GET['planificacion_id'];
-        
-        $pdf = new \backend\models\pudpep\PdfPlanT($planUnidadId);
-        
+    public function actionPdf()
+    {
+        $planUnidadId = $_GET['planificacion_id'];        
+        $pdf = new \backend\models\pudpep\PdfPlanT($planUnidadId);        
         
     }
 }

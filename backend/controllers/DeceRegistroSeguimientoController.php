@@ -73,9 +73,7 @@ class DeceRegistroSeguimientoController extends Controller
     public function actionCreate()
     {
         $model = new DeceRegistroSeguimiento();
-    //     echo '<pre>';
-    //    print_r($_GET);
-    //    die();
+    
         if($_GET)
         {
             $id_clase = $_GET['id_clase'];

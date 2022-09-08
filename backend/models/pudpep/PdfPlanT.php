@@ -208,7 +208,7 @@ class PdfPlanT extends \yii\db\ActiveRecord{
         $html.= '<td>';
         $html.= '<ul>';
         foreach ($this->detalle as $det){
-            if($det->tipo == 'concepto_clave'){
+            if($det->tipo == 'concepto_clave' && $det->contenido_opcion == true){
                 $html.= '<li>'.$det->contenido_texto.'</li>';
             }
         }
@@ -218,7 +218,7 @@ class PdfPlanT extends \yii\db\ActiveRecord{
         $html.= '<td>';
         $html.= '<ul>';
         foreach ($this->detalle as $det){
-            if($det->tipo == 'concepto_relacionado'){
+            if($det->tipo == 'concepto_relacionado' && $det->contenido_opcion == true){
                 $html.= '<li>'.$det->contenido_texto.'</li>';
             }
         }
@@ -228,7 +228,7 @@ class PdfPlanT extends \yii\db\ActiveRecord{
         $html.= '<td>';
         $html.= '<ul>';
         foreach ($this->detalle as $det){
-            if($det->tipo == 'atributos_perfil'){
+            if($det->tipo == 'atributos_perfil' && $det->contenido_opcion == true){
                 $html.= '<li>'.$det->contenido_texto.'</li>';
             }
         }
@@ -257,8 +257,8 @@ class PdfPlanT extends \yii\db\ActiveRecord{
         $html.= '</tr>';
         $html.= '</thead>';
         $html.= '<tbody>';
-        foreach ($this->detalle as $det){
-            if($det->tipo == 'enfoques_aprendizaje'){
+        foreach ($this->detalle as $det ){
+            if($det->tipo == 'enfoques_aprendizaje' && $det->contenido_opcion == true){
                 $html.= '<tr>';
                 $html.= '<td><b>'.$det->referencia.'</b></td>';
                 $html.= '<td>'.$det->contenido_texto.'</td>';
@@ -759,6 +759,7 @@ class PdfPlanT extends \yii\db\ActiveRecord{
                                 inner join curriculo_mec_asignatutas asi on asi.id = cm.asignatura_id 
                 where 	pu.pep_planificacion_unidad_id = $unidadId
                                 and tipo = 'destreza';";
+                             
         $res = $con->createCommand($query)->queryAll();
         return $res;        
     }

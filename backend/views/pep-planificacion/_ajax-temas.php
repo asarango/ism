@@ -14,7 +14,7 @@ foreach ($temas as $tema) {
             <?php
             if ($tema->bloque_id) {
                 ?>
-                <div class="col-lg-3 col-md-3"><b>Creado el </b><?= $tema->created_at ?></div>
+               
                 <div class="col-lg-3 col-md-3"><b>Bloque </b><?= bloque($tema->bloque_id) ?></div>
                 <div class="col-lg-6 col-md-6">
                     <?= 

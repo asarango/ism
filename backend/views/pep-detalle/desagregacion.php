@@ -1,5 +1,6 @@
 <?php
 
+use backend\models\PepUnidadDetalle;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\grid\GridView;
@@ -10,6 +11,7 @@ use yii\grid\GridView;
 
 $this->title = 'Criterios y destrezas Ministerio de Educación';
 $this->params['breadcrumbs'][] = $this->title;
+
 ?>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
@@ -55,8 +57,20 @@ $this->params['breadcrumbs'][] = $this->title;
                     );
                     ?>
 
-                    |
-                </div> <!-- fin de menu izquierda -->
+                    |     
+                    
+                    <?=
+                    Html::a(
+                            '<span class="badge rounded-pill" style="background-color: #65b2e8">'
+                            . '<i class="fa fa-briefcase" aria-hidden="true"></i> Ver Seleccionadas: '. count($destrezasSeleccionadas).'</span>',
+                            ['mostrar-destrezas', 
+                                'tema_id' => $tema->id,
+                                'op_course_template_id'=> $tema->op_course_template_id
+                            ],
+                            ['class' => 'link']
+                    );
+                    ?>
+                    </div> <!-- fin de menu izquierda -->
 
                 <div class="col-lg-6 col-md-6" style="text-align: right;">
                     <!-- inicio de menu derecha -->
@@ -65,10 +79,13 @@ $this->params['breadcrumbs'][] = $this->title;
             </div>
             <!-- finaliza menu menu  -->
 
-            <!-- inicia cuerpo de card -->        
+            <!-- inicia cuerpo de card -->   
+                 
 
             <div>
-                <?=
+
+                <?=             
+
                 GridView::widget([
                     'dataProvider' => $dataProvider,
                     'filterModel' => $searchModel,
@@ -80,20 +97,41 @@ $this->params['breadcrumbs'][] = $this->title;
 //                    'width' => '150px',
                             'template' => '{update}',
                             'buttons' => [
-                                'update' => function ($url, $model) {
-                                    if($model->detalle_id){
-                                        return Html::a('<i class="fas fa-check" style="color: green"></i>', $url, [
-                                            'title' => 'Quitar', 'data-toggle' => 'tooltip', 'role' => 'modal-remote', 'data-pjax' => "0", 'class' => 'hand'
-                                        ]);
-                                    }else{
+                                'update' => function ($url, $model) use($temaId)
+                                {
+
+                                    //buscamos el detalle_id, en pep_unidad_detalle, para verificar con el id de id_tema, que coincidan                                                                     
+                                     
+                                    if($model->detalle_id)
+                                    {
+                                        $modelPepUnidadDetalle = PepUnidadDetalle::find()
+                                        ->where(['pep_planificacion_unidad_id'=>$temaId])
+                                        ->andWhere(['tipo'=>'destreza'])
+                                        ->andWhere(['contenido_texto'=>$model->detalle_destreza_id])
+                                        ->one(); 
+                                       
+
+                                       if($modelPepUnidadDetalle){
+                                            return Html::a('<i class="fas fa-check" style="color: green"></i>', $url, [
+                                                'title' => 'Quitar', 'data-toggle' => 'tooltip', 'role' => 'modal-remote', 'data-pjax' => "0", 'class' => 'hand'
+                                            ]);
+                                        }
+                                        else{
+                                            return Html::a('<i class="fas fa-ban" style="color: #ab0a3d"></i>', $url, [
+                                                'title' => 'Agregar', 'data-toggle' => 'tooltip', 'role' => 'modal-remote', 'data-pjax' => "0", 'class' => 'hand'
+                                            ]);
+
+                                        }
+                                    }else{                                   
+                                    
                                         return Html::a('<i class="fas fa-ban" style="color: #ab0a3d"></i>', $url, [
                                             'title' => 'Agregar', 'data-toggle' => 'tooltip', 'role' => 'modal-remote', 'data-pjax' => "0", 'class' => 'hand'
                                         ]);
                                     }                                                                        
                                 }
                             ],
-                            'urlCreator' => function ($action, $model, $key) use($temaId){
-                                
+                            'urlCreator' => function ($action, $model, $key) use($temaId)
+                            {                                
                                 if($model->detalle_id){
                                     if ($action === 'update') {
                                         return \yii\helpers\Url::to(['quitar', 'id' => $model->detalle_id]);

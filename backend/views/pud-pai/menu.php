@@ -12,6 +12,9 @@
 $obj2 = new backend\models\helpers\Scripts();
 $pud_dip_porc_avance = $obj2->pud_pai_porcentaje_avance_individual('todos',$planUnidad->id);
 
+//print_r($pud_dip_porc_avance);
+//die();
+
 
 $opcion = '1.1.-';
 

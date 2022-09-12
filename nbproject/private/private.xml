@@ -5,8 +5,7 @@
         <group>
             <file>file:/var/www/html/ism/academico/backend/web/css/coloresPersonalizados.css</file>
             <file>file:/var/www/html/ism/academico/common/config/main-local.php</file>
-            <file>file:/var/www/html/ism/academico/backend/views/layouts/main.php</file>
-            <file>file:/var/www/html/ism/academico/backend/web/ISM/main/hamburger/style.css</file>
+            <file>file:/var/www/html/ism/academico/backend/controllers/PudAprobacionController.php</file>
         </group>
     </open-files>
 </project-private>

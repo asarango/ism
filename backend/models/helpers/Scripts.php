@@ -517,6 +517,8 @@ where hor.clase_id in
                 break;
         }
 
+//        echo $query;
+//                die();
         $resultado = $con->createCommand($query)->queryOne();
         return $resultado;
     }

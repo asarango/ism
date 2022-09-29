@@ -106,10 +106,11 @@ class PudPaiController extends Controller{
             $evaluacion = new Evaluacion($planUnidadId);
             $this->ingresa_evaluacion($planUnidadId);
             return $evaluacion->html;
-        }elseif($pestana == '3.1.-'){
-            $habilidades = new Habilidades($planUnidadId);
-            return $habilidades->html;
         }
+//        elseif($pestana == '3.1.-'){
+//            $habilidades = new Habilidades($planUnidadId);
+//            return $habilidades->html;
+//        }
         // elseif($pestana == '3.1.-'){
         //     $grupos = new GrupoHabilidades($planUnidadId);
         //     return $grupos->html;

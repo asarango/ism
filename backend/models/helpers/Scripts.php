@@ -517,6 +517,8 @@ where hor.clase_id in
                 break;
         }
 
+//        echo $query;
+//                die();
         $resultado = $con->createCommand($query)->queryOne();
         return $resultado;
     }
@@ -878,6 +880,26 @@ where 	pm.scholaris_periodo_id = $periodId
                 order by fac.last_name, fac.x_first_name ;";
         $res = $con->createCommand($query)->queryAll();
         return $res;
+    }
+    
+    
+    /**
+     * METODO QUE DEVUELVE EL CODIGO DE LA SECCION DEL CURSO
+     * @param type $ismAreaMateriaId
+     * @return type
+     */
+    public function get_seccion_x_ism_area_materia($ismAreaMateriaId){
+        $con = \Yii::$app->db;
+        $query = "select sec.code 
+                    from	ism_area_materia am
+                                    inner join scholaris_clase cla on cla.ism_area_materia_id = am.id 
+                                    inner join op_course_paralelo par on par.id = cla.paralelo_id 
+                                    inner join op_course cur on cur.id = par.course_id 
+                                    inner join op_section sec on sec.id = cur.section
+                    where 	am.id = $ismAreaMateriaId
+                    limit 1;";
+        $res = $con->createCommand($query)->queryOne();
+        return $res['code'];
     }
 
 }

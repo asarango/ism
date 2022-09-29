@@ -63,19 +63,32 @@ class DocenteClasesController extends Controller
         return true;
     }
     
+//    public function actionDetalleClase(){
+//        $html = '';
+//        
+//        $claseId    = $_GET['clase_id'];
+//        $accion     = $_GET['accion'];
+//        
+//        $periodoId = Yii::$app->user->identity->periodo_id;
+//        
+//        $html .= $this->get_bloques($claseId, $periodoId);
+//        
+//        return $html;
+//        
+//                
+//    }
+    
     public function actionDetalleClase(){
-        $html = '';
+        $claseId = $_GET['clase_id'];
+        $modelClase = \backend\models\ScholarisClase::findOne($claseId);
+        $periodoId = Yii::$app->user->identity->periodo_id;        
+        $bloques = $this->get_bloques($claseId, $periodoId);
         
-        $claseId    = $_GET['clase_id'];
-        $accion     = $_GET['accion'];
+        return $this->renderPartial('detalle-clase',[
+            'modelClase' => $modelClase,
+            'bloques' => $bloques
+        ]);
         
-        $periodoId = Yii::$app->user->identity->periodo_id;
-        
-        $html .= $this->get_bloques($claseId, $periodoId);
-        
-        return $html;
-        
-                
     }
     
     private function get_bloques($claseId, $periodoId){
@@ -97,42 +110,97 @@ class DocenteClasesController extends Controller
                                     and b.tipo_bloque  in ('PARCIAL', 'EXAMEN')
                     order  by b.orden ;";
         
-        $bloques = $con->createCommand($query)->queryAll();        
-        // echo '<pre>';
-        // print_r('Clse'.$claseId);
-        // print_r('periodo'.$periodoId);
-        // echo '<pre>';
-        // print_r($bloques);
-        // die();
-
-        $clase = \backend\models\ScholarisClase::findOne($claseId);        
-        
-        $html = '';
-        $html.= '<h3 style="margin: 10px"><b>'.$clase->ismAreaMateria->materia->nombre.'</b><small> '.$clase->paralelo->course->name. ' - '. $clase->paralelo->name .'</small></h3>';
-        
-        
-        $html .= '<table style="margin: 10px">';        
-        $html .= '<tr>';
-        foreach ($bloques as $bloque){
-            if($bloque['estado'] == 'cerrado'){
-                $color = "#ab0a3d";
-                $title = 'CERRADO';
-            }else{
-                $color = "#65b2e8";
-                $title = 'ABIERTO';
-            }
-            $html .= '<td class="text-center">'
-                    . '<a class="p-2" href="#" '
-                            . 'style="border: solid 1px #ccc; border-radius: 50%; background-color: '.$color.'; color: #fff" '
-                            . 'title="'.$title.'"'
-                            . 'onclick="muestra_informacion_bloque('.$claseId.', '.$bloque['bloque_id'].',\'informacion\')">'
-                    .$bloque['abreviatura'].'</a></td>';
-        }        
-        $html .= '</tr>';
-        $html .= '</table>';
-        
-        return $html;
+                
+        $bloques = $con->createCommand($query)->queryAll();                        
+        return $bloques;
     }
+    
+    public function actionSemanas(){
+        $claseId = $_POST['clase_id'];
+        $bloqueId = $_POST['bloque_id'];
+        
+        $modelClase     = \backend\models\ScholarisClase::findOne($claseId);
+        $modelSemanas   = $this->get_semanas($bloqueId);
+        
+        return $this->renderPartial('semanas',[
+            'modelSemanas' => $modelSemanas,
+            'modelClase' => $modelClase
+        ]);
+    }
+    
+    private function get_semanas($bloqueId){
+        $con = Yii::$app->db;
+        $query = "select s.id, s.bloque_id, s.semana_numero, s.nombre_semana, s.fecha_inicio
+                        , s.fecha_finaliza, s.estado, s.fecha_limite_inicia, s.fecha_limite_tope
+                        ,b.name as bloque
+                                ,(select count(id)  
+                                        from 	lms 
+                                        where 	ism_area_materia_id = 54
+                                            and semana_numero = 1) as total_horas
+                from 	scholaris_bloque_semanas s 
+                        inner join scholaris_bloque_actividad b on b.id = s.bloque_id
+                where 	bloque_id = $bloqueId
+                order by semana_numero asc;";
+        
+        $res = $con->createCommand($query)->queryAll();
+        return $res;
+    }
+    
+//    private function get_bloques($claseId, $periodoId){
+//                
+//        $con = Yii::$app->db;
+//        $query = "select 	b.id as bloque_id
+//                                    ,b.name as bloque
+//                                    ,b.orden 
+//                                    ,b.abreviatura
+//                                    ,case 
+//                                            when b.hasta <= current_timestamp then 'cerrado' else 'abierto'
+//                                    end as estado
+//                    from 	scholaris_clase c
+//                                    inner join scholaris_bloque_actividad b on b.tipo_uso = c.tipo_usu_bloque
+//                                    inner join scholaris_periodo p on p.codigo = b.scholaris_periodo_codigo 
+//                    where 	c.id = $claseId
+//                                    and p.id = $periodoId 
+//                                    and c.es_activo = true
+//                                    and b.tipo_bloque  in ('PARCIAL', 'EXAMEN')
+//                    order  by b.orden ;";
+//        
+//        $bloques = $con->createCommand($query)->queryAll();        
+//        // echo '<pre>';
+//        // print_r('Clse'.$claseId);
+//        // print_r('periodo'.$periodoId);
+//        // echo '<pre>';
+//        // print_r($bloques);
+//        // die();
+//
+//        $clase = \backend\models\ScholarisClase::findOne($claseId);        
+//        
+//        $html = '';
+//        $html.= '<h3 style="margin: 10px"><b>'.$clase->ismAreaMateria->materia->nombre.'</b><small> '.$clase->paralelo->course->name. ' - '. $clase->paralelo->name .'</small></h3>';
+//        
+//        
+//        $html .= '<table style="margin: 10px">';        
+//        $html .= '<tr>';
+//        foreach ($bloques as $bloque){
+//            if($bloque['estado'] == 'cerrado'){
+//                $color = "#ab0a3d";
+//                $title = 'CERRADO';
+//            }else{
+//                $color = "#65b2e8";
+//                $title = 'ABIERTO';
+//            }
+//            $html .= '<td class="text-center">'
+//                    . '<a class="p-2" href="#" '
+//                            . 'style="border: solid 1px #ccc; border-radius: 50%; background-color: '.$color.'; color: #fff" '
+//                            . 'title="'.$title.'"'
+//                            . 'onclick="muestra_informacion_bloque('.$claseId.', '.$bloque['bloque_id'].',\'informacion\')">'
+//                    .$bloque['abreviatura'].'</a></td>';
+//        }        
+//        $html .= '</tr>';
+//        $html .= '</table>';
+//        
+//        return $html;
+//    }
     
     
     public function actionDetalleBloque(){

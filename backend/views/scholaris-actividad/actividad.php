@@ -5,6 +5,7 @@ use backend\models\PlanificacionOpciones;
 use backend\models\ScholarisArchivosprofesor;
 use yii\widgets\ActiveForm;
 use yii\helpers\Url;
+
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\ScholarisActividadSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
@@ -13,26 +14,25 @@ $this->title = 'Actividad #: ' . $modelActividad->id . ' | ' . $modelActividad->
 
 /** Extrae path donde se almacena los archivos */
 $path_archivo_profesor = PlanificacionOpciones::find()
-    ->where([
-        'tipo' => 'SUBIDA_ARCHIVO',
-        'categoria' => 'PATH_PROFE'
-    ])->one();
+                ->where([
+                    'tipo' => 'SUBIDA_ARCHIVO',
+                    'categoria' => 'PATH_PROFE'
+                ])->one();
 $path_archivo_profesor_ver = PlanificacionOpciones::find()
-    ->where([
-        'tipo' => 'VER_ARCHIVO',
-        'categoria' => 'PATH_PROFE'
-    ])->one();
+                ->where([
+                    'tipo' => 'VER_ARCHIVO',
+                    'categoria' => 'PATH_PROFE'
+                ])->one();
 
 /** Extraer listado de archivos subidos por actividad */
 $modelArchivoProfesor = ScholarisArchivosprofesor::find()
-    ->where([
-        'idactividad' => $modelActividad->id
-    ])
-    ->orderBy(['orden' => SORT_ASC])
-    ->all();
+        ->where([
+            'idactividad' => $modelActividad->id
+        ])
+        ->orderBy(['orden' => SORT_ASC])
+        ->all();
 
 $modelActividadConsulta = new ScholarisArchivosprofesor();
-
 ?>
 
 <!-- JS y CSS Ckeditor -->
@@ -52,13 +52,13 @@ $modelActividadConsulta = new ScholarisArchivosprofesor();
                         <?=
                         ' <small>' . $modelActividad->clase->ismAreaMateria->materia->nombre;
                         ' - ' .
-                            'Clase #:' . $modelActividad->clase->id .
-                            ' - ' .
-                            $modelActividad->clase->paralelo->course->name . ' - ' . $modelActividad->clase->paralelo->name . ' / ' .
-                            $modelActividad->clase->profesor->last_name . ' ' . $modelActividad->clase->profesor->x_first_name . ' / ' .
-                            'Es calificado: ' . $modelActividad->calificado . ' / ' .
-                            'Tipo de actividad: ' . $modelActividad->tipo_calificacion .
-                            '</small>';
+                                'Clase #:' . $modelActividad->clase->id .
+                                ' - ' .
+                                $modelActividad->clase->paralelo->course->name . ' - ' . $modelActividad->clase->paralelo->name . ' / ' .
+                                $modelActividad->clase->profesor->last_name . ' ' . $modelActividad->clase->profesor->x_first_name . ' / ' .
+                                'Es calificado: ' . $modelActividad->calificado . ' / ' .
+                                'Tipo de actividad: ' . $modelActividad->tipo_calificacion .
+                                '</small>';
                         ?>
                         )
                     </p>
@@ -68,19 +68,23 @@ $modelActividadConsulta = new ScholarisArchivosprofesor();
 
             <div class="row">
                 <!-- <div class="col-lg-6 col-md-6"> |
-                    <?php echo Html::a(
+                <?php
+                echo Html::a(
                         '<span class="badge rounded-pill" style="background-color: #898b8d"><i class="fa fa-plus-circle" aria-hidden="true"></i> Material apoyo</span>',
                         ['scholaris-archivosprofesor/create', "id" => $modelActividad->id],
                         ['class' => '', 'title' => 'AGREGAR MATERIAL DE APOYO']
-                    ); ?>
+                );
+                ?>
                     |
                 </div>  -->
                 <div class="col-lg-6 col-md-6"> |
-                    <?php echo Html::a(
-                        '<span class="badge rounded-pill" style="background-color: #898b8d"><i class="fa fa-plus-circle" aria-hidden="true"></i>Mis Asignaturas</span>',
-                        ['profesor-inicio/index'],
-                        ['class' => '', 'title' => 'MIS ASIGNATURAS']
-                    ); ?>
+                    <?php
+                    echo Html::a(
+                            '<span class="badge rounded-pill" style="background-color: #898b8d"><i class="fa fa-plus-circle" aria-hidden="true"></i>Mis Asignaturas</span>',
+                            ['profesor-inicio/index'],
+                            ['class' => '', 'title' => 'MIS ASIGNATURAS']
+                    );
+                    ?>
                     |
                 </div>
                 <!-- fin de primeros botones -->
@@ -92,34 +96,19 @@ $modelActividadConsulta = new ScholarisArchivosprofesor();
                         if ($modelActividad->tipo_calificacion == 'P') {
                             if (count($modelCriterios) > 0 && $modelActividad->calificado == 'SI') {
                                 echo Html::a(
-                                    '<span class="badge rounded-pill bg-cuarto"><i class="fas fa-highlighter"></i> Calificar</span>',
-                                    ['calificar', "id" => $modelActividad->id],
-                                    ['class' => 'link']
+                                        '<span class="badge rounded-pill bg-cuarto"><i class="fas fa-highlighter"></i> Calificar</span>',
+                                        ['calificar', "id" => $modelActividad->id],
+                                        ['class' => 'link']
                                 );
-                                //echo '|';
                                 $cantidadCalif = backend\models\ScholarisCalificaciones::find()->where(['idactividad' => $modelActividad->id])->all();
-
-                                // if (count($cantidadCalif) > 0) {
-                                // } else {
-                                //     echo Html::a(
-                                //         '<span class="badge rounded-pill" style="background-color: #9e28b5"><i class="fas fa-highlighter"></i> Criterios</span>',
-                                //         ['criterios', "id" => $modelActividad->id],
-                                //         ['class' => '']
-                                //     );
-                                //     echo '<p class="text-danger">Si da clic en el boton calificar ya no puede modificar criterios</p>';
-                                // }
                             } else {
-                                // echo Html::a(
-                                //     '<span class="badge rounded-pill" style="background-color: #9e28b5"><i class="fas fa-highlighter"></i> Criterios</span>',
-                                //     ['criterios', "id" => $modelActividad->id],
-                                //     ['class' => 'link']
-                                // );
+                                
                             }
                         } else {
                             echo Html::a(
-                                '<span class="badge rounded-pill bg-cuarto"><i class="fas fa-highlighter"></i> Calificar</span>',
-                                ['calificar', "id" => $modelActividad->id],
-                                ['class' => 'link']
+                                    '<span class="badge rounded-pill bg-cuarto"><i class="fas fa-highlighter"></i> Calificar</span>',
+                                    ['calificar', "id" => $modelActividad->id],
+                                    ['class' => 'link']
                             );
                         }
                     }
@@ -130,21 +119,21 @@ $modelActividadConsulta = new ScholarisArchivosprofesor();
                         echo Html::a('<span class="badge rounded-pill" style="background-color: #898b8d"><i class="fas fa-highlighter"></i> Editar</span>', [
                             'update',
                             "id" => $modelActividad->id
-                        ], ['class' => 'link', 'target' => 'blank']);
+                                ], ['class' => 'link', 'target' => 'blank']);
 
                         echo '|';
 
                         echo Html::a('<span class="badge rounded-pill" style="background-color: red"><i class="far fa-trash-alt"></i> Eliminar</span>', [
                             'eliminar',
                             "id" => $modelActividad->id
-                        ], ['class' => 'link', 'target' => 'blank']);
+                                ], ['class' => 'link', 'target' => 'blank']);
 
                         echo '|';
                         if ($modelActividad->actividad_original == 0) {
                             echo Html::a('<span class="badge rounded-pill" style="background-color: #ff9e18"><i class="far fa-clone"></i> Duplicar</span>', [
                                 'duplicar',
                                 "id" => $modelActividad->id
-                            ], ['class' => 'link', 'target' => 'blank']);
+                                    ], ['class' => 'link', 'target' => 'blank']);
                         } else {
                             echo '¡No de puede duplicar la actividad!';
                         }
@@ -160,90 +149,6 @@ $modelActividadConsulta = new ScholarisArchivosprofesor();
             <!-- /****************************************************************************************************/  -->
             <!-- comienza cuerpo  -->
             <div class="row" style="margin-bottom: 50px; margin-top: 30px">
-                <!--
-                <div class="col-lg-4 col-md-4">
-                    <div class="card shadow p-2" style="background-color: #898b8d; color: white">
-                        <div class="row">
-                            <div class="col-md-4"><strong>Número:</strong></div>
-                            <div class="col-md-8"><?= $modelActividad->id ?></div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-4"><strong>Tipo:</strong></div>
-                            <div class="col-md-8"><?= $modelActividad->insumo->nombre_nacional ?></div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-4"><strong>Estado:</strong></div>
-                            <div class="col-md-8"><?= $estado ?></div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-4"><strong>Materia:</strong></div>
-                            <div class="col-md-8"><?= $modelActividad->clase->ismAreaMateria->materia->nombre ?></div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-4"><strong>Curso:</strong></div>
-                            <div class="col-md-8"><?= $modelActividad->clase->ismAreaMateria->materia->nombre . ' - ' . $modelActividad->clase->paralelo->name ?></div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-4"><strong>Profesor:</strong></div>
-                            <div class="col-md-8"><?= $modelActividad->clase->profesor->last_name . ' ' . $modelActividad->clase->profesor->x_first_name ?></div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-4"><strong>Calificado:</strong></div>
-                            <div class="col-md-8"><?= $modelActividad->calificado ?></div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-4"><strong>Tipo:</strong></div>
-                            <div class="col-md-8"><?= $modelActividad->tipo_calificacion ?></div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-4"><strong>Creado:</strong></div>
-                            <div class="col-md-8"><?= $modelActividad->create_date ?></div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-4"><strong>Presentar el:</strong></div>
-                            <div class="col-md-8"><?= $modelActividad->inicio ?></div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-4"><strong>Descripción:</strong></div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-12"><?= $modelActividad->descripcion ?></div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-4"><strong>Tareas:</strong></div>
-                        </div>
-                        <div class="row-md-12">
-                            <div class="col"><?= $modelActividad->tareas ?></div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-4"><strong>Enlace videoconferencia:</strong></div>
-                        </div>
-                        <div class="row-md-12">
-                            <div class="col"><a href="<?= $modelActividad->videoconfecia ?>" target="_blank"><?= $modelActividad->videoconfecia ?></a></div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-4"><strong>Respaldo videoconferencia:</strong></div>
-                        </div>
-                        <div class="row-md-12">
-                            <div class="col"><a href="<?= $modelActividad->respaldo_videoconferencia ?>" target="_blank"><?= $modelActividad->respaldo_videoconferencia ?></a></div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-lg-12"><strong>Link aula virtual:</strong></div>
-                        </div>
-                        <div class="row-md-12">
-                            <div class="col"><a href="<?= $modelActividad->link_aula_virtual ?>" target="_blank"><?= $modelActividad->link_aula_virtual ?></a></div>
-                        </div>
-                    </div>
-                </div>
-                -->
-                <!-- FIN DE PANEL IZQUIERDO -->
 
                 <!-- inicia condicion de si la actividad es pai-->
                 <?php if ($modelActividad->tipo_calificacion == 'P') { ?>
@@ -297,25 +202,25 @@ $modelActividadConsulta = new ScholarisArchivosprofesor();
                                                 <!--</div> -->
                                                 <!-- FINALIZA CUADRO DE CRITERIOS PAI-->
                                                 <!-- <?php //} else { 
-                                                        ?> -->
+                                                ?> -->
                                                 <!--<div class="card p-2 text-color-s"><b>No existe informaciòn para actividades nacionales</b></div> -->
                                                 <!-- <?php //} 
-                                                        ?> -->
+                                                ?> -->
                                                 <!-- cierra condicion de si la actividad es pai-->
                                                 <!--</div>  -->
 
-                                                 <?php
-                                                    $total = count($modelCalificaciones2);
-                                                    if ($total > 0) {
-                                                        echo '<div class="alert alert-danger" role="alert">
+                                                <?php
+                                                $total = count($modelCalificaciones2);
+                                                if ($total > 0) {
+                                                    echo '<div class="alert alert-danger" role="alert">
                                                         <font size = 3px>Ya existen calificaciones realizadas, usted no puede escoger nuevos criterios para esta actividad</font>
                                                     </div>';
-                                                    } else {
-                                                        echo '<div class="alert alert-success" role="alert">
+                                                } else {
+                                                    echo '<div class="alert alert-success" role="alert">
                                                         <font size = 3px>Por favor selecciones los criterios a usar</font>
                                                         </div>';
-                                                    }
-                                                    ?>
+                                                }
+                                                ?>
                                             </div>
                                             <div class="row">
                                                 <div class="col container-fluid" style="overflow-y: scroll; height:100%;">
@@ -325,30 +230,30 @@ $modelActividadConsulta = new ScholarisArchivosprofesor();
                                                             <h5 class="card-title" style="color:#ab0a3d">ASIGNADOS</h5>
                                                             <hr>
                                                             <font size='2px'>
-                                                                <?php
-                                                                if (isset($asignados)) {
-                                                                    foreach ($asignados as $criterio) {
-                                                                        echo '<div class="row">';
-                                                                        echo '<div class="col-md-1">' . $criterio['nombre'] . '</div>';
-                                                                        if ($total > 0) {
-                                                                            echo '<div class="col">' . $criterio['descripcion'] . '</div>';
-                                                                        } else {
-                                                                            echo '<div class="col">' . Html::a(
+                                                            <?php
+                                                            if (isset($asignados)) {
+                                                                foreach ($asignados as $criterio) {
+                                                                    echo '<div class="row">';
+                                                                    echo '<div class="col-md-1">' . $criterio['nombre'] . '</div>';
+                                                                    if ($total > 0) {
+                                                                        echo '<div class="col">' . $criterio['descripcion'] . '</div>';
+                                                                    } else {
+                                                                        echo '<div class="col">' . Html::a(
                                                                                 $criterio['descripcion'],
                                                                                 [
                                                                                     'quitarcriterio',
                                                                                     "id" => $criterio['id']
                                                                                 ],
                                                                                 ['class' => 'card-link']
-                                                                            ) .
-                                                                                '</div>';
-                                                                        }
+                                                                        ) .
+                                                                        '</div>';
+                                                                    }
 
-                                                                        echo '</div>';
-                                                                        echo '<hr>';
-                                                                    } //cierra foreach
-                                                                } // cierra if
-                                                                ?>
+                                                                    echo '</div>';
+                                                                    echo '<hr>';
+                                                                } //cierra foreach
+                                                            } // cierra if
+                                                            ?>
                                                             </font>
                                                         </div>
                                                     </div>
@@ -361,14 +266,14 @@ $modelActividadConsulta = new ScholarisArchivosprofesor();
                                                             <h5 class="card-title" style="color:#ab0a3d">NO ASIGNADOS</h5>
                                                             <hr>
                                                             <font size='2px'>
-                                                                <?php
-                                                                foreach ($noAsignados as $criterio) {
-                                                                    echo '<div class="row">';
-                                                                    echo '<div class="col-md-1">' . $criterio['nombre'] . '</div>';
-                                                                    if ($total > 0) {
-                                                                        echo '<div class="col" >' . $criterio['descripcion'] . '</div>';
-                                                                    } else {
-                                                                        echo '<div class="col" >' . Html::a(
+                                                            <?php
+                                                            foreach ($noAsignados as $criterio) {
+                                                                echo '<div class="row">';
+                                                                echo '<div class="col-md-1">' . $criterio['nombre'] . '</div>';
+                                                                if ($total > 0) {
+                                                                    echo '<div class="col" >' . $criterio['descripcion'] . '</div>';
+                                                                } else {
+                                                                    echo '<div class="col" >' . Html::a(
                                                                             $criterio['descripcion'],
                                                                             [
                                                                                 'asignarcriterio',
@@ -376,13 +281,13 @@ $modelActividadConsulta = new ScholarisArchivosprofesor();
                                                                                 'id_plan_vert_descriptor' => $criterio['id'],
                                                                             ],
                                                                             ['class' => 'card-link']
-                                                                        ) .
-                                                                            '</div>';
-                                                                    }
-                                                                    echo '</div>';
-                                                                    echo '<hr>';
-                                                                } //cierra foreach
-                                                                ?>
+                                                                    ) .
+                                                                    '</div>';
+                                                                }
+                                                                echo '</div>';
+                                                                echo '<hr>';
+                                                            } //cierra foreach
+                                                            ?>
                                                             </font>
                                                         </div>
                                                     </div>
@@ -390,7 +295,7 @@ $modelActividadConsulta = new ScholarisArchivosprofesor();
                                                 </div>
                                             </div>
                                         </div> <!-- fin de panel derecho -->
-                                   </div> <!-- FIN DIV accordion-body -->
+                                    </div> <!-- FIN DIV accordion-body -->
                                 </div> <!-- FIN id="collapseOne" -->
                             </div><!-- FIN DIV "accordion-item" -->
                         </div><!-- FIN DIV "card" -->
@@ -415,7 +320,7 @@ $modelActividadConsulta = new ScholarisArchivosprofesor();
                             <!-- PANEL NUEVO / VISTA PREVIA -->
                             <div class="card">
                                 <div class="card-header">
-                                    Panel
+                                    Opciones LMS
                                 </div>
                                 <ul class="list-group list-group-flush">
                                     <li class="list-group-item">
@@ -440,13 +345,14 @@ $modelActividadConsulta = new ScholarisArchivosprofesor();
                                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                 </div>
                                                 <div class="modal-body">
-                                                    <?php foreach ($modelArchivoProfesor as $modelArchivo) {
+                                                    <?php
+                                                    foreach ($modelArchivoProfesor as $modelArchivo) {
                                                         $modelArchivo->nombre_archivo;
-                                                        $nombreArchivo =  $modelArchivo->archivo;
+                                                        $nombreArchivo = $modelArchivo->archivo;
                                                         $arrayNombre = explode("##", $nombreArchivo);
 
                                                         if ($modelArchivo->publicar) {
-                                                    ?>
+                                                            ?>
                                                             <div class="card" style="color:black ;background-color: #0a1f8f;">
                                                                 <h6 style="color:white;"><b>Titulo: <?= $modelArchivo->nombre_archivo; ?></b></h6>
                                                             </div>
@@ -467,7 +373,7 @@ $modelActividadConsulta = new ScholarisArchivosprofesor();
                                                                     </a>
                                                                 </div>
                                                                 <hr>
-                                                    <?php
+                                                                <?php
                                                             } //FIN IF archivo 
                                                         } //FIN IF publicar
                                                     } //FIN FOR 
@@ -505,12 +411,12 @@ $modelActividadConsulta = new ScholarisArchivosprofesor();
                                                 </td>
                                                 <td><b>Ver</b></td>
                                             </tr>
-                                            <?php foreach ($modelArchivoProfesor as $modelArchivo) {
+                                            <?php
+                                            foreach ($modelArchivoProfesor as $modelArchivo) {
                                                 $modelArchivo->nombre_archivo;
-                                                $nombreArchivo =  $modelArchivo->archivo;
+                                                $nombreArchivo = $modelArchivo->archivo;
                                                 $arrayNombre = explode("##", $nombreArchivo);
-
-                                            ?>
+                                                ?>
                                                 <tr style="font-size: 10px;">
                                                     <!-- orden -->
                                                     <td>
@@ -518,15 +424,19 @@ $modelActividadConsulta = new ScholarisArchivosprofesor();
                                                     </td>
                                                     <!-- eliminar -->
                                                     <td>
-                                                        <a href="<?= Url::to(['actividad', 'actividad' => $modelArchivo->idactividad, 'idMatApoyo' => $modelArchivo->id, 'bandera' => 2]);
-                                                                    /**el valor 2 es delete */ ?>">
+                                                        <a href="<?=
+                                                        Url::to(['actividad', 'actividad' => $modelArchivo->idactividad, 'idMatApoyo' => $modelArchivo->id, 'bandera' => 2]);
+                                                        /*                                                         * el valor 2 es delete */
+                                                        ?>">
                                                             <i class="fas fa-trash-alt"></i>
                                                         </a>
                                                     </td>
                                                     <!-- Editar -->
                                                     <td>
-                                                        <a href="<?= Url::to(['actividad', 'actividad' => $modelArchivo->idactividad, 'idMatApoyo' => $modelArchivo->id, 'bandera' => 1]);
-                                                                    /**el valor 1 es update */ ?>">
+                                                        <a href="<?=
+                                                           Url::to(['actividad', 'actividad' => $modelArchivo->idactividad, 'idMatApoyo' => $modelArchivo->id, 'bandera' => 1]);
+                                                           /*                                                            * el valor 1 es update */
+                                                           ?>">
                                                             <i class="fas fa-edit"></i>
                                                         </a>
                                                     </td>
@@ -536,11 +446,11 @@ $modelActividadConsulta = new ScholarisArchivosprofesor();
                                                             <span style="color: green;"><i class="fas fa-check-circle"></i></span>
                                                         <?php } else { ?>
                                                             <span style="color: red;"><i class="fas fa-times-circle"></i></span>
-                                                        <?php } ?>
+    <?php } ?>
                                                     </td>
                                                     <!-- Titutlo -->
                                                     <td>
-                                                        <?php echo "$modelArchivo->nombre_archivo"; ?>
+    <?php echo "$modelArchivo->nombre_archivo"; ?>
                                                     </td>
                                                     <!-- Ver -->
                                                     <td>
@@ -567,16 +477,16 @@ $modelActividadConsulta = new ScholarisArchivosprofesor();
                                                                         <span style="color: blue;">SI</span>
                                                                     <?php } else { ?>
                                                                         <span style="color: red;">NO</span>
-                                                                    <?php } ?>
+    <?php } ?>
                                                                 </p>
                                                                 <hr>
 
                                                                 <span style="color: black;">
-                                                                    <?= $modelArchivo->texto; ?>
+    <?= $modelArchivo->texto; ?>
                                                                 </span>
                                                             </div>
                                                             <hr>
-                                                            <?php if ($modelArchivo->archivo <> "") { ?>
+    <?php if ($modelArchivo->archivo <> "") { ?>
 
                                                                 <div class="container">
                                                                     <h6 style="color:#ab0a3d">Archivos Asociados</h6><br>
@@ -584,11 +494,11 @@ $modelActividadConsulta = new ScholarisArchivosprofesor();
                                                                     </embed>
                                                                     <br>
                                                                     <a href="<?= $path_archivo_profesor_ver->opcion . $modelArchivo->idactividad . '/' . $arrayNombre[1]; ?>" target="_blank">
-                                                                        <?= $arrayNombre[1]; ?>
+        <?= $arrayNombre[1]; ?>
                                                                     </a>
                                                                 </div>
 
-                                                            <?php } ?>
+    <?php } ?>
                                                             <div class="modal-footer">
 
                                                             </div>
@@ -598,7 +508,7 @@ $modelActividadConsulta = new ScholarisArchivosprofesor();
                                                 <!-- FIN MODAL:Vista Previa Independiente -->
                                                 <!-- ****************************************************************************************** -->
 
-                                            <?php } ?>
+<?php } ?>
                                             <!-- fin foreach -->
                                         </table>
                                     </div>
@@ -616,7 +526,7 @@ $modelActividadConsulta = new ScholarisArchivosprofesor();
                                         <?php
                                         if (!empty($model->archivo)) {
                                             $arrayArchivos = explode("##", $model->archivo);
-                                        ?>
+                                            ?>
                                             <tr>
                                                 <td>
                                                     <div class="container">
@@ -626,15 +536,15 @@ $modelActividadConsulta = new ScholarisArchivosprofesor();
                                                 </td>
                                             </tr>
                                             <tr>
-                                                <label><?= $arrayArchivos[1]; ?></label>
+                                            <label><?= $arrayArchivos[1]; ?></label>
                                             </tr>
-                                        <?php } else { ?>
+<?php } else { ?>
                                             <tr>
                                                 <td>
                                                     <p><b>NO TIENE ARCHIVOS</p></b>
                                                 </td>
                                             </tr>
-                                        <?php } ?>
+<?php } ?>
                                     </table>
                                     <br>
                                     <!-- FIN Table de mostrar archivos-->
@@ -642,10 +552,12 @@ $modelActividadConsulta = new ScholarisArchivosprofesor();
                                 </div>
                                 <div class="modal-body card">
                                     <!-- Llamada formulario subida de archivos -->
-                                    <?= $this->render('/scholaris-archivosprofesor/_form', [
+                                    <?=
+                                    $this->render('/scholaris-archivosprofesor/_form', [
                                         'model' => $model,
                                         'modelActividad' => $modelActividad
-                                    ]) ?>
+                                    ])
+                                    ?>
                                 </div>
                             </div>
                         </div>

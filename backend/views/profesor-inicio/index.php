@@ -36,19 +36,20 @@ $this->title = 'Mis asignaturas';
                 
                 <div class="card">
                     <div class="row">
-                        <div class="col-lg-3">
+                        <div class="col-lg-2 col-md-2">
                             <?= $this->render('menu', [
                                 'clases' => $clases
                             ]) ?>
                         </div>
                         
-                        <div class="col-lg-9 col-md-9">
-                            <div class="card" id="div-detalle" style="display: none; margin-top: 5px;"></div>
+                        <div class="col-lg-10 col-md-10">
+                            <div class="card" id="div-detalle" style="display: none; margin-top: 5px; padding: 15px"></div>
 
+                            <!--
                             <div class="card" id="div-info-bloque" style="display: none; margin-top: 5px;"></div>
-
-                            <div class="card p-3" id="div-actividades" style="display: none; margin-top: 5px;"></div>                            
-                           
+                            <div class="card p-3" id="div-actividades" style="display: none; margin-top: 5px;"></div>
+                            -->
+                            <div class="card p-3" id="div-semanas" style="display: none; margin-top: 15px;"></div>                           
                         </div>
                     </div>
                 </div>

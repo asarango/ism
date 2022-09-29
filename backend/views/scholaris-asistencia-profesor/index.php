@@ -72,6 +72,7 @@ $this->title = 'Mis actividades de hoy';
 
             <!--comienza cuerpo de documento-->
 
+            
             <div class="table table-responsive">
                 <table class="table table-striped table-condensed table-hover" id="table-asistencias">
                     <thead>

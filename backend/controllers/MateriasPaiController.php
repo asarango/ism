@@ -132,7 +132,7 @@ class MateriasPaiController extends Controller{
                     $mapaEnfoque = new MapaEnfoquesPai();
                     $mapaEnfoque->periodo_id            = $periodoId;
                     $mapaEnfoque->course_template_id    = $curso['id'];
-                    $mapaEnfoque->pai_habilidad_id      = $habilidad->id;
+                    $mapaEnfoque->pai_habilidad_id      = $habilidad->id;                    
                     $mapaEnfoque->save();
                 }
             }

@@ -31,6 +31,8 @@ use yii\widgets\ActiveForm;
     <?= $form->field($model, 'curso_curriculo_id')->textInput() ?>
 
     <?= $form->field($model, 'orden')->textInput() ?>
+    
+    <?= $form->field($model, 'total_horas_semana')->textInput() ?>
 
     
     <hr>

@@ -17,7 +17,7 @@ class IsmAreaMateriaSearch extends IsmAreaMateria
     public function rules()
     {
         return [
-            [['id', 'malla_area_id', 'materia_id', 'asignatura_curriculo_id', 'curso_curriculo_id', 'orden'], 'integer'],
+            [['id', 'malla_area_id', 'materia_id', 'asignatura_curriculo_id', 'curso_curriculo_id', 'orden', 'total_horas_semana'], 'integer'],
             [['promedia', 'imprime_libreta', 'es_cuantitativa'], 'boolean'],
             [['porcentaje'], 'number'],
             [['tipo', 'idioma'], 'safe'],
@@ -70,6 +70,7 @@ class IsmAreaMateriaSearch extends IsmAreaMateria
             'asignatura_curriculo_id' => $this->asignatura_curriculo_id,
             'curso_curriculo_id' => $this->curso_curriculo_id,
             'orden' => $this->orden,
+            'total_horas_semana' => $this->total_horas_semana,
         ]);
 
         $query->andFilterWhere(['ilike', 'tipo', $this->tipo])

@@ -32,15 +32,13 @@ $this->params['breadcrumbs'][] = $this->title;
             <div class=" row align-items-center p-2">
                 <div class="col-lg-1"><h4><img src="ISM/main/images/submenu/aula.png" width="64px" style="" class="img-thumbnail"></h4></div>
                 <div class="col-lg-11">
-                    <h4>
                         <?= Html::encode($this->title) ?>
                         <small>
                             <b> | Semana N°: </b><?= $modelActividad->lms->semana_numero ?> |
                             <b>Semana N°: </b><?= $modelActividad->lms->hora_numero ?> |
                             <b>Tema de la Hora N°: </b><?= $modelActividad->lms->titulo ?> |
                         </small>
-                    </h4>
-                    <h3><b>Actividad: </b><?= $modelActividad->titulo ?></h3>
+                    <b>Actividad: </b><?= $modelActividad->titulo ?>
                 </div>
             </div>
             <hr>

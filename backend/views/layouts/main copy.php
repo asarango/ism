@@ -64,7 +64,7 @@ if (!Yii::$app->user->isGuest) {
     </head>
 
     <body class="animate__animated animate__fadeIn"
-          style="font-size:14px; font-family: sans-serif; color: #898b8d">
+          style="background: #eee; font-size:14px; font-family: sans-serif; color: #898b8d">
               <?php $this->beginBody() ?>
         
         <header style="">

@@ -227,6 +227,7 @@ class ProfesorInicioController extends Controller {
         $model = \backend\models\Usuario::find()->where(['usuario' => $usuario])->one();
 
         if ($model->load(Yii::$app->request->post())) {
+
             if ($model->oldAttributes['clave'] != $model->clave) {
                 $model->clave = md5($model->clave);
             }

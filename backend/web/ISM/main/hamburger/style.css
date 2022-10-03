@@ -18,11 +18,11 @@ ul{
 }
 
 header{
-    display: flex;
+    /* display: flex;
     background-color: #ab0a3d;
     justify-content: space-around;
     padding:0;
-    align-items: center;
+    align-items: center; */
 }
 
 .logo{
@@ -32,7 +32,7 @@ header{
 }
 
 .logo img{
-    width: 30px;
+    width: 80px;
     border-radius: 0;
     margin-right: 10px;
 }

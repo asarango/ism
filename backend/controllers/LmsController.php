@@ -251,11 +251,47 @@ class LmsController extends Controller
                 ]);
                 
         }else if($campo == 'upload'){
-            print_r($_POST);
+            
+            $ismAreaMateriaId = $_POST['path_ism_area_materia_id'];
+            
+            $path = 'files/docentes/lms/'.$ismAreaMateriaId;
+            $file = $_FILES;
+            
+            $upload = new \backend\models\helpers\Scripts();
+            $carga = $upload->upload_file($file, $path);
+            
+            if($carga == false){
+                echo 'error al cargar archivo';
+                die();                
+            }else{   
+                $this->insertar_registros_archivo($_POST, $carga);
+                
+                return $this->redirect(['acciones-get',                    
+                    'lms_id' => $_POST['lms_id'],
+                    'actividad_id' => $_POST['lms_actividad_id'],
+                    'campo' => 'update',
+                    'claseId' => $_POST['claseId'],
+                    'numeroSemana' => $_POST['numeroSemana'],
+                    'nombreSemana' => $_POST['nombreSemana']                
+                ]);
+            }
         }
         
         
 
+    }
+    
+    private function insertar_registros_archivo($post, $pathArchivo){
+        $con = \Yii::$app->db;
+        $lmsActividadId = $post['lms_actividad_id'];
+        $aliasArchivo   = $post['alias_archivo'];
+        $archivo        = $pathArchivo;
+        $ismMateriaId   = $post['path_ism_area_materia_id'];
+        $post['es_publicado'] == 'on' ? $esPublicado = 'true' : $esPublicado = 'false';
+        
+        $query = "insert into lms_actividad_x_archivo (lms_actividad_id, alias_archivo, archivo, path_ism_area_materia_id, es_publicado) "
+                . "values($lmsActividadId, '$aliasArchivo', '$archivo', $ismMateriaId, $esPublicado)";
+        $con->createCommand($query)->execute();
     }
     
     public function actionAccionesGet(){

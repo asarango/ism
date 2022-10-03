@@ -42,8 +42,7 @@ class Scripts extends ActiveRecord {
      * Asistencia del docente
      * @return type
      */
-    function sql_mostrar_clases_x_profesor() 
-    {
+    function sql_mostrar_clases_x_profesor() {
         $periodoId = Yii::$app->user->identity->periodo_id;
         $usuarioLog = Yii::$app->user->identity->usuario;
         $con = \Yii::$app->db;
@@ -93,8 +92,7 @@ order by hora.numero asc;";
      * Asistencia del docente
      * @return type
      */
-    public function sql_mostrar_todas_las_clases_x_profesor() 
-    {
+    public function sql_mostrar_todas_las_clases_x_profesor() {
         $periodoId = Yii::$app->user->identity->periodo_id;
         $usuarioLog = Yii::$app->user->identity->usuario;
         $con = \Yii::$app->db;
@@ -379,9 +377,9 @@ where hor.clase_id in
         ) 
         )*100/(select cast(categoria as integer) from planificacion_opciones po where tipo = 'PUD_CONTEO_PORCENTAJE' and seccion='PAI')) 
         AS porcentaje;";
-        
-    //    print_r($query);
-    //    die();
+
+        //    print_r($query);
+        //    die();
 
         $resultado = $con->createCommand($query)->queryOne();
         return $resultado;
@@ -439,7 +437,7 @@ where hor.clase_id in
                     from pud_pai pp 
                     where planificacion_bloque_unidad_id  = $planBloqueUniId and seccion_numero  ='4' and tipo = 'eval_formativa')
                     ) = 3 then 1 else 0 end  )";
-                break;            
+                break;
             case '6.1.-':
                 $query = "select case when count(*)>0 then 1 else 0 end from pud_pai pp where planificacion_bloque_unidad_id  = $planBloqueUniId and seccion_numero  = '6'";
                 break;
@@ -523,7 +521,7 @@ where hor.clase_id in
         return $resultado;
     }
 
-    public function firmar_documento($usuario, $fecha) {                
+    public function firmar_documento($usuario, $fecha) {
 
         if (isset($usuario)) {
             $con = \Yii::$app->db;
@@ -538,7 +536,7 @@ where hor.clase_id in
                 'firmado_por' => $res['name'],
                 'firmado_el' => $fecha
             );
-        }else{
+        } else {
             return array(
                 'firmado_por' => 'Sin firma aùn',
                 'firmado_el' => $fecha
@@ -621,8 +619,7 @@ where hor.clase_id in
 
         return $mes;
     }
-    
-    
+
     /**
      * Toma los cursos actualles del periodo por usuario
      * @param type $periodoId
@@ -647,7 +644,6 @@ where hor.clase_id in
         $res = $con->createCommand($query)->queryAll();
         return $res;
     }
-    
 
     public function get_paralelo_x_periodo($periodoId, $userLog) {
         $con = Yii::$app->db;
@@ -670,8 +666,7 @@ where hor.clase_id in
         return $res;
     }
 
-
-    public function get_alumnos_x_paralelo($paraleloId){
+    public function get_alumnos_x_paralelo($paraleloId) {
         $con = Yii::$app->db;
         $query = "select 	s.last_name 
                             ,s.first_name 
@@ -701,10 +696,10 @@ where hor.clase_id in
         $respuesta = $con->createCommand($query)->queryall();
         return $respuesta;
     }
+
     //devulve listado de usuario y sus cargos
     //se usa en seguimiento DECE
-    public function mostrarUsuarioParaDece()
-    {
+    public function mostrarUsuarioParaDece() {
         $con = Yii::$app->db;
         $query = 'select upper(cast(concat(rp."name",\' - \',rp."ref") as varchar(200))) as usuario
         from usuario u 
@@ -712,11 +707,10 @@ where hor.clase_id in
         inner join res_partner rp on rp.id = ru.partner_id 
         order by rp."name";';
         $respuesta = $con->createCommand($query)->queryAll();
-        return  $respuesta;
-
+        return $respuesta;
     }
-    public  function get_enfoques($planVerticalId)
-    {
+
+    public function get_enfoques($planVerticalId) {
         $con = Yii::$app->db;
         $queryHabilidades = "select 	h.id 
                                     ,h.nombre 
@@ -727,7 +721,7 @@ where hor.clase_id in
                     where 	ph.plan_vertical_id = $planVerticalId
                     group by h.id, h.nombre 
                     order by h.nombre;";
-        
+
         $queryOpciones = "select 	h.id 
                                             ,h.nombre as habilidad
                                             ,op.nombre as opcion
@@ -736,32 +730,33 @@ where hor.clase_id in
                                             inner join enfoques_diploma_sub_habilidad sub on sub.id = op.sub_habilidad_id 
                                             inner join enfoques_diploma_habilidad h on h.id = sub.habilidad_id 
                             where 	ph.plan_vertical_id = $planVerticalId 
-                            order by h.nombre, op.nombre ;";     
-        
+                            order by h.nombre, op.nombre ;";
+
         $habilidades = $con->createCommand($queryHabilidades)->queryAll(); //extrae las habilidades
         $opciones = $con->createCommand($queryOpciones)->queryAll(); //extrae las opciones elejidas en el plan vertical
-        
+
         $html = '';
-        
+
         $html .= '<ul>';
-        foreach ($habilidades as $habilidad){            
-            $html .= '<li><b>'.$habilidad['nombre'].'</b></li>';            
+        foreach ($habilidades as $habilidad) {
+            $html .= '<li><b>' . $habilidad['nombre'] . '</b></li>';
             $html .= '<ul>';
-            foreach ($opciones as $op){                
-                if($op['id'] == $habilidad['id']){
-                    $html .= '<li><i class="far fa-arrow-circle-right"></i>'.$op['opcion'].'</li>';                    
-                }                
+            foreach ($opciones as $op) {
+                if ($op['id'] == $habilidad['id']) {
+                    $html .= '<li><i class="far fa-arrow-circle-right"></i>' . $op['opcion'] . '</li>';
+                }
             }
-            $html .= '</ul><br>';            
+            $html .= '</ul><br>';
         }
-        $html .= '</ul>';      
+        $html .= '</ul>';
 
 //        return $arregloMaster;
         return $html;
-    } ///fin de 5.3
+    }
 
-    public function get_nee($periodId, $opCourseTemplateId)
-    {
+///fin de 5.3
+
+    public function get_nee($periodId, $opCourseTemplateId) {
         $con = Yii::$app->db;
         $query = "select 	cur.id 
 		,cur.name as curso
@@ -789,8 +784,9 @@ where 	pm.scholaris_periodo_id = $periodId
         $res = $con->createCommand($query)->queryAll();
         return $res;
     }
+
     //trae el CONTENIDO del plan vertical pai
-    public function selecciona_subtitulos($planUnidadId){
+    public function selecciona_subtitulos($planUnidadId) {
         $con = Yii::$app->db;
         $query = "select 	id, plan_unidad_id, subtitulo, orden,trazabilidad 
                     from 	planificacion_bloques_unidad_subtitulo
@@ -799,13 +795,13 @@ where 	pm.scholaris_periodo_id = $periodId
         $res = $con->createCommand($query)->queryAll();
         return $res;
     }
-    
+
     /**
      * METODO PARA SUBIR ARCHIVOS AL SERVIDOR
      * @param type $files - arry con los archivos pasados desde la vista y el controlador
      * @param type $path directorio donde se almacenan los archivos
      */
-    public function upload_files($files, $path){        
+    public function upload_files($files, $path) {
         foreach ($files["archivo"]['tmp_name'] as $key => $tmp_name) {
             //Validamos que el archivo exista
             if ($files["archivo"]["name"][$key]) {
@@ -813,7 +809,6 @@ where 	pm.scholaris_periodo_id = $periodId
                 $source = $files["archivo"]["tmp_name"][$key]; //Obtenemos un nombre temporal del archivo
 
                 $directorio = $path; //Declaramos un  variable con la ruta donde guardaremos los archivos
-
                 //Validamos si la ruta de destino existe, en caso de no existir la creamos
                 if (!file_exists($directorio)) {
                     mkdir($directorio, 0777) or die("No se puede crear el directorio de extracci&oacute;n");
@@ -821,7 +816,6 @@ where 	pm.scholaris_periodo_id = $periodId
 
                 $dir = opendir($directorio); //Abrimos el directorio de destino
                 $target_path = $directorio . '/' . $filename; //Indicamos la ruta de destino, así como el nombre del archivo
-
                 //Movemos y validamos que el archivo se haya cargado correctamente
                 //El primer campo es el origen y el segundo el destino
                 if (move_uploaded_file($source, $target_path)) {
@@ -833,14 +827,47 @@ where 	pm.scholaris_periodo_id = $periodId
             }
         }
     }
-    
-    
+
+    /**
+     * UPLOAD FILE --> Sube un único archivo al servidor
+     * @param type $file
+     * @param type $path
+     */
+    public function upload_file($file, $path) {
+               
+
+        if ($file["archivo"]["name"]) {
+            $filename = $file["archivo"]["name"]; //Obtenemos el nombre original del archivo
+            $source = $file["archivo"]["tmp_name"]; //Obtenemos un nombre temporal del archivo
+            $complementoRuta = '/var/www/html/';
+
+            $directorio = $complementoRuta.$path; //Declaramos un  variable con la ruta donde guardaremos los archivos
+            //Validamos si la ruta de destino existe, en caso de no existir la creamos
+            if (!file_exists($directorio)) {
+                mkdir($directorio, 0777) or die("No se puede crear el directorio de extracci&oacute;n");
+                //chmod($directorio, 777);
+            }
+
+            $dir = opendir($directorio); //Abrimos el directorio de destino
+            $target_path = $directorio . '/' . $filename; //Indicamos la ruta de destino, así como el nombre del archivo
+            //Movemos y validamos que el archivo se haya cargado correctamente
+            //El primer campo es el origen y el segundo el destino
+            if (move_uploaded_file($source, $target_path)) {
+                //echo "El archivo $filename se ha almacenado en forma exitosa.<br>";
+                return $path . '/' . $filename;
+            } else {
+                return false;
+            }
+            closedir($dir); //Cerramos el directorio de destino
+        }
+    }
+
     /**
      * METODO PARA USO POR OPCOURSETEMPLATE
      * @param type $opcourseTemplateId
      * @return type
      */
-    public function get_tipo_uso_op_course_template($opcourseTemplateId){
+    public function get_tipo_uso_op_course_template($opcourseTemplateId) {
         $periodoId = \Yii::$app->user->identity->periodo_id;
         $con = \Yii::$app->db;
         $query = "select 	c.tipo_usu_bloque  
@@ -854,14 +881,11 @@ where 	pm.scholaris_periodo_id = $periodId
                                     and sop.scholaris_id = $periodoId
                     limit 1;";
         $res = $con->createCommand($query)->queryOne();
-        
+
         return $res['tipo_usu_bloque'];
     }
-    
-    
-    
-    
-    public function get_docentes_x_coordinador_academico($coordinadorId, $periodoId){
+
+    public function get_docentes_x_coordinador_academico($coordinadorId, $periodoId) {
         $con = \Yii::$app->db;
         $query = "select 	fac.id
                                 ,concat(fac.last_name, ' ', fac.x_first_name) as docente 
@@ -881,14 +905,13 @@ where 	pm.scholaris_periodo_id = $periodId
         $res = $con->createCommand($query)->queryAll();
         return $res;
     }
-    
-    
+
     /**
      * METODO QUE DEVUELVE EL CODIGO DE LA SECCION DEL CURSO
      * @param type $ismAreaMateriaId
      * @return type
      */
-    public function get_seccion_x_ism_area_materia($ismAreaMateriaId){
+    public function get_seccion_x_ism_area_materia($ismAreaMateriaId) {
         $con = \Yii::$app->db;
         $query = "select sec.code 
                     from	ism_area_materia am

@@ -11,7 +11,6 @@ use yii\helpers\Url;
 //echo '<pre>';
 //print_r($modelActividad);
 //
-//print_r($modelActividad->lmsActividads);
 //
 //die();
 
@@ -86,34 +85,37 @@ $this->params['breadcrumbs'][] = $this->title;
                                         </div>
                                         <?= Html::beginForm(['acciones'], 'post', ['enctype' => 'multipart/form-data']) ?>
                                         <div class="modal-body">
-                                            
-                                            
+
+
                                             <input type="hidden" name="lms_id" value="<?= $modelActividad->lms_id ?>"><!-- comment -->
                                             <input type="hidden" name="lms_actividad_id" value="<?= $modelActividad->id ?>"><!-- comment -->
                                             <input type="hidden" name="path_ism_area_materia_id" value="<?= $modelActividad->lms->ism_area_materia_id ?>"><!-- comment -->
                                             <input type="hidden" name="campo" value="upload"><!-- comment -->
-                                                                                        
+                                            <input type="hidden" name="claseId" value="<?= $clase_id ?>"><!-- comment -->
+                                            <input type="hidden" name="nombreSemana" value="<?= $nombre_semana ?>"><!-- comment -->
+                                            <input type="hidden" name="numeroSemana" value="<?= $numero_semana ?>"><!-- comment -->
+
                                             <div class="form-group">
                                                 <label for="aliasArchivo" class="form-label">Alias archivo</label>
                                                 <input type="text" name="alias_archivo" class="form-control" 
                                                        required="" placeholder="Alias archivo"><!-- comment -->
                                             </div>
-                                            
-                                            
+
+
 
                                             <div class="mb-3">
                                                 <label for="formFile" class="form-label"><i class="fas fa-paperclip"></i>Archivo</label>
                                                 <input class="form-control" type="file" name="archivo" id="formFile" required="">
                                             </div>
-                                            
+
                                             <div class="form-group" style="margin-top: 10px">
                                                 <label for="esCalificado" class="form-label">Es publicado?</label>
                                                 <div class="form-check form-switch">
                                                     <input class="form-check-input" name="es_publicado" type="checkbox" id="flexSwitchCheckChecked">
                                                 </div>
                                             </div>
-                                            
-                                            
+
+
 
                                         </div>
                                         <div class="modal-footer">
@@ -125,15 +127,33 @@ $this->params['breadcrumbs'][] = $this->title;
                                 </div>
                             </div>
                         </div>
-                        <div class="card-body">
-                            jdhkjdfkj dklfñldskf
+                        <div class="card-body" style="text-align: left">
+                            <ul>
+                                <?php
+                                foreach ($modelActividad->lmsActividadXArchivos as $archivo) {
+                                    ?>
+                                    <li class="zoom">
+                                        <a href="http://localhost/<?= $archivo->archivo ?>" target="_blank">
+                                            <i class="fas fa-paperclip"> <?= $archivo->alias_archivo ?></i>
+                                        </a>
+                                    </li>
+
+                                    <?php
+                                }
+                                ?>
+
+                            </ul>                            
                         </div>
                     </div>
                 </div>
 
                 <div class="col-lg-5 col-md-5">
-                    <div class="">
-                        contenido
+                    <div class="row" style="background-color: white; height: 600px; 
+                                            overflow-y: scroll; 
+                                            overflow-x: scroll;
+                                            text-align: left">
+                        <?= ($modelActividad->descripcion) ?>
+                        
                     </div>
                 </div>
                 <div class="col-lg-4 col-md-4">

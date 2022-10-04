@@ -72,7 +72,7 @@ class DeceRegistroSeguimiento extends \yii\db\ActiveRecord
             'responsable_seguimiento' => 'Responsable Seguimiento',
             'pronunciamiento' => 'Pronunciamiento',
             'acuerdo_y_compromiso' => 'Acuerdo y Compromiso',
-            'eviencia' => 'Eviencia',
+            'eviencia' => 'Evidencia',
             'path_archivo' => 'Path Archivo',
         ];
     }

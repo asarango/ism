@@ -84,12 +84,15 @@ $this->params['breadcrumbs'][] = $this->title;
                         <div class="table responsive">
                             <table class="table table-hover table-striped my-text-medium">
                                 <thead>
-                                    <tr>
+                                    <tr style="text-align:center">
 
                                         <td><strong>Estudiante</strong></td>
                                         <td><strong>Casos</strong></td>
-                                        <td><strong>Seg.</strong></td>
-                                        <td><strong>Acción</strong></td>
+                                        <td><strong>Acompañamientos.</strong></td>
+                                        <td><strong>Detecciones.</strong></td>
+                                        <td><strong>Derivaciones.</strong></td>
+                                        <td><strong>Intervenciones.</strong></td>
+                                        <td><strong>Acción.</strong></td>
                                     </tr>
                                 </thead>
                                 <tbody>                                    
@@ -99,10 +102,13 @@ $this->params['breadcrumbs'][] = $this->title;
                                         $nombreEstudiante = $caso['nombre'];
                                         //$nombreEstudiante = $caso->estudiante->middle_name . ' ' . $caso->estudiante->first_name . ' ' . $caso->estudiante->last_name
                                     ?>
-                                        <tr>
+                                        <tr style="text-align:center">
                                             <td><?= $nombreEstudiante ?></td>
                                             <td><strong><?=$caso['casos']?></strong></td>
                                             <td><strong><?=$caso['seguimiento']?></strong></td>
+                                            <td><strong> - </strong></td>
+                                            <td><strong> - </strong></td>
+                                            <td><strong> - </strong></td>
                                             <td>
                                                 <?= Html::a(
                                                     '<span class="badge  rounded-pill" style="background-color:red;">Ver</span>',

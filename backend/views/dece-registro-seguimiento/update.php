@@ -8,7 +8,7 @@ use backend\models\ScholarisGrupoAlumnoClase;
 /* @var $this yii\web\View */
 /* @var $model app\models\DeceRegistroSeguimiento */
 
-$this->title = 'Dece Seguimiento - No.: ' . $model->id;
+$this->title = 'Dece Acompañamiento - No.: ' . $model->id;
 $this->params['breadcrumbs'][] = ['label' => 'Dece Registro Seguimientos', 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $model->id, 'url' => ['view', 'id' => $model->id]];
 $this->params['breadcrumbs'][] = 'Update';
@@ -22,10 +22,15 @@ $modelGrupo = ScholarisGrupoAlumnoClase::find()
 ->andWhere(['clase_id'=>$model->id_clase])
 ->one();
 //buscamos el leccionario, a travez de la ultima clase, tomada del grupo
-$modelAsistProfesor = ScholarisAsistenciaProfesor::find()
-    ->where(['clase_id' => $modelGrupo->clase->id])
-    ->orderBy(['id' => SORT_DESC])
-    ->one();
+$modelAsistProfesor = new ScholarisAsistenciaProfesor();
+$modelAsistProfesor->id = 0;
+if($modelGrupo)
+{
+    $modelAsistProfesor = ScholarisAsistenciaProfesor::find()
+        ->where(['clase_id' => $modelGrupo->clase->id])
+        ->orderBy(['id' => SORT_DESC])
+        ->one();
+    }
 }
 
 ?>
@@ -45,39 +50,32 @@ $modelAsistProfesor = ScholarisAsistenciaProfesor::find()
                 </div>
             </div>
             <div class=" row align-items-center p-2">
-                    <p>                      
+                    <p>  
+                    | 
+                    <?=
+                          
+                           Html::a(
+                               '<span class="badge rounded-pill" style="background-color: #0a1f8f"><i class="fa fa-briefcase" aria-hidden="true"></i>Regresar Caso</span>',
+                               ['dece-casos/update', 'id' => $model->id_caso],
+                               ['class' => 'link']
+                           );
+                           ?>      
+                    |             
                     <?php
                        if($model->id_clase>0)//si es mayor a cero, biene de leccionario
                         { 
                         ?>
                         |
-                        <?=
-                        Html::a(
-                            '<span class="badge rounded-pill" style="background-color: #0a1f8f"><i class="fa fa-briefcase" aria-hidden="true"></i>Regresar - Mi Clase</span>',
-                            ['comportamiento/index', 'id' => $modelAsistProfesor->id],
-                            ['class' => 'link']
-                        );
-                        ?>
-                        <?php
-                        }
-                        ?>
-                        <?php
-                            if ($model->id_clase == 0) //si es mayor a cero, biene de leccionario
-                            {
-                            ?>
-                            |
-
                             <?=
                             Html::a(
-                                '<span class="badge rounded-pill" style="background-color: blue"><i class="fa fa-briefcase" aria-hidden="true"></i>Regresar Casos</span>',
-                                ['dece-casos/update','id'=>$model->id_caso],
+                                '<span class="badge rounded-pill" style="background-color: #0a1f8f"><i class="fa fa-briefcase" aria-hidden="true"></i>Regresar - Mi Clase</span>',
+                                ['comportamiento/index', 'id' => $modelAsistProfesor->id],
                                 ['class' => 'link']
                             );
                             ?>
-                              <?php
-                            }
-                            ?>
-                             |
+                        <?php
+                        }
+                        ?>
                     </p>
             </div>
 

@@ -192,16 +192,22 @@ class HelperGeneral extends ActiveRecord{
         $res =  $this->consultaBD($query);         
         
         return $res;
-    }
-    
+    }   
     
     
     public function get_dia_fecha($fecha){
         $dias = array('Domingo','Lunes','Martes','Miercoles','Jueves','Viernes','Sabado');
         $dia = $dias[date('N', strtotime($fecha))];
         
-        return $dia;
-        
+        return $dia;        
+    }
+
+    public function obtener_edad_segun_fecha($fecha_nacimiento)
+    {
+        $nacimiento = new DateTime($fecha_nacimiento);
+        $ahora = new DateTime(date("Y-m-d"));
+        $diferencia = $ahora->diff($nacimiento);
+        return $diferencia->format("%y");
     }
     
     

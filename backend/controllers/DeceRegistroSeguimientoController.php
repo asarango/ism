@@ -73,6 +73,8 @@ class DeceRegistroSeguimientoController extends Controller
     public function actionCreate()
     {
         $model = new DeceRegistroSeguimiento();
+        $fechaActual = date('Y-m-d');
+        $hora = date('H:i:s');
     
         if($_GET)
         {
@@ -82,10 +84,14 @@ class DeceRegistroSeguimientoController extends Controller
             $model->id_estudiante = $id_estudiante;
             $model->id_clase = $id_clase;
             $model->id_caso = $id_caso;
+            $model->fecha_inicio = $fechaActual;
+            $model->pronunciamiento = '-';
+            $model->acuerdo_y_compromiso = '-';
+            $model->eviencia = '-';
+            $model->numero_seguimiento = $this->extrae_numero_seguimiento($id_estudiante,$id_caso)+1;
         }
 
-
-          /** Extrae path donde se almacena los archivos */
+        /** Extrae path donde se almacena los archivos */
         $path_archivo_dece_atencion = PlanificacionOpciones::find()->where([
             'tipo'=>'SUBIDA_ARCHIVO',
             'categoria'=>'PATH_DECE_SEG'
@@ -94,6 +100,7 @@ class DeceRegistroSeguimientoController extends Controller
         if ($model->load(Yii::$app->request->post()))
         {
             $imagenSubida = UploadedFile::getInstance($model,'path_archivo');
+            $model->fecha_inicio = $model->fecha_inicio.' '.$hora;
             $model->save();
 
             if(!empty($imagenSubida))
@@ -119,6 +126,16 @@ class DeceRegistroSeguimientoController extends Controller
             'model' => $model,
         ]);
     }
+    //metodo que extrae el numero de seguimiento
+    private function extrae_numero_seguimiento($idEstudiante,$id_caso)
+    {
+       $modelRegSeguimiento= DeceRegistroSeguimiento::find()           
+            ->andWhere(['id_estudiante'=>$idEstudiante])
+            ->andWhere(['id_caso'=>$id_caso])
+            ->max('numero_seguimiento');
+            
+        return $modelRegSeguimiento;
+    }
 
     /**
      * Updates an existing DeceRegistroSeguimiento model.
@@ -130,6 +147,8 @@ class DeceRegistroSeguimientoController extends Controller
     public function actionUpdate($id)
     {
          $model = $this->findModel($id);
+        //se asigna la fecha de creacion del seguimiento con la fecha de modificacion, para cargar en pantalla
+       
       
          /** Extrae path donde se almacena los archivos */
         $path_archivo_dece_atencion = PlanificacionOpciones::find()->where([

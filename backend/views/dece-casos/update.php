@@ -88,7 +88,7 @@ $modelAsistProfesor = ScholarisAsistenciaProfesor::find()
                             ?>
                                        
                 </div> 
-                <div class="col-lg-8 text-left">
+                <div class="col-lg-7 text-left">
                     <h3>ACTUALIZACIÓN - CASOS</h3>
                     <?php $nombreEstudiante = $model->estudiante->last_name .' '.$model->estudiante->middle_name . ' ' . $model->estudiante->first_name ?>                           
                     <h6><b>Estudiante: </b><span style="color:red"><?=$nombreEstudiante?></span><br>

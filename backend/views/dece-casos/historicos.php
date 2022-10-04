@@ -36,6 +36,7 @@ function cargaArreglo($campo)
 $modelCasosHist = DeceCasos::find()
     ->where(['id_estudiante' => $model->id_estudiante])
     ->andWhere(['id_periodo' => $model->id_periodo])
+    ->orderBy(['numero_caso'=>SORT_ASC])
     ->all();
 
 //buscamos el numero de seguimientos que tiene el alumno
@@ -61,7 +62,7 @@ $modelPathArchivo = PlanificacionOpciones::find()
                 </div>
                 
                 <div class="col-lg-11">
-                    <h3>DECE - CASOS</h3>
+                    <span style="text-align: center;"><h3>DECE - CASOS</h3></span>
                 </div>
                 <!-- FIN DE CABECERA -->
                 <!-- inicia menu  -->

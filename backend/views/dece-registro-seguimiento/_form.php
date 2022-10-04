@@ -11,6 +11,7 @@ use backend\models\OpStudent;
 use backend\models\ResPartner;
 use backend\models\PlanificacionOpciones;
 use backend\models\helpers\Scripts;
+use backend\models\helpers\HelperGeneral;
 
 
 /* @var $this yii\web\View */
@@ -56,10 +57,6 @@ $modelRegSeguimiento = DeceRegistroSeguimiento::find()
 ->orderBy(['estado'=>SORT_DESC,'fecha_inicio'=>SORT_ASC])
 ->all();
 
-
-
-
-
 //extrae usuarios del sistema, para mosrtrar en atendido por 
 $objScript = new Scripts();
 $usuarios = $objScript->mostrarUsuarioParaDece();
@@ -88,18 +85,23 @@ foreach ($usuarios as $usu) {
                         </tr>                   
                         <tr>
                             <td><b>Alumno: </b></td>
-                            <td><?= $modelEstudiante->first_name . ' ' . $modelEstudiante->middle_name . ' ' . $modelEstudiante->last_name ?></td>
+                            <td><?= $modelEstudiante->last_name.' '.$modelEstudiante->first_name . ' ' . $modelEstudiante->middle_name  ?></td>
                         </tr>
                         <tr>
+                            <?php
+                                //calcual la edad
+                                $objHelperGeneral = new HelperGeneral();
+                                $edad =  $objHelperGeneral->obtener_edad_segun_fecha($modelEstudiante->birth_date);
+                            ?>
                             <td><b>Fecha Nacimiento: </b></td>
-                            <td><?= $modelEstudiante->birth_date ?></td>
+                            <td><?= $modelEstudiante->birth_date. ' ('.$edad.' años)' ?></td>
                         </tr>                       
                         <tr>
                             <td><b>Representante: </b></td>
                             <td><?= $modelRepresentante->name ?></td>
                         </tr>                       
                     </table>
-                    <h3 style="color:red">Histórico Seguimientos</h3>
+                    <h3 style="color:red">Histórico Acompañamiento</h3>
                     <div style="overflow-x:scroll;overflow-y:scroll;" >                        
                         <table class="table table-success table-striped table-bordered my-text-small">
                             <tr class="table-primary">
@@ -115,8 +117,8 @@ foreach ($usuarios as $usu) {
                                 foreach ($modelRegSeguimiento as $modelReg) {
                             ?>
                                     <tr>
-                                        <td><?= $modelReg->id ?></td>
-                                        <td><?= substr($modelReg->fecha_inicio,0,10) ?></td>
+                                        <td><?= $modelReg->id ?></td>                                        
+                                        <td><?= substr($modelReg->fecha_inicio,0,10)?></td>
                                         <td><?= substr($modelReg->fecha_fin,0,10) ?></td>
                                         <td><?= $modelReg->estado ?></td>
                                         <td><?= $modelReg->motivo ?></td>
@@ -139,7 +141,7 @@ foreach ($usuarios as $usu) {
                                             <div class="modal-dialog modal-dialog-scrollable modal-xl">
                                                 <div class="modal-content">
                                                     <div class="modal-header">
-                                                        <h5 class="modal-title" id="staticBackdropLabel"><b>Seguimiento No:  <?= $modelReg->id ?></b></h5>
+                                                        <h5 class="modal-title" id="staticBackdropLabel"><b>Acompañamiento No:  <?= $modelReg->id ?></b></h5>
                                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                     </div>
                                                     <div class="modal-body">
@@ -210,12 +212,14 @@ foreach ($usuarios as $usu) {
                     </div>
                 </div>
                 <div class="card col-lg-7 col-ms-7">
-                    <h3 style="color:blueviolet"><b>Seguimiento</b></h3>
+                    <h3 style="color:blueviolet"><b>Acompañamiento</b></h3>
                     <div class="dece-registro-seguimiento-form">
 
                         <?php $form = ActiveForm::begin(); 
                          
                         ?>                        
+
+                        <?= $form->field($model, 'numero_seguimiento')->hiddenInput(['value' => $model->numero_seguimiento])->label(false); ?>
 
                         <?= $form->field($model, 'id_estudiante')->hiddenInput(['value' => $model->id_estudiante])->label(false); ?>
 
@@ -225,7 +229,11 @@ foreach ($usuarios as $usu) {
                        
 
                         <?php if($model->isNewRecord){ ?>
-                             <?= $form->field($model, 'fecha_inicio')->textInput(['type' => 'date' ]) ?>
+                           
+                             <label for="exampleInputEmail1" class="form-label">Fecha Creación</label>
+                             <input type="date" id="fecha_inicio" class="form-control" name="fecha_inicio" require="true" value="<?= $model->fecha_inicio;?>">
+
+
                              <?= $form->field($model, 'fecha_fin')->hiddenInput()->label(false) ?>
                         <?php } else {?>
                            <?= $form->field($model, 'fecha_fin')->textInput(['type' => 'date' ]) ?>
@@ -237,6 +245,8 @@ foreach ($usuarios as $usu) {
                         <?= $form->field($model, 'motivo')->dropDownList($arrayMotivos, ['prompt' => 'Seleccione Motivo']) ?>                
 
                         <?= $form->field($model, 'atendido_por')->dropDownList($arrayUsuario,['prompt' => 'Seleccione Opción']) ?>
+
+                        <?= $form->field($model, 'atencion_para')->dropDownList($arrayAtencionPara,['prompt' => 'Seleccione Opción']) ?>
 
                         <?= $form->field($model, 'responsable_seguimiento')->dropDownList($arrayResponsableSeg, ['prompt' => 'Seleccione Opción']) ?>
 

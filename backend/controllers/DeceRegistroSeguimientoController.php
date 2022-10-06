@@ -146,10 +146,12 @@ class DeceRegistroSeguimientoController extends Controller
      */
     public function actionUpdate($id)
     {
-         $model = $this->findModel($id);
-        //se asigna la fecha de creacion del seguimiento con la fecha de modificacion, para cargar en pantalla
-       
-      
+        $model = $this->findModel($id);
+        $fechaActual = date('Y-m-d');
+        $hora = date('H:i:s');
+
+        
+            
          /** Extrae path donde se almacena los archivos */
         $path_archivo_dece_atencion = PlanificacionOpciones::find()->where([
             'tipo'=>'SUBIDA_ARCHIVO',
@@ -157,11 +159,12 @@ class DeceRegistroSeguimientoController extends Controller
         ])->one();
         $pathArchivoModel = $model->path_archivo;
 
-
         if ($model->load(Yii::$app->request->post()))
         {
-            //$imagenSubida = UploadedFile::getInstance($model,'path_archivo');
+            //$imagenSubida = UploadedFile::getInstance($model,'path_archivo');            
 
+            $fecha_fin = $_POST['fecha_fin'];
+            $model->fecha_fin = $fecha_fin.' '. $hora;          
             if(!empty($model->path_archivo))
             {
                 $imagenSubida = UploadedFile::getInstance($model,'path_archivo');
@@ -186,7 +189,11 @@ class DeceRegistroSeguimientoController extends Controller
             }
             return $this->redirect(['update', 'id' => $model->id]);
         }
-
+        //se asigna la fecha de creacion del seguimiento con la fecha de modificacion, para cargar en pantalla
+        if($model)
+        {
+            $model->fecha_fin = $fechaActual;
+        }  
         return $this->render('update', [
             'model' => $model,
         ]);

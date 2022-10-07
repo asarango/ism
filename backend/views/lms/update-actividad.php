@@ -18,9 +18,8 @@ use yii\helpers\Url;
 $this->title = 'Lms - ' . $modelActividad->lms->ismAreaMateria->materia->nombre;
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<!--<script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>-->
-<script src="https://cdn.ckeditor.com/4.19.1/standard/ckeditor.js"></script>
 
+<script src="https://cdn.ckeditor.com/4.17.1/full/ckeditor.js"></script>
 <link rel="stylesheet" href="estilo.css"/>
 
 
@@ -32,35 +31,57 @@ $this->params['breadcrumbs'][] = $this->title;
             <div class=" row align-items-center p-2">
                 <div class="col-lg-1"><h4><img src="ISM/main/images/submenu/aula.png" width="64px" style="" class="img-thumbnail"></h4></div>
                 <div class="col-lg-11">
-                        <?= Html::encode($this->title) ?>
-                        <small>
-                            <b> | Semana N°: </b><?= $modelActividad->lms->semana_numero ?> |
-                            <b>Semana N°: </b><?= $modelActividad->lms->hora_numero ?> |
-                            <b>Tema de la Hora N°: </b><?= $modelActividad->lms->titulo ?> |
-                        </small>
+                    <?= Html::encode($this->title) ?>
+                    <small>
+                        <b> | Semana N°: </b><?= $modelActividad->lms->semana_numero ?> |
+                        <b>Semana N°: </b><?= $modelActividad->lms->hora_numero ?> |
+                        <b>Tema de la Hora N°: </b><?= $modelActividad->lms->titulo ?> |
+                    </small>
                     <b>Actividad: </b><?= $modelActividad->titulo ?>
                 </div>
             </div>
+
+            <!-- inicia menu  -->
+            <div class="row">
+                <div class="col-lg-6 col-md-6">
+                    <!-- menu izquierda -->
+                    |                                
+                    <?= Html::a('<span class="badge rounded-pill" style="background-color: #ab0a3d"><i class="far fa-file"></i> Inicio</span>', ['site/index'], ['class' => 'link']); ?>
+                    |                                
+                    <?=
+                    Html::a('<span class="badge rounded-pill" style="background-color: #0a1f8f"><i class="fas fa-clock"></i> Configuración horas</span>',
+                            ['index1',
+                                'clase_id' => $clase_id,
+                                'semana_numero' => $numero_semana,
+                                'nombre_semana' => $nombre_semana,
+                            ], ['class' => 'link']);
+                    ?>                
+                    |
+                </div> <!-- fin de menu izquierda -->
+
+                <!-- inicio de menu derecha -->
+                
+                <!-- fin de menu derecha -->
+            </div>
+            <!-- finaliza menu menu  -->
+
             <hr>
 
-            <p>
-                |                                
-                <?= Html::a('<span class="badge rounded-pill" style="background-color: #ab0a3d"><i class="far fa-file"></i> Inicio</span>', ['site/index'], ['class' => 'link']); ?>
-                |                                
-                <?=
-                Html::a('<span class="badge rounded-pill" style="background-color: #0a1f8f"><i class="fas fa-clock"></i> Configuración horas</span>',
-                        ['index1',
-                            'clase_id' => $clase_id,
-                            'semana_numero' => $numero_semana,
-                            'nombre_semana' => $nombre_semana,
-                        ], ['class' => 'link']);
-                ?>                
-                |
-            </p>
 
             <!--incia cuerpo-->
             <div class="row" style="text-align: center; background-color: #ccc; padding: 5px">
-                <div class="col-lg-3 col-md-3" style="">
+                <div class="col-lg-4 col-md-4" style="">
+                    
+                    <?= $this->render('criterios-pai',[
+                        'campo' => 'actualizar',
+                        'id' => $modelActividad->id,
+                        'lms_id' => $modelActividad->lms_id,
+                        'clase_id' => $clase_id,
+                        'semana_numero' => $numero_semana,
+                        'nombre_semana' => $nombre_semana,
+                        'seccion' => $seccion
+                    ]) ?>
+                    
                     <div class="card">
                         <div class="card-header" style="background-color: #65b2e8; color: white">
                             Archivos
@@ -78,13 +99,11 @@ $this->params['breadcrumbs'][] = $this->title;
                                 <div class="modal-dialog">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h5 class="modal-title" id="staticBackdropLabel">Modal title</h5>
+                                            <h5 class="modal-title" id="staticBackdropLabel">Archivos</h5>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
                                         <?= Html::beginForm(['acciones'], 'post', ['enctype' => 'multipart/form-data']) ?>
                                         <div class="modal-body">
-
-
                                             <input type="hidden" name="lms_id" value="<?= $modelActividad->lms_id ?>"><!-- comment -->
                                             <input type="hidden" name="lms_actividad_id" value="<?= $modelActividad->id ?>"><!-- comment -->
                                             <input type="hidden" name="path_ism_area_materia_id" value="<?= $modelActividad->lms->ism_area_materia_id ?>"><!-- comment -->
@@ -143,27 +162,168 @@ $this->params['breadcrumbs'][] = $this->title;
                             </ul>                            
                         </div>
                     </div>
+
+                    <div class="card" style="margin-top: 15px">
+                        <div class="card-header" style="background-color: green; color: white">Estados</div>
+                        <div class="card-body" style="text-align: left">
+                            <?php
+                            if ($modelActividad->es_calificado) {
+                                echo '<i class="fas fa-check" style="color: green"> Es calificado...</i>';
+                            } else {
+                                echo '<i class="fas fa-ban" style="color: red"> No es calificada</i>';
+                            }
+
+                            echo '<br>';
+
+                            if ($modelActividad->es_publicado) {
+                                echo '<i class="fas fa-check" style="color: green"> Es publicado...</i>';
+                            } else {
+                                echo '<i class="fas fa-ban" style="color: red"> No es publicado</i>';
+                            }
+
+                            echo '<br>';
+
+                            if ($modelActividad->es_aprobado) {
+                                echo '<i class="fas fa-check" style="color: green"> Es aprobado...</i>';
+                            } else {
+                                echo '<i class="fas fa-ban" style="color: red"> No es aprobado</i>';
+                            }
+                            ?>
+                        </div>
+                    </div>
+
+                    <div class="card" style="margin-top: 15px">
+                        <div class="card-header" style="background-color: #eee; color: black">Actualizaciones</div>
+                        <div class="card-body" style="text-align: left">
+                            <b>Creado por:</b>
+                            <?= $modelActividad->created ?>
+                            <br>
+                            <b>Creado el:</b>
+                            <?= $modelActividad->created_at ?>
+
+                            <br>
+                            <br>
+                            <b>Actualizado por:</b>
+
+                            <?= $modelActividad->updated ?>
+                            <br>
+                            <b>Actualizado el:</b>
+                            <?= $modelActividad->updated_at ?>
+                        </div>
+                    </div>                                        
                 </div>
 
-                <div class="col-lg-5 col-md-5">
-                    <div class="row" style="background-color: white; height: 600px; 
-                                            overflow-y: scroll; 
-                                            overflow-x: scroll;
-                                            text-align: left">
-                        <?= ($modelActividad->descripcion) ?>
-                        
+
+                <div class="col-lg-8 col-md-8">
+                    <div class="row" style="background-color: white; height: 600px;
+                         overflow-y: scroll;
+                         overflow-x: scroll;
+                         text-align: left">
+
+                        <?= Html::beginForm(['acciones'], 'post', ['enctype' => 'multipart/form-data']) ?>
+
+                        <input type="hidden" name="campo" value="actualizar">
+                        <input type="hidden" name="id" value="<?= $modelActividad->id ?>">
+                        <input type="hidden" name="lms_id" value="<?= $modelActividad->lms_id ?>">
+                        <input type="hidden" name="clase_id" value="<?= $clase_id ?>">
+                        <input type="hidden" name="semana_numero" value="<?= $numero_semana ?>">
+                        <input type="hidden" name="nombre_semana" value="<?= $nombre_semana ?>">
+
+                        <div class="form-group" style="margin-top: 10px"><!-- INICIO DE TITULO -->
+                            <label for="titulo" class="form-label">TÍTULO</label>
+                            <input type="text" name="titulo" value="<?= $modelActividad->titulo ?>" class="form-control">
+                        </div> <!-- FIN DE TITULO -->
+
+                        <!-- INICIO DE DESCRIPCIÓN -->
+                        <div class="form-group" style="margin-top: 10px">
+                            <label for="descripcion" class="form-label">DESCRIPCIÓN</label>
+                            <textarea name="descripcion"><?= $modelActividad->descripcion ?></textarea>
+                            <script>
+                                CKEDITOR.replace('descripcion');
+                            </script>
+                        </div>
+                        <!-- FIN DE DESCRIPCIÓN -->
+
+
+                        <!-- INICIO DE TAREA -->
+                        <div class="form-group" style="margin-top: 10px">
+                            <label for="tarea" class="form-label">TAREA</label>
+                            <textarea name="tarea"><?= $modelActividad->tarea ?></textarea>
+                            <script>
+                                CKEDITOR.replace('tarea');
+                            </script>
+                        </div>
+                        <!-- FIN DE TAREA -->
+
+                        <!-- INICIO DE INDICACIONES -->
+                        <div class="form-group" style="margin-top: 10px">
+                            <label for="material" class="form-label">INDICACIONES</label>
+                            <textarea name="material"><?= $modelActividad->material_apoyo ?></textarea>
+
+                            <script>
+                                CKEDITOR.replace("material", {
+                                    //                            toolbar: [ 'bold', 'italic', 'link', 'undo', 'redo',redo 'numberedList', 'bulletedList' ]
+                                    customConfig: "/ckeditor_settings/config.js"
+                                });
+
+                            </script>
+                        </div>
+                        <!-- FIN DE INDICACIONES -->
+
+
+                        <!-- INCIA ES CALIFICADO -->
+                        <div class="form-group" style="margin-top: 10px">
+                            <label for="esCalificado" class="form-label">ES CALIFICADO?</label>
+                            <div class="form-check form-switch">
+
+                                <?php
+                                if ($modelActividad->es_calificado) {
+                                    $checked = 'checked';
+                                } else {
+                                    $checked = '';
+                                }
+                                ?>
+
+                                <input class="form-check-input" name="es_calificado" type="checkbox" id="flexSwitchCheckChecked" <?= $checked ?> >
+                            </div>
+                        </div>
+                        <!-- FIN ES CALIFICADO -->
+
+
+                        <!-- INCIA ES PUBLICADO -->
+                        <div class="form-group" style="margin-top: 10px">
+                            <label for="esPublicado" class="form-label">ES PUBLICADO?</label>
+                            <div class="form-check form-switch">
+
+                                <?php
+                                if ($modelActividad->es_publicado) {
+                                    $checked = 'checked';
+                                } else {
+                                    $checked = '';
+                                }
+                                ?>
+
+                                <input class="form-check-input" name="es_publicado" type="checkbox" id="flexSwitchCheckChecked" <?= $checked ?> >
+                            </div>
+                        </div>
+                        <!-- FIN ES PUBLICADO -->
+
+                        <br>
+                        <button type="submit" class="btn btn-outline-primary">Actualizar</button>
+
+
                     </div>
-                </div>
-                <div class="col-lg-4 col-md-4">
-                    <div class="" style="background: white">
-                        Opciones
-                    </div>
+
+                    <?= Html::endForm() ?>
+
                 </div>
             </div>
-            <!--fin de cuerpo-->
 
         </div>
+        <!--fin de cuerpo-->
+
     </div>
+</div>
 </div>
 
 

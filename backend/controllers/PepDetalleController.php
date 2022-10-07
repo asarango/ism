@@ -350,7 +350,8 @@ class PepDetalleController extends Controller {
         return $resp;
     }
     
-    public function actionDesagregacion(){
+    public function actionDesagregacion(){        
+               
         $temaId = $_GET['tema_id'];
         $tema = \backend\models\PepPlanificacionXUnidad::findOne($temaId);       
         

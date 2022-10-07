@@ -5,6 +5,7 @@ use yii\helpers\Html;
 
 //$listaTipoActividadNac = \yii\helpers\ArrayHelper::map($tipoActividadNac, 'id', 'nombre_nacional');
 //$listaTipoActividadPai = \yii\helpers\ArrayHelper::map($tipoActividadPai, 'id', 'nombre_nacional');
+
 ?>
 <ul style="display: flex">                
 
@@ -45,8 +46,20 @@ use yii\helpers\Html;
                                     class="form-control"
                                     onchange="selecciona_tipo_insumo(this)">
                                 <option>Seleccione tipo actividad...</option>
-                                <option value="P">PAI</option>
-                                <option value="N">Nacional</option>
+                                
+                                <?php
+                                    if($seccion == 'PAI'){
+                                        ?>
+                                        <option value="P">PAI</option>
+                                        <option value="N">Nacional</option>
+                                    <?php
+                                    }else{
+                                        ?>                                        
+                                        <option value="N">Nacional</option>
+                                    <?php
+                                    }
+                                
+                                ?>                                
                             </select>
                         </div>
 

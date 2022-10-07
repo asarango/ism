@@ -70,12 +70,13 @@ $this->title = 'Lms - ' . $modelClase->ismAreaMateria->materia->nombre . ' - ' .
                             
 
                             echo $this->render('detalle', [
-                                'modelDetalleActivo' => $modelDetalleActivo,
-                                'tipoActividadNac' => $tipoActividadNac,
-                                'tipoActividadPai' => $tipoActividadPai,
-                                'claseId' => $modelClase->id,
-                                'nombreSemana' => $nombreSemana,
-                                'actividades' => $actividades
+                                'modelDetalleActivo'    => $modelDetalleActivo,
+                                'tipoActividadNac'      => $tipoActividadNac,
+                                'tipoActividadPai'      => $tipoActividadPai,
+                                'claseId'               => $modelClase->id,
+                                'nombreSemana'          => $nombreSemana,
+                                'actividades'           => $actividades,
+                                'seccion'               => $seccion
                             ]);
                         } else {
                             ?>
@@ -100,6 +101,7 @@ $this->title = 'Lms - ' . $modelClase->ismAreaMateria->materia->nombre . ' - ' .
     <script>
 
         function muestra_detalle(id, claseId) {
+            
             var url = '<?= Url::to(['detalle']) ?>';
             var nombreSemana = '<?= $nombreSemana ?>';
 

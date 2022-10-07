@@ -88,8 +88,9 @@ class LmsController extends Controller
             'ism_area_materia_id' => $modelClase->ism_area_materia_id,
             'semana_numero' => $semanaNumero,
             'estado_activo' => true
-        ])->one();                
+        ])->one();     
         
+                
         isset($modelDetalleActivo) ? $detalleId = $modelDetalleActivo->id : $detalleId = 0;
         
         $helper = new \backend\models\helpers\Scripts();
@@ -189,10 +190,13 @@ class LmsController extends Controller
         $nombreSemana = $_GET['nombre_semana'];
 
         
+        $lmsAux = Lms::findOne($lmsId);
+        $this->update_estado_activo_falso($lmsAux->ism_area_materia_id, $lmsAux->semana_numero);                
+        
         $lms = Lms::findOne($lmsId);
-        $this->update_estado_activo_falso($lms->ism_area_materia_id, $lms->semana_numero);
-        $lms->estado_activo = true;
+        $lms->estado_activo = true;        
         $lms->save();
+        
         return $this->redirect(['index1',
             'clase_id'      => $claseId,
             'semana_numero' => $lms->semana_numero,
@@ -209,12 +213,14 @@ class LmsController extends Controller
         $con->createCommand($query)->execute();
     }
     
-    public function actionAcciones(){                
-        
+    public function actionAcciones(){         
+               
         $lmsId = $_POST['lms_id'];
         $campo = $_POST['campo'];
         $usuarioLog = Yii::$app->user->identity->usuario;
         $hoy = date('Y-m-d H:i:s');
+        
+        
         
         
         if($campo == 'titulo'){
@@ -222,7 +228,13 @@ class LmsController extends Controller
             $model = Lms::findOne($lmsId);
             $model->$campo = $valor;
             $model->save();
-        }else if($campo == 'actividad'){
+        }else if($campo == 'indicaciones'){
+            $valor = $_POST['valor'];        
+            $model = Lms::findOne($lmsId);
+            $model->$campo = $valor;
+            $model->save();
+        }
+        else if($campo == 'actividad'){
             
             //para ingresar en lms_actividad
             $model = new \backend\models\LmsActividad();
@@ -275,6 +287,39 @@ class LmsController extends Controller
                     'nombreSemana' => $_POST['nombreSemana']                
                 ]);
             }
+        }else if($campo == 'actualizar'){
+            $userLog = Yii::$app->user->identity->usuario;
+            $hoy = date('Y-m-d H:i:s');
+            
+            $id             = $_POST['id'];
+            $titulo         = $_POST['titulo'];
+            $descripcion    = $_POST['descripcion'];
+            $tarea          = $_POST['tarea'];
+            $material       = $_POST['material'];
+            
+            $model = \backend\models\LmsActividad::findOne($id);
+            $model->titulo      = $titulo;
+            $model->descripcion = $descripcion;
+            $model->tarea       = $tarea;
+            $model->material_apoyo = $material;
+                        
+            isset($_POST['es_calificado']) ? $model->es_calificado = true : $model->es_calicado = false;
+            isset($_POST['es_publicado'])  ? $model->es_publicado = true : $model->es_publicado = false;
+            
+            $model->updated = $userLog;
+            $model->updated_at = $hoy;            
+            
+            $model->save();
+            
+            return $this->redirect(['acciones-get',
+                    'lms_id'        => $model->lms_id,
+                    'campo'         => 'update',
+                    'actividad_id'  => $id,
+                    'claseId'      => $_POST['clase_id'],
+                    'numeroSemana' => $_POST['semana_numero'],
+                    'nombreSemana' => $_POST['nombre_semana']                
+                ]);
+            
         }
         
         
@@ -301,8 +346,8 @@ class LmsController extends Controller
         $claseId        = $_GET['claseId'];
         $nombreSemana   = $_GET['nombreSemana'];
         $numeroSemana   = $_GET['numeroSemana'];
-       
-                        
+        $seccion        = $_GET['seccion'];
+                               
         $modelActividad = \backend\models\LmsActividad::findOne($actividadId);
 //        $modelArchivos  = \backend\models\LmsActividadXArchivo::find()->where([
 //            'lms_actividad_id' => $lmsId
@@ -312,7 +357,8 @@ class LmsController extends Controller
             'modelActividad' => $modelActividad,
             'clase_id' => $claseId,
             'nombre_semana' => $nombreSemana,
-            'numero_semana' => $numeroSemana
+            'numero_semana' => $numeroSemana,
+            'seccion' => $seccion
         ]);
         
     }

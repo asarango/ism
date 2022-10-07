@@ -7,6 +7,7 @@ use backend\models\OpParent;
 use backend\models\OpStudent;
 use backend\models\ResPartner;
 use backend\models\DeceInstitucionExterna;
+use backend\models\helpers\HelperGeneral;
 
 /* @var $this yii\web\View */
 /* @var $model backend\models\DeceDerivacion */
@@ -22,12 +23,10 @@ $modelRegDerivacion = DeceDerivacion::find()
 ->orderBy(['fecha_derivacion'=>SORT_ASC])
 ->all();
 //institucion externa derivacion
-$instExterna = DeceInstitucionExterna::find()->all();
+$arrayInstExterna = DeceInstitucionExterna::find()->asArray()->all();
 
-echo '<pre>';
-       print_r($instExterna);
-       die();
-
+$numDivisionesIntExterna = count($arrayInstExterna)/4;
+$numDivisionesIntExterna = intval($numDivisionesIntExterna)+1;
 ?>
 
 <div class="dece-derivacion-form">
@@ -47,9 +46,14 @@ echo '<pre>';
                             <td><b>Alumno: </b></td>
                             <td><?= $modelEstudiante->first_name . ' ' . $modelEstudiante->middle_name . ' ' . $modelEstudiante->last_name ?></td>
                         </tr>
+                        <?php
+                                //calcual la edad
+                                $objHelperGeneral = new HelperGeneral();
+                                $edad =  $objHelperGeneral->obtener_edad_segun_fecha($modelEstudiante->birth_date);
+                            ?>
                         <tr>
                             <td><b>Fecha Nacimiento: </b></td>
-                            <td><?= $modelEstudiante->birth_date ?></td>
+                            <td><?= $modelEstudiante->birth_date . ' ('.$edad.' años)'  ?></td>
                         </tr>                       
                         <tr>
                             <td><b>Representante: </b></td>
@@ -194,23 +198,31 @@ echo '<pre>';
                 ?>
                 <div>
                     <h4><u>Institución Externa</u></h4>
-
-                    <table class="table table-hover">                    
+                    <table class="table table-info table-hover"> 
+                        
+                            <?php
+                            $arrayDividido = array_chunk($arrayInstExterna, $numDivisionesIntExterna); 
+                            foreach($arrayDividido as $array)
+                            {
+                            ?>
                             <tr>
-                                <td>Mark</td>
-                                <td>Otto</td>
-                                <td>@mdo</td>
-                            </tr>
-                            <tr>
-                                <td>Jacob</td>
-                                <td>Thornton</td>
-                                <td>@fat</td>
-                            </tr>
-                            <tr>                       
-                                <td>Jacob</td>
-                                <td>Thornton</td>
-                                <td>@fat</td>
-                            </tr>
+                                <?php   
+                                    foreach($array as $inst)
+                                    {
+                                ?>
+                                    <td style='font-size:10px;'><?=$inst['nombre']?></td> 
+                                    <td>
+                                        <a href='#' style='color:gray;' onclick="">                                            
+                                            <i class="fas fa-check-circle"></i>                                            
+                                        </a>
+                                    </td>
+                                <?php
+                                    }//fin foreach 2
+                                ?>
+                            </tr> 
+                            <?php
+                            }//fin foreach 2            
+                            ?>
                     </table>
                     <?= $form->field($model, 'otra_institucion_externa')->textInput() ?>
                 </div>

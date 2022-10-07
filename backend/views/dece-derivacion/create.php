@@ -24,20 +24,23 @@ $this->params['breadcrumbs'][] = $this->title;
                 <div class="col-lg-2">
                     <h4><img src="ISM/main/images/submenu/derivacion2.png" width="100px" class="img-thumbnail"></h4>
                 </div>
-                <div class="col-lg-10">
+                <div class="col-lg-2">
+                        <div class=" row align-items-center p-2">
+                        <?=
+                                Html::a(
+                                    '<span class="badge rounded-pill" style="background-color: #0a1f8f"><i class="fa fa-briefcase" aria-hidden="true"></i>Regresar Casos</span>',
+                                    ['dece-casos/create', 'id' => $model->id_estudiante, 'id_clase' => 0],
+                                    ['class' => 'link']
+                                );
+                            ?>
+                        </div>
+                </div>
+                <div class="col-lg-8">
                     <h1><?= Html::encode($this->title) ?></h1>
                     <h3><?= 'Asociado al Número de Caso: '.$model->casos->numero_caso ?></h5>
                 </div>
             </div>
-            <div class=" row align-items-center p-2">
-                 <?=
-                        Html::a(
-                            '<span class="badge rounded-pill" style="background-color: #0a1f8f"><i class="fa fa-briefcase" aria-hidden="true"></i>Regresar Casos</span>',
-                            ['dece-casos/create', 'id' => $model->id_estudiante, 'id_clase' => 0],
-                            ['class' => 'link']
-                        );
-                    ?>
-            </div>
+           
 
             <?= $this->render('_form', [
                 'model' => $model

@@ -8,7 +8,7 @@ use backend\models\ScholarisGrupoAlumnoClase;
 /* @var $this yii\web\View */
 /* @var $model app\models\DeceRegistroSeguimiento */
 
-$this->title = 'Dece Acompañamiento - No.: ' . $model->id;
+$this->title = 'Actualización Acompañamiento - No.: ' . $model->numero_seguimiento;
 $this->params['breadcrumbs'][] = ['label' => 'Dece Registro Seguimientos', 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $model->id, 'url' => ['view', 'id' => $model->id]];
 $this->params['breadcrumbs'][] = 'Update';
@@ -32,7 +32,6 @@ if($modelGrupo)
         ->one();
     }
 }
-
 ?>
 <div class="dece-registro-seguimiento-update">
 
@@ -41,47 +40,49 @@ if($modelGrupo)
         <div class="card shadow col-lg-10 col-md-10">
             
             <div class=" row align-items-center p-2">
-                <div class="col-lg-2">
+                <div class="col-lg-1">
                     <h4><img src="ISM/main/images/submenu/retroalimentacion.png" width="64px"  class="img-thumbnail"></h4>
                 </div>
-                <div class="col-lg-10">
+                <div class="col-lg-2">
+                        <div class="row align-items-center p-2">
+                            <p>  
+                            | 
+                            <?=
+                            Html::a(
+                                    '<span class="badge rounded-pill" style="background-color: #0a1f8f"><i class="fa fa-briefcase" aria-hidden="true"></i>Regresar Caso</span>',
+                                    ['dece-casos/update', 'id' => $model->id_caso],
+                                    ['class' => 'link']
+                                );
+                                ?>      
+                            |             
+                            <?php
+                            if($model->id_clase>0)//si es mayor a cero, biene de leccionario
+                            { 
+                            ?>
+                                |
+                                    <?=
+                                    Html::a(
+                                        '<span class="badge rounded-pill" style="background-color: #0a1f8f"><i class="fa fa-briefcase" aria-hidden="true"></i>Regresar - Mi Clase</span>',
+                                        ['comportamiento/index', 'id' => $modelAsistProfesor->id],
+                                        ['class' => 'link']
+                                    );
+                                    ?>
+                            <?php
+                            }
+                            ?>
+                            </p>
+                        </div>
+                </div>
+                <div class="col-lg-9">
                     <h1><?= Html::encode($this->title) ?></h1>
                     <h3><?= 'Asociado al Número de Caso: '.$model->caso->numero_caso?></h5>
                 </div>
-            </div>
-            <div class=" row align-items-center p-2">
-                    <p>  
-                    | 
-                    <?=
-                          
-                           Html::a(
-                               '<span class="badge rounded-pill" style="background-color: #0a1f8f"><i class="fa fa-briefcase" aria-hidden="true"></i>Regresar Caso</span>',
-                               ['dece-casos/update', 'id' => $model->id_caso],
-                               ['class' => 'link']
-                           );
-                           ?>      
-                    |             
-                    <?php
-                       if($model->id_clase>0)//si es mayor a cero, biene de leccionario
-                        { 
-                        ?>
-                        |
-                            <?=
-                            Html::a(
-                                '<span class="badge rounded-pill" style="background-color: #0a1f8f"><i class="fa fa-briefcase" aria-hidden="true"></i>Regresar - Mi Clase</span>',
-                                ['comportamiento/index', 'id' => $modelAsistProfesor->id],
-                                ['class' => 'link']
-                            );
-                            ?>
-                        <?php
-                        }
-                        ?>
-                    </p>
-            </div>
-
-            <?= $this->render('_form', [
-                'model' => $model,
-            ]) ?>
+            </div>           
+            
+                <?= $this->render('_form', [
+                    'model' => $model,
+                ]) ?>
+            
 
         </div>
 

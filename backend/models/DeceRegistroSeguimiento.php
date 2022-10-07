@@ -63,7 +63,7 @@ class DeceRegistroSeguimiento extends \yii\db\ActiveRecord
             'id_clase' => 'Id Clase',
             'id_estudiante' => 'Id Estudiante',
             'fecha_inicio' => 'Fecha',
-            'fecha_fin' => 'Fecha',
+            'fecha_fin' => 'Fecha Actualización',
             'estado' => 'Estado',
             'motivo' => 'Motivo',
             'persona_solicitante' => 'Solicitante',

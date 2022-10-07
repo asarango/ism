@@ -62,7 +62,8 @@ $objScript = new Scripts();
 $usuarios = $objScript->mostrarUsuarioParaDece();
 $arrayUsuario= array();
 //recorremos arreglo
-foreach ($usuarios as $usu) {
+foreach ($usuarios as $usu) 
+{
     $arrayUsuario[$usu['usuario']]=$usu['usuario'];
 }
 
@@ -117,7 +118,7 @@ foreach ($usuarios as $usu) {
                                 foreach ($modelRegSeguimiento as $modelReg) {
                             ?>
                                     <tr>
-                                        <td><?= $modelReg->id ?></td>                                        
+                                        <td><?= $modelReg->numero_seguimiento ?></td>                                        
                                         <td><?= substr($modelReg->fecha_inicio,0,10)?></td>
                                         <td><?= substr($modelReg->fecha_fin,0,10) ?></td>
                                         <td><?= $modelReg->estado ?></td>
@@ -141,7 +142,7 @@ foreach ($usuarios as $usu) {
                                             <div class="modal-dialog modal-dialog-scrollable modal-xl">
                                                 <div class="modal-content">
                                                     <div class="modal-header">
-                                                        <h5 class="modal-title" id="staticBackdropLabel"><b>Acompañamiento No:  <?= $modelReg->id ?></b></h5>
+                                                        <h5 class="modal-title" id="staticBackdropLabel"><b>Acompañamiento No:  <?= $modelReg->numero_seguimiento ?></b></h5>
                                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                     </div>
                                                     <div class="modal-body">
@@ -212,7 +213,14 @@ foreach ($usuarios as $usu) {
                     </div>
                 </div>
                 <div class="card col-lg-7 col-ms-7">
-                    <h3 style="color:blueviolet"><b>Acompañamiento</b></h3>
+                     <?php if($model->isNewRecord){ ?>
+                        <h3 style="color:blueviolet"><b>Acompañamiento</b></h3>
+                      <?php } else {?>
+                        <h3 style="color:blueviolet"><b>Acompañamiento No. <?= $model->numero_seguimiento?></b></h3>
+                        <h6 style="color:blueviolet"><b>Fecha Creación. <?= $model->fecha_inicio?></b></h6>
+                    <?php }?>
+                   
+
                     <div class="dece-registro-seguimiento-form">
 
                         <?php $form = ActiveForm::begin(); 
@@ -230,14 +238,17 @@ foreach ($usuarios as $usu) {
 
                         <?php if($model->isNewRecord){ ?>
                            
-                             <label for="exampleInputEmail1" class="form-label">Fecha Creación</label>
+                             <label for="fecha" class="form-label">Fecha Creación</label>
                              <input type="date" id="fecha_inicio" class="form-control" name="fecha_inicio" require="true" value="<?= $model->fecha_inicio;?>">
 
 
                              <?= $form->field($model, 'fecha_fin')->hiddenInput()->label(false) ?>
                         <?php } else {?>
-                           <?= $form->field($model, 'fecha_fin')->textInput(['type' => 'date' ]) ?>
-                           <?= $form->field($model, 'fecha_inicio')->hiddenInput()->label(false) ?>
+
+                            <label for="fechaActualizacion" class="form-label">Fecha Actualización</label>
+                            <input type="date" id="fecha_fin" class="form-control" name="fecha_fin" require="true" value="<?= $model->fecha_fin;?>">
+                          
+                            <?= $form->field($model, 'fecha_inicio')->hiddenInput()->label(false) ?>
                          <?php }?>
                        
                         <?= $form->field($model, 'estado')->dropDownList($arrayEstado, ['prompt' => 'Seleccione Estado']) ?>

@@ -339,6 +339,9 @@ class LmsController extends Controller
         $con->createCommand($query)->execute();
     }
     
+    
+    
+    
     public function actionAccionesGet(){
         $lmsId          = $_GET['lms_id'];
         $campo          = $_GET['campo'];
@@ -349,19 +352,55 @@ class LmsController extends Controller
         $seccion        = $_GET['seccion'];
                                
         $modelActividad = \backend\models\LmsActividad::findOne($actividadId);
-//        $modelArchivos  = \backend\models\LmsActividadXArchivo::find()->where([
-//            'lms_actividad_id' => $lmsId
-//        ])->all();
+        $modelClase = \backend\models\ScholarisClase::findOne($claseId);
+        $uso = $modelClase->tipo_usu_bloque;
+        
+        $scholarisPeriodoId = Yii::$app->user->identity->periodo_id;
+        
+        $criterios = $this->get_criterios_pai($uso, $scholarisPeriodoId, $modelActividad->lms->ism_area_materia_id, $numeroSemana, $actividadId);
         
         return $this->render('update-actividad',[
             'modelActividad' => $modelActividad,
             'clase_id' => $claseId,
             'nombre_semana' => $nombreSemana,
             'numero_semana' => $numeroSemana,
-            'seccion' => $seccion
+            'seccion' => $seccion,
+            'criterios' => $criterios
         ]);
         
     }
+    
+    
+    private function get_criterios_pai($uso, $scholarisPeriodoId, $ismAreaMateriaId, $semanaNumero, $actividadId){
+        $con = Yii::$app->db;
+        $query = "select 	des.id  
+                                    ,cri.nombre as criterio
+                                    ,ide.nombre as descriptor
+                                    ,ild.descripcion 
+                                    ,lpai.id as lms_criterio_id
+                    from 	planificacion_vertical_pai_descriptores des
+                                    inner join planificacion_bloques_unidad uni on uni.id = des.plan_unidad_id
+                                    inner join planificacion_desagregacion_cabecera cab on cab.id = uni.plan_cabecera_id 
+                                    inner join curriculo_mec_bloque cbl on cbl.id = uni.curriculo_bloque_id 
+                                    inner join scholaris_bloque_actividad blo on blo.orden = cbl.code 
+                                                    and blo.tipo_uso = '$uso'
+                                    inner join scholaris_bloque_semanas sem on sem.bloque_id = blo.id 
+                                    inner join ism_criterio_descriptor_area isc on isc.id = des.descriptor_id 
+                                    inner join ism_criterio cri on cri.id = isc.id_criterio  
+                                    inner join ism_descriptores ide on ide.id = isc.id_descriptor 
+                                    inner join ism_literal_descriptores ild on ild.id = isc.id_literal_descriptor 
+                                    left join lms_actividad_criterios_pai lpai on lpai.plan_vertical_descriptor_id = des.id 
+                                            and lpai.lms_actividad_id = $actividadId
+                    where 	cab.scholaris_periodo_id = $scholarisPeriodoId
+                                    and cab.ism_area_materia_id = $ismAreaMateriaId
+                                    and sem.semana_numero = $semanaNumero
+                    order by cri.nombre asc
+                                    ,ide.nombre;";
+        
+        $res = $con->createCommand($query)->queryAll();
+        return $res;
+    }
+    
     
     private function insertar_actividad($model){
         
@@ -371,6 +410,62 @@ class LmsController extends Controller
                 . "$model->es_publicado, '$model->material_apoyo', false, '$model->created', '$model->created_at', '$model->updated', '$model->updated_at')";
         $con->createCommand($query)->execute();        
     }
+    
+    
+    public function actionAsignar(){
+        
+        $lmsActividadId             = $_GET['actividadId'];
+        $lmsId                      = $_GET['lms_id'];
+        $planVerticalDescriptorId   = $_GET['plan_vertical_descriptor_id'];
+        $campo                      = $_GET['campo'];
+        $claseId                    = $_GET['clase_id'];
+        $semanaNumero               = $_GET['semana_numero'];
+        $nombreSemana               = $_GET['nombre_semana'];
+        $seccion                    = $_GET['seccion'];
+        
+        $model = new \backend\models\LmsActividadCriteriosPai();
+        $model->lms_actividad_id            = $lmsActividadId;
+        $model->plan_vertical_descriptor_id = $planVerticalDescriptorId;
+        $model->save();
+        
+        return $this->redirect(['acciones-get',
+                'lms_id'        => $lmsId,
+                'campo'         => $campo,
+                'actividad_id'  => $lmsActividadId,
+                'claseId'       => $claseId,
+                'numeroSemana'  => $semanaNumero,
+                'nombreSemana'  => $nombreSemana,
+                'seccion'       => $seccion            
+            ]);
+    }
+    
+    
+    public function actionQuitar(){
+                
+        $id                         = $_GET['id'];
+        $lmsId                      = $_GET['lms_id'];
+        $campo                      = $_GET['campo'];
+        $lmsActividadId                = $_GET['actividadId'];
+        $claseId                    = $_GET['clase_id'];
+        $semanaNumero               = $_GET['semana_numero'];
+        $nombreSemana               = $_GET['nombre_semana'];
+        $seccion                    = $_GET['seccion'];
+        
+        $model = \backend\models\LmsActividadCriteriosPai::findOne($id);
+        $model->delete();
+        
+        return $this->redirect(['acciones-get',
+                'lms_id'        => $lmsId,
+                'campo'         => $campo,
+                'actividad_id'  => $lmsActividadId,
+                'claseId'       => $claseId,
+                'numeroSemana'  => $semanaNumero,
+                'nombreSemana'  => $nombreSemana,
+                'seccion'       => $seccion            
+            ]);
+        
+    }
 
     
 }
+

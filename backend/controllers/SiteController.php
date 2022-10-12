@@ -141,20 +141,44 @@ class SiteController extends Controller {
 
         if (isset(\Yii::$app->user->identity->usuario)) {
             $userLog = \Yii::$app->user->identity->usuario;
+            $scholarisPeriodoId = \Yii::$app->user->identity->periodo_id;
             $user = \backend\models\Usuario::find()->where(['usuario' => $userLog])->one();
             $rolId = $user->rol_id;
         } else {
             $this->redirect(['site/login']);
         }
-
+        
+        
+        $secciones = $this->get_secciones_usuario($userLog, $scholarisPeriodoId);
+        
         $menuId = $_GET['menu_id'];
         $menu = \backend\models\Menu::findOne($menuId);
         $submenu = $this->get_submenu($rolId, $menuId);
 
         return $this->render('submenu', [
-                    'submenu' => $submenu,
-                    'menu' => $menu
+                    'submenu'       => $submenu,
+                    'menu'          => $menu,
+                    'secciones'     => $secciones 
         ]);
+    }
+    
+    
+    private function get_secciones_usuario($usuario, $scholarisPeriodoId){
+        $con = Yii::$app->db;
+        $query = "select 	sec.code 
+                    from	op_faculty fac
+                                    inner join res_users use on use.partner_id = fac.partner_id 
+                                    inner join scholaris_clase cla on cla.idprofesor = fac.id 
+                                    inner join op_course_paralelo par on par.id = cla.paralelo_id 
+                                    inner join op_course cur on cur.id = par.course_id 
+                                    inner join op_section sec on sec.id = cur.section
+                                    inner join scholaris_op_period_periodo_scholaris sop on sop.op_id = sec.period_id 
+                    where 	use.login ilike '$usuario'
+                                    and sop.scholaris_id = $scholarisPeriodoId
+                    group by sec.code;";
+        $res = $con->createCommand($query)->queryAll();
+        return $res;
+        
     }
 
     private function get_submenu($rolId, $menuId) {
@@ -163,6 +187,7 @@ class SiteController extends Controller {
                                 ,o.operacion
                                 ,o.nombre
                                 ,o.ruta_icono
+                                ,o.seccion_exclusiva
                 from 	operacion o
                                 inner join rol_operacion ro on ro.operacion_id = o.id
                 where 	o.menu_id = $menuId

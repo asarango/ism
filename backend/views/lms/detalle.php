@@ -11,7 +11,7 @@ use yii\grid\GridView;
 
 
 <div class="row" style="margin-left: 5px;">
-    <div class="col-lg-8 col-md-8">
+    <div class="col-lg-12 col-md-12">
 
         <div class="row" style="background-color: white; padding: 10px 10px 10px 0px">
             <b style="color: #ab0a3d">
@@ -101,7 +101,7 @@ use yii\grid\GridView;
 
     </div>
 
-    <div class="col-lg-4 col-md-4">dfsdf</div>
+    <!--<div class="col-lg-4 col-md-4">dfsdf</div>-->
 </div>
 
 
@@ -110,7 +110,7 @@ use yii\grid\GridView;
     function grabar_text_indicaciones(campoId, lmsId) {        
         var valor1 = editor1.getData();
         var url = '<?= Url::to(['acciones']) ?>';
-        alert(campoId);
+        //alert(campoId);
         var params = {
             lms_id: lmsId,
             campo: campoId,

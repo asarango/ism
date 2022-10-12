@@ -44,7 +44,7 @@ $this->title = 'Lms - ' . $modelClase->ismAreaMateria->materia->nombre . ' - ' .
             <div class="row p-3" style="background-color: #ccc">
 
 
-                <div class="col-lg-3 col-md-3" 
+                <div class="col-lg-4 col-md-4" 
                      style="background-color: #eee; padding-top: 10px; height: 100vh;">
                     <ul>
                         <?php
@@ -62,7 +62,7 @@ $this->title = 'Lms - ' . $modelClase->ismAreaMateria->materia->nombre . ' - ' .
                         ?>
                     </ul>
                 </div>
-                <div class="col-lg-9 col-md-9">
+                <div class="col-lg-8 col-md-8">
                     <div class="" id="div-detalle">
 
                         <?php

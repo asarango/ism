@@ -73,13 +73,15 @@ $this->params['breadcrumbs'][] = $this->title;
                 <div class="col-lg-4 col-md-4" style="">
                     
                     <?= $this->render('criterios-pai',[
-                        'campo' => 'actualizar',
-                        'id' => $modelActividad->id,
-                        'lms_id' => $modelActividad->lms_id,
-                        'clase_id' => $clase_id,
+                        'campo'         => 'actualizar',
+                        'id'            => $modelActividad->id,
+                        'lms_id'        => $modelActividad->lms_id,
+                        'clase_id'      => $clase_id,
                         'semana_numero' => $numero_semana,
                         'nombre_semana' => $nombre_semana,
-                        'seccion' => $seccion
+                        'seccion'       => $seccion,
+                        'criterios'     => $criterios,
+                        'modelActividad'     => $modelActividad
                     ]) ?>
                     
                     <div class="card">

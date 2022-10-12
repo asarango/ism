@@ -23,7 +23,8 @@ foreach ($actividades as $actividad) {
                         'actividad_id' => $actividad->id,
                         'claseId' => $claseId,
                         'nombreSemana' => $nombreSemana,
-                        'numeroSemana' => $numeroSemana
+                        'numeroSemana' => $numeroSemana,
+                        'seccion' => $seccion
                     ],['title' => 'Actualizar'])
                     ?>
                 </div>  

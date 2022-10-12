@@ -11,7 +11,7 @@ use yii\grid\GridView;
 
 
 <div class="row" style="margin-left: 5px;">
-    <div class="col-lg-8 col-md-8">
+    <div class="col-lg-12 col-md-12">
 
         <div class="row" style="background-color: white; padding: 10px 10px 10px 0px">
             <b style="color: #ab0a3d">
@@ -51,13 +51,13 @@ use yii\grid\GridView;
             <div class="form-group">
                 <label for="indicaciones">INDICACIONES:</label>
                 <textarea name="editor1" id="id-indicaciones"><?= $modelDetalleActivo->indicaciones ?></textarea>
+                 <script>
+                    var editor1 = CKEDITOR.replace('editor1');
+                </script>
                 <br>
                 <button type="button" 
                         onclick="grabar_text_indicaciones('indicaciones', <?= $modelDetalleActivo->id ?>);"
-                        class="btn btn-primary">Grabar</button>
-                <script>
-                    var editor1 = CKEDITOR.replace('editor1');
-                </script>
+                        class="btn btn-primary">Grabar</button>               
             </div>
             
         </div>
@@ -74,7 +74,8 @@ use yii\grid\GridView;
                     'tipoActividadPai' => $tipoActividadPai,
                     'claseId' => $claseId,
                     'nombreSemana' => $nombreSemana,
-                    'numeroSemana' => $modelDetalleActivo->semana_numero
+                    'numeroSemana' => $modelDetalleActivo->semana_numero,
+                    'seccion' => $seccion
             ]); ?>
         </div>
         
@@ -91,7 +92,8 @@ use yii\grid\GridView;
                     'actividades' => $actividades,
                     'claseId' => $claseId,
                     'nombreSemana' => $nombreSemana,
-                    'numeroSemana' => $modelDetalleActivo->semana_numero
+                    'numeroSemana' => $modelDetalleActivo->semana_numero,
+                    'seccion' => $seccion
                 ]);
             ?>
         </div>
@@ -99,17 +101,16 @@ use yii\grid\GridView;
 
     </div>
 
-    <div class="col-lg-4 col-md-4">dfsdf</div>
+    <!--<div class="col-lg-4 col-md-4">dfsdf</div>-->
 </div>
 
 
 <script>
 
-    function grabar_text_indicaciones(campoId, lmsId) {
+    function grabar_text_indicaciones(campoId, lmsId) {        
         var valor1 = editor1.getData();
-
         var url = '<?= Url::to(['acciones']) ?>';
-
+        //alert(campoId);
         var params = {
             lms_id: lmsId,
             campo: campoId,
@@ -130,10 +131,9 @@ use yii\grid\GridView;
 
     function grabar(campoId, lmsId) {
 //        alert(editor1.getData());
+        var claseId = '<?= $claseId ?>';
         var valor = $('#' + campoId).val();
-
         var url = '<?= Url::to(['acciones']) ?>';
-
         var params = {
             lms_id: lmsId,
             campo: campoId,
@@ -147,7 +147,7 @@ use yii\grid\GridView;
             beforeSend: function () {},
             success: function (response) {
 //                $('#div-detalle').html(response);
-                muestra_detalle(lmsId);
+                muestra_detalle(lmsId, claseId);
             }
         });
 

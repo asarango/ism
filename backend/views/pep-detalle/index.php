@@ -149,9 +149,10 @@ $this->params['breadcrumbs'][] = $this->title;
                     <div class="card card-body">
                         <!-- Para el tema de la unidad -->            
                         <?= $this->render('_diseno-implementacion', [
-                                'tema' => $tema, 
-                                'registros' => $registros,
-                                'planesSemanales' => $planesSemanales
+                                'tema'              => $tema, 
+                                'registros'         => $registros,
+                                'semanas'           => $semanas,
+                                'planesSemanales'   => $planesSemanales
                             ]); ?> 
                         <hr>                        
 

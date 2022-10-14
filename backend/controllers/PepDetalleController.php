@@ -66,6 +66,7 @@ class PepDetalleController extends Controller {
     public function actionIndex1() {
         $temaId = $_GET['tema_id'];
         
+        
         $opCourseTemplateId = $_GET['op_course_template_id'];
         $tema = \backend\models\PepPlanificacionXUnidad::findOne($temaId);
         
@@ -75,14 +76,51 @@ class PepDetalleController extends Controller {
         ->where(['pep_planificacion_unidad_id' => $temaId])
         ->orderBy('id')->all();
         
-        $planesSemanales = \backend\models\PepPlanSemanal::find()->where(['pep_planificacion_id' => $tema->id])->all();
-       
-        
+        $semanas = $this->get_semanas($temaId);
+        $planesSemanales = $this->get_planes_semanales($temaId);
+//        $planesSemanales = \backend\models\PepPlanSemanal::find()->where(['pep_planificacion_id' => $tema->id])->all();
+               
         return $this->render('index', [        
-           'tema' => $tema,
-           'registros' => $registros,
-           'planesSemanales' => $planesSemanales
+           'tema'               => $tema,
+           'registros'          => $registros,
+           'registros'          => $registros,
+           'semanas'            => $semanas,
+           'planesSemanales'    => $planesSemanales
         ]);
+    }
+       
+    
+    private function get_semanas($planId){
+        $con = Yii::$app->db;
+        $query = "select 	lms.semana_numero 
+                                    ,sem.nombre_semana  
+                    from	pep_planificacion_x_unidad plan
+                                    inner join scholaris_bloque_actividad blo on blo.id = plan.bloque_id 
+                                    inner join scholaris_bloque_semanas sem on sem.bloque_id = blo.id 
+                                    inner join lms on lms.semana_numero = sem.semana_numero 
+                                            and lms.tipo_bloque_comparte_valor = 1
+                    where 	plan.id = $planId
+                    group by lms.semana_numero, sem.nombre_semana
+                    order by sem.nombre_semana ;";
+        $res = $con->createCommand($query)->queryAll();
+        
+        return $res;
+        
+    }
+    
+    
+    private function get_planes_semanales($planId){
+        $con = Yii::$app->db;
+        $query = "select 	lms.semana_numero, lms.titulo 
+                    from	pep_planificacion_x_unidad plan
+                                    inner join scholaris_bloque_actividad blo on blo.id = plan.bloque_id 
+                                    inner join scholaris_bloque_semanas sem on sem.bloque_id = blo.id 
+                                    inner join lms on lms.semana_numero = sem.semana_numero 
+                                            and lms.tipo_bloque_comparte_valor = 1
+                    where 	plan.id = $planId
+                    order by sem.nombre_semana, lms.hora_numero;";
+        $res = $con->createCommand($query)->queryAll();
+        return $res;
     }
     
     private function ingresa_todas_opciones($temaId){

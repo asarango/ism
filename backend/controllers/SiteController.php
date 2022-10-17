@@ -187,7 +187,6 @@ class SiteController extends Controller {
                                 ,o.operacion
                                 ,o.nombre
                                 ,o.ruta_icono
-                                ,o.seccion_exclusiva
                 from 	operacion o
                                 inner join rol_operacion ro on ro.operacion_id = o.id
                 where 	o.menu_id = $menuId

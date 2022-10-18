@@ -125,7 +125,6 @@ class PepPlanificacionController extends Controller {
         $opCourseTemplateId = $get['op_course_id'];
         $periodoId = Yii::$app->user->identity->periodo_id;
 
-      
         $temas = \backend\models\PepPlanificacionXUnidad::find()->where([
                     'op_course_template_id' => $opCourseTemplateId,
                     'scholaris_periodo_id' => $periodoId
@@ -134,12 +133,9 @@ class PepPlanificacionController extends Controller {
     }
     
     private function get_bloques($opcourseTemplateId, $periodoId){
-      
         $helper = new \backend\models\helpers\Scripts();
-      
         $uso = $helper->get_tipo_uso_op_course_template($opcourseTemplateId);
         
-       
         $con = Yii::$app->db;
         $query = "select 	b.id as bloque_id
                                     ,b.name as bloque
@@ -150,8 +146,6 @@ class PepPlanificacionController extends Controller {
                                     and b.tipo_bloque in ('PARCIAL')
                     order by b.orden;";
         $res = $con->createCommand($query)->queryAll();
-
-       
         return $res;
     }
 

@@ -29,6 +29,7 @@ class DeceInstitucionExterna extends \yii\db\ActiveRecord
     {
         return [
             [['nombre'], 'string', 'max' => 100],
+            [['code'], 'string', 'max' => 10],
         ];
     }
 
@@ -40,6 +41,7 @@ class DeceInstitucionExterna extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'nombre' => 'Nombre',
+            'code' => 'Code',
         ];
     }
 

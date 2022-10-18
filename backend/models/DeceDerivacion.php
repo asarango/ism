@@ -41,9 +41,9 @@ class DeceDerivacion extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id_estudiante', 'nombre_quien_deriva', 'fecha_derivacion', 'id_casos', 'numero_casos', 'fecha_modificacion', 'otra_institucion_externa'], 'required'],
-            [['id_estudiante', 'id_casos', 'numero_casos'], 'default', 'value' => null],
-            [['id_estudiante', 'id_casos', 'numero_casos'], 'integer'],
+            [['id_estudiante', 'nombre_quien_deriva', 'id_casos', 'numero_casos','numero_derivacion'], 'required'],
+            [['id_estudiante', 'id_casos', 'numero_casos','numero_derivacion'], 'default', 'value' => null],
+            [['id_estudiante', 'id_casos', 'numero_casos','numero_derivacion'], 'integer'],
             [['nombre_quien_deriva', 'motivo_referencia', 'historia_situacion_actual', 'accion_desarrollada', 'tipo_ayuda'], 'string'],
             [['fecha_derivacion', 'fecha_modificacion'], 'safe'],
             [['tipo_derivacion'], 'string', 'max' => 50],
@@ -60,17 +60,18 @@ class DeceDerivacion extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'tipo_derivacion' => 'Tipo Derivacion',
+            'tipo_derivacion' => 'Tipo Derivación',
             'id_estudiante' => 'Id Estudiante',
             'nombre_quien_deriva' => 'Nombre Quien Deriva',
-            'fecha_derivacion' => 'Fecha Derivacion',
-            'motivo_referencia' => 'Motivo Referencia',
-            'historia_situacion_actual' => 'Historia Situacion Actual',
-            'accion_desarrollada' => 'Accion Desarrollada',
-            'tipo_ayuda' => 'Tipo Ayuda',
+            'fecha_derivacion' => 'Fecha Derivación',
+            'motivo_referencia' => 'Motivo de Referencia / Descripción del Caso',
+            'historia_situacion_actual' => 'Historia de la Situación Actual, Antecedentes Familiares, Sociales y Acedémicos',
+            'accion_desarrollada' => 'Acciones Desarrolladas por la Institución',
+            'tipo_ayuda' => '¿Qué tipo de ayuda requiere?',
             'id_casos' => 'Id Casos',
-            'numero_casos' => 'Numero Casos',
-            'fecha_modificacion' => 'Fecha Modificacion',
+            'numero_casos' => 'Número Casos',
+            'numero_derivacion'=>'Número Derivación',
+            'fecha_modificacion' => 'Fecha Modificación',
             'otra_institucion_externa' => 'Otra Institución Externa',
         ];
     }

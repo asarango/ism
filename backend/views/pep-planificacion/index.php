@@ -82,7 +82,7 @@ $this->params['breadcrumbs'][] = $this->title;
     function showTemas() {
         var url = '<?= Url::to(['ajax-get']) ?>';
         var opCourseId = '<?= $course->id ?>';
-        
+      
         
         var params = {
             op_course_id: opCourseId,

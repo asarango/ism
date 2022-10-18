@@ -880,6 +880,9 @@ where 	pm.scholaris_periodo_id = $periodId
                     where 	cur.x_template_id = $opcourseTemplateId
                                     and sop.scholaris_id = $periodoId
                     limit 1;";
+                    echo '<pre>';
+                    print_r($query);
+                    die();
         $res = $con->createCommand($query)->queryOne();
 
         return $res['tipo_usu_bloque'];

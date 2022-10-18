@@ -3,6 +3,7 @@
 
 
 use backend\models\DeceCasos;
+use backend\models\DeceDerivacion;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use backend\models\DeceMotivos;
@@ -39,10 +40,16 @@ $modelCasosHist = DeceCasos::find()
     ->orderBy(['numero_caso'=>SORT_ASC])
     ->all();
 
-//buscamos el numero de seguimientos que tiene el alumno
+//buscamos el numero de Acompañamientos que tiene el alumno
 $modelRegSeguimiento = DeceRegistroSeguimiento::find()
     ->where(['id_estudiante' => $model->id_estudiante])
-    ->orderBy(['estado' => SORT_DESC, 'fecha_inicio' => SORT_ASC])
+    ->orderBy(['numero_seguimiento' => SORT_ASC,'id_caso'=>SORT_ASC])
+    ->all();
+
+//buscamos el numero de Derivaciones que tiene el alumno
+$modelRegDerivacion = DeceDerivacion::find()
+    ->where(['id_estudiante' => $model->id_estudiante])
+    ->orderBy(['numero_derivacion' => SORT_ASC,'id_casos'=>SORT_ASC])
     ->all();
 
 //busca el path de los archivos donde se guardan los datos de dece
@@ -285,7 +292,7 @@ $modelPathArchivo = PlanificacionOpciones::find()
                                                     <div class="modal-dialog modal-dialog-scrollable modal-lg">
                                                         <div class="modal-content">
                                                             <div class="modal-header">
-                                                                <h5 class="modal-title" id="staticBackdropLabe2"><b>Seguimiento : <?= $modelReg->numero_seguimiento; ?></b></h5>                                                            
+                                                                <h5 class="modal-title" id="staticBackdropLabe2"><b>Acompañamiento : <?= $modelReg->numero_seguimiento; ?> - </b></h5>                                                            
 
                                                                 <h6 class="modal-title" id="staticBackdropLabe3"><b>Caso : <?= $modelReg->id_caso; ?></b></h6>
                                                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -391,20 +398,96 @@ $modelPathArchivo = PlanificacionOpciones::find()
                                 <table class="table table-success table-striped table-bordered my-text-small">
                                     <tr class="table-primary">
                                         <td><b>Caso</b></td>
-                                        <td><b>No. Seg.</b></td>
-                                        <td><b>Fecha Creación</b></td>
-                                        <td><b>Última Modificación</b></td>
-                                        <td><b>Estado</b></td>
-                                        <td><b>Motivo</b></td>
+                                        <td><b>No. Der.</b></td>
+                                        <td><b>Tipo Derivación.</b></td>
+                                        <td><b>Fecha Derivación.</b></td>
+                                        <td><b>Última Moficación.</b></td>
+                                        <td><b>Quien Deriva.</b></td>
                                         <td><b>Editar</b></td>
                                         <td><b>Ver</b></td>
                                     </tr>
                                     <?php
-                                    //foreach ($modelRegDerivacion as $modelReg) {
-                                    ?>
+                                    foreach ($modelRegDerivacion as $modelReg) {
 
+                                    ?>
+                                        <tr>
+                                            <td><?= $modelReg->casos->numero_caso ?></td>
+                                            <td><?= $modelReg->numero_derivacion ?></td>
+                                            <td><?= $modelReg->tipo_derivacion?></td>                                            
+                                            <td><?= $modelReg->fecha_derivacion?></td>
+                                            <td><?= $modelReg->fecha_modificacion?></td>
+                                            <td><?= $modelReg->nombre_quien_deriva ?></td>
+                                            <td>
+                                                <?=
+                                                Html::a(
+                                                    '<i class="fa fa-edit" aria-hidden="true"></i>',
+                                                    ['dece-derivacion/update', 'id' => $modelReg->id],
+                                                    ['class' => 'link']
+                                                );
+                                                ?>
+                                            </td>
+
+                                            <td>
+                                                <!--boton VER  boton llama modal -->
+                                                <button type="button" class="rounded-pill" data-bs-toggle="modal" data-bs-target="<?php echo "#staticBackdrop_deri_$modelReg->id"; ?>">
+                                                    <i class="fas fa-glasses" style="color:blueviolet;"></i>
+                                                </button>
+                                                <!-- Modal -->
+                                                <div class="modal fade" id="<?php echo "staticBackdrop_deri_$modelReg->id"; ?>" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                                    <div class="modal-dialog modal-dialog-scrollable modal-lg">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">                                                                     
+                                                                    <h5 class="modal-title" id="staticBackdropLabe2"><b>Derivación : <?= $modelReg->numero_derivacion; ?></b></h5>
+                                                                    <h5 class="modal-title" id="staticBackdropLabe3"><b><?= ' - ' ?>Caso : <?= $modelReg->casos->numero_caso; ?></b></h5>       
+                                                                   
+                                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>                                                                
+                                                            </div>
+
+                                                            <div class="modal-body">
+                                                                <table class="table table-striped table-hover">                                                                   
+                                                                  
+                                                                    <tr>
+                                                                        <td><b>Tipo Derivación: </b></td>
+                                                                        <td><?= $modelReg->tipo_derivacion ?></td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td><b>Nombre quien deriva: </b></td>
+                                                                        <td><?= $modelReg->nombre_quien_deriva ?></td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td><b>Fecha Derivación: </b></td>
+                                                                        <td><?= $modelReg->fecha_derivacion ?></td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td><b>Motivo de Referencia: </b></td>
+                                                                        <td><?= $modelReg->motivo_referencia ?></td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td><b>Historia de la Situacion Actual:</b></td>
+                                                                        <td><?= $modelReg->historia_situacion_actual ?></td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td><b>Acciones Desarrolladas:</b></td>
+                                                                        <td><?= $modelReg->accion_desarrollada ?></td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td><b>Tipo Ayuda Requerida:</b></td>
+                                                                        <td><?= $modelReg->tipo_ayuda ?></td>
+                                                                    </tr>
+                                                                   
+                                                                </table>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
                                     <?php
-                                   // }
+                                    } //fin for
                                     ?>
                                 </table>
                             </div>

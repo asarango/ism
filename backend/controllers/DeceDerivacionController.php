@@ -2,10 +2,13 @@
 
 namespace backend\controllers;
 
+use backend\models\DeceCasos;
 use Yii;
 use backend\models\PlanificacionOpciones;
 use backend\models\DeceDerivacion;
+use backend\models\DeceDerivacionInstitucionExterna;
 use backend\models\DeceDerivacionSearch;
+use backend\models\DeceInstitucionExterna;
 use yii\web\UploadedFile;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -68,6 +71,8 @@ class DeceDerivacionController extends Controller
     {
         $model = new DeceDerivacion();
         $fechaActual = date('Y-m-d');
+        $hora = date('H:i:s');        
+
         if($_GET)
         {
             $id_estudiante = $_GET['id_estudiante'];
@@ -75,43 +80,70 @@ class DeceDerivacionController extends Controller
             $model->id_estudiante = $id_estudiante;
             $model->fecha_derivacion = $fechaActual;
             $model->id_casos = $id_caso;
-        }
-        /** Extrae path donde se almacena los archivos */
-        $path_archivo_dece_atencion = PlanificacionOpciones::find()->where([
-            'tipo'=>'SUBIDA_ARCHIVO',
-            'categoria'=>'PATH_DECE_SEG'
-        ])->one();
+        }       
 
         if ($model->load(Yii::$app->request->post()))
-        {
-            $imagenSubida = UploadedFile::getInstance($model,'path_archivo');
+        {   
+   
+            $ultimoNumDerivacion = $this->buscaUltimoNumDerivacion($_POST['DeceDerivacion']['id_casos'],$_POST['DeceDerivacion']['id_estudiante']);
+            $numeroCaso = $this->buscaNumeroCaso($_POST['DeceDerivacion']['id_casos']);
+            $fecha_derivacion = $_POST['fecha_derivacion'] ;
+            $arrayAuxPost = $_POST;
+            $model->fecha_derivacion = $fecha_derivacion .' ' .$hora;
+            $model->numero_derivacion =  $ultimoNumDerivacion + 1;
+            $model->numero_casos=  $numeroCaso;
+
             $model->save();
-
-            if(!empty($imagenSubida))
-            {
-              $pathArchivos =$path_archivo_dece_atencion->opcion.$model->id_estudiante.'/'.$model->id.'/';
-
-               //creamos la carpeta
-                if (!file_exists($pathArchivos)) {
-                    mkdir($pathArchivos, 0777,true);
-                    chmod($pathArchivos, 0777);
-                }
-                $imagenSubida->name = str_replace(' ', '', $imagenSubida->name);
-                $path = $pathArchivos.$imagenSubida->name;
-                if ($imagenSubida->saveAs($path))
+            
+           foreach($arrayAuxPost as $aux)
+           {  
+                if (!is_array($aux))
                 {
-                    $model->path_archivo = $model->id_estudiante.'/'.$model->id.'##'.$imagenSubida->name;
-                    $model->save();
-                }
-            }
-            return $this->redirect(['update', 'id' => $model->id]);
+                    if(is_numeric(strpos($aux,"IE"))){                       
+                        
+                        $modelDerInsExterno = new DeceDerivacionInstitucionExterna();
+                        $idInstExterna = DeceInstitucionExterna::find()
+                        ->where(['code'=>$aux])
+                        ->one();
+                        $modelDerInsExterno->id_dece_derivacion = $model->id;
+                        $modelDerInsExterno->id_dece_institucion_externa =  $idInstExterna->id;
+                        $modelDerInsExterno->save();
+                    }
+                }               
+           }         
+           return $this->redirect(['update', 'id' => $model->id]);
         }      
 
         return $this->render('create', [
             'model' => $model,
         ]);
     }
+    public function buscaUltimoNumDerivacion($idCaso,$idEstudiante)
+    {
+        //buscamos el ultimo numero de derivacion acorde al caso indicado
+        $modelDeceDerivacion = DeceDerivacion::find()
+        ->where(['id_casos'=>$idCaso])
+        ->andWhere(['id_estudiante'=>$idEstudiante])
+        ->max('numero_derivacion');
 
+        if(!$modelDeceDerivacion){
+            $modelDeceDerivacion =0;
+        }
+        return $modelDeceDerivacion;
+    }
+    public function buscaNumeroCaso($idCaso)
+    {
+        //buscamos el ultimo numero de derivacion acorde al caso indicado
+        $modelNumeroCaso = DeceCasos::find()
+        ->where(['id'=>$idCaso])
+        ->max('numero_caso');
+
+        if(!$modelNumeroCaso){
+            $modelNumeroCaso =0;
+        }
+        return $modelNumeroCaso;
+    }
+   
     /**
      * Updates an existing DeceDerivacion model.
      * If update is successful, the browser will be redirected to the 'view' page.
@@ -122,14 +154,73 @@ class DeceDerivacionController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
+        $fechaActual = date('Y-m-d');
+        $hora = date('H:i:s');         
+        
+        $arrayInstExtUpdate = $this->buscaInstitucionExterna($model->id);
+        if ($model->load(Yii::$app->request->post())) 
+        {  
+            $fecha_modificacion = $_POST['fecha_modificacion'] ;
+            $model->fecha_modificacion = $fecha_modificacion.' '.$hora;
+            $model->save();
+            $arrayAuxPost = $_POST; 
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+
+            //ELIMINAMOS TODOS LOS REGISTROS DE LOS INST. EXTERNOS PARA VOLVER AGREGAR NUEVAMENTE TODOS LOS SELECCIONADOS
+            $x = Yii::$app->db->createCommand("
+                DELETE FROM dece_derivacion_institucion_externa 
+                WHERE id_dece_derivacion = '$model->id'                
+            ")->execute();
+
+           foreach($arrayAuxPost as $aux)
+           {  
+                if (!is_array($aux))//COMO EL $_POST, tiene el array nativo de yii2, lo excluimos
+                {
+                    if(is_numeric(strpos($aux,"IE")))
+                    {   
+                        $modelDerInsExterno = new DeceDerivacionInstitucionExterna();
+                        $idInstExterna = DeceInstitucionExterna::find()
+                        ->where(['code'=>$aux])
+                        ->one();
+                        $modelDerInsExterno->id_dece_derivacion = $model->id;
+                        $modelDerInsExterno->id_dece_institucion_externa =  $idInstExterna->id;
+                        $modelDerInsExterno->save();
+                    }
+                }               
+           }
+           return $this->redirect(['update', 'id' => $model->id]);
         }
+
+        if($model)
+        {
+            $model->fecha_modificacion = $fechaActual;
+        } 
 
         return $this->render('update', [
             'model' => $model,
+            'arrayInstExtUpdate' => $arrayInstExtUpdate
         ]);
+    }
+    //busca la institucion externa por el ID, de la derivación
+    public function buscaInstitucionExterna($idDerivacion)
+    {
+       $con =yii::$app->db;
+        $query="select i.id,i.nombre,i.code,'si' as Seleccionado 
+       from dece_derivacion d1 , dece_derivacion_institucion_externa d2,
+       dece_institucion_externa i
+       where d1.id = d2.id_dece_derivacion 
+       and d2.id_dece_institucion_externa  = i.id 
+       and d1.id = '$idDerivacion'
+       union all
+        select dd.id,dd.nombre,dd.code,'no' as Seleccionado
+        from dece_institucion_externa dd 
+        where id not in
+        ( select id_dece_institucion_externa from dece_derivacion_institucion_externa dr 
+        where id_dece_derivacion = '$idDerivacion') order by id;";
+
+       $resp = $con->createCommand($query)->queryAll();
+     
+       return $resp;
     }
 
     /**

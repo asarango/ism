@@ -68,7 +68,8 @@ class DeceCasosController extends Controller
             
             $query2 = "select  concat(os.last_name,' ',os.middle_name,' ',os.first_name) nombre,dc.id_estudiante , 
                     (select count(*) from dece_casos dc2 where id_estudiante  = dc.id_estudiante ) casos,
-                    (select count(*) from dece_registro_seguimiento drs where id_estudiante  = dc.id_estudiante ) seguimiento
+                    (select count(*) from dece_registro_seguimiento drs where id_estudiante  = dc.id_estudiante ) seguimiento,
+                    (select count(*) from dece_derivacion d where id_estudiante  = dc.id_estudiante ) derivacion
                     from dece_casos dc, op_student os  
                     where id_estudiante =  $id_estudiante
                     and id_usuario = '$user'
@@ -223,7 +224,11 @@ class DeceCasosController extends Controller
             return $this->redirect(['historico','id'=>$model->id_estudiante]);
         }
 
-        $model->fecha_fin = $fechaActual;
+         //se asigna la fecha de creacion del seguimiento con la fecha de modificacion, para cargar en pantalla
+         if($model)
+         {
+             $model->fecha_fin = $fechaActual;
+         } 
         return $this->render('update', [
             'model' => $model,
         ]);

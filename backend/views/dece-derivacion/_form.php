@@ -2,6 +2,7 @@
 
 use backend\models\DeceDerivacion;
 use yii\helpers\Html;
+use yii\helpers\Url;
 use yii\widgets\ActiveForm;
 use backend\models\OpParent;
 use backend\models\OpStudent;
@@ -28,7 +29,7 @@ $arrayInstExterna = DeceInstitucionExterna::find()->asArray()->all();
 $numDivisionesIntExterna = count($arrayInstExterna)/4;
 $numDivisionesIntExterna = intval($numDivisionesIntExterna)+1;
 ?>
-
+<script src="https://cdn.ckeditor.com/4.19.0/standard/ckeditor.js"></script>
 <div class="dece-derivacion-form">
 
 <div class="m-0 vh-50 row justify-content-center align-items-center">
@@ -67,7 +68,7 @@ $numDivisionesIntExterna = intval($numDivisionesIntExterna)+1;
                                 <td>No.</td>
                                 <td>Fecha Creación</td>
                                 <td>Última Modificación</td>
-                                <td>Motivo</td>
+                                <td>Tipo Derivación</td>
                                 <td>Editar</td>
                                 <td>Ver</td>
                             </tr>
@@ -75,15 +76,15 @@ $numDivisionesIntExterna = intval($numDivisionesIntExterna)+1;
                                 foreach ($modelRegDerivacion as $modelReg) {
                             ?>
                                     <tr>
-                                        <td><?= $modelReg->id ?></td>
-                                        <td><?= substr($modelReg->fecha_inicio,0,10) ?></td>
-                                        <td><?= substr($modelReg->fecha_fin,0,10) ?></td>
-                                        <td></td>
+                                        <td><?= $modelReg->numero_derivacion ?></td>
+                                        <td><?= $modelReg->fecha_derivacion ?></td>
+                                        <td><?= $modelReg->fecha_modificacion ?></td>
+                                        <td><?= $modelReg->tipo_derivacion ?></td>
                                         <td>
                                         <?=
                                             Html::a(
                                                 '<i class="fa fa-edit" aria-hidden="true"></i>',
-                                                ['dece-registro-seguimiento/update', 'id' =>$modelReg->id ],
+                                                ['dece-derivacion/update', 'id' =>$modelReg->id ],
                                                 ['class' => 'link']
                                             );
                                             ?>
@@ -98,57 +99,42 @@ $numDivisionesIntExterna = intval($numDivisionesIntExterna)+1;
                                             <div class="modal-dialog modal-dialog-scrollable modal-xl">
                                                 <div class="modal-content">
                                                     <div class="modal-header">
-                                                        <h5 class="modal-title" id="staticBackdropLabel"><b>Seguimiento No:  <?= $modelReg->id ?></b></h5>
+                                                        <h5 class="modal-title" id="staticBackdropLabel"><b>Derivación No:  <?= $modelReg->id ?></b></h5>
                                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                     </div>
                                                     <div class="modal-body">
                                                         <table class="table table-striped table-hover">
                                                             <tr>
                                                                 <td><b>Fecha Creación: </b></td>
-                                                                <td><?= substr($modelReg->fecha_inicio, 0, 10) ?></td>
+                                                                <td><?= $modelReg->fecha_derivacion ?></td>
                                                             </tr>                                                            
                                                             <tr>
                                                                 <td><b>Última Modificación: </b></td>
-                                                                <td><?= substr($modelReg->fecha_fin, 0, 10)  ?></td>
+                                                                <td><?= $modelReg->fecha_modificacion ?></td>
                                                             </tr>
                                                             <tr>
-                                                                <td><b>Estado: </b></td>
-                                                                <td><?= $modelReg->estado ?></td>
+                                                                <td><b>Tipo Derivación: </b></td>
+                                                                <td><?= $modelReg->tipo_derivacion ?></td>
                                                             </tr>
                                                             <tr>
-                                                                <td><b>Motivo: </b></td>
-                                                                <td><?= $modelReg->motivo ?></td>
+                                                                <td><b>Nombre Quien Deriva: </b></td>
+                                                                <td><?= $modelReg->nombre_quien_deriva ?></td>
                                                             </tr>
                                                             <tr>
-                                                                <td><b>Pronunciamiento: </b></td>
-                                                                <td><?= $modelReg->pronunciamiento ?></td>
+                                                                <td><b>Motivo de Referencia: </b></td>
+                                                                <td><?= $modelReg->motivo_referencia ?></td>
                                                             </tr>
                                                             <tr>
-                                                                <td><b>Acuerdo y Compromiso: </b></td>
-                                                                <td><?= $modelReg->acuerdo_y_compromiso ?></td>
+                                                                <td><b>Historia de la Situación Actual: </b></td>
+                                                                <td><?= $modelReg->historia_situacion_actual ?></td>
                                                             </tr>
                                                             <tr>
-                                                                <td><b>Evidencia: </b></td>
-                                                                <td><?= $modelReg->eviencia ?></td>
+                                                                <td><b>Acciones a Desarrollar: </b></td>
+                                                                <td><?= $modelReg->accion_desarrollada ?></td>
                                                             </tr>
                                                             <tr>
-                                                                <td><b>Atendido Por: </b></td>
-                                                                <td><?= $modelReg->atendido_por ?></td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td><b>Responsable Seguimiento:</b></td>
-                                                                <td><?= $modelReg->responsable_seguimiento ?></td>
-                                                            </tr>    
-                                                            <tr>
-                                                                <?php $arrayArchivo = array("", "");
-                                                                if (strlen($modelReg->path_archivo) > 0) {
-                                                                    $arrayArchivo = explode("##", $modelReg->path_archivo);
-                                                                }
-                                                                ?>
-                                                                <td><b>Archivo: </b></td>
-                                                                <td><a target="_blank" href="<?= $modelPathArchivo->opcion . $arrayArchivo[0].'/' . $arrayArchivo[1] ?>">
-                                                                        <?= $arrayArchivo[1] ?>
-                                                                    </a></td>
+                                                                <td><b>Tipo Ayuda: </b></td>
+                                                                <td><?= $modelReg->tipo_ayuda ?></td>
                                                             </tr>                                
                                                         </table>
                                                     </div>
@@ -169,77 +155,128 @@ $numDivisionesIntExterna = intval($numDivisionesIntExterna)+1;
                     </div>
         </div>
         <div class="card col-lg-7 col-ms-7">
-                <h3 style="color:blueviolet"><b>Derivación</b></h3>
-                <?php $form = ActiveForm::begin(); ?>
+                
+                <?php if($model->isNewRecord){ ?>
+                        <h3 style="color:blueviolet"><b>Derivación</b></h3>
+                      <?php } else {?>
+                        <h3 style="color:blueviolet"><b>Derivación No. <?= $model->numero_derivacion?></b></h3>
+                        <h6 style="color:blueviolet"><b>Fecha Creación: <?= $model->fecha_derivacion?></b></h6>
+                <?php }?>
 
+                <?php $form = ActiveForm::begin(); ?>
                 <?= $form->field($model, 'tipo_derivacion')->dropDownList($arrayTipoDerivacion,['prompt' => 'Seleccione Opción']) ?>
 
                 <?= $form->field($model, 'id_estudiante')->hiddenInput()->label(false)?>
+                <?= $form->field($model, 'id_casos')->hiddenInput()->label(false)?>
+                <?php
+                        if ($model->isNewRecord) { ?>
+                                    <label for="exampleInputEmail1" class="form-label">Fecha Creación</label>
+                                    <input type="date" id="fecha_derivacion" class="form-control" name="fecha_derivacion" require="true" value="<?= $model->fecha_derivacion;?>">
+
+                                    <?= $form->field($model, 'fecha_modificacion')->hiddenInput()->label(false) ?> 
+                                <?php
+                        } else { ?>
+                                    <?= $form->field($model, 'fecha_derivacion')->hiddenInput()->label(false) ?>
+                                    
+                                    <label for="exampleInputEmail2" class="form-label">Fecha Actualización</label>
+                                    <input type="date" id="fecha_modificacion" class="form-control" name="fecha_modificacion" require="true" value="<?= $model->fecha_modificacion;?>">
+                                <?php
+                        }
+                ?>
 
                 <br>
                 <h4><u>Datos Personales de Quien Deriva</u></h4>
 
                 <?= $form->field($model, 'nombre_quien_deriva')->textarea(['rows' => 1]) ?>
 
-                <?php
-                                if ($model->isNewRecord) { ?>
-                                    <label for="exampleInputEmail1" class="form-label">Fecha Creación</label>
-                                    <input type="date" id="fecha_derivacion" class="form-control" name="fecha_derivacion" require="true" value="<?= $model->fecha_derivacion;?>">
-
-                                    <?= $form->field($model, 'fecha_modificacion')->hiddenInput()->label(false) ?> 
-                                <?php
-                                } else { ?>
-                                    <?= $form->field($model, 'fecha_derivacion')->hiddenInput()->label(false) ?>
-                                    
-                                    <label for="exampleInputEmail2" class="form-label">Fecha Actualización</label>
-                                    <input type="date" id="fecha_modificacion" class="form-control" name="fecha_modificacion" require="true" value="<?= $model->fecha_modificacion;?>">
-                                <?php
-                                }
-                ?>
+               
                 <div>
                     <h4><u>Institución Externa</u></h4>
-                    <table class="table table-info table-hover"> 
-                        
+                    <table class="table table-info table-hover">                         
                             <?php
-                            $arrayDividido = array_chunk($arrayInstExterna, $numDivisionesIntExterna); 
-                            foreach($arrayDividido as $array)
+                            if($model->isNewRecord)
                             {
-                            ?>
-                            <tr>
-                                <?php   
-                                    foreach($array as $inst)
-                                    {
+                                $arrayDividido = array_chunk($arrayInstExterna, $numDivisionesIntExterna); 
+                                foreach($arrayDividido as $array)
+                                {
                                 ?>
-                                    <td style='font-size:10px;'><?=$inst['nombre']?></td> 
-                                    <td>
-                                        <a href='#' style='color:gray;' onclick="">                                            
-                                            <i class="fas fa-check-circle"></i>                                            
-                                        </a>
-                                    </td>
+                                <tr>
+                                    <?php   
+                                        foreach($array as $inst)
+                                        {
+                                    ?>
+                                        <td>                                        
+                                            <label style='font-size:10px;' for="<?=$inst['id']?>"> <?=$inst['nombre']?></label><br>
+                                            <input style='align-items:center;' type="checkbox" id ="<?=$inst['id']?>" name="<?=$inst['code']?>" value="<?=$inst['code']?>" >
+                                        </td>
+                                    <?php
+                                        }//fin foreach 2
+                                    ?>
+                                </tr> 
                                 <?php
-                                    }//fin foreach 2
+                                }//fin foreach 1   
+                            }
+                            else
+                            {
+                                $arrayDividido = array_chunk($arrayInstExtUpdate, $numDivisionesIntExterna); 
+                                foreach($arrayDividido as $array)
+                                {
                                 ?>
-                            </tr> 
-                            <?php
-                            }//fin foreach 2            
+                                <tr>
+                                    <?php   
+                                        foreach($array as $inst)
+                                        {
+                                            if($inst['seleccionado']=='si')
+                                            {
+                                    ?>
+                                            <td>                                        
+                                                <label style='font-size:10px;' for="<?=$inst['id']?>"> <?=$inst['nombre']?></label><br>
+                                                <input style='align-items:center;' type="checkbox" id ="<?=$inst['id']?>" name="<?=$inst['code']?>" value="<?=$inst['code']?>" checked="true">
+                                            </td>
+                                    <?php
+                                            }
+                                            else
+                                            { 
+                                    ?>
+                                            <td>                                        
+                                                <label style='font-size:10px;' for="<?=$inst['id']?>"> <?=$inst['nombre']?></label><br>
+                                                <input style='align-items:center;' type="checkbox" id ="<?=$inst['id']?>" name="<?=$inst['code']?>" value="<?=$inst['code']?>" >
+                                            </td>
+                                    <?php
+                                            }
+                                        }//fin foreach 2
+                                        
+                                    ?>
+                                </tr> 
+                                <?php
+                                }//fin foreach 1 
+                            }         
                             ?>
                     </table>
                     <?= $form->field($model, 'otra_institucion_externa')->textInput() ?>
                 </div>
 
-                
-                
-
-
                 <h4><u>Valoración del Caso</u></h4>
 
                 <?= $form->field($model, 'motivo_referencia')->textarea(['rows' => 3]) ?>
+                            <script>
+                                    CKEDITOR.replace("decederivacion-motivo_referencia");
+                            </script>
 
                 <?= $form->field($model, 'historia_situacion_actual')->textarea(['rows' => 3]) ?>
+                            <script>
+                                    CKEDITOR.replace("decederivacion-historia_situacion_actual");
+                            </script>
 
                 <?= $form->field($model, 'accion_desarrollada')->textarea(['rows' => 3]) ?>
+                            <script>
+                                    CKEDITOR.replace("decederivacion-accion_desarrollada");
+                            </script>
 
                 <?= $form->field($model, 'tipo_ayuda')->textarea(['rows' => 3]) ?>
+                            <script>
+                                    CKEDITOR.replace("decederivacion-tipo_ayuda");
+                            </script>
 
                 <div class="form-group">
                     <?= Html::submitButton('Guardar', ['class' => 'btn btn-success']) ?>
@@ -251,3 +288,4 @@ $numDivisionesIntExterna = intval($numDivisionesIntExterna)+1;
 </div>
 
 </div>
+

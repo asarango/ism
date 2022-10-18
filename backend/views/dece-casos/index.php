@@ -107,7 +107,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                             <td><strong><?=$caso['casos']?></strong></td>
                                             <td><strong><?=$caso['seguimiento']?></strong></td>
                                             <td><strong> - </strong></td>
-                                            <td><strong> - </strong></td>
+                                            <td><strong> <?=$caso['derivacion']?> </strong></td>
                                             <td><strong> - </strong></td>
                                             <td>
                                                 <?= Html::a(

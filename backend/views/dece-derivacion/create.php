@@ -29,7 +29,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         <?=
                                 Html::a(
                                     '<span class="badge rounded-pill" style="background-color: #0a1f8f"><i class="fa fa-briefcase" aria-hidden="true"></i>Regresar Casos</span>',
-                                    ['dece-casos/create', 'id' => $model->id_estudiante, 'id_clase' => 0],
+                                    ['dece-casos/update', 'id' => $model->id_casos, 'id_clase' => 0],
                                     ['class' => 'link']
                                 );
                             ?>

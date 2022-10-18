@@ -111,7 +111,7 @@ class PepDetalleController extends Controller {
     
     private function get_planes_semanales($planId){
         $con = Yii::$app->db;
-        $query = "select 	lms.semana_numero, lms.titulo 
+        $query = "select 	lms.semana_numero, lms.titulo, lms.indicaciones  
                     from	pep_planificacion_x_unidad plan
                                     inner join scholaris_bloque_actividad blo on blo.id = plan.bloque_id 
                                     inner join scholaris_bloque_semanas sem on sem.bloque_id = blo.id 

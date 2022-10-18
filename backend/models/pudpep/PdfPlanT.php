@@ -18,6 +18,7 @@ class PdfPlanT extends \yii\db\ActiveRecord{
     private $unidad;
     private $detalle;
     private $periodoId;
+    private $semanas;
     private $planesSemanales;
 
     public function __construct($planUnidadId){
@@ -31,10 +32,49 @@ class PdfPlanT extends \yii\db\ActiveRecord{
         
         $this->opCourseTemplateId = $this->unidad->op_course_template_id;
         
-        $this->planesSemanales = \backend\models\PepPlanSemanal::find()->where(['pep_planificacion_id' => $planUnidadId])->all();
+        $this->semanas = $this->get_semanas($planUnidadId);
+
+        $this->planesSemanales = $this->get_planes_semanales($planUnidadId);
+
+        //$this->planesSemanales = \backend\models\PepPlanSemanal::find()->where(['pep_planificacion_id' => $planUnidadId])->all();
         
         $this->generate_pdf();
     }
+
+
+    private function get_semanas($planId){
+        $con = Yii::$app->db;
+        $query = "select 	lms.semana_numero 
+                                    ,sem.nombre_semana  
+                    from	pep_planificacion_x_unidad plan
+                                    inner join scholaris_bloque_actividad blo on blo.id = plan.bloque_id 
+                                    inner join scholaris_bloque_semanas sem on sem.bloque_id = blo.id 
+                                    inner join lms on lms.semana_numero = sem.semana_numero 
+                                            and lms.tipo_bloque_comparte_valor = 1
+                    where 	plan.id = $planId
+                    group by lms.semana_numero, sem.nombre_semana
+                    order by sem.nombre_semana ;";
+        $res = $con->createCommand($query)->queryAll();
+        
+        return $res;
+        
+    }
+    
+    
+    private function get_planes_semanales($planId){
+        $con = Yii::$app->db;
+        $query = "select 	lms.semana_numero, lms.titulo, lms.indicaciones  
+                    from	pep_planificacion_x_unidad plan
+                                    inner join scholaris_bloque_actividad blo on blo.id = plan.bloque_id 
+                                    inner join scholaris_bloque_semanas sem on sem.bloque_id = blo.id 
+                                    inner join lms on lms.semana_numero = sem.semana_numero 
+                                            and lms.tipo_bloque_comparte_valor = 1
+                    where 	plan.id = $planId
+                    order by sem.nombre_semana, lms.hora_numero;";
+        $res = $con->createCommand($query)->queryAll();
+        return $res;
+    }
+
 
     private function generate_pdf(){
         $mpdf = new mPDF([
@@ -497,10 +537,16 @@ class PdfPlanT extends \yii\db\ActiveRecord{
         $html.= '<img src="imagenes/bi/experiencias.png" width="20px" style="border-radius:50px"> <b>Diseñar experiencias de aprendizaje interesantes</b>';
         
         $html.= '<div style="margin-top:10px; background-color: #fff; padding:10px">';        
-               
-        foreach ($this->planesSemanales as $det){
-            $html.= '<b>'.$det->semana->nombre_semana.'</b>' .$det->experiencias_aprendizaje.'<br>';
+        
+        foreach($this->semanas as $semana){
+            $html.= '<b>'.$semana['nombre_semana'].'</b>';
+            foreach ($this->planesSemanales as $det){
+                if($semana['semana_numero'] == $det['semana_numero']){
+                    $html.= '<b>'.$det['titulo'].'</b>' .$det['indicaciones'].'<br>';
+                }                
+            }
         }
+        
         $html.= '</div>';
         $html.= '</div>';
         /*******fin de Diseñar experiencias de aprendizaje interesantes ************/
@@ -541,9 +587,15 @@ class PdfPlanT extends \yii\db\ActiveRecord{
         
         $html.= '<div style="margin-top:10px; background-color: #fff; padding:10px">';        
                
-        foreach ($this->planesSemanales as $det){
-            $html.= '<b>'.$det->semana->nombre_semana.'</b>' .$det->evaluacion_continua.'<br>';
+        foreach($this->semanas as $semana){
+            $html.= '<b>'.$semana['nombre_semana'].'</b>';
+            foreach ($this->planesSemanales as $det){
+                if($semana['semana_numero'] == $det['semana_numero']){
+                    $html.= '<b>'.$det['titulo'].'</b>' .$det['indicaciones'].'<br>';
+                }                
+            }
         }
+        
         $html.= '</div>';
         $html.= '</div>';
         /*******fin de Evaluación continua ************/

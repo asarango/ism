@@ -73,6 +73,7 @@ class PepPlanificacionController extends Controller {
                     'scholaris_periodo_id' => $periodoId
                 ])->all();
 
+
         return $this->render('index', [
                     'course' => $course,
                     'temas' => $temas
@@ -110,7 +111,7 @@ class PepPlanificacionController extends Controller {
             case 'temas':
                 $temas = $this->get_temas($_GET);
                 $bloques = $this->get_bloques($_GET['op_course_id'], $periodoId);
-                
+                             
                 return $this->renderPartial('_ajax-temas', [
                     'temas' => $temas,
                     'bloques' => $bloques,
@@ -128,10 +129,7 @@ class PepPlanificacionController extends Controller {
         $temas = \backend\models\PepPlanificacionXUnidad::find()->where([
                     'op_course_template_id' => $opCourseTemplateId,
                     'scholaris_periodo_id' => $periodoId
-                ])->all();
-        
-              
-
+                ])->all();     
         return $temas;
     }
     

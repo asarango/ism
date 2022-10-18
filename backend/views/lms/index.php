@@ -44,7 +44,7 @@ $this->title = 'Lms - ' . $modelClase->ismAreaMateria->materia->nombre . ' - ' .
             <div class="row p-3" style="background-color: #ccc">
 
 
-                <div class="col-lg-3 col-md-3" 
+                <div class="col-lg-4 col-md-4" 
                      style="background-color: #eee; padding-top: 10px; height: 100vh;">
                     <ul>
                         <?php
@@ -62,7 +62,7 @@ $this->title = 'Lms - ' . $modelClase->ismAreaMateria->materia->nombre . ' - ' .
                         ?>
                     </ul>
                 </div>
-                <div class="col-lg-9 col-md-9">
+                <div class="col-lg-8 col-md-8">
                     <div class="" id="div-detalle">
 
                         <?php
@@ -70,12 +70,13 @@ $this->title = 'Lms - ' . $modelClase->ismAreaMateria->materia->nombre . ' - ' .
                             
 
                             echo $this->render('detalle', [
-                                'modelDetalleActivo' => $modelDetalleActivo,
-                                'tipoActividadNac' => $tipoActividadNac,
-                                'tipoActividadPai' => $tipoActividadPai,
-                                'claseId' => $modelClase->id,
-                                'nombreSemana' => $nombreSemana,
-                                'actividades' => $actividades
+                                'modelDetalleActivo'    => $modelDetalleActivo,
+                                'tipoActividadNac'      => $tipoActividadNac,
+                                'tipoActividadPai'      => $tipoActividadPai,
+                                'claseId'               => $modelClase->id,
+                                'nombreSemana'          => $nombreSemana,
+                                'actividades'           => $actividades,
+                                'seccion'               => $seccion
                             ]);
                         } else {
                             ?>
@@ -100,6 +101,7 @@ $this->title = 'Lms - ' . $modelClase->ismAreaMateria->materia->nombre . ' - ' .
     <script>
 
         function muestra_detalle(id, claseId) {
+            
             var url = '<?= Url::to(['detalle']) ?>';
             var nombreSemana = '<?= $nombreSemana ?>';
 

@@ -4,6 +4,7 @@
 
 use backend\models\DeceCasos;
 use backend\models\DeceDerivacion;
+use backend\models\DeceDeteccion;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use backend\models\DeceMotivos;
@@ -50,6 +51,12 @@ $modelRegSeguimiento = DeceRegistroSeguimiento::find()
 $modelRegDerivacion = DeceDerivacion::find()
     ->where(['id_estudiante' => $model->id_estudiante])
     ->orderBy(['numero_derivacion' => SORT_ASC,'id_casos'=>SORT_ASC])
+    ->all();
+
+//buscamos el numero de Derivaciones que tiene el alumno
+$modelRegDeteccion = DeceDeteccion::find()
+    ->where(['id_estudiante' => $model->id_estudiante])
+    ->orderBy(['numero_deteccion' => SORT_ASC,'id_caso'=>SORT_ASC])
     ->all();
 
 //busca el path de los archivos donde se guardan los datos de dece
@@ -253,7 +260,7 @@ $modelPathArchivo = PlanificacionOpciones::find()
                                 <table class="table table-success table-striped table-bordered my-text-small">
                                     <tr class="table-primary">
                                         <td><b>Caso</b></td>
-                                        <td><b>No. Seg.</b></td>
+                                        <td><b>No. Acompañamiento.</b></td>
                                         <td><b>Fecha Creación</b></td>
                                         <td><b>Última Modificación</b></td>
                                         <td><b>Estado</b></td>
@@ -373,20 +380,105 @@ $modelPathArchivo = PlanificacionOpciones::find()
                                 <table class="table table-success table-striped table-bordered my-text-small">
                                     <tr class="table-primary">
                                         <td><b>Caso</b></td>
-                                        <td><b>No. Seg.</b></td>
-                                        <td><b>Fecha Creación</b></td>
-                                        <td><b>Última Modificación</b></td>
-                                        <td><b>Estado</b></td>
-                                        <td><b>Motivo</b></td>
+                                        <td><b>No. Detección.</b></td>
+                                        <td><b>Fecha </b></td>
                                         <td><b>Editar</b></td>
                                         <td><b>Ver</b></td>
                                     </tr>
                                     <?php
-                                    //foreach ($modelRegDeteccion as $modelReg) {
-                                    ?>
+                                    foreach ($modelRegDeteccion as $modelReg) {
 
+                                    ?>
+                                        <tr>
+                                            <td><?= $modelReg->caso->numero_caso ?></td>
+                                            <td><?= $modelReg->numero_deteccion ?></td>
+                                            <td><?= $modelReg->fecha_reporte?></td>    
+                                            <td>
+                                                <?=
+                                                Html::a(
+                                                    '<i class="fa fa-edit" aria-hidden="true"></i>',
+                                                    ['dece-deteccion/update', 'id' => $modelReg->id],
+                                                    ['class' => 'link']
+                                                );
+                                                ?>
+                                            </td>
+
+                                            <td>
+                                                <!--boton VER  boton llama modal -->
+                                                <button type="button" class="rounded-pill" data-bs-toggle="modal" data-bs-target="<?php echo "#staticBackdrop_det_$modelReg->id"; ?>">
+                                                    <i class="fas fa-glasses" style="color:blueviolet;"></i>
+                                                </button>
+                                                <!-- Modal -->
+                                                <div class="modal fade" id="<?php echo "staticBackdrop_det_$modelReg->id"; ?>" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                                    <div class="modal-dialog modal-dialog-scrollable modal-lg">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">                                                                     
+                                                                    <h5 class="modal-title" id="staticBackdropLabe2"><b>Detección : <?= $modelReg->numero_deteccion; ?></b></h5>
+                                                                    <h5 class="modal-title" id="staticBackdropLabe3"><b><?= ' - ' ?>Caso : <?= $modelReg->caso->numero_caso; ?></b></h5>       
+                                                                   
+                                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>                                                                
+                                                            </div>
+
+                                                            <div class="modal-body">
+                                                                <table class="table table-striped table-hover">                                                                   
+                                                                    <tr>
+                                                                        <td><b>Fecha: </b></td>
+                                                                        <td><?= $modelReg->fecha_reporte ?></td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td><b>Nombre Estudiante: </b></td>
+                                                                        <td><?= $modelReg->nombre_estudiante ?></td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td><b>Año: </b></td>
+                                                                        <td><?= $modelReg->anio ?></td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td><b>Paralelo: </b></td>
+                                                                        <td><?= $modelReg->paralelo ?></td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td><b>Nombre quien reporta: </b></td>
+                                                                        <td><?= $modelReg->nombre_quien_reporta ?></td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td><b>Cargo:</b></td>
+                                                                        <td><?= $modelReg->cargo ?></td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td><b>Cédula:</b></td>
+                                                                        <td><?= $modelReg->cedula ?></td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td><b>Hora Aproximada:</b></td>
+                                                                        <td><?= $modelReg->hora_aproximada ?></td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td><b>Descripción del Hecho:</b></td>
+                                                                        <td><?= $modelReg->descripcion_del_hecho ?></td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td><b>Acción Realizada:</b></td>
+                                                                        <td><?= $modelReg->acciones_realizadas ?></td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td><b>Evidencia:</b></td>
+                                                                        <td><?= $modelReg->lista_evidencias ?></td>
+                                                                    </tr>
+                                                                   
+                                                                </table>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
                                     <?php
-                                    //}
+                                    } //fin for
                                     ?>
                                 </table>
                             </div>
@@ -398,7 +490,7 @@ $modelPathArchivo = PlanificacionOpciones::find()
                                 <table class="table table-success table-striped table-bordered my-text-small">
                                     <tr class="table-primary">
                                         <td><b>Caso</b></td>
-                                        <td><b>No. Der.</b></td>
+                                        <td><b>No. Derivación.</b></td>
                                         <td><b>Tipo Derivación.</b></td>
                                         <td><b>Fecha Derivación.</b></td>
                                         <td><b>Última Moficación.</b></td>

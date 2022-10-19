@@ -69,7 +69,8 @@ class DeceCasosController extends Controller
             $query2 = "select  concat(os.last_name,' ',os.middle_name,' ',os.first_name) nombre,dc.id_estudiante , 
                     (select count(*) from dece_casos dc2 where id_estudiante  = dc.id_estudiante ) casos,
                     (select count(*) from dece_registro_seguimiento drs where id_estudiante  = dc.id_estudiante ) seguimiento,
-                    (select count(*) from dece_derivacion d where id_estudiante  = dc.id_estudiante ) derivacion
+                    (select count(*) from dece_derivacion d where id_estudiante  = dc.id_estudiante ) derivacion,
+                    (select count(*) from dece_deteccion d where id_estudiante  = dc.id_estudiante ) deteccion
                     from dece_casos dc, op_student os  
                     where id_estudiante =  $id_estudiante
                     and id_usuario = '$user'

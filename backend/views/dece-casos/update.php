@@ -34,7 +34,7 @@ $modelAsistProfesor = ScholarisAsistenciaProfesor::find()
 
 <div class="dece-casos-create" style="padding-left: 40px; padding-right: 40px">
     <div class="m-0 vh-50 row justify-content-center align-items-center">
-        <div class="card shadow col-lg-11 col-md-11">
+        <div class="card shadow col-lg-8 col-md-8">
             <div class=" row align-items-center p-2">                
                 <div class="col-lg-1">
                     <img src="ISM/main/images/submenu/firma-electronica.png" width="" class="img-thumbnail">                    
@@ -115,7 +115,7 @@ $modelAsistProfesor = ScholarisAsistenciaProfesor::find()
                                 <?=
                                     Html::a(
                                         '<span class="badge rounded-pill" style="background-color: red"><i class="fa fa-briefcase" aria-hidden="true"></i>Detección</span>',
-                                        ['dece-registro-seguimiento/create', 'id_estudiante' => $model->id_estudiante,'id_clase' =>$model->id_clase,'id_caso'=>$model->id ],
+                                        ['dece-deteccion/create', 'id_estudiante' => $model->id_estudiante,'id_clase' =>$model->id_clase,'id_caso'=>$model->id ],
                                         ['class' => 'link']
                                     );
                                 ?>

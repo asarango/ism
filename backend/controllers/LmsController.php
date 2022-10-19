@@ -265,6 +265,7 @@ class LmsController extends Controller
         }else if($campo == 'upload'){
             
             $ismAreaMateriaId = $_POST['path_ism_area_materia_id'];
+            $seccion = $_POST['seccion'];
             
             $path = 'files/docentes/lms/'.$ismAreaMateriaId;
             $file = $_FILES;
@@ -284,7 +285,8 @@ class LmsController extends Controller
                     'campo' => 'update',
                     'claseId' => $_POST['claseId'],
                     'numeroSemana' => $_POST['numeroSemana'],
-                    'nombreSemana' => $_POST['nombreSemana']                
+                    'nombreSemana' => $_POST['nombreSemana'],                
+                    'seccion' => $_POST['seccion']                
                 ]);
             }
         }else if($campo == 'actualizar'){
@@ -296,6 +298,7 @@ class LmsController extends Controller
             $descripcion    = $_POST['descripcion'];
             $tarea          = $_POST['tarea'];
             $material       = $_POST['material'];
+            $seccion       = $_POST['seccion'];
             
             $model = \backend\models\LmsActividad::findOne($id);
             $model->titulo      = $titulo;
@@ -315,9 +318,10 @@ class LmsController extends Controller
                     'lms_id'        => $model->lms_id,
                     'campo'         => 'update',
                     'actividad_id'  => $id,
-                    'claseId'      => $_POST['clase_id'],
-                    'numeroSemana' => $_POST['semana_numero'],
-                    'nombreSemana' => $_POST['nombre_semana']                
+                    'claseId'       => $_POST['clase_id'],
+                    'numeroSemana'  => $_POST['semana_numero'],
+                    'nombreSemana'  => $_POST['nombre_semana'],                
+                    'seccion'       => $_POST['seccion']                
                 ]);
             
         }

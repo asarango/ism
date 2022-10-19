@@ -113,6 +113,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                             <input type="hidden" name="claseId" value="<?= $clase_id ?>"><!-- comment -->
                                             <input type="hidden" name="nombreSemana" value="<?= $nombre_semana ?>"><!-- comment -->
                                             <input type="hidden" name="numeroSemana" value="<?= $numero_semana ?>"><!-- comment -->
+                                            <input type="hidden" name="seccion" value="<?= $seccion ?>"><!-- comment -->
 
                                             <div class="form-group">
                                                 <label for="aliasArchivo" class="form-label">Alias archivo</label>

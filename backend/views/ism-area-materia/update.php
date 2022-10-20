@@ -61,6 +61,7 @@ $this->title = 'Actualizando Asignatura'.$model->materia->nombre;
 
                 <?= $this->render('_form', [
                     'model' => $model,
+                    'docentes' => $docentes
                 ]) ?>
 
 

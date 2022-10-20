@@ -21,12 +21,15 @@ use Yii;
  * @property int $ambito_id
  * @property string $idioma
  * @property int $total_horas_semana
+ * @property string $responsable_planificacion
  *
  * @property CurriculoMecAsignatutas $asignaturaCurriculo
  * @property CurriculoMecNiveles $cursoCurriculo
  * @property IsmMallaArea $mallaArea
  * @property IsmMateria $materia
+ * @property Usuario $responsablePlanificacion
  * @property KidsMicroDestreza[] $kidsMicroDestrezas
+ * @property Lms[] $lms
  * @property PlanificacionDesagregacionCabecera[] $planificacionDesagregacionCabeceras
  * @property ScholarisClase[] $scholarisClases
  */
@@ -53,10 +56,12 @@ class IsmAreaMateria extends \yii\db\ActiveRecord
             [['porcentaje'], 'number'],
             [['tipo'], 'string', 'max' => 30],
             [['idioma'], 'string', 'max' => 5],
+            [['responsable_planificacion'], 'string', 'max' => 200],
             [['asignatura_curriculo_id'], 'exist', 'skipOnError' => true, 'targetClass' => CurriculoMecAsignatutas::className(), 'targetAttribute' => ['asignatura_curriculo_id' => 'id']],
             [['curso_curriculo_id'], 'exist', 'skipOnError' => true, 'targetClass' => CurriculoMecNiveles::className(), 'targetAttribute' => ['curso_curriculo_id' => 'id']],
             [['malla_area_id'], 'exist', 'skipOnError' => true, 'targetClass' => IsmMallaArea::className(), 'targetAttribute' => ['malla_area_id' => 'id']],
             [['materia_id'], 'exist', 'skipOnError' => true, 'targetClass' => IsmMateria::className(), 'targetAttribute' => ['materia_id' => 'id']],
+            [['responsable_planificacion'], 'exist', 'skipOnError' => true, 'targetClass' => Usuario::className(), 'targetAttribute' => ['responsable_planificacion' => 'usuario']],
         ];
     }
 
@@ -80,6 +85,7 @@ class IsmAreaMateria extends \yii\db\ActiveRecord
             'ambito_id' => 'Ambito ID',
             'idioma' => 'Idioma',
             'total_horas_semana' => 'Total Horas Semana',
+            'responsable_planificacion' => 'Responsable Planificacion',
         ];
     }
 
@@ -118,9 +124,25 @@ class IsmAreaMateria extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
+    public function getResponsablePlanificacion()
+    {
+        return $this->hasOne(Usuario::className(), ['usuario' => 'responsable_planificacion']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getKidsMicroDestrezas()
     {
         return $this->hasMany(KidsMicroDestreza::className(), ['ism_area_materia_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getLms()
+    {
+        return $this->hasMany(Lms::className(), ['ism_area_materia_id' => 'id']);
     }
 
     /**

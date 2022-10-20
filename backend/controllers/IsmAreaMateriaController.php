@@ -86,13 +86,29 @@ class IsmAreaMateriaController extends Controller
     {
         $model = $this->findModel($id);
 
+        $docentes = $this->get_usuarios_docente();
+
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['ism-malla-area/index1', 'periodo_id' => $model->mallaArea->periodoMalla->id]);
         }
 
         return $this->render('update', [
             'model' => $model,
+            'docentes' => $docentes
         ]);
+    }
+
+    private function get_usuarios_docente(){
+        $con = Yii::$app->db;
+        $query = "select 	usu.usuario 
+            from	scholaris_clase cla 
+                    inner join op_faculty fac on fac.id = cla.idprofesor 
+                    inner join res_users rus on rus.partner_id = fac.partner_id 
+                    inner join usuario usu on usu.usuario = rus.login
+            group by usu.usuario
+            order by usu.usuario;";
+        $res = $con->createCommand($query)->queryAll();
+        return $res;
     }
 
     /**

@@ -1,5 +1,6 @@
 <?php
 
+use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
@@ -33,6 +34,13 @@ use yii\widgets\ActiveForm;
     <?= $form->field($model, 'orden')->textInput() ?>
     
     <?= $form->field($model, 'total_horas_semana')->textInput() ?>
+
+    <?php 
+        $lista = ArrayHelper::map($docentes, 'usuario', 'usuario');
+        echo $form->field($model, 'responsable_planificacion')->dropDownlist(
+            $lista, ['prompt' => 'Seleccione docente...']
+        );
+    ?>
 
     
     <hr>

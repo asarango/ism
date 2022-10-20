@@ -73,6 +73,7 @@ class IsmMallaAreaController extends Controller
                                     ,am.curso_curriculo_id
                                     ,am.orden 
                                     ,am.total_horas_semana
+                                    ,am.responsable_planificacion
                     from	ism_area_materia am 
                                     inner join ism_materia m on m.id = am.materia_id 
                     where 	am.malla_area_id = $areaMateriaId

@@ -169,7 +169,7 @@ $modelPathArchivo = PlanificacionOpciones::find()
                             <div style="overflow:scroll;">
                                 <table class="table table-success table-striped table-bordered my-text-small">
                                     <tr class="table-primary">
-                                        <td><b>Caso</b></td>
+                                        <td><b>No. Caso</b></td>
                                         <td><b>Fecha Creación</b></td>
                                         <td><b>Última Modificación</b></td>
                                         <td><b>Estado</b></td>
@@ -259,7 +259,7 @@ $modelPathArchivo = PlanificacionOpciones::find()
                             <div style="overflow-x:scroll;overflow-y:scroll;">
                                 <table class="table table-success table-striped table-bordered my-text-small">
                                     <tr class="table-primary">
-                                        <td><b>Caso</b></td>
+                                        <td><b>No. Caso</b></td>
                                         <td><b>No. Acompañamiento.</b></td>
                                         <td><b>Fecha Creación</b></td>
                                         <td><b>Última Modificación</b></td>
@@ -379,7 +379,7 @@ $modelPathArchivo = PlanificacionOpciones::find()
                             <div style="overflow-x:scroll;overflow-y:scroll;">
                                 <table class="table table-success table-striped table-bordered my-text-small">
                                     <tr class="table-primary">
-                                        <td><b>Caso</b></td>
+                                        <td><b>No. Caso</b></td>
                                         <td><b>No. Detección.</b></td>
                                         <td><b>Fecha </b></td>
                                         <td><b>Editar</b></td>
@@ -489,7 +489,7 @@ $modelPathArchivo = PlanificacionOpciones::find()
                             <div style="overflow-x:scroll;overflow-y:scroll;">
                                 <table class="table table-success table-striped table-bordered my-text-small">
                                     <tr class="table-primary">
-                                        <td><b>Caso</b></td>
+                                        <td><b>No. Caso</b></td>
                                         <td><b>No. Derivación.</b></td>
                                         <td><b>Tipo Derivación.</b></td>
                                         <td><b>Fecha Derivación.</b></td>
@@ -590,7 +590,7 @@ $modelPathArchivo = PlanificacionOpciones::find()
                             <div style="overflow-x:scroll;overflow-y:scroll;">
                                 <table class="table table-success table-striped table-bordered my-text-small">
                                     <tr class="table-primary">
-                                        <td><b>Caso</b></td>
+                                        <td><b>No. Caso</b></td>
                                         <td><b>No. Seg.</b></td>
                                         <td><b>Fecha Creación</b></td>
                                         <td><b>Última Modificación</b></td>

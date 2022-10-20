@@ -63,7 +63,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                     <option selected="selected" value="">Escoja un estudiante...</option>
                                     <?php
                                         foreach ($estudiantes as $estudiante) {
-                                            echo '<option value="' . $estudiante['id'] . '">' . $estudiante['student'] . '</option>';
+                                            echo '<option value="' . $estudiante['id'] . '">' . $estudiante['student'].' - '.$estudiante['curso'] . '</option>';
                                         }
                                     ?>
                                 </select>
@@ -111,7 +111,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                             <td><strong> - </strong></td>
                                             <td>
                                                 <?= Html::a(
-                                                    '<span class="badge  rounded-pill" style="background-color:red;">Ver</span>',
+                                                    '<span class="badge  rounded-pill" style="background-color:red;font-size:14px;">Ver</span>',
                                                     ['dece-casos/historico','id'=>$caso['id_estudiante'],'id_clase'=>0],                                                   
                                                     ['class' => 'link']
                                                 ); ?>
@@ -121,6 +121,16 @@ $this->params['breadcrumbs'][] = $this->title;
                                     } //fin for
                                     ?>
                                 </tbody>
+                                <tfoot>
+                                    <tr style="text-align:center">
+                                        <th><strong style="color:brown">Totales --></strong></th>
+                                        <th><?=$conteoEjesDeAccion[0]?></th>
+                                        <th><?=$conteoEjesDeAccion[1]?></th>
+                                        <th><?=$conteoEjesDeAccion[2]?></th>
+                                        <th><?=$conteoEjesDeAccion[3]?></th>
+                                        <th>0</th>
+                                    </tr>
+                                </tfoot>
                             </table>
                         </div>
 

@@ -39,6 +39,7 @@ class DeceCasosController extends Controller
         $usuarioLog = Yii::$app->user->identity->usuario;
         $periodoId = Yii::$app->user->identity->periodo_id;
         $estudiantes = $this->consulta_estudiantes($periodoId, $usuarioLog);
+        $conteoEjesDeAccion = $this->consulta_conteo_por_eje($usuarioLog);
         //$casos = $this->mostrar_casos_por_usuario($usuarioLog);   
         $casos = $this->mostrar_casos_y_estadistica($usuarioLog);
 
@@ -49,7 +50,8 @@ class DeceCasosController extends Controller
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
             'estudiantes'=>$estudiantes,
-            'casos'=>$casos
+            'casos'=>$casos,
+            'conteoEjesDeAccion'=> $conteoEjesDeAccion
         ]);
     }
     private function mostrar_casos_y_estadistica($user)
@@ -97,24 +99,54 @@ class DeceCasosController extends Controller
     private function consulta_estudiantes($scholarisPeriodoId, $usuarioLog)
     {
         $con = Yii::$app->db;
-        $query = "select 	s.id 
-		,concat(s.last_name, ' ',s.first_name,' ',s.middle_name) as student
-        from 	res_users u 
-		inner join op_faculty f on f.partner_id = u.partner_id 
-		inner join scholaris_clase c on c.idprofesor = f.id 
-		--inner join scholaris_periodo p on p.codigo = c.periodo_scholaris 
-		inner join scholaris_grupo_alumno_clase g on g.clase_id = c.id 
-		inner join op_student_inscription i on i.student_id = g.estudiante_id 
-		inner join op_student s on s.id = i.student_id 
-		inner join op_course_paralelo par on par.id = c.paralelo_id 
-		inner join op_course cur on cur.id = par.course_id 
-		inner join op_section sec on sec.id = cur.section
-		inner join scholaris_op_period_periodo_scholaris sop on sop.op_id = sec.period_id 
-        where u.login = '$usuarioLog' 
-		and sop.scholaris_id = $scholarisPeriodoId 
-		order by s.last_name, s.first_name, s.middle_name ;";
-     
+        $query = 
+        "select  c4.id,concat(c4.last_name, ' ',c4.first_name,' ',c4.middle_name) as student,
+        concat( c8.name,' ', c7.name ) curso
+        from scholaris_clase c1 , scholaris_grupo_alumno_clase c2 ,
+         op_institute_authorities c3 ,op_student c4 ,op_student_inscription c5, 
+         scholaris_op_period_periodo_scholaris c6,op_course_paralelo c7, op_course c8
+        where c3.usuario  = '$usuarioLog' 
+        and c3.id = c1.dece_dhi_id 
+        and c1.id = c2.clase_id 
+        and c2.estudiante_id = c4.id 
+        and c4.id = c5.student_id 
+        and c5.period_id  = c6.op_id 
+        and c6.scholaris_id = '$scholarisPeriodoId'
+        and c7.id = c1.paralelo_id 
+        and c8.id = c7.course_id 
+        order by student;";
+
         $res = $con->createCommand($query)->queryAll();
+
+        return $res;
+    }
+    private function consulta_conteo_por_eje($usuarioLog)
+    {
+        $con = Yii::$app->db;
+        $query = 
+        "select count(*) as conteo1
+        from dece_casos d1
+        where d1.id_usuario = '$usuarioLog'
+        union all
+        select count(*) as conteo2
+        from dece_casos d1, dece_registro_seguimiento   r1 
+        where d1.id_usuario = '$usuarioLog'
+        and r1.id_caso = d1.id 
+        union all
+        select count(*) as conteo3
+        from dece_casos d1, dece_derivacion r1 
+        where d1.id_usuario = '$usuarioLog'
+        and r1.id_casos = d1.id 
+        union all
+        select count(*) as conteo4
+        from dece_casos d1, dece_deteccion r1 
+        where d1.id_usuario = '$usuarioLog'
+        and r1.id_caso = d1.id 
+        ;";        
+
+        $res = $con->createCommand($query)->queryColumn();
+        
+      
 
         return $res;
     }

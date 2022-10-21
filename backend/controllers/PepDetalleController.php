@@ -111,7 +111,7 @@ class PepDetalleController extends Controller {
     
     private function get_planes_semanales($planId){
         $con = Yii::$app->db;
-        $query = "select 	lms.semana_numero, lms.titulo, lms.indicaciones  
+        $query = "select 	lms.semana_numero, lms.titulo, lms.indicaciones, lms.tarea  
                     from	pep_planificacion_x_unidad plan
                                     inner join scholaris_bloque_actividad blo on blo.id = plan.bloque_id 
                                     inner join scholaris_bloque_semanas sem on sem.bloque_id = blo.id 
@@ -119,6 +119,7 @@ class PepDetalleController extends Controller {
                                             and lms.tipo_bloque_comparte_valor = 1
                     where 	plan.id = $planId
                     order by sem.nombre_semana, lms.hora_numero;";
+
         $res = $con->createCommand($query)->queryAll();
         return $res;
     }
@@ -276,7 +277,7 @@ class PepDetalleController extends Controller {
     
     
     private function ingresa_opciones_generico_texto($temaId, $modelRegistros, $tipo, $referencia, $campoDe){        
-                        
+                      
         $palabra = array_search($tipo, array_column($modelRegistros, 'tipo')); //busca si esta configurado
 
         if($palabra > 0 || $palabra === 0){

@@ -161,6 +161,7 @@ class LmsController extends Controller
                 $modelLms->created_at                   = $hoy;
                 $modelLms->updated                      = $usuarioLog;
                 $modelLms->updated_at                   = $hoy;
+                $modelLms->conceptos                    = '<p><b>Concepto:</b></p><p><b>Atributo:</b></p><p><b>Línea de indagación:</b></p><p><b>Enfoque:</b></p>';                    
                 $modelLms->save();
             }
         }
@@ -220,17 +221,24 @@ class LmsController extends Controller
         $usuarioLog = Yii::$app->user->identity->usuario;
         $hoy = date('Y-m-d H:i:s');
         
-        
-        
-        
         if($campo == 'titulo'){
             $valor = $_POST['valor'];        
+                       
             $model = Lms::findOne($lmsId);
             $model->$campo = $valor;
+            
             $model->save();
-        }else if($campo == 'indicaciones'){
-            $valor = $_POST['valor'];        
+        }else if($campo == 'indicaciones'){            
+            $valor = $_POST['valor'];      
+            $conceptos = $_POST['conceptos'];        
+            $descripcion_actividades = $_POST['descripcion_actividades'];        
+            $tarea = $_POST['tarea'];        
+            $recursos = $_POST['recursos'];   
             $model = Lms::findOne($lmsId);
+            $model->descripcion_actividades = $descripcion_actividades;
+            $model->tarea = $tarea;
+            $model->recursos = $recursos;
+            $model->conceptos = $conceptos;
             $model->$campo = $valor;
             $model->save();
         }

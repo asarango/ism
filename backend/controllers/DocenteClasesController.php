@@ -116,15 +116,20 @@ class DocenteClasesController extends Controller
     }
     
     public function actionSemanas(){
+        $usuarioLog = Yii::$app->user->identity->usuario;
         $claseId = $_POST['clase_id'];
         $bloqueId = $_POST['bloque_id'];
         
         $modelClase     = \backend\models\ScholarisClase::findOne($claseId);
         $modelSemanas   = $this->get_semanas($bloqueId);
+
+        $responsable = $modelClase->ismAreaMateria->responsable_planificacion;
         
         return $this->renderPartial('semanas',[
             'modelSemanas' => $modelSemanas,
-            'modelClase' => $modelClase
+            'modelClase' => $modelClase,
+            'usuarioLog' => $usuarioLog,
+            'responsable' => $responsable
         ]);
     }
     

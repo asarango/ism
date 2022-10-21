@@ -231,6 +231,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         <input type="hidden" name="clase_id" value="<?= $clase_id ?>">
                         <input type="hidden" name="semana_numero" value="<?= $numero_semana ?>">
                         <input type="hidden" name="nombre_semana" value="<?= $nombre_semana ?>">
+                        <input type="hidden" name="seccion" value="<?= $seccion ?>">
 
                         <div class="form-group" style="margin-top: 10px"><!-- INICIO DE TITULO -->
                             <label for="titulo" class="form-label">TÍTULO</label>

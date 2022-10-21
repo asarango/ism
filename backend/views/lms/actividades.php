@@ -9,14 +9,12 @@ use yii\helpers\Html;
 ?>
 <ul style="display: flex">                
 
-    <b style="color: #ab0a3d">
-        Actividades configuradas
-    </b>
+    
     <!-- inicio para crear actividades-->                                                
     <li style="margin-left: 10px">
         <!-- Button trigger modal -->
         <a type="button" class="" data-bs-toggle="modal" data-bs-target="#nueva-actividad">
-            <i class="fas fa-building" style="color: #ff9e18"> Agregar actividad</i>
+            <i class="fas fa-building" style="color: #ff9e18"> Agregar Insumo</i>
         </a>
 
 

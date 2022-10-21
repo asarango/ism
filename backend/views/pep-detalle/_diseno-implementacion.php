@@ -12,7 +12,7 @@
             echo '<ul>';
             foreach ($planesSemanales as $exp) {
                 echo '<li><b>' . $exp['titulo'] . '</b><br>';
-                echo $exp['indicaciones'];
+                echo $exp['tarea'];
                 echo '</li>';
             }
             echo '</ul>';
@@ -75,7 +75,23 @@
 <br>
 <!--inicio de Evaluación continua-->
 <p class="text-primero"><b><u>Evaluación continua:</u></b></p>
-<div class="card p-2" style="border-color: #ff9e18">
+<div class="form-group">
+    <div id="editor-eval-continua">
+        <?php
+        foreach ($registros as $reg) {
+            if ($reg->tipo == 'evaluacion_continua') {
+                echo $reg->contenido_texto;
+                $registroId = $reg->id;
+            }
+        }
+        ?>
+    </div>
+
+    <button type="submit" class="btn btn-outline-warning" style="margin-top: 10px" onclick="grabarEvaluacionCon(<?= $registroId ?>)">
+        Guardar
+    </button>
+</div>
+<!-- <div class="card p-2" style="border-color: #ff9e18">
     <ul>
         <?php
         foreach ($semanas as $semana) {
@@ -90,7 +106,7 @@
         }
         ?>
     </ul>
-</div>
+</div> -->
 
 <!--fin de evaluación continua-->
 

@@ -29,12 +29,27 @@ if (isset($modelSemanas[0]['bloque'])) {
                     </div>
                     
                     <div class="card-footer">
-                        <?=
-                                Html::a('Ir a LMS...',['lms/index1',
+                        <?php
+                            if($usuarioLog == $responsable){
+                                echo Html::a('Ir a LMS...',['lms/index1',
                                     'semana_numero' => $semana['semana_numero'],
                                     'nombre_semana' => $semana['nombre_semana'],
                                     'clase_id' => $modelClase->id
-                                ],['style' => "color: #ab0a3d"])
+                                ],['style' => "color: #ab0a3d"]);
+
+                                echo Html::a('Plan Semanal...',['lms/index1',
+                                    'semana_numero' => $semana['semana_numero'],
+                                    'nombre_semana' => $semana['nombre_semana'],
+                                    'clase_id' => $modelClase->id
+                                ]
+                                ,['style' => "color: #ab0a3d; margin-left:10px"]
+                                ,['class' => 'zoom']
+                            
+                            );
+                            }else{
+                                echo 'Sin acceso a LMS';
+                            }
+                                
                         ?>
                     </div>
                 </div>

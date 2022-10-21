@@ -63,7 +63,7 @@ class PdfPlanT extends \yii\db\ActiveRecord{
     
     private function get_planes_semanales($planId){
         $con = Yii::$app->db;
-        $query = "select 	lms.semana_numero, lms.titulo, lms.indicaciones  
+        $query = "select 	lms.semana_numero, lms.titulo, lms.indicaciones, lms.tarea  
                     from	pep_planificacion_x_unidad plan
                                     inner join scholaris_bloque_actividad blo on blo.id = plan.bloque_id 
                                     inner join scholaris_bloque_semanas sem on sem.bloque_id = blo.id 
@@ -539,10 +539,10 @@ class PdfPlanT extends \yii\db\ActiveRecord{
         $html.= '<div style="margin-top:10px; background-color: #fff; padding:10px">';        
         
         foreach($this->semanas as $semana){
-            $html.= '<b>'.$semana['nombre_semana'].'</b>';
+            $html.= '<b>'.$semana['nombre_semana'].'</b><br>';
             foreach ($this->planesSemanales as $det){
                 if($semana['semana_numero'] == $det['semana_numero']){
-                    $html.= '<b>'.$det['titulo'].'</b>' .$det['indicaciones'].'<br>';
+                    $html.= '<b>'.$det['titulo'].'</b>' .$det['tarea'].'<br>';
                 }                
             }
         }
@@ -587,12 +587,9 @@ class PdfPlanT extends \yii\db\ActiveRecord{
         
         $html.= '<div style="margin-top:10px; background-color: #fff; padding:10px">';        
                
-        foreach($this->semanas as $semana){
-            $html.= '<b>'.$semana['nombre_semana'].'</b>';
-            foreach ($this->planesSemanales as $det){
-                if($semana['semana_numero'] == $det['semana_numero']){
-                    $html.= '<b>'.$det['titulo'].'</b>' .$det['indicaciones'].'<br>';
-                }                
+        foreach ($this->detalle as $det){
+            if($det->tipo == 'evaluacion_continua'){
+                $html.= $det->contenido_texto;
             }
         }
         

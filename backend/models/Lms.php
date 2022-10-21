@@ -24,6 +24,10 @@ use Yii;
  * @property string $created_at
  * @property string $updated
  * @property string $updated_at
+ * @property string $descripcion_actividades
+ * @property string $tarea
+ * @property string $recursos
+ * @property string $conceptos
  *
  * @property IsmAreaMateria $ismAreaMateria
  * @property LmsActividad[] $lmsActividads
@@ -47,7 +51,7 @@ class Lms extends \yii\db\ActiveRecord
             [['ism_area_materia_id', 'tipo_bloque_comparte_valor', 'semana_numero', 'hora_numero', 'tipo_recurso', 'titulo', 'created', 'created_at', 'updated', 'updated_at'], 'required'],
             [['ism_area_materia_id', 'tipo_bloque_comparte_valor', 'semana_numero', 'hora_numero'], 'default', 'value' => null],
             [['ism_area_materia_id', 'tipo_bloque_comparte_valor', 'semana_numero', 'hora_numero'], 'integer'],
-            [['indicaciones'], 'string'],
+            [['indicaciones', 'descripcion_actividades', 'tarea', 'recursos', 'conceptos'], 'string'],
             [['publicar', 'estado_activo', 'es_aprobado'], 'boolean'],
             [['fecha_aprobacion', 'created_at', 'updated_at'], 'safe'],
             [['tipo_recurso'], 'string', 'max' => 40],
@@ -80,6 +84,10 @@ class Lms extends \yii\db\ActiveRecord
             'created_at' => 'Created At',
             'updated' => 'Updated',
             'updated_at' => 'Updated At',
+            'descripcion_actividades' => 'Descripcion Actividades',
+            'tarea' => 'Tarea',
+            'recursos' => 'Recursos',
+            'conceptos' => 'Conceptos',
         ];
     }
 

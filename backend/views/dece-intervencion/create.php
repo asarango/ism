@@ -3,16 +3,16 @@
 use yii\helpers\Html;
 
 /* @var $this yii\web\View */
-/* @var $model backend\models\DeceDerivacion */
+/* @var $model backend\models\DeceIntervencion */
 
-$this->title = 'Actualizacíon - Derivación: ' . $model->numero_derivacion;
-$this->params['breadcrumbs'][] = ['label' => 'Dece Derivacions', 'url' => ['index']];
-$this->params['breadcrumbs'][] = ['label' => $model->id, 'url' => ['view', 'id' => $model->id]];
-$this->params['breadcrumbs'][] = 'Update';
+$this->title = 'Creación - Intervención';
+$this->params['breadcrumbs'][] = ['label' => 'Dece Intervencions', 'url' => ['index']];
+$this->params['breadcrumbs'][] = $this->title;
+
+
 ?>
 
-<div class="dece-derivacion-update">
-
+<div class="dece-intervencion-create">
     <div class="m-0 vh-50 row justify-content-center align-items-center">
 
         <div class="card shadow col-lg-10 col-md-10">
@@ -26,7 +26,7 @@ $this->params['breadcrumbs'][] = 'Update';
                         <?=
                                 Html::a(
                                     '<span class="badge rounded-pill" style="background-color: #0a1f8f"><i class="fa fa-briefcase" aria-hidden="true"></i>Regresar Casos</span>',
-                                    ['dece-casos/update', 'id' => $model->id_casos, 'id_clase' => 0],
+                                    ['dece-casos/update', 'id' => $model->id_caso, 'id_clase' => 0],
                                     ['class' => 'link']
                                 );
                             ?>
@@ -34,15 +34,17 @@ $this->params['breadcrumbs'][] = 'Update';
                 </div>
                 <div class="col-lg-8">
                     <h1><?= Html::encode($this->title) ?></h1>
-                    <h3><?= 'Asociado al Número de Caso: '.$model->casos->numero_caso ?></h5>
+                    <h3><?= 'Asociado al Número de Caso: '.$model->caso->numero_caso ?></h5>
                 </div>
-            </div>
+            </div>           
 
             <?= $this->render('_form', [
-                'model' => $model,
-                'arrayInstExtUpdate' => $arrayInstExtUpdate
+                'model' => $model
             ]) ?>
 
         </div>
+
     </div>
+
+
 </div>

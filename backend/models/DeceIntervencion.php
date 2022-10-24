@@ -11,10 +11,11 @@ use Yii;
  * @property int $id_estudiante
  * @property string $fecha_intervencion
  * @property string $razon
- * @property int $id_area
  * @property string $otra_area
  * @property string $acciones_responsables
+ * @property int $id_caso
  *
+ * @property DeceCasos $caso
  * @property OpStudent $estudiante
  * @property DeceIntervencionAreaCompromiso[] $deceIntervencionAreaCompromisos
  * @property DeceIntervencionCompromiso[] $deceIntervencionCompromisos
@@ -35,12 +36,13 @@ class DeceIntervencion extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id_estudiante', 'fecha_intervencion', 'razon', 'id_area', 'acciones_responsables'], 'required'],
-            [['id_estudiante', 'id_area'], 'default', 'value' => null],
-            [['id_estudiante', 'id_area'], 'integer'],
+            [['id_estudiante', 'fecha_intervencion', 'razon',  'acciones_responsables'], 'required'],
+            [['id_estudiante','id_caso'], 'default', 'value' => null],
+            [['id_estudiante','id_caso','numero_caso'], 'integer'],
             [['fecha_intervencion'], 'safe'],
-            [['razon', 'acciones_responsables'], 'string', 'max' => 2000],
+            [['razon', 'acciones_responsables','objetivo_general'], 'string', 'max' => 2000],
             [['otra_area'], 'string', 'max' => 50],
+            [['id_caso'], 'exist', 'skipOnError' => true, 'targetClass' => DeceCasos::className(), 'targetAttribute' => ['id_caso' => 'id']],
             [['id_estudiante'], 'exist', 'skipOnError' => true, 'targetClass' => OpStudent::className(), 'targetAttribute' => ['id_estudiante' => 'id']],
         ];
     }
@@ -53,12 +55,22 @@ class DeceIntervencion extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'id_estudiante' => 'Id Estudiante',
-            'fecha_intervencion' => 'Fecha Intervencion',
-            'razon' => 'Razon',
-            'id_area' => 'Id Area',
-            'otra_area' => 'Otra Area',
+            'fecha_intervencion' => 'Fecha Intervención',
+            'razon' => 'Razón',
+            'otra_area' => 'Otra / Especifique:',
             'acciones_responsables' => 'Acciones Responsables',
+            'objetivo_general'=>'Objetivo General',
+            'id_caso' => 'Id Caso',
+            'numero_caso'=>'Número Caso',
         ];
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCaso()
+    {
+        return $this->hasOne(DeceCasos::className(), ['id' => 'id_caso']);
     }
 
     /**

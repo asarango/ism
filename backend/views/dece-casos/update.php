@@ -131,7 +131,7 @@ $modelAsistProfesor = ScholarisAsistenciaProfesor::find()
                                 <?=
                                     Html::a(
                                         '<span class="badge rounded-pill" style="background-color: red"><i class="fa fa-briefcase" aria-hidden="true"></i>Intervención</span>',
-                                        ['dece-registro-seguimiento/create', 'id_estudiante' => $model->id_estudiante,'id_clase' =>$model->id_clase,'id_caso'=>$model->id ],
+                                        ['dece-intervencion/create','id_estudiante' => $model->id_estudiante,'id_clase' =>$model->id_clase,'id_caso'=>$model->id ],
                                         ['class' => 'link']
                                     );
                                 ?>

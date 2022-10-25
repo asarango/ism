@@ -106,7 +106,7 @@ $modelAsistProfesor = ScholarisAsistenciaProfesor::find()
                                 |                         
                                 <?=
                                     Html::a(
-                                        '<span class="badge rounded-pill" style="background-color: red"><i class="fa fa-briefcase" aria-hidden="true"></i>Acompañamiento</span>',
+                                        '<span class="badge rounded-pill" style="background-color:red;font-size:12px;"><i class="fa fa-briefcase" aria-hidden="true"></i>Acompañamiento</span>',
                                         ['dece-registro-seguimiento/create', 'id_estudiante' => $model->id_estudiante,'id_clase' =>$model->id_clase,'id_caso'=>$model->id ],
                                         ['class' => 'link']
                                     );
@@ -114,7 +114,7 @@ $modelAsistProfesor = ScholarisAsistenciaProfesor::find()
                                 |                         
                                 <?=
                                     Html::a(
-                                        '<span class="badge rounded-pill" style="background-color: red"><i class="fa fa-briefcase" aria-hidden="true"></i>Detección</span>',
+                                        '<span class="badge rounded-pill" style="background-color: red;font-size:12px;"><i class="fa fa-briefcase" aria-hidden="true"></i>Detección</span>',
                                         ['dece-deteccion/create', 'id_estudiante' => $model->id_estudiante,'id_clase' =>$model->id_clase,'id_caso'=>$model->id ],
                                         ['class' => 'link']
                                     );
@@ -122,7 +122,7 @@ $modelAsistProfesor = ScholarisAsistenciaProfesor::find()
                                 |                         
                                 <?=
                                     Html::a(
-                                        '<span class="badge rounded-pill" style="background-color: red"><i class="fa fa-briefcase" aria-hidden="true"></i>Derivación</span>',
+                                        '<span class="badge rounded-pill" style="background-color: red;font-size:12px;"><i class="fa fa-briefcase" aria-hidden="true"></i>Derivación</span>',
                                         ['dece-derivacion/create', 'id_estudiante' => $model->id_estudiante,'id_clase' =>$model->id_clase,'id_caso'=>$model->id ],
                                         ['class' => 'link']
                                     );
@@ -130,7 +130,7 @@ $modelAsistProfesor = ScholarisAsistenciaProfesor::find()
                                 |                         
                                 <?=
                                     Html::a(
-                                        '<span class="badge rounded-pill" style="background-color: red"><i class="fa fa-briefcase" aria-hidden="true"></i>Intervención</span>',
+                                        '<span class="badge rounded-pill" style="background-color: red;font-size:12px;"><i class="fa fa-briefcase" aria-hidden="true"></i>Intervención</span>',
                                         ['dece-intervencion/create','id_estudiante' => $model->id_estudiante,'id_clase' =>$model->id_clase,'id_caso'=>$model->id ],
                                         ['class' => 'link']
                                     );

@@ -66,6 +66,10 @@ class DeceIntervencionCompromisoController extends Controller
     {
         $model = new DeceIntervencionCompromiso();
 
+        echo '<pre>';
+        print_r($_GET);
+        die();
+
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
         }

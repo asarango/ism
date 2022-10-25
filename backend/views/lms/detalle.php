@@ -25,9 +25,6 @@ use yii\grid\GridView;
 
             <!--para cambiar el título de la hora a tratar tratar-->
 
-                
-
-
                 <!-- Modal -->
                 <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
                     <div class="modal-dialog">

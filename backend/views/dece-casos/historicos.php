@@ -5,6 +5,7 @@
 use backend\models\DeceCasos;
 use backend\models\DeceDerivacion;
 use backend\models\DeceDeteccion;
+use backend\models\DeceIntervencion;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use backend\models\DeceMotivos;
@@ -53,10 +54,16 @@ $modelRegDerivacion = DeceDerivacion::find()
     ->orderBy(['numero_derivacion' => SORT_ASC,'id_casos'=>SORT_ASC])
     ->all();
 
-//buscamos el numero de Derivaciones que tiene el alumno
+//buscamos el numero de Detecciones que tiene el alumno
 $modelRegDeteccion = DeceDeteccion::find()
     ->where(['id_estudiante' => $model->id_estudiante])
     ->orderBy(['numero_deteccion' => SORT_ASC,'id_caso'=>SORT_ASC])
+    ->all();
+
+//buscamos el numero de Intervenciones que tiene el alumno
+$modelRegIntervencion = DeceIntervencion::find()
+    ->where(['id_estudiante' => $model->id_estudiante])
+    ->orderBy(['numero_intervencion' => SORT_ASC,'id_caso'=>SORT_ASC])
     ->all();
 
 //busca el path de los archivos donde se guardan los datos de dece
@@ -591,20 +598,81 @@ $modelPathArchivo = PlanificacionOpciones::find()
                                 <table class="table table-success table-striped table-bordered my-text-small">
                                     <tr class="table-primary">
                                         <td><b>No. Caso</b></td>
-                                        <td><b>No. Seg.</b></td>
+                                        <td><b>No. Int.</b></td>
                                         <td><b>Fecha Creación</b></td>
-                                        <td><b>Última Modificación</b></td>
-                                        <td><b>Estado</b></td>
-                                        <td><b>Motivo</b></td>
+                                        <td><b>Razón</b></td>
+                                        <td><b>Objetivo General</b></td>
                                         <td><b>Editar</b></td>
                                         <td><b>Ver</b></td>
                                     </tr>
                                     <?php
-                                    //foreach ($modelRegIntervencion as $modelReg) {
-                                    ?>
+                                    foreach ($modelRegIntervencion as $modelReg) {
 
+                                    ?>
+                                        <tr>
+                                            <td><?= $modelReg->caso->numero_caso ?></td>
+                                            <td><?= $modelReg->numero_intervencion ?></td>                                          
+                                            <td><?= $modelReg->fecha_intervencion?></td>
+                                            <td><?= $modelReg->razon?></td>
+                                            <td><?= $modelReg->objetivo_general?></td>
+                                            <td>
+                                                <?=
+                                                Html::a(
+                                                    '<i class="fa fa-edit" aria-hidden="true"></i>',
+                                                    ['dece-intervencion/update', 'id' => $modelReg->id],
+                                                    ['class' => 'link']
+                                                );
+                                                ?>
+                                            </td>
+
+                                            <td>
+                                                <!--boton VER  boton llama modal -->
+                                                <button type="button" class="rounded-pill" data-bs-toggle="modal" data-bs-target="<?php echo "#staticBackdrop_inter_$modelReg->id"; ?>">
+                                                    <i class="fas fa-glasses" style="color:blueviolet;"></i>
+                                                </button>
+                                                <!-- Modal -->
+                                                <div class="modal fade" id="<?php echo "staticBackdrop_inter_$modelReg->id"; ?>" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                                    <div class="modal-dialog modal-dialog-scrollable modal-lg">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">                                                                     
+                                                                    <h5 class="modal-title" id="staticBackdropLabe2"><b>Intervención : <?= $modelReg->numero_intervencion; ?></b></h5>
+                                                                    <h5 class="modal-title" id="staticBackdropLabe3"><b><?= ' - ' ?>Caso : <?= $modelReg->caso->numero_caso; ?></b></h5>       
+                                                                   
+                                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>                                                                
+                                                            </div>
+
+                                                            <div class="modal-body">
+                                                                <table class="table table-striped table-hover">                                                                  
+                                                                 
+                                                                    <tr>
+                                                                        <td><b>Fecha Intervención: </b></td>
+                                                                        <td><?= $modelReg->fecha_intervencion ?></td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td><b>Razon: </b></td>
+                                                                        <td><?= $modelReg->razon ?></td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td><b>Objetivo General:</b></td>
+                                                                        <td><?= $modelReg->objetivo_general ?></td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td><b>Acciones Responsables:</b></td>
+                                                                        <td><?= $modelReg->acciones_responsables ?></td>
+                                                                    </tr>                                                                   
+                                                                </table>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
                                     <?php
-                                   // }
+                                    } //fin for
                                     ?>
                                 </table>
                             </div>

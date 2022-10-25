@@ -53,12 +53,12 @@ class DeceIntervencionCompromiso extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'id_dece_intervencion' => 'Id Dece Intervencion',
-            'comp_estudiante' => 'Comp Estudiante',
-            'comp_representante' => 'Comp Representante',
-            'comp_docente' => 'Comp Docente',
-            'comp_dece' => 'Comp Dece',
+            'comp_estudiante' => 'Compromiso Estudiante',
+            'comp_representante' => 'Compromiso Representante',
+            'comp_docente' => 'Compromiso Docente',
+            'comp_dece' => 'Compromiso Dece',
             'fecha_max_cumplimiento' => 'Fecha Max Cumplimiento',
-            'revision_compromiso' => 'Revision Compromiso',
+            'revision_compromiso' => 'Revisión Compromiso',
             'esaprobado' => 'Esaprobado',
         ];
     }

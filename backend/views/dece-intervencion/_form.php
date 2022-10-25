@@ -2,6 +2,7 @@
 
 use backend\models\DeceIntervencion;
 use backend\models\DeceAreasIntervenir;
+use backend\models\DeceIntervencionCompromiso;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use backend\models\helpers\HelperGeneral;
@@ -17,77 +18,80 @@ use yii\jui\DatePicker;
 $modelEstudiante = OpStudent::findOne($model->id_estudiante);
 $representante = OpParent::findOne($modelEstudiante->x_representante);
 $modelRepresentante = ResPartner::findOne($representante->name);
-    //buscamos el numero de intervencion que tiene el alumno
+//buscamos el numero de intervencion que tiene el alumno
 $modelRegIntervencion = DeceIntervencion::find()
-->where(['id_caso' => $model->id_caso])
-->orderBy(['fecha_intervencion'=>SORT_ASC])
-->all();
+    ->where(['id_caso' => $model->id_caso])
+    ->orderBy(['fecha_intervencion' => SORT_ASC])
+    ->all();
 //institucion externa derivacion
 $arrayAreaIntervenir = DeceAreasIntervenir::find()->asArray()->all();
 
-$numDivisionesAreaIntervenir = count($arrayAreaIntervenir)/3;
-$numDivisionesAreaIntervenir = intval($numDivisionesAreaIntervenir)+1;
+$numDivisionesAreaIntervenir = count($arrayAreaIntervenir) / 3;
+$numDivisionesAreaIntervenir = intval($numDivisionesAreaIntervenir) + 1;
+//creamos el objeto a ser instanciado de los compromisos
+$modelIntCompromiso = new DeceIntervencionCompromiso();
+
 ?>
 <script src="https://cdn.ckeditor.com/4.19.0/standard/ckeditor.js"></script>
 <div class="dece-intervencion-form">
-<div class="m-0 vh-50 row justify-content-center align-items-center">
+    <div class="m-0 vh-50 row justify-content-center align-items-center">
 
-<div class="row p-4 ">
-    <div class="card col-lg-5 col-ms-5">
-        <!-- RENDERIZA A LA VISTA datos_estudiante.php -->
-        <h3 style="color:blueviolet"><b>Datos Estudiante</b></h3>
-                    <table class="table table-responsive">
-                        <tr>
-                            <td><b>No. Caso: </b></td>
-                            <td><?= $model->caso->numero_caso ?></td>
-                        </tr>                   
-                        <tr>
-                            <td><b>Alumno: </b></td>
-                            <td><?= $modelEstudiante->first_name . ' ' . $modelEstudiante->middle_name . ' ' . $modelEstudiante->last_name ?></td>
+        <div class="row p-4 ">
+            <div class="card col-lg-5 col-ms-5">
+                <!-- RENDERIZA A LA VISTA datos_estudiante.php -->
+                <h3 style="color:blueviolet"><b>Datos Estudiante</b></h3>
+                <table class="table table-responsive">
+                    <tr>
+                        <td><b>No. Caso: </b></td>
+                        <td><?= $model->caso->numero_caso ?></td>
+                    </tr>
+                    <tr>
+                        <td><b>Alumno: </b></td>
+                        <td><?= $modelEstudiante->first_name . ' ' . $modelEstudiante->middle_name . ' ' . $modelEstudiante->last_name ?></td>
+                    </tr>
+                    <?php
+                    //calcual la edad
+                    $objHelperGeneral = new HelperGeneral();
+                    $edad =  $objHelperGeneral->obtener_edad_segun_fecha($modelEstudiante->birth_date);
+                    ?>
+                    <tr>
+                        <td><b>Fecha Nacimiento: </b></td>
+                        <td><?= $modelEstudiante->birth_date . ' (' . $edad . ' años)'  ?></td>
+                    </tr>
+                    <tr>
+                        <td><b>Representante: </b></td>
+                        <td><?= $modelRepresentante->name ?></td>
+                    </tr>
+                </table>
+                <h3 style="color:red">Histórico Intervenciones</h3>
+                <div style="overflow-x:scroll;overflow-y:scroll;">
+                    <table class="table table-success table-striped table-bordered my-text-small">
+                        <tr class="table-primary">
+                            <td>No.</td>
+                            <td>Fecha Creación</td>
+                            <td>Razón</td>
+                            <td>Obj. General</td>
+                            <td>Editar</td>
+                            <td>Ver</td>
                         </tr>
-                        <?php
-                                //calcual la edad
-                                $objHelperGeneral = new HelperGeneral();
-                                $edad =  $objHelperGeneral->obtener_edad_segun_fecha($modelEstudiante->birth_date);
-                            ?>
-                        <tr>
-                            <td><b>Fecha Nacimiento: </b></td>
-                            <td><?= $modelEstudiante->birth_date . ' ('.$edad.' años)'  ?></td>
-                        </tr>                       
-                        <tr>
-                            <td><b>Representante: </b></td>
-                            <td><?= $modelRepresentante->name ?></td>
-                        </tr>                       
-                    </table>
-                    <h3 style="color:red">Histórico Intervenciones</h3>
-                    <div style="overflow-x:scroll;overflow-y:scroll;" >                        
-                        <table class="table table-success table-striped table-bordered my-text-small">
-                            <tr class="table-primary">
-                                <td>No.</td>
-                                <td>Fecha Creación</td>
-                                <td>Razón</td>
-                                <td>Obj. General</td>
-                                <td>Editar</td>
-                                <td>Ver</td>
-                            </tr>
-                            <?php if ($modelRegIntervencion) {
-                                foreach ($modelRegIntervencion as $modelReg) {
-                            ?>
-                                    <tr>
-                                        <td><?= $modelReg->numero_caso ?></td>
-                                        <td><?= $modelReg->fecha_intervencion ?></td>
-                                        <td><?= $modelReg->razon ?></td>
-                                        <td><?= $modelReg->acciones_responsables ?></td>
-                                        <td>
+                        <?php if ($modelRegIntervencion) {
+                            foreach ($modelRegIntervencion as $modelReg) {
+                        ?>
+                                <tr>
+                                    <td><?= $modelReg->numero_caso ?></td>
+                                    <td><?= $modelReg->fecha_intervencion ?></td>
+                                    <td><?= $modelReg->razon ?></td>
+                                    <td><?= $modelReg->acciones_responsables ?></td>
+                                    <td>
                                         <?=
-                                            Html::a(
-                                                '<i class="fa fa-edit" aria-hidden="true"></i>',
-                                                ['dece-intervencion/update', 'id' =>$modelReg->id ],
-                                                ['class' => 'link']
-                                            );
-                                            ?>
-                                        </td>
-                                        <td>
+                                        Html::a(
+                                            '<i class="fa fa-edit" aria-hidden="true"></i>',
+                                            ['dece-intervencion/update', 'id' => $modelReg->id],
+                                            ['class' => 'link']
+                                        );
+                                        ?>
+                                    </td>
+                                    <td>
                                         <!--boton VER  boton llama modal -->
                                         <button type="button" class="rounded-pill" data-bs-toggle="modal" data-bs-target="<?php echo "#staticBackdrop$modelReg->id"; ?>">
                                             <i class="fas fa-glasses" style="color:blueviolet;"></i>
@@ -97,7 +101,7 @@ $numDivisionesAreaIntervenir = intval($numDivisionesAreaIntervenir)+1;
                                             <div class="modal-dialog modal-dialog-scrollable modal-xl">
                                                 <div class="modal-content">
                                                     <div class="modal-header">
-                                                        <h5 class="modal-title" id="staticBackdropLabel"><b>Intervención No:  <?= $modelReg->id ?></b></h5>
+                                                        <h5 class="modal-title" id="staticBackdropLabel"><b>Intervención No: <?= $modelReg->id ?></b></h5>
                                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                     </div>
                                                     <div class="modal-body">
@@ -105,7 +109,7 @@ $numDivisionesAreaIntervenir = intval($numDivisionesAreaIntervenir)+1;
                                                             <tr>
                                                                 <td><b>Fecha Creación: </b></td>
                                                                 <td><?= $modelReg->fecha_intervencion ?></td>
-                                                            </tr> 
+                                                            </tr>
                                                             <tr>
                                                                 <td><b>Razón: </b></td>
                                                                 <td><?= $modelReg->razon ?></td>
@@ -117,7 +121,7 @@ $numDivisionesAreaIntervenir = intval($numDivisionesAreaIntervenir)+1;
                                                             <tr>
                                                                 <td><b>Acciones / Responsables: </b></td>
                                                                 <td><?= $modelReg->acciones_responsables ?></td>
-                                                            </tr>                                                                                           
+                                                            </tr>
                                                         </table>
                                                     </div>
                                                     <div class="modal-footer">
@@ -127,151 +131,158 @@ $numDivisionesAreaIntervenir = intval($numDivisionesAreaIntervenir)+1;
                                                 </div>
                                             </div>
                                         </div>
-                                        </td>
-                                    </tr>
-                            <?php
-                                } //fin for
-                            } //fin if
-                            ?>
-                        </table>
-                    </div>
-        </div>
-        <div class="card col-lg-7 col-ms-7">
-            <div class="row">
-                <div class="col-lg-6">
-                    <?php if($model->isNewRecord){ ?>
-                                <h3 style="color:blueviolet"><b>Intervención</b></h3>
-                            <?php } else {?>
-                                <h3 style="color:blueviolet"><b>Intervención No. <?= $model->numero_intervencion?></b></h3>
-                                <h6 style="color:blueviolet"><b>Fecha Creación: <?= $model->fecha_intervencion?></b></h6>
-                    <?php }?>
-                </div>
-                <div class="col-lg-6">
-                     <?=
-                            Html::a(
-                                '<button type="button" class="btn btn-primary">Primary</button>',
-                                 ['dece-intervencion/update', 'id' =>$modelReg->id ],
-                                 ['class' => 'link']
-                            );
-                            Html::a(
-                                '<button type="button" class="btn btn-primary">Primary</button>',
-                                 ['dece-intervencion/update', 'id' =>$modelReg->id ],
-                                 ['class' => 'link']
-                            );
-                            Html::a(
-                                '<button type="button" class="btn btn-primary">Primary</button>',
-                                 ['dece-intervencion/update', 'id' =>$modelReg->id ],
-                                 ['class' => 'link']
-                            );
-                            Html::a(
-                                '<button type="button" class="btn btn-primary">Primary</button>',
-                                 ['dece-intervencion/update', 'id' =>$modelReg->id ],
-                                 ['class' => 'link']
-                            );
-                    ?>
+                                    </td>
+                                </tr>
+                        <?php
+                            } //fin for
+                        } //fin if
+                        ?>
+                    </table>
                 </div>
             </div>
+            <div class="card col-lg-7 col-ms-7">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <?php if ($model->isNewRecord) { ?>
+                            <h5 style="color:blueviolet"><b>Intervención</b></h5>
+                        <?php } else { ?>
+                            <h3 style="color:blueviolet"><b>Intervención No. <?= $model->numero_intervencion ?></b></h3>
+                            <h6 style="color:blueviolet"><b>Fecha Creación: <?= $model->fecha_intervencion ?></b></h6>
+                        <?php } ?>
+                    </div>
+                    <div class="col-lg-6">
+                        <span style="color:blueviolet; font-size:12px;"><b>Compromisos de las partes involucradas</b></span>
+                        <br>
+                        <!--boton VER  boton llama modal para COMPROMISO BLOQUE 1 -->
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#btn_compromiso_b1" > 
+                                B1
+                        </button>
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#btn_compromiso_b1" > 
+                                B2
+                        </button>
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#btn_compromiso_b1" > 
+                                B3
+                        </button>
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#btn_compromiso_b1" > 
+                                B4
+                        </button>
+                        <!-- Modal -->
+                        <div class="modal fade" id="btn_compromiso_b1" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-scrollable modal-lg">
+                                <div class="modal-content">
+                                    <div class="modal-header" >
+                                        <h5 class="modal-title" id="staticBackdropLabel"><b>BLOQUE 1 </b></h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <?= $this->render('/dece-intervencion-compromiso/create', [
+                                            'model' =>$modelIntCompromiso,
+                                            'tipo' =>'comp_representante',
+                                            'id_intervencion' =>$model->id,
+                                        ]) ?>    
 
-    <?php $form = ActiveForm::begin(); ?>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
 
-        
-        <?= $form->field($model, 'id_estudiante')->hiddenInput()->label(false) ?>       
-        <?= $form->field($model, 'id_caso')->hiddenInput()->label(false) ?>    
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                       
+                    </div>
+                </div>
 
-        <label for="exampleInputEmail1" class="form-label">Fecha Creación</label>
-        <input type="date" id="fecha_intervencion" class="form-control" name="fecha_intervencion" require="true" value="<?= $model->fecha_intervencion;?>">
+                <?php $form = ActiveForm::begin(); ?>
 
-      
-        <?= $form->field($model, 'razon')->textarea(['rows' => 3]) ?>
-        <script>
-                CKEDITOR.replace("deceintervencion-razon");
-        </script>
 
-        <div>
-            <hr>
+                <?= $form->field($model, 'id_estudiante')->hiddenInput()->label(false) ?>
+                <?= $form->field($model, 'id_caso')->hiddenInput()->label(false) ?>
+
+                <label for="exampleInputEmail1" class="form-label">Fecha Creación</label>
+                <input type="date" id="fecha_intervencion" class="form-control" name="fecha_intervencion" require="true" value="<?= $model->fecha_intervencion; ?>">
+
+
+                <?= $form->field($model, 'razon')->textarea(['rows' => 3]) ?>
+                <script>
+                    CKEDITOR.replace("deceintervencion-razon");
+                </script>
+
+                <div>
+                    <hr>
                     <h6><u>Áreas a Intervenir</u></h6>
-                    <table class="table table-info table-hover">                         
-                            <?php
-                            if($model->isNewRecord)
-                            {
-                                $arrayDividido = array_chunk($arrayAreaIntervenir, $numDivisionesAreaIntervenir); 
-                                foreach($arrayDividido as $array)
-                                {
-                                ?>
+                    <table class="table table-info table-hover">
+                        <?php
+                        if ($model->isNewRecord) {
+                            $arrayDividido = array_chunk($arrayAreaIntervenir, $numDivisionesAreaIntervenir);
+                            foreach ($arrayDividido as $array) {
+                        ?>
                                 <tr>
-                                    <?php   
-                                        foreach($array as $inst)
-                                        {
+                                    <?php
+                                    foreach ($array as $inst) {
                                     ?>
-                                        <td>                                        
-                                            <label style='font-size:14px;' for="<?=$inst['id']?>"> <?=$inst['nombre']?></label><br>
-                                            <input style='align-items:center;' type="checkbox" id ="<?=$inst['id']?>" name="<?=$inst['code']?>" value="<?=$inst['code']?>" >
+                                        <td>
+                                            <label style='font-size:14px;' for="<?= $inst['id'] ?>"> <?= $inst['nombre'] ?></label><br>
+                                            <input style='align-items:center;' type="checkbox" id="<?= $inst['id'] ?>" name="<?= $inst['code'] ?>" value="<?= $inst['code'] ?>">
                                         </td>
                                     <?php
-                                        }//fin foreach 2
+                                    } //fin foreach 2
                                     ?>
-                                </tr> 
-                                <?php
-                                }//fin foreach 1   
-                            }
-                            else
-                            {
-                                $arrayDividido = array_chunk($arrayAreaIntervenirUpdate, $numDivisionesAreaIntervenir); 
-                                foreach($arrayDividido as $array)
-                                {
-                                ?>
-                                <tr>
-                                    <?php   
-                                        foreach($array as $inst)
-                                        {
-                                            if($inst['seleccionado']=='si')
-                                            {
-                                    ?>
-                                            <td>                                        
-                                                <label style='font-size:10px;' for="<?=$inst['id']?>"> <?=$inst['nombre']?></label><br>
-                                                <input style='align-items:center;' type="checkbox" id ="<?=$inst['id']?>" name="<?=$inst['code']?>" value="<?=$inst['code']?>" checked="true">
-                                            </td>
-                                    <?php
-                                            }
-                                            else
-                                            { 
-                                    ?>
-                                            <td>                                        
-                                                <label style='font-size:10px;' for="<?=$inst['id']?>"> <?=$inst['nombre']?></label><br>
-                                                <input style='align-items:center;' type="checkbox" id ="<?=$inst['id']?>" name="<?=$inst['code']?>" value="<?=$inst['code']?>" >
-                                            </td>
-                                    <?php
-                                            }
-                                        }//fin foreach 2
-                                        
-                                    ?>
-                                </tr> 
-                                <?php
-                                }//fin foreach 1 
-                            }         
+                                </tr>
+                            <?php
+                            } //fin foreach 1   
+                        } else {
+                            $arrayDividido = array_chunk($arrayAreaIntervenirUpdate, $numDivisionesAreaIntervenir);
+                            foreach ($arrayDividido as $array) {
                             ?>
+                                <tr>
+                                    <?php
+                                    foreach ($array as $inst) {
+                                        if ($inst['seleccionado'] == 'si') {
+                                    ?>
+                                            <td>
+                                                <label style='font-size:10px;' for="<?= $inst['id'] ?>"> <?= $inst['nombre'] ?></label><br>
+                                                <input style='align-items:center;' type="checkbox" id="<?= $inst['id'] ?>" name="<?= $inst['code'] ?>" value="<?= $inst['code'] ?>" checked="true">
+                                            </td>
+                                        <?php
+                                        } else {
+                                        ?>
+                                            <td>
+                                                <label style='font-size:10px;' for="<?= $inst['id'] ?>"> <?= $inst['nombre'] ?></label><br>
+                                                <input style='align-items:center;' type="checkbox" id="<?= $inst['id'] ?>" name="<?= $inst['code'] ?>" value="<?= $inst['code'] ?>">
+                                            </td>
+                                    <?php
+                                        }
+                                    } //fin foreach 2
+
+                                    ?>
+                                </tr>
+                        <?php
+                            } //fin foreach 1 
+                        }
+                        ?>
                     </table>
                     <?= $form->field($model, 'otra_area')->textInput() ?>
+                </div>
+
+                <br>
+                <h6><u>Lineamiento del proceso de intervención</u></h6>
+                <?= $form->field($model, 'objetivo_general')->textInput(['maxlength' => true]) ?>
+                <script>
+                    CKEDITOR.replace("deceintervencion-objetivo_general");
+                </script>
+                <?= $form->field($model, 'acciones_responsables')->textInput(['maxlength' => true]) ?>
+                <script>
+                    CKEDITOR.replace("deceintervencion-acciones_responsables");
+                </script>
+
+                <div class="form-group">
+                    <?= Html::submitButton('Guardar', ['class' => 'btn btn-success']) ?>
+                </div>
+
+                <?php ActiveForm::end(); ?>
+            </div>
         </div>
-
-        <br>
-        <h6><u>Lineamiento del proceso de intervención</u></h6>
-        <?= $form->field($model, 'objetivo_general')->textInput(['maxlength' => true]) ?>
-        <script>
-            CKEDITOR.replace("deceintervencion-objetivo_general");
-        </script>
-        <?= $form->field($model, 'acciones_responsables')->textInput(['maxlength' => true]) ?>
-        <script>
-            CKEDITOR.replace("deceintervencion-acciones_responsables");
-        </script>
-
-        <div class="form-group">
-            <?= Html::submitButton('Guardar', ['class' => 'btn btn-success']) ?>
-        </div>
-
-    <?php ActiveForm::end(); ?>
     </div>
-    </div>
-</div>
 
 </div>

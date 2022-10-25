@@ -20,7 +20,7 @@ if (isset($modelSemanas[0]['bloque'])) {
         
             <div class="col">
                 <div class="card">
-                    <div class="card-header" style="background-color: #ccc; color: white"><?= $semana['semana_numero'] ?></div>
+                    <div class="card-header" style="background-color: #65b2e8; color: white"><?= $semana['semana_numero'] ?></div>
                     <!--<img src="..." class="card-img-top" alt="...">-->
                     <div class="card-body">
                         <h5 class="card-title"><?= $semana['nombre_semana'] ?></h5>
@@ -31,24 +31,26 @@ if (isset($modelSemanas[0]['bloque'])) {
                     <div class="card-footer">
                         <?php
                             if($usuarioLog == $responsable){
-                                echo Html::a('Ir a LMS...',['lms/index1',
+                                echo Html::a('<i class="fas fa-user-cog"></i>',['lms/index1',
                                     'semana_numero' => $semana['semana_numero'],
                                     'nombre_semana' => $semana['nombre_semana'],
                                     'clase_id' => $modelClase->id
-                                ],['style' => "color: #ab0a3d"]);
+                                ],['style' => "color: #ab0a3d", 'title' => 'Configurar plan semanal']);
+                                
+                            }
 
-                                echo Html::a('Plan Semanal...',['lms/index1',
+                            echo Html::a('<i class="fas fa-calendar-week"></i>',['lms-docente/index1',
                                     'semana_numero' => $semana['semana_numero'],
                                     'nombre_semana' => $semana['nombre_semana'],
                                     'clase_id' => $modelClase->id
                                 ]
-                                ,['style' => "color: #ab0a3d; margin-left:10px"]
+                                ,['style' => "color: #0a1f8f; margin-left:10px", 
+                                    'title' => 'Plan semanal',
+                                    'target' => '_blank'    
+                                ]
                                 ,['class' => 'zoom']
                             
                             );
-                            }else{
-                                echo 'Sin acceso a LMS';
-                            }
                                 
                         ?>
                     </div>

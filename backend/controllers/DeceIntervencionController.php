@@ -94,11 +94,12 @@ class DeceIntervencionController extends Controller
             $model->numero_caso=  $numeroCaso;
 
             $model->save();
+            
             foreach($arrayAuxPost as $aux)
             {  
                 if (!is_array($aux))
                 {
-                    if(is_numeric(strpos($aux,"AI")))
+                    if(is_numeric(strpos($aux,"Al")))
                     {                       
                         $modelIntAreaInter = new DeceIntervencionAreaCompromiso();
                         $idAreaIntervenir = DeceAreasIntervenir::find()

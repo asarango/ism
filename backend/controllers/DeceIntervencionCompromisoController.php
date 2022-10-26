@@ -64,18 +64,54 @@ class DeceIntervencionCompromisoController extends Controller
      */
     public function actionCreate()
     {
-        $model = new DeceIntervencionCompromiso();
-
-        echo '<pre>';
-        print_r($_GET);
-        die();
-
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        $model = new DeceIntervencionCompromiso();       
+       
+        $arrayPost = $_POST;
+       
+        if(count($arrayPost)>0)
+        {     
+            $id_intervencion = $arrayPost['id_intervencion'];
+            $bloque = $arrayPost['bloque'];
+            $tipo_compromiso = $arrayPost['tipo_compromiso'];
+            $detalle = $arrayPost['detalle'];
+            $fecha_compromiso = $arrayPost['fecha_compromiso'];
+        
+            $model->bloque = $bloque;
+            $model->id_dece_intervencion =$id_intervencion;
+            $model->fecha_max_cumplimiento = $fecha_compromiso;
+            $model->revision_compromiso = '';
+            $model->esaprobado = false;
+            switch($tipo_compromiso)
+            {
+                case 'ESTUDIANTE': 
+                    $model->comp_estudiante = $detalle;
+                    break;
+                case 'DOCENTE': 
+                    $model->comp_docente = $detalle;
+                    break;
+                case 'REPRESENTANTE': 
+                    $model->comp_representante = $detalle;
+                    break;
+                case 'DECE': 
+                    $model->comp_dece = $detalle;
+                    break;
+            }
+            $model->save();
+           
         }
+        
 
-        return $this->render('create', [
-            'model' => $model,
+    }
+    public function actionMostrarTabla()
+    {
+        $id_intervencion = $_POST['id_intervencion'];        
+
+        $modelCompromisos= DeceIntervencionCompromiso::find()       
+        ->where(['id_dece_intervencion'=> $id_intervencion])
+        ->all();
+
+        return $this->renderPartial('_tabla_compromiso', [
+            'modelCompromisos' =>$modelCompromisos,
         ]);
     }
 

@@ -110,6 +110,11 @@
   }
 
 
+  /*scroll*/
+.my-scroll{
+    overflow-y: scroll;
+}
+
 /*
 ESTILOS PARA SELECT 2
 */

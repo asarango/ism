@@ -161,7 +161,7 @@ class LmsController extends Controller
                 $modelLms->created_at                   = $hoy;
                 $modelLms->updated                      = $usuarioLog;
                 $modelLms->updated_at                   = $hoy;
-                $modelLms->conceptos                    = '<p><b>Concepto:</b></p><p><b>Atributo:</b></p><p><b>Línea de indagación:</b></p><p><b>Enfoque:</b></p>';                    
+                $modelLms->conceptos                    = '<p><b>Concepto:</b></p><p><b>Atributo:</b></p><p><b>Línea de indagación:</b></p><p><b>Enfoque:</b></p><p><b>ODS:</b></p>';                    
                 $modelLms->save();
             }
         }

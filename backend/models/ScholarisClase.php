@@ -79,11 +79,14 @@ class ScholarisClase extends \yii\db\ActiveRecord
     {
         return [
             [['idmateria', 'idprofesor', 'idcurso', 'paralelo_id', 'promedia', 'asignado_horario', 'todos_alumnos', 'malla_materia', 'rector_id', 'coordinador_dece_id', 'secretaria_id', 'coordinador_academico_id', 'inspector_id', 'dece_dhi_id', 'tutor_id', 'ism_area_materia_id'], 'default', 'value' => null],
-            [['idmateria', 'idprofesor', 'idcurso', 'paralelo_id', 'promedia', 'asignado_horario', 'todos_alumnos', 'malla_materia', 'rector_id', 'coordinador_dece_id', 'secretaria_id', 'coordinador_academico_id', 'inspector_id', 'dece_dhi_id', 'tutor_id', 'ism_area_materia_id'], 'integer'],
+            [['idmateria', 'idprofesor', 'idcurso', 'paralelo_id', 'promedia', 'asignado_horario', 
+                'todos_alumnos', 'malla_materia', 'rector_id', 'coordinador_dece_id', 
+                'secretaria_id', 'coordinador_academico_id', 'inspector_id', 'dece_dhi_id', 
+                'tutor_id', 'ism_area_materia_id', 'lms_actvidad_id'], 'integer'],
             [['idprofesor'], 'required'],
             [['peso'], 'number'],
             [['fecha_cierre', 'fecha_activacion'], 'safe'],
-            [['estado_cierre', 'es_activo'], 'boolean'],
+            [['estado_cierre', 'es_activo', 'es_heredado_lms'], 'boolean'],
             [['periodo_scholaris', 'tipo_usu_bloque'], 'string', 'max' => 30],
             [['materia_curriculo_codigo', 'codigo_curso_curriculo'], 'string', 'max' => 10],
             [['ism_area_materia_id'], 'exist', 'skipOnError' => true, 'targetClass' => IsmAreaMateria::className(), 'targetAttribute' => ['ism_area_materia_id' => 'id']],
@@ -131,6 +134,8 @@ class ScholarisClase extends \yii\db\ActiveRecord
             'tutor_id' => 'Tutor ID',
             'ism_area_materia_id' => 'Ism Area Materia ID',
             'es_activo' => 'Es Activo',
+            'lms_actvidad_id' => 'Actividad Lms',
+            'es_heredado_lms' => 'Es heredado',
         ];
     }
 
@@ -252,7 +257,7 @@ class ScholarisClase extends \yii\db\ActiveRecord
     public function getTutor()
     {
         return $this->hasOne(OpInstituteAuthorities::className(), ['id' => 'tutor_id']);
-    }
+    }     
 
     /**
      * @return \yii\db\ActiveQuery
@@ -348,5 +353,10 @@ class ScholarisClase extends \yii\db\ActiveRecord
     public function getScholarisTareaInicials()
     {
         return $this->hasMany(ScholarisTareaInicial::className(), ['clase_id' => 'id']);
+    }
+
+
+    public function getLmsActividad(){
+        return $this->hasOne(LmsActividad::className(), ['id' => 'lms_actvidad_id']);
     }
 }

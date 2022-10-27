@@ -1,7 +1,9 @@
 <?php
 
+use backend\models\CurriculoMecBloque;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
+use yii\helpers\Url;
 
 /* @var $this yii\web\View */
 /* @var $model backend\models\DeceIntervencionCompromiso */
@@ -9,64 +11,101 @@ use yii\widgets\ActiveForm;
 
 $fechaActual = date('Y-m-d');
 $hora = date('H:i:s');
-$arrayTipoCompromiso = array("ESTUDIANTE","REPRESENTANTE","DOCENTE","DECE");
+$arrayTipoCompromiso = array("ESTUDIANTE", "REPRESENTANTE", "DOCENTE", "DECE");
+$bloques = CurriculoMecBloque::find()->where(['is_active'=>true])->orderBy('id')->all();
+
 
 ?>
 
 <div class="dece-intervencion-compromiso-form">
 
-    <?php $form = ActiveForm::begin(); ?>
-    <label style='font-size:14px;' for="fecha_max_cumplimiento">Compromiso de Parte de:</label><br>
-    <select name="select" class="form-select" aria-label="Default select example">
-            <?php
-            $cont =0;
-            foreach($arrayTipoCompromiso as $array)
-            { 
-            ?>   
-                <option value="tipo_compromiso"><?=$arrayTipoCompromiso[$cont] ?></option> 
-            <?php
-                $cont =$cont+1;
-            }
-            ?>
-    </select>
+    <!-- <?php $form = ActiveForm::begin(); ?>   -->
 
-   
+    <!-- <?= $form->field($model, 'id_dece_intervencion')->textInput(['value' => $id_intervencion]) ?> -->
 
-    <?= $form->field($model, 'id_dece_intervencion')->hiddenInput(['value'=>$id_intervencion])->label(false) ?>
+    <input class="form-control" hidden="false" type="text" id="id_intervencion" name="id_intervencion" value="<?= $id_intervencion ?>">
     <div class="row">
-            <div class="col-lg-8">
-                <label style='font-size:14px;' for="text_compromiso">Detalle:</label><br>
-                <input type="textarea" id="text_compromiso" class="form-control" name="text_compromiso" require="true" value="">
-      
-            </div>
-            <div class="col-lg-4">
-                <!-- <?= $form->field($model, 'fecha_max_cumplimiento')->textInput() ?> -->
 
-                <?php
-                    if ($model->isNewRecord) 
-                    {                                   
+        <div class="col-lg-1">
+            <label style='font-size:14px;' for="fecha_max_cumplimiento">Bloque:</label><br>
+            <select id="bloque" name="bloque" class="form-select" aria-label="Default select example">
+                <?php               
+                foreach ($bloques as $item) {
                 ?>
-                    <label style='font-size:14px;' for="fecha_max_cumplimiento">Fecha Máxima de Cumplimiento</label><br>
-                    <input type="date" id="fecha_max_cumplimiento" class="form-control" name="fecha_max_cumplimiento" require="true" value="<?= $fechaActual; ?>">
-                <?php
-                    }else{                                           
+                    <option value="<?= $item->shot_name ?>"><?= $item->shot_name ?></option>
+                <?php                   
+                }
                 ?>
-                    <label style='font-size:14px;' for="fecha_max_cumplimiento">Fecha Máxima de Cumplimiento</label><br>
-                    <input type="date" id="fecha_max_cumplimiento" class="form-control" name="fecha_max_cumplimiento" require="true" value="<?= $fechaActual; ?>">
+            </select>
+        </div>
+        <div class="col-lg-2">
+            <label style='font-size:14px;' for="fecha_max_cumplimiento">Compromiso de:</label><br>
+            <select id="tipo_compromiso" name="tipo_compromiso" class="form-select" aria-label="Default select example" style="width: 150px;">
                 <?php
-                    }                                           
+                $cont = 0;
+                foreach ($arrayTipoCompromiso as $array) {
                 ?>
-            </div>        
+                    <option value="<?= $arrayTipoCompromiso[$cont] ?>"><?= $arrayTipoCompromiso[$cont] ?></option>
+                <?php
+                    $cont = $cont + 1;
+                }
+                ?>
+            </select>
+        </div>
+        <div class="col-lg-7">
+            <label style='font-size:14px;' for="text_compromiso">Descripción Compromiso:</label><br>
+            <textarea class="form-control" id="text_detalle" name="text_detalle" aria-label="With textarea" rows="1"></textarea>
+        </div>
+        <div class="col-lg-2">
+            <!-- <?= $form->field($model, 'fecha_max_cumplimiento')->textInput() ?> -->
+            <label style='font-size:14px;' for="fecha_max_cumplimiento">Fecha Cumplimiento:</label><br>
+            <input type="date" id="fecha_max_cumplimiento" class="form-control" name="fecha_max_cumplimiento" require="true" value="<?= $fechaActual; ?>">            
+        </div>
     </div>
     <br>
-    <?= $form->field($model, 'revision_compromiso')->hiddenInput(['maxlength' => true])->label(false) ?>
-
+    <!-- <?= $form->field($model, 'revision_compromiso')->hiddenInput(['maxlength' => true])->label(false) ?> -->
     <!-- <?= $form->field($model, 'esaprobado')->checkbox() ?> -->
 
-    <div class="form-group">
-        <?= Html::submitButton('Guardar', ['class' => 'btn btn-success']) ?>
+    <!-- <div class="form-group">
+        <?= Html::submitButton('Guardar123', ['class' => 'btn btn-success']) ?>
     </div>
 
-    <?php ActiveForm::end(); ?>
+    <?php ActiveForm::end(); ?> -->
+    <button class="bnt btn-primary" onclick="guardar()">
+        Guardar
+    </button>
 
 </div>
+<script>
+    function guardar()
+    {
+        var bloque = $('#bloque').val();
+        var tipo_compromiso = $('#tipo_compromiso').val();
+        var detalle = $('#text_detalle').val();
+        var fecha_compromiso = $('#fecha_max_cumplimiento').val();
+        var id_intervencion = $('#id_intervencion').val();
+
+        var url = '<?= Url::to(['dece-intervencion-compromiso/create']) ?>';
+    
+        var params = {
+                bloque: bloque,
+                tipo_compromiso : tipo_compromiso,
+                detalle : detalle,
+                fecha_compromiso : fecha_compromiso,
+                id_intervencion :id_intervencion,
+            };
+            
+            $.ajax({
+                data: params,
+                url: url,
+                type: 'POST',
+                beforeSend: function () {},
+                success: function (response) {
+                    muestraTablaCompromiso();
+
+                }
+            })
+
+    }
+
+</script>

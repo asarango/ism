@@ -10,6 +10,7 @@ use backend\models\OpParent;
 use backend\models\OpStudent;
 use backend\models\ResPartner;
 use yii\jui\DatePicker;
+use yii\helpers\Url;
 
 /* @var $this yii\web\View */
 /* @var $model backend\models\DeceIntervencion */
@@ -78,7 +79,7 @@ $modelIntCompromiso = new DeceIntervencionCompromiso();
                             foreach ($modelRegIntervencion as $modelReg) {
                         ?>
                                 <tr>
-                                    <td><?= $modelReg->numero_caso ?></td>
+                                    <td><?= $modelReg->numero_intervencion ?></td>
                                     <td><?= $modelReg->fecha_intervencion ?></td>
                                     <td><?= $modelReg->razon ?></td>
                                     <td><?= $modelReg->acciones_responsables ?></td>
@@ -151,36 +152,44 @@ $modelIntCompromiso = new DeceIntervencionCompromiso();
                         <?php } ?>
                     </div>
                     <div class="col-lg-6">
-                        <span style="color:blueviolet; font-size:12px;"><b>Compromisos de las partes involucradas</b></span>
-                        <br>
-                        <!--boton VER  boton llama modal para COMPROMISO BLOQUE 1 -->
-                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#btn_compromiso_b1" > 
-                                B1
-                        </button>
-                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#btn_compromiso_b1" > 
-                                B2
-                        </button>
-                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#btn_compromiso_b1" > 
-                                B3
-                        </button>
-                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#btn_compromiso_b1" > 
-                                B4
-                        </button>
-                        <!-- Modal -->
+                        <?php
+                            if(!($model->isNewRecord)){ 
+                         ?> 
+                        <table class="table table-info">
+                            <tr>
+                                <td>
+                                    <span style="color:blueviolet; font-size:12px;"><b>Compromisos de las partes involucradas</b></span>
+                                </td>
+                                <td>
+                                    <!--boton VER  boton llama modal para COMPROMISO BLOQUE 1 -->
+                                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#btn_compromiso_b1"> 
+                                    VER
+                                    </button> 
+                                </td>
+                            </tr>
+                        </table>  
+                        <?php  
+                            }  
+                        ?>   
+                       
+                                            
+                        <!-- Modal B1-->
+                        <?php
+                            if(!($model->isNewRecord)){ 
+                         ?> 
                         <div class="modal fade" id="btn_compromiso_b1" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                            <div class="modal-dialog modal-dialog-scrollable modal-lg">
+                            <div class="modal-dialog modal-dialog-scrollable modal-xl">
                                 <div class="modal-content">
                                     <div class="modal-header" >
-                                        <h5 class="modal-title" id="staticBackdropLabel"><b>BLOQUE 1 </b></h5>
+                                        <h5 class="modal-title" id="staticBackdropLabel"><b>Compromisos de las Partes Involucradas</b></h5>
                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                     </div>
-                                    <div class="modal-body">
+                                    <div class="modal-body">                                        
                                         <?= $this->render('/dece-intervencion-compromiso/create', [
                                             'model' =>$modelIntCompromiso,
                                             'tipo' =>'comp_representante',
                                             'id_intervencion' =>$model->id,
                                         ]) ?>    
-
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -189,6 +198,9 @@ $modelIntCompromiso = new DeceIntervencionCompromiso();
                                 </div>
                             </div>
                         </div>
+                        <?php  
+                            }  
+                        ?>
                        
                     </div>
                 </div>
@@ -199,9 +211,14 @@ $modelIntCompromiso = new DeceIntervencionCompromiso();
                 <?= $form->field($model, 'id_estudiante')->hiddenInput()->label(false) ?>
                 <?= $form->field($model, 'id_caso')->hiddenInput()->label(false) ?>
 
-                <label for="exampleInputEmail1" class="form-label">Fecha Creación</label>
-                <input type="date" id="fecha_intervencion" class="form-control" name="fecha_intervencion" require="true" value="<?= $model->fecha_intervencion; ?>">
-
+                <?php
+                    if ($model->isNewRecord) { 
+                 ?>
+                        <label for="exampleInputEmail1" class="form-label">Fecha Creación</label>
+                        <input type="date" id="fecha_intervencion" class="form-control" name="fecha_intervencion" require="true" value="<?= $model->fecha_intervencion; ?>">
+                <?php
+                }
+                  ?>
 
                 <?= $form->field($model, 'razon')->textarea(['rows' => 3]) ?>
                 <script>
@@ -267,11 +284,11 @@ $modelIntCompromiso = new DeceIntervencionCompromiso();
 
                 <br>
                 <h6><u>Lineamiento del proceso de intervención</u></h6>
-                <?= $form->field($model, 'objetivo_general')->textInput(['maxlength' => true]) ?>
+                <?= $form->field($model, 'objetivo_general')->textarea(['rows' => 3]) ?>
                 <script>
                     CKEDITOR.replace("deceintervencion-objetivo_general");
                 </script>
-                <?= $form->field($model, 'acciones_responsables')->textInput(['maxlength' => true]) ?>
+                <?= $form->field($model, 'acciones_responsables')->textarea(['rows' => 3]) ?>
                 <script>
                     CKEDITOR.replace("deceintervencion-acciones_responsables");
                 </script>
@@ -286,3 +303,32 @@ $modelIntCompromiso = new DeceIntervencionCompromiso();
     </div>
 
 </div>
+<script>		
+
+ 
+function muestraTablaCompromiso()
+{
+    var url = '<?= Url::to(['dece-intervencion-compromiso/mostrar-tabla']) ?>';
+    var id_intervencion = '<?=$model->id?>';
+            var params = {
+                id_intervencion: id_intervencion
+            };
+            
+            $.ajax({
+                data: params,
+                url: url,
+                type: 'POST',
+                beforeSend: function () {},
+                success: function (response) {
+                    $('#tabla_compromisos').html(response);
+
+                }
+            });
+
+}
+window.onload=function() {
+			//alert('OK');
+            muestraTablaCompromiso();
+            $('#btn_compromiso_b1').modal('toggle');
+		}
+</script>

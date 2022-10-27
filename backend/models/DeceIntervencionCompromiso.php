@@ -35,12 +35,13 @@ class DeceIntervencionCompromiso extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id_dece_intervencion', 'fecha_max_cumplimiento', 'revision_compromiso', 'esaprobado'], 'required'],
+            [['id_dece_intervencion', 'fecha_max_cumplimiento', ], 'required'],
             [['id_dece_intervencion'], 'default', 'value' => null],
             [['id_dece_intervencion'], 'integer'],
             [['fecha_max_cumplimiento'], 'safe'],
             [['esaprobado'], 'boolean'],
-            [['comp_estudiante', 'comp_representante', 'comp_docente', 'comp_dece', 'revision_compromiso'], 'string', 'max' => 2000],
+            [['comp_estudiante', 'comp_representante', 'comp_docente', 'comp_dece', 'revision_compromiso','revision_comp_representante','revision_comp_docente','revision_comp_dece'], 'string', 'max' => 2000],
+            [['bloque'], 'string', 'max' => 20],
             [['id_dece_intervencion'], 'exist', 'skipOnError' => true, 'targetClass' => DeceIntervencion::className(), 'targetAttribute' => ['id_dece_intervencion' => 'id']],
         ];
     }
@@ -59,7 +60,11 @@ class DeceIntervencionCompromiso extends \yii\db\ActiveRecord
             'comp_dece' => 'Compromiso Dece',
             'fecha_max_cumplimiento' => 'Fecha Max Cumplimiento',
             'revision_compromiso' => 'Revisión Compromiso',
+            'revision_comp_representante' => 'Revisión Compromiso Estudiante',
+            'revision_comp_docente' => 'Revisión Compromiso Docente',
+            'revision_comp_dece' => 'Revisión Compromiso Dece',
             'esaprobado' => 'Esaprobado',
+            'bloque'=>'Bloque',
         ];
     }
 

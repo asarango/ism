@@ -11,9 +11,6 @@ $this->title = '';
 $this->params['breadcrumbs'][] = ['label' => 'Dece Intervencion Compromisos', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 
- //llamamos al compromiso, acorde lo seleccionado
-$tipoConsulta = $tipo;
-
 
 ?>
 
@@ -23,16 +20,10 @@ $tipoConsulta = $tipo;
     
     <?= $this->render('_form', [
         'model' => $model,
-        'tipoConsulta'=>$tipoConsulta,
         'id_intervencion'=>$id_intervencion,
     ]) ?>
 
-    <!-- SE MOSTRARA UNA TABLA ACORDE EL TIPO DE INFORMACION A LLENAR -->
-
-     <hr>
-     <div id="tabla_compromisos">
-
-     </div>
+   
    
 </div>
 

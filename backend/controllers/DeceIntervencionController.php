@@ -153,9 +153,7 @@ class DeceIntervencionController extends Controller
      */
     public function actionUpdate($id)
     {
-        $model = $this->findModel($id);
-        $fechaActual = date('Y-m-d');
-        $hora = date('H:i:s');         
+        $model = $this->findModel($id);       
         
         $arrayAreaIntervenirUpdate = $this->buscaAreaIntervenir($model->id);
 
@@ -186,7 +184,9 @@ class DeceIntervencionController extends Controller
                 }               
            }
 
-            return $this->redirect(['update', 'id' => $model->id]);
+            return $this->redirect(['update', 
+                'id' => $model->id,                
+            ]);
         }
 
         return $this->render('update', [

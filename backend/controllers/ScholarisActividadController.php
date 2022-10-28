@@ -2,7 +2,9 @@
 
 namespace backend\controllers;
 
-
+use backend\models\Lms;
+use backend\models\LmsActividad;
+use backend\models\ResUsers;
 use backend\models\ScholarisActividadDescriptor;
 use backend\models\ScholarisBloqueActividad;
 use backend\models\ScholarisBloqueSemanas;
@@ -15,6 +17,7 @@ use backend\models\ScholarisTipoActividad;
 use backend\models\ScholarisActividad;
 use backend\models\ScholarisActividadSearch;
 use backend\models\ScholarisArchivosprofesor;
+use backend\models\ScholarisHorariov2Detalle;
 use backend\models\SentenciasSql;
 use Yii;
 use yii\filters\AccessControl;
@@ -1511,4 +1514,128 @@ class ScholarisActividadController extends Controller
             'model' => $model
         ]);
     }
+
+
+
+    /**
+     * ACCIÓN PARA ENTREGAR LA LISTA DE ACTIVIDADES
+     */
+    public function actionLista(){
+        $claseId        = $_GET['clase_id'];
+        $semanaNumero    = $_GET['semana_numero'];
+        $detalleHorarioId = $_GET['detalle_horario_id'];
+        $lmsId            = $_GET['lms_id'];
+        
+        $data = $this->inserta_actividades_lms($_GET);         
+        
+        $modelClase = ScholarisClase::findOne($claseId);
+
+        $actividades = ScholarisActividad::find()
+        ->innerJoin('lms_actividad l','l.id = scholaris_actividad.lms_actvidad_id')
+        ->where([
+            'bloque_actividad_id' => $data['bloque_id'],
+            'l.lms_id' => $lmsId
+        ])
+        ->orderBy('create_date')
+        ->All();
+
+            $temas = Lms::find()->where([
+                'semana_numero' => $semanaNumero,
+                'ism_area_materia_id' => $modelClase->ism_area_materia_id
+            ])
+            ->orderBy('hora_numero')
+            ->all();
+
+        $semanas = ScholarisBloqueSemanas::find()->where([
+            'bloque_id' => $data['bloque_id']
+        ])->orderBy('semana_numero')->all();
+
+        $lms = Lms::findOne($lmsId);
+
+        return $this->render('lista',[
+            'actividades'   => $actividades,
+            'semanas'       => $semanas,
+            'temas'         => $temas,
+            'semanaId'      => $data['semana_id'],
+            'bloqueId'      => $data['bloque_id'],
+            'lms'           => $lms,
+            'clase_id'      => $claseId,
+            'detalle_horario_id' => $detalleHorarioId,
+            'semana_numero' => $semanaNumero,
+            'nombre_semana' => $semanas[0]->nombre_semana,
+            'modelClase'    => $modelClase
+        ]);
+
+    }
+
+    private function inserta_actividades_lms($get){
+        $usuarioLog = Yii::$app->user->identity->usuario;
+        $usuario = ResUsers::find()->where(['login' => $usuarioLog])->one();
+        $usuarioId = $usuario->id;
+        
+        $hoy = date('Y-m-d H:i:s');
+
+        $modelClase     = ScholarisClase::findOne($get['clase_id']);
+        $bloque       = $this->consulta_bloque_id($get['semana_numero'], $modelClase->tipo_usu_bloque);
+        $detalleHorario = ScholarisHorariov2Detalle::findOne($get['detalle_horario_id']);
+        
+        $bloqueId   = $bloque['bloque_id'];
+        $semanaId   = $bloque['semana_id'];
+        $horaId     = $detalleHorario->hora->id;
+        
+        $this->inserta_actividades($hoy, $usuarioId, $bloqueId, $modelClase->id, $horaId, $semanaId, $get['lms_id']);      
+        
+        return array(
+            'bloque_id' => $bloqueId,
+            'semana_id' => $semanaId
+        );
+
+    }
+
+    private function consulta_bloque_id($semanaNumero, $uso){
+        $con = Yii::$app->db;
+        $query = "select 	blo.id as bloque_id, sem.id as semana_id
+                    from	scholaris_bloque_semanas sem
+                            inner join scholaris_bloque_actividad blo on blo.id = sem.bloque_id 
+                    where 	sem.semana_numero  = $semanaNumero
+                            and blo.tipo_uso = '$uso'
+                            and blo.tipo_bloque in ('PARCIAL', 'EXAMEN');";
+        $res = $con->createCommand($query)->queryOne();
+        return $res;
+    }
+
+    private function inserta_actividades($hoy, $usuarioId, $bloqueId, $claseId, $horaId, $semanaId, $lmsId){
+        $con = Yii::$app->db;
+        $query = "insert into scholaris_actividad (create_date, create_uid, title, descripcion, inicio, fin, tipo_actividad_id, bloque_actividad_id
+                            , paralelo_id, calificado, tipo_calificacion, tareas, hora_id, semana_id, lms_actvidad_id, es_heredado_lms, estado)
+                    select 	'$hoy'
+                            ,$usuarioId
+                            ,lma.titulo 
+                            ,lma.descripcion 
+                            ,'$hoy'
+                            ,'$hoy'
+                            ,lma.tipo_actividad_id 
+                            ,$bloqueId as bloque_actividad_id
+                            ,$claseId as clase_id
+                            ,lma.es_calificado 
+                            ,tip.tipo 
+                            ,lma.tarea 
+                            ,$horaId as hora_id
+                            ,$semanaId as semana_id
+                            ,lma.id 
+                            ,true 
+                            ,false 
+                    from	lms_actividad lma
+                            inner join scholaris_tipo_actividad tip on tip.id = lma.tipo_actividad_id 
+                    where 	lma.lms_id = $lmsId
+                            and lma.id not in (select lms_actvidad_id  from scholaris_actividad where lms_actvidad_id = lma.id  and paralelo_id = $claseId);";
+        $con->createCommand($query)->execute();
+    }
+
+    /**
+     * FIN ACCIÓN PARA ENTREGAR LA LISTA DE ACTIVIDADES
+     */
+
+
+
 }

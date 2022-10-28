@@ -73,6 +73,7 @@ class RegistraHoras{
         $hoy = date('Y-m-d H:i:s');        
                 
         $detalleHorario = $this->consulta_detalle_horario();
+
         $detalle = $detalleHorario[$posicion]; //Array con el dato de la semana
         $fecha = $this->busca_fecha($detalle);        
         $model = new LmsDocente();
@@ -95,7 +96,7 @@ class RegistraHoras{
         $numeroDiaHorario   = $detalle['dia_id'];
         $fechaInicio        = $this->datosSemana['fecha_inicio'];
         $diferenciaDias     = $numeroDiaHorario - 1;
-
+        
         $fecha =  date("Y-m-d",strtotime($fechaInicio."+ $diferenciaDias days"));
         
         return $fecha;       
@@ -117,7 +118,7 @@ class RegistraHoras{
                             inner join scholaris_horariov2_hora hor on hor.id = det.hora_id 
                     where 	shh.clase_id = $this->claseId
                     order by det.dia_id, hor.numero;";
-
+        
         $res = $con->createCommand($query)->queryAll();
         return $res;
     }

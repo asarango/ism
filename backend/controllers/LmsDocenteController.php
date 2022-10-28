@@ -90,6 +90,7 @@ class LmsDocenteController extends Controller {
                         ,lms.semana_numero 
                         ,doc.fecha 
                         ,hor.nombre as hora 
+                        ,lms.id as lms_id
                         ,lms.titulo 
                         ,lms.indicaciones 
                         ,lms.publicar 
@@ -103,6 +104,7 @@ class LmsDocenteController extends Controller {
                         ,doc.motivo_no_realizado 
                         ,doc.justificativo 
                         ,(select count(id) from lms_actividad where lms_id = lms.id) as total_insumos
+                        ,det.id as detalle_id
                 from 	lms_docente doc
                         inner join lms on lms.id = doc.lms_id
                         inner join ism_area_materia iam on iam.id = lms.ism_area_materia_id 

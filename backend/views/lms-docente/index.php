@@ -101,7 +101,16 @@ $helper = new HelperGeneral();
 
                                         |
 
-                                        <b><i class="fas fa-tasks" style="color: #9e28b5;"> TOTAL INSUMOS: </i></b> <?= $det['total_insumos'] ?>
+                                        <?=
+                                            Html::a('<i class="fas fa-tasks" style="color: #9e28b5;"> TOTAL INSUMOS: </i>'.$det['total_insumos'], 
+                                            ['scholaris-actividad/lista',
+                                                'clase_id' => $clase_id,
+                                                'semana_numero' => $semana_numero,
+                                                'detalle_horario_id' => $det['detalle_id'],
+                                                'lms_id' => $det['lms_id']
+                                            ])
+                                        ?>
+                                        
 
                                     </div> <!-- FIN DE COL DE ICONOS IZQUIERDA -->
 
@@ -204,7 +213,7 @@ $helper = new HelperGeneral();
                             </div>
 
                             <div class="card-footer" style="background: linear-gradient(white, #898b8d); color: black;">
-                                footer
+                                
                             </div>
                         </div>
                     <?php

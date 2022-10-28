@@ -606,8 +606,8 @@ $modelPathArchivo = PlanificacionOpciones::find()
                                         <td><b>Ver</b></td>
                                     </tr>
                                     <?php
-                                    foreach ($modelRegIntervencion as $modelReg) {
-
+                                    foreach ($modelRegIntervencion as $modelReg) 
+                                    {
                                     ?>
                                         <tr>
                                             <td><?= $modelReg->caso->numero_caso ?></td>

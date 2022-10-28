@@ -65,7 +65,7 @@ class DeceIntervencionCompromisoController extends Controller
     public function actionCreate()
     {
         $model = new DeceIntervencionCompromiso();       
-       
+        $hora = date('H:i:s');
         $arrayPost = $_POST;
        
         if(count($arrayPost)>0)
@@ -78,7 +78,7 @@ class DeceIntervencionCompromisoController extends Controller
         
             $model->bloque = $bloque;
             $model->id_dece_intervencion =$id_intervencion;
-            $model->fecha_max_cumplimiento = $fecha_compromiso;
+            $model->fecha_max_cumplimiento = $fecha_compromiso.' '.$hora ;
             $model->revision_compromiso = '';
             $model->esaprobado = false;
             switch($tipo_compromiso)
@@ -96,22 +96,66 @@ class DeceIntervencionCompromisoController extends Controller
                     $model->comp_dece = $detalle;
                     break;
             }
-            $model->save();
-           
+            $model->save();           
         }
+    }
+    public function actionGuardarCompromiso()
+    {
+        $revision_compromiso = $_POST['revision_compromiso'];
+        $id_intervencion_compromiso = $_POST['id_intervencion_compromiso'];   
+        $esChequeado = $_POST['esChequeado']; 
+        $tipo_compromiso = $_POST['tipo_compromiso']; 
+        $model = DeceIntervencionCompromiso::findOne($id_intervencion_compromiso);
         
 
+        switch($tipo_compromiso)
+        {
+            case 'estudiante': 
+                $model->revision_compromiso = $revision_compromiso;
+                break;
+            case 'docente': 
+                $model->revision_comp_docente = $revision_compromiso;
+                break;
+            case 'dece': 
+                $model->revision_comp_dece = $revision_compromiso;
+                break;
+            case 'representante': 
+                $model->revision_comp_representante = $revision_compromiso;
+                break;
+        }
+
+        
+
+        if($esChequeado=='true'){
+            $model->esaprobado = true;
+        }else{
+            $model->esaprobado = false;
+        }   
+   
+        $model->save();
+
+        return '! Datos Guardados de Forma Correcta ¡';
+    }
+    public function actionEliminarCompromiso()
+    {
+        $id_intervencion_compromiso = $_POST['id_intervencion_compromiso'];        
+        $model = DeceIntervencionCompromiso::findOne($id_intervencion_compromiso);
+        $model->delete();
+
+        return '! Datos Eliminados de Forma Correcta ¡';
     }
     public function actionMostrarTabla()
     {
-        $id_intervencion = $_POST['id_intervencion'];        
-
+        $id_intervencion = $_POST["id_intervencion"]; 
+        
         $modelCompromisos= DeceIntervencionCompromiso::find()       
         ->where(['id_dece_intervencion'=> $id_intervencion])
-        ->all();
+        ->orderBy(['id'=> SORT_ASC])
+        ->all();    
 
         return $this->renderPartial('_tabla_compromiso', [
             'modelCompromisos' =>$modelCompromisos,
+            'id_intervencion' => $id_intervencion,
         ]);
     }
 

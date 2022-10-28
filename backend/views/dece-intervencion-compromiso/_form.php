@@ -74,11 +74,21 @@ $bloques = CurriculoMecBloque::find()->where(['is_active'=>true])->orderBy('id')
     <button class="bnt btn-primary" onclick="guardar()">
         Guardar
     </button>
+     <!-- SE MOSTRARA UNA TABLA ACORDE EL TIPO DE INFORMACION A LLENAR -->
+
+     <hr>
+     <div id="tabla_compromisos">
+
+     </div>
 
 </div>
 <script>
+    $(window).on("load",function(){
+        muestraTablaCompromiso();
+    });
     function guardar()
     {
+       
         var bloque = $('#bloque').val();
         var tipo_compromiso = $('#tipo_compromiso').val();
         var detalle = $('#text_detalle').val();
@@ -102,7 +112,6 @@ $bloques = CurriculoMecBloque::find()->where(['is_active'=>true])->orderBy('id')
                 beforeSend: function () {},
                 success: function (response) {
                     muestraTablaCompromiso();
-
                 }
             })
 

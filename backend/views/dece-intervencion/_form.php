@@ -162,7 +162,7 @@ $modelIntCompromiso = new DeceIntervencionCompromiso();
                                 </td>
                                 <td>
                                     <!--boton VER  boton llama modal para COMPROMISO BLOQUE 1 -->
-                                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#btn_compromiso_b1"> 
+                                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#btn_compromiso_b1" onclick="muestraTablaCompromiso()"> 
                                     VER
                                     </button> 
                                 </td>
@@ -184,12 +184,13 @@ $modelIntCompromiso = new DeceIntervencionCompromiso();
                                         <h5 class="modal-title" id="staticBackdropLabel"><b>Compromisos de las Partes Involucradas</b></h5>
                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                     </div>
-                                    <div class="modal-body">                                        
+                                    <div class="modal-body">   
+
                                         <?= $this->render('/dece-intervencion-compromiso/create', [
                                             'model' =>$modelIntCompromiso,
-                                            'tipo' =>'comp_representante',
                                             'id_intervencion' =>$model->id,
                                         ]) ?>    
+
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -303,11 +304,16 @@ $modelIntCompromiso = new DeceIntervencionCompromiso();
     </div>
 
 </div>
-<script>		
+<script>
 
- 
+$(window).on("load",function(){
+        muestraTablaCompromiso();
+    });
+
 function muestraTablaCompromiso()
 {
+    //alert("Ingresoo ****");
+    
     var url = '<?= Url::to(['dece-intervencion-compromiso/mostrar-tabla']) ?>';
     var id_intervencion = '<?=$model->id?>';
             var params = {
@@ -320,15 +326,13 @@ function muestraTablaCompromiso()
                 type: 'POST',
                 beforeSend: function () {},
                 success: function (response) {
+                    //alert("iNTERMEDIO ****");
                     $('#tabla_compromisos').html(response);
 
                 }
             });
-
+        
+    //alert("Termino ****");
 }
-window.onload=function() {
-			//alert('OK');
-            muestraTablaCompromiso();
-            $('#btn_compromiso_b1').modal('toggle');
-		}
+
 </script>

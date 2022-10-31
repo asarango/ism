@@ -808,21 +808,6 @@ class ScholarisActividadController extends Controller
             
             $arrayIdCriterios = $con->createCommand($queryIdCriterios)->queryAll();
             
-
-            // $modelCriterios = ScholarisActividadDescriptor::find()
-            //     ->select(['criterio_id'])
-            //     ->where(['actividad_id' => $id])
-            //     ->groupBy(['criterio_id'])
-            //     ->all();
-
-            // foreach ($modelCriterios as $criterio) {
-            //     if ($tipo == 'SUMATIVA') {
-            //         $sentencias->insertarEspaciosCalificacionPaiSumativa($id, $modelActividad->tipo_actividad_id, $criterio->criterio_id, 
-            //                         $modelActividad->paralelo_id, $grupo->grupo_numero);
-            //     } else {
-            //         $sentencias->insertarEspaciosCalificacionPai($id, $modelActividad->tipo_actividad_id, $criterio->criterio_id, $modelActividad->paralelo_id);
-            //     }
-            // }
             foreach ($arrayIdCriterios as $criterio) {                
                     if ($tipo == 'SUMATIVA') {
                     $sentencias->insertarEspaciosCalificacionPaiSumativa($id, $modelActividad->tipo_actividad_id, $criterio['id_criterio'], 

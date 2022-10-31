@@ -91,8 +91,8 @@ $modelActividadConsulta = new ScholarisArchivosprofesor();
 
                 <!--botones derecha-->
                 <div class="col-lg-6 col-md-6" style="text-align: right;"> |
-                    <?php
-                    if ($modelActividad->calificado == 'SI') {
+                    <?php                    
+                    if ($modelActividad->calificado == 'true') {
                         if ($modelActividad->tipo_calificacion == 'P') {
                             if (count($modelCriterios) > 0 && $modelActividad->calificado == 'SI') {
                                 echo Html::a(

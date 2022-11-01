@@ -121,9 +121,9 @@ class DocenteClasesController extends Controller
         $bloqueId = $_POST['bloque_id'];
         
         $modelClase     = \backend\models\ScholarisClase::findOne($claseId);
-        $modelSemanas   = $this->get_semanas($bloqueId);
+        $modelSemanas   = $this->get_semanas($bloqueId);                
 
-        $responsable = $modelClase->ismAreaMateria->responsable_planificacion;
+        $responsable = $modelClase->ismAreaMateria->responsable_planificacion;           
         
         return $this->renderPartial('semanas',[
             'modelSemanas' => $modelSemanas,

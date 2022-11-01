@@ -25,7 +25,7 @@ class ScholarisActividadSearch extends ScholarisActividad
                 'descripcion_archivo', 'color', 'inicio', 'fin', 'a_peso', 'b_peso', 
                 'c_peso', 'd_peso', 'calificado', 'tipo_calificacion', 
                 'tareas', 'momento_detalle', 'formativa_sumativa',
-                'con_nee','grado_nee','observacion_nee','respaldo_videoconferencia', 'link_aula_virtual'], 
+                'con_nee','grado_nee','observacion_nee','respaldo_videoconferencia', 'link_aula_virtual', 'codigo'], 
             'safe'],
         ];
     }
@@ -83,6 +83,7 @@ class ScholarisActividadSearch extends ScholarisActividad
             'momento_id' => $this->momento_id,
             'destreza_id' => $this->destreza_id,
             'con_nee' => $this->con_nee,
+            'codigo' => $this->codigo,
         ]);
 
         $query->andFilterWhere(['ilike', 'title', $this->title])
@@ -103,6 +104,7 @@ class ScholarisActividadSearch extends ScholarisActividad
             ->andFilterWhere(['ilike', 'videoconfecia', $this->videoconfecia])
             ->andFilterWhere(['ilike', 'respaldo_videoconferencia', $this->respaldo_videoconferencia])
             ->andFilterWhere(['ilike', 'link_aula_virtual', $this->link_aula_virtual])
+            ->andFilterWhere(['ilike', 'codigo', $this->codigo])
             ->andFilterWhere(['ilike', 'tareas', $this->tareas]);
 
         return $dataProvider;

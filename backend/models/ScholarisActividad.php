@@ -73,7 +73,7 @@ class ScholarisActividad extends \yii\db\ActiveRecord
             [['create_date', 'write_date', 'inicio', 'fin', 'fecha_revision'], 'safe'],
             [['create_uid', 'write_uid', 'tipo_actividad_id', 'bloque_actividad_id', 'paralelo_id', 'materia_id', 'hora_id', 'actividad_original', 'semana_id', 'destreza_id'], 'default', 'value' => null],
             [['create_uid', 'write_uid', 'tipo_actividad_id', 'bloque_actividad_id', 'paralelo_id', 'materia_id', 'hora_id', 'actividad_original', 'semana_id', 'destreza_id', 'lms_actividad_id'], 'integer'],
-            [['descripcion', 'archivo', 'descripcion_archivo', 'momento_detalle', 'observacion_nee', 'comentario_revisa', 'respuesta_revisa'], 'string'],
+            [['descripcion', 'archivo', 'descripcion_archivo', 'momento_detalle', 'observacion_nee', 'comentario_revisa', 'respuesta_revisa', 'codigo'], 'string'],
             [['inicio', 'fin', 'tipo_actividad_id', 'bloque_actividad_id', 'paralelo_id'], 'required'],
             [['con_nee', 'es_aprobado', 'es_heredado_lms', 'estado'], 'boolean'],
             [['title', 'tareas'], 'string', 'max' => 255],
@@ -136,6 +136,7 @@ class ScholarisActividad extends \yii\db\ActiveRecord
             'estado' => 'Estado',
             'lms_actividad_id' => 'Lms Actividad',
             'es_heredado_lms' => 'Es heredado de lms',
+            'codigo' => 'Código'
         ];
     }
 

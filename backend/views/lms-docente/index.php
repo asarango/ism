@@ -116,12 +116,12 @@ $helper = new HelperGeneral();
 
                                     <div class="col-lg-6 col-md-6" style="font-size: 10px; text-align: right;">
                                         <!-- Button trigger modal motivo de no realizó la actividad de la hora-->
-                                        <a class="zoom" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                                        <a class="zoom" data-bs-toggle="modal" data-bs-target="#staticBackdrop<?= $det['lms_doc_id'] ?>">
                                             <i class="fas fa-ellipsis-h zoom" style="color: #65b2e8; font-size: 12px;"> </i>
                                         </a>
 
                                         <!-- Modal -->
-                                        <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                        <div class="modal fade" id="staticBackdrop<?= $det['lms_doc_id'] ?>" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
                                             <div class="modal-dialog">
                                                 <div class="modal-content">
                                                     <div class="modal-header">

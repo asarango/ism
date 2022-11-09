@@ -189,7 +189,7 @@ where 	da.id_area = $areaId
 		and da.id not in(
 			select descriptor_id from planificacion_vertical_pai_descriptores where descriptor_id = da.id and plan_unidad_id = $planBloqueUnidadId
 		)
-order by ic.nombre, id.nombre;";        
+order by ic.nombre, id.nombre;";                    
         
         $res = $con->createCommand($query)->queryAll();
         return $res;

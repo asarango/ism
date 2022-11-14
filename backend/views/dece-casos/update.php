@@ -100,7 +100,7 @@ $modelAsistProfesor = ScholarisAsistenciaProfesor::find()
                     <div class="col-lg-10 col-md-10">                       
                          
                             <div>
-                                <span style="font-size:20px;">EJES DE ACCIÓN</span>
+                                <span style="font-size:12px;">Seleccione Opción</span>
                                 
                                 <br>   
                                 |                         

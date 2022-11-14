@@ -17,6 +17,7 @@ use backend\models\ScholarisTipoActividad;
 use backend\models\ScholarisActividad;
 use backend\models\ScholarisActividadSearch;
 use backend\models\ScholarisArchivosprofesor;
+use backend\models\ScholarisGrupoOrdenCalificacion;
 use backend\models\ScholarisHorariov2Detalle;
 use backend\models\SentenciasSql;
 use Yii;
@@ -824,31 +825,45 @@ class ScholarisActividadController extends Controller
 
     public function actionRegistra()
     {
+       
         $nota = $_POST['nota'];
         $notaId = $_POST['notaId'];
-        //        echo $notaId;
+        $user = Yii::$app->user->identity->usuario;
+        $idPeriodo = \yii::$app->user->identity->periodo_id;
+      
         //$model = \app\models\ScholarisActividad::findOne($id));
         $model = ScholarisCalificaciones::findOne($notaId);
         $model->calificacion = $nota;
         //1.- Se guarda la nota
-        $model->save();
+        $model->save();  
 
         //captura datos para tabla de promedio de insumos (lib_promedios_insumos)
         $grupo_numero = $model->grupo_numero;  
         $idAlumno =  $model->idalumno;      
-        $modelActividad = ScholarisActividad::findOne($model->idactividad) ;
-        $idclase = $modelActividad->paralelo_id;   
-        $idBloque = $modelActividad->bloque_actividad_id;
-        $idPeriodo = \yii::$app->user->identity->periodo_id;
+        $modelActividad = ScholarisActividad::findOne($model->idactividad) ;  
+        $modelBloqueActividad = ScholarisBloqueActividad::findOne($modelActividad->bloque_actividad_id);      
+        $idclase = $modelActividad->paralelo_id; 
+        $idBloque = $modelBloqueActividad->id;
+        $tipo_uso = $modelBloqueActividad->tipo_uso;
+
         $modelGrupoAlumnoClase = ScholarisGrupoAlumnoClase::find()
         ->where(['clase_id'=>$idclase,'estudiante_id'=>$idAlumno])
+        ->one(); 
+        $modelGrupoCalifiaciones = ScholarisGrupoOrdenCalificacion::find()
+        ->where(['codigo_tipo_actividad'=>$modelActividad->tipo_actividad_id]) 
         ->one();
+    
         
         //proceso de guardado        
         //2.- Se ejecuta funcion para insertar promedios de insumos
-        $con = Yii::$app->db;
-        $query = "select insert_lib_promedio_insumo ($modelGrupoAlumnoClase->id,$idBloque,$grupo_numero,$idPeriodo);";
-        $con->createCommand($query)->execute();       
+        $con = Yii::$app->db;       
+
+        $query = "select insert_lib_promedio_insumo ($modelGrupoAlumnoClase->id,$idBloque,$modelGrupoCalifiaciones->id,$idPeriodo,'$user');";
+        $con->createCommand($query)->execute();     
+        $query = "select insert_lib_bloques_grupo_clase ($modelGrupoAlumnoClase->id,$idBloque,$idPeriodo,'$user','$tipo_uso');";
+        $con->createCommand($query)->execute();   
+        $query = "select insert_promedios_lib_bloques_grupo_clase ($modelGrupoAlumnoClase->id,$idPeriodo,'$user');";
+        $con->createCommand($query)->execute(); 
 
 
         $this->actualizaParcial($notaId);       

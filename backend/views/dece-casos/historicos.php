@@ -254,13 +254,8 @@ $modelPathArchivo = PlanificacionOpciones::find()
                                     ?>
                                 </table>
                             </div>
-                        </div>   <!-- fin dif casos -->
-                        
-                        <div>
-                            <hr>
-                            <h6>Ejes de Acción</h6>
-                            <hr>
-                        </div>
+                        </div>   <!-- fin dif casos -->                        
+                        <hr>
                         <div class="row">
                             <h6 style="color:red">Acompañamiento</h6>
                             <div style="overflow-x:scroll;overflow-y:scroll;">

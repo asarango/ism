@@ -59,6 +59,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         <?= Html::beginForm(['create','idEstudiante'=>0], 'post') ?>
                         <div class="row">
                             <div class="col-lg-10 col-md-10">
+                                
                                 <select id="idAlumno" name="idAlumno" class="form-control select2 select2-hidden-accessible" style="width: 100%;" tabindex="-1" aria-hidden="true">
                                     <option selected="selected" value="">Escoja un estudiante...</option>
                                     <?php
@@ -105,10 +106,10 @@ $this->params['breadcrumbs'][] = $this->title;
                                         <tr style="text-align:center">
                                             <td><?= $nombreEstudiante ?></td>
                                             <td><strong><?=$caso['casos']?></strong></td>
-                                            <td><strong><?=$caso['seguimiento']?></strong></td>
-                                            <td><strong><?=$caso['derivacion']?> </strong></td>
-                                            <td><strong><?=$caso['deteccion']?> </strong></td>
-                                            <td><strong><?=$caso['intervencion']?> </strong></td>
+                                            <td><strong>C: <?=$caso['casos_seguimiento']?> <br> A: <?=$caso['seguimiento']?></strong></td>
+                                            <td><strong>C: <?=$caso['casos_derivacion']?> <br> D:<?=$caso['derivacion']?> </strong></td>
+                                            <td><strong>C: <?=$caso['casos_deteccion']?> <br> D:<?=$caso['deteccion']?> </strong></td>
+                                            <td><strong>C: <?=$caso['casos_intervencion']?> <br> I:<?=$caso['intervencion']?> </strong></td>
                                             <td>
                                                 <?= Html::a(
                                                     '<span class="badge  rounded-pill" style="background-color:red;font-size:14px;">Ver</span>',
@@ -125,10 +126,10 @@ $this->params['breadcrumbs'][] = $this->title;
                                     <tr style="text-align:center">
                                         <th><strong style="color:brown">Totales --></strong></th>
                                         <th><?=$conteoEjesDeAccion[0]?></th>
-                                        <th><?=$conteoEjesDeAccion[1]?></th>
-                                        <th><?=$conteoEjesDeAccion[2]?></th>
-                                        <th><?=$conteoEjesDeAccion[3]?></th>
-                                        <th>0</th>
+                                        <th>A:<?=$conteoEjesDeAccion[1]?></th>
+                                        <th>D:<?=$conteoEjesDeAccion[2]?></th>
+                                        <th>D:<?=$conteoEjesDeAccion[3]?></th>
+                                        <th>I:<?=$conteoEjesDeAccion[4]?></th>
                                     </tr>
                                 </tfoot>
                             </table>

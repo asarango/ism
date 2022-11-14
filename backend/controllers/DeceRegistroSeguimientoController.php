@@ -2,6 +2,7 @@
 
 namespace backend\controllers;
 
+use backend\models\DeceCasos;
 use backend\models\DeceMotivos;
 use Yii;
 use backend\models\DeceRegistroSeguimiento;
@@ -81,6 +82,11 @@ class DeceRegistroSeguimientoController extends Controller
             $id_clase = $_GET['id_clase'];
             $id_estudiante = $_GET['id_estudiante'];
             $id_caso= $_GET['id_caso'];
+            //extraigo model casos
+            $modelCasos = DeceCasos::findOne($id_caso);
+            $model->estado =  $modelCasos->estado;
+            $model->motivo = $modelCasos->motivo;
+            
             $model->id_estudiante = $id_estudiante;
             $model->id_clase = $id_clase;
             $model->id_caso = $id_caso;

@@ -4,7 +4,7 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\grid\GridView;
 
-$this->title = 'Configuración de clases';
+$this->title = 'Configuración de criterios PAI';
 ?>
 
 <!-- JS y CSS Ckeditor -->

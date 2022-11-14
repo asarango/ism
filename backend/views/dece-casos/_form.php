@@ -77,9 +77,9 @@ $ahora = date('Y-m-d H:i:s');
                 <?= $form->field($model, 'motivo')->dropDownList($arrayMotivo, ['prompt' => 'Selecione Opción'])  ?>
 
                 <?= $form->field($model, 'detalle')->textarea(['rows' => 4]) ?>
-                <script>
+                <!-- <script>
                     CKEDITOR.replace("dececasos-detalle");
-                </script>
+                </script> -->
         d
                 <?= $form->field($model, 'id_usuario')->hiddenInput()->label(false) ?>
                 <br>

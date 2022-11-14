@@ -65,21 +65,23 @@ class DeceCasosController extends Controller
         $arrayCasos = array();
         foreach($usuariosCasos as $usuario)
         {
-            $id_estudiante = $usuario['id_estudiante'];          
-            
-            
+            $id_estudiante = $usuario['id_estudiante'];     
+
             $query2 = "select  concat(os.last_name,' ',os.middle_name,' ',os.first_name) nombre,dc.id_estudiante , 
-                    (select count(*) from dece_casos dc2 where id_estudiante  = dc.id_estudiante ) casos,
-                    (select count(*) from dece_registro_seguimiento drs where id_estudiante  = dc.id_estudiante ) seguimiento,
-                    (select count(*) from dece_derivacion d where id_estudiante  = dc.id_estudiante ) derivacion,
-                    (select count(*) from dece_deteccion d where id_estudiante  = dc.id_estudiante ) deteccion,
-                    (select count(*) from dece_intervencion d where id_estudiante  = dc.id_estudiante ) intervencion
-                    from dece_casos dc, op_student os  
-                    where id_estudiante =  $id_estudiante
-                    and id_usuario = '$user'
-                    and os.id = dc.id_estudiante 
-                    group by os.last_name,os.middle_name,os.first_name,dc.id_estudiante ;                   
-                    ";
+                        (select count(*) from dece_casos dc2 where id_estudiante  = dc.id_estudiante ) casos,
+                        (select count(*) from dece_registro_seguimiento drs where id_estudiante  = dc.id_estudiante ) seguimiento,
+                        (select count(distinct id_caso) from dece_registro_seguimiento drs where id_estudiante = dc.id_estudiante) casos_seguimiento,
+                        (select count(*) from dece_derivacion d where id_estudiante  = dc.id_estudiante ) derivacion,
+                        (select count(distinct id_casos) from dece_derivacion drs where id_estudiante = dc.id_estudiante) casos_derivacion,
+                        (select count(*) from dece_deteccion d where id_estudiante  = dc.id_estudiante ) deteccion,
+                        (select count(distinct id_caso) from dece_deteccion drs where id_estudiante = dc.id_estudiante) casos_deteccion,
+                        (select count(*) from dece_intervencion d where id_estudiante  = dc.id_estudiante ) intervencion,
+                        (select count(distinct id_caso) from dece_intervencion drs where id_estudiante = dc.id_estudiante) casos_intervencion
+                        from dece_casos dc, op_student os  
+                        where id_estudiante =  $id_estudiante
+                        and id_usuario = '$user'
+                        and os.id = dc.id_estudiante 
+                        group by os.last_name,os.middle_name,os.first_name,dc.id_estudiante ;";
                    
             $arrayCasos[]= $con->createCommand($query2)->queryOne();
         }
@@ -141,6 +143,11 @@ class DeceCasosController extends Controller
         union all
         select count(*) as conteo4
         from dece_casos d1, dece_deteccion r1 
+        where d1.id_usuario = '$usuarioLog'
+        and r1.id_caso = d1.id 
+        union all
+        select count(*) as conteo5
+        from dece_casos d1, dece_intervencion r1 
         where d1.id_usuario = '$usuarioLog'
         and r1.id_caso = d1.id 
         ;";        

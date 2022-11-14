@@ -258,25 +258,25 @@ $numDivisionesIntExterna = intval($numDivisionesIntExterna)+1;
 
                 <h4><u>Valoración del Caso</u></h4>
 
-                <?= $form->field($model, 'motivo_referencia')->textarea(['rows' => 3]) ?>
-                            <script>
+                <?= $form->field($model, 'motivo_referencia')->textarea(['rows' => 4]) ?>
+                            <!-- <script>
                                     CKEDITOR.replace("decederivacion-motivo_referencia");
-                            </script>
+                            </script> -->
 
-                <?= $form->field($model, 'historia_situacion_actual')->textarea(['rows' => 3]) ?>
-                            <script>
+                <?= $form->field($model, 'historia_situacion_actual')->textarea(['rows' => 4]) ?>
+                            <!-- <script>
                                     CKEDITOR.replace("decederivacion-historia_situacion_actual");
-                            </script>
+                            </script> -->
 
-                <?= $form->field($model, 'accion_desarrollada')->textarea(['rows' => 3]) ?>
-                            <script>
+                <?= $form->field($model, 'accion_desarrollada')->textarea(['rows' => 4]) ?>
+                            <!-- <script>
                                     CKEDITOR.replace("decederivacion-accion_desarrollada");
-                            </script>
+                            </script> -->
 
-                <?= $form->field($model, 'tipo_ayuda')->textarea(['rows' => 3]) ?>
-                            <script>
+                <?= $form->field($model, 'tipo_ayuda')->textarea(['rows' => 4]) ?>
+                            <!-- <script>
                                     CKEDITOR.replace("decederivacion-tipo_ayuda");
-                            </script>
+                            </script> -->
 
                 <div class="form-group">
                     <?= Html::submitButton('Guardar', ['class' => 'btn btn-success']) ?>

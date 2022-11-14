@@ -221,10 +221,10 @@ $modelIntCompromiso = new DeceIntervencionCompromiso();
                 }
                   ?>
 
-                <?= $form->field($model, 'razon')->textarea(['rows' => 3]) ?>
-                <script>
+                <?= $form->field($model, 'razon')->textarea(['rows' => 4]) ?>
+                <!-- <script>
                     CKEDITOR.replace("deceintervencion-razon");
-                </script>
+                </script> -->
 
                 <div>
                     <hr>
@@ -285,14 +285,14 @@ $modelIntCompromiso = new DeceIntervencionCompromiso();
 
                 <br>
                 <h6><u>Lineamiento del proceso de intervención</u></h6>
-                <?= $form->field($model, 'objetivo_general')->textarea(['rows' => 3]) ?>
-                <script>
+                <?= $form->field($model, 'objetivo_general')->textarea(['rows' => 4]) ?>
+                <!-- <script>
                     CKEDITOR.replace("deceintervencion-objetivo_general");
-                </script>
-                <?= $form->field($model, 'acciones_responsables')->textarea(['rows' => 3]) ?>
-                <script>
-                    CKEDITOR.replace("deceintervencion-acciones_responsables");
-                </script>
+                </script> -->
+                <?= $form->field($model, 'acciones_responsables')->textarea(['rows' => 4]) ?>
+                <!-- <script>
+                //     CKEDITOR.replace("deceintervencion-acciones_responsables");
+                // </script> -->
 
                 <div class="form-group">
                     <?= Html::submitButton('Guardar', ['class' => 'btn btn-success']) ?>

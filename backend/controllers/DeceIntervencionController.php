@@ -162,16 +162,16 @@ class DeceIntervencionController extends Controller
             $model->save();
             $arrayAuxPost = $_POST; 
 
-              //ELIMINAMOS TODOS LOS REGISTROS DE LAS AREAS A INTERVENIR PARA VOLVER AGREGAR NUEVAMENTE TODOS LOS SELECCIONADOS
+              //ELIMINAMOS TODOS LOS REGISTROS DE LAS AREAS A INTERVENIR PARA VOLVER A AGREGAR NUEVAMENTE TODOS LOS SELECCIONADOS
               $x = Yii::$app->db->createCommand("
               DELETE FROM dece_intervencion_area_compromiso 
               WHERE id_dece_intervencion = '$model->id'                
-          ")->execute();
+              ")->execute();
           foreach($arrayAuxPost as $aux)
            {  
-                if (!is_array($aux))//COMO EL $_POST, tiene el array nativo de yii2, lo excluimos
+               if (!is_array($aux))//COMO EL $_POST, tiene el array nativo de yii2, lo excluimos
                 {
-                    if(is_numeric(strpos($aux,"IE")))
+                    if(is_numeric(strpos($aux,"Al")))
                     {   
                         $modelInterAreaComp = new DeceIntervencionAreaCompromiso();
                         $idAreaIntervenir = DeceAreasIntervenir::find()

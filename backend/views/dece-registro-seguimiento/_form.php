@@ -261,18 +261,18 @@ foreach ($usuarios as $usu)
 
                         <?= $form->field($model, 'responsable_seguimiento')->dropDownList($arrayResponsableSeg, ['prompt' => 'Seleccione Opción']) ?>
 
-                        <?= $form->field($model, 'pronunciamiento')->textarea() ?>
-                            <script>
+                        <?= $form->field($model, 'pronunciamiento')->textarea(['rows'=>4]) ?>
+                            <!-- <script>
                                     CKEDITOR.replace("deceregistroseguimiento-pronunciamiento");
-                            </script>
-                        <?= $form->field($model, 'acuerdo_y_compromiso')->textarea() ?>
-                            <script>
+                            </script> -->
+                        <?= $form->field($model, 'acuerdo_y_compromiso')->textarea(['rows'=>4]) ?>
+                            <!-- <script>
                                 CKEDITOR.replace("deceregistroseguimiento-acuerdo_y_compromiso");
-                            </script>
-                        <?= $form->field($model, 'eviencia')->textarea() ?>
-                            <script>
+                            </script> -->
+                        <?= $form->field($model, 'eviencia')->textarea(['rows'=>4]) ?>
+                            <!-- <script>
                                 CKEDITOR.replace("deceregistroseguimiento-eviencia");
-                            </script>
+                            </script> -->
                         <br>
                         <table class="table table-striped table-hover table-responsive">
                             <tr>

@@ -7,6 +7,9 @@ use backend\models\IsmCriterio;
 use Yii;
 use backend\models\IsmCriterioDescriptorArea;
 use backend\models\IsmCriterioDescriptorAreaSearch;
+use backend\models\IsmCriterioLiteral;
+use backend\models\IsmDescriptores;
+use backend\models\IsmLiteralDescriptores;
 use backend\models\OpCourseTemplate;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -115,13 +118,46 @@ class IsmCriterioDescriptorAreaController extends Controller
     {
         $model = new IsmCriterioDescriptorArea();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        $areas                  = IsmArea::find()->orderBy('nombre')->all();
+        $templates              = OpCourseTemplate::find()->orderBy('next_course_id')->all();
+        $descriptores           = IsmDescriptores::find()->orderBy('nombre')->all();
+        $descriptoresLiteral    = IsmLiteralDescriptores::find()->orderBy('descripcion')->all();
+        $criteriosLiteral       = IsmCriterioLiteral::find()->orderBy('nombre_espanol')->all();
+        $criterios              = IsmCriterio::find()->orderBy('nombre')->all();
+
+       
+
+        if (isset($_POST['id_area'])) {
+        // if ($model->load(Yii::$app->request->post())) {
+
+            $this->insert_descriptor($_POST);
+
+            return $this->redirect(['index']);
         }
 
         return $this->render('create', [
             'model' => $model,
+            'descriptores'          => $descriptores,
+            'descriptoresLiteral'   => $descriptoresLiteral,
+            'criteriosLiteral'      => $criteriosLiteral,
+            'criterios'             => $criterios,
+            'areas'                 => $areas,
+            'templates'             => $templates
         ]);
+    }
+
+    private function insert_descriptor($post){
+        $id_area                 = $post['id_area'];
+        $id_curso                = $post['id_curso'];
+        $id_criterio             = $post['id_criterio'];
+        $id_literal_criterio     = $post['id_literal_criterio'];
+        $id_descriptor           = $post['id_descriptor'];
+        $id_literal_descriptor   = $post['id_literal_descriptor'];
+
+        $con = Yii::$app->db;
+        $query = "insert into ism_criterio_descriptor_area (id_area, id_curso, id_criterio, id_literal_criterio, id_descriptor, id_literal_descriptor) 
+                    values($id_area, $id_curso, $id_criterio, $id_literal_criterio, $id_descriptor, $id_literal_descriptor)";
+        $con->createCommand($query)->execute();
     }
 
     /**
@@ -135,12 +171,27 @@ class IsmCriterioDescriptorAreaController extends Controller
     {
         $model = $this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        $descriptores           = IsmDescriptores::find()->orderBy('nombre')->all();
+        $descriptoresLiteral    = IsmLiteralDescriptores::find()->orderBy('descripcion')->all();
+        $criteriosLiteral       = IsmCriterioLiteral::find()->orderBy('nombre_espanol')->all();
+        $criterios              = IsmCriterio::find()->orderBy('nombre')->all();
+
+        if ($model->load(Yii::$app->request->post())) {
+            $model->id_criterio             = $_POST['id_criterio'];
+            $model->id_literal_criterio     = $_POST['id_literal_criterio'];
+            $model->id_descriptor           = $_POST['id_descriptor'];
+            $model->id_literal_descriptor   = $_POST['id_literal_descriptor'];
+            $model->save();
+            
+            return $this->redirect(['index']);
         }
 
         return $this->render('update', [
-            'model' => $model,
+            'model'                 => $model,
+            'descriptores'          => $descriptores,
+            'descriptoresLiteral'   => $descriptoresLiteral,
+            'criteriosLiteral'      => $criteriosLiteral,
+            'criterios'             => $criterios
         ]);
     }
 
@@ -172,5 +223,11 @@ class IsmCriterioDescriptorAreaController extends Controller
         }
 
         throw new NotFoundHttpException('The requested page does not exist.');
+    }
+
+    public function actionEliminar($id){
+        $model = IsmCriterioDescriptorArea::findOne($id);
+        $model->delete();
+        return $this->redirect(['index']);
     }
 }

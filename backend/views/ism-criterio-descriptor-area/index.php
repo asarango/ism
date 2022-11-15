@@ -42,7 +42,10 @@ $this->title = 'Configuración de criterios PAI';
                     |
                     <?php
                     echo Html::a(
-                        '<span class="badge rounded-pill" style="background-color: #ab0a3d"><i class="fa fa-plus-circle" aria-hidden="true"></i> Nueva clase</span>',
+                        '<span class="badge rounded-pill" style="background-color: #ab0a3d">
+                            <i class="fa fa-plus-circle" aria-hidden="true"></i> 
+                            Nueva clase
+                        </span>',
                         ['create']
                     );
                     ?>
@@ -68,13 +71,14 @@ $this->title = 'Configuración de criterios PAI';
                             'buttons' => [
                                 'update' => function ($url, $model) {
                                     return Html::a('<i class="fas fa-edit"></i>', $url, [
-                                        'title' => 'Actualizar', 'data-toggle' => 'tooltip', 'role' => 'modal-remote', 'data-pjax' => "0", 'class' => 'hand'
+                                        'title' => 'Actualizar', 'data-toggle' => 'tooltip', 
+                                        'role' => 'modal-remote', 'data-pjax' => "0", 'class' => 'hand'
                                     ]);
                                 }
                             ],
                             'urlCreator' => function ($action, $model, $key) {
                                 if ($action === 'update') {
-                                    return \yii\helpers\Url::to(['scholaris-clase-aux/update', 'id' => $key]);
+                                    return \yii\helpers\Url::to(['update', 'id' => $key]);
                                 }
                                 //                        else if ($action === 'update') {
                                 //                            return \yii\helpers\Url::to(['update', 'id' => $key]);

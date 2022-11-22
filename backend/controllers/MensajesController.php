@@ -5,6 +5,7 @@ namespace backend\controllers;
 use backend\models\MessageHeader;
 use backend\models\services\WebServicesUrls;
 use backend\models\MessagePara;
+use backend\models\MessageParaSearch;
 use Yii;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -71,24 +72,38 @@ class MensajesController extends Controller {
    * Lists all PlanArea models.
    * @return mixed
    */
-  public function actionIndex(){
-        // inicio info obtenida desde el web service
-        $userLog = \Yii::$app->user->identity->usuario;
+//   public function actionIndex(){
+//         // inicio info obtenida desde el web service
+//         $userLog = \Yii::$app->user->identity->usuario;
 
-        //consultando web service de academico
-        $service = new WebServicesUrls('academico');
-        $dataJson = $service->consumir_servicio($service->url.'/all/'.$userLog);
-        $messages = json_decode($dataJson);
-        // fin de proceso web service academico
+//         //consultando web service de academico
+//         $service = new WebServicesUrls('academico');
+//         $dataJson = $service->consumir_servicio($service->url.'/all/'.$userLog);
+//         $messages = json_decode($dataJson);
+//         // fin de proceso web service academico
       
-        $mensajes =  $messages->data;
-        //fin obtenida desde el web service
+//         $mensajes =  $messages->data;
+//         //fin obtenida desde el web service
 
+
+//         return $this->render('index',[
+//             'mensajes' => $mensajes
+//         ]);
+//   }
+
+    public function actionIndex(){
+        
+        $userLog = Yii::$app->user->identity->usuario;
+
+        $searchModel = new MessageParaSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+       
 
         return $this->render('index',[
-            'mensajes' => $mensajes
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
         ]);
-  }
+    }
 
 
   public function actionDetalle(){

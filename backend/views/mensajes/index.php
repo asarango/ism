@@ -1,6 +1,7 @@
 <?php
 
 use backend\models\PlanificacionDesagregacionCriteriosEvaluacion;
+use yii\grid\GridView;
 use yii\helpers\Html;
 use yii\helpers\Url;
 
@@ -67,61 +68,57 @@ $this->params['breadcrumbs'][] = $this->title;
             <!-- inicia cuerpo de card -->
             <div class="row" style="margin-top: 10px; margin-left: 60px">
 
-                <!-- inicia tabla de Usuario -->
-
-            <div class="table table-responsive">
-                <table id="tabla" class="table table-hover table-striped table-condensed">
-                    <thead>
-                        <tr style="background-color: #ff9e18;">
-                            <th>DESDE</th>
-                            <th>FECHA</th>
-                            <th>ASUNTO</th>
-                            <th>ESTADO</th>
-                            <th>RECIBIDO</th>
-                            <th>LEÍDO</th>
-                            <th class="text-center">ACCIONES</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php
-                            foreach($mensajes as $mensaje){
-                                echo '<tr>';
-                                echo '<td>'.$mensaje->desde.'</td>';
-                                echo '<td>'.$mensaje->creado.'</td>';
-                                echo '<td>'.$mensaje->asunto.'</td>';
-                                echo '<td>';
-                                if($mensaje->estado == 'leído'){
-                                    echo '<i class="fas fa-glasses" style="color: #65b2e8;"> LEÍDO</i>';
-                                }elseif($mensaje->estado == 'me_gusta'){
-                                    echo '<i class="fas fa-thumbs-up" style="color: green;"> ME GUSTA</i>';
-                                }elseif($mensaje->estado == 'no_me_gusta'){
-                                    echo '<i class="fas fa-thumbs-down" style="color: #ab0a3d;"> NO ME GUSTA</i>';
-                                }elseif($mensaje->estado == 'recordar'){
-                                    echo '<i class="fas fa-hourglass" style="color: #0a1f8f;"> RECORDAR</i>';
-                                }elseif($mensaje->estado == 'recibido'){
-                                    echo '<i class="fas fa-receipt" style="color: #9e28b5;"> RECIBIDO</i>';
+            <?=
+                GridView::widget([
+                    'dataProvider' => $dataProvider,
+                    'filterModel' => $searchModel,
+                    'columns' => [
+                        ['class' => 'yii\grid\SerialColumn'],
+                        /** INICIO BOTONES DE ACCION * */
+                        [
+                            'class' => 'yii\grid\ActionColumn',
+//                    'width' => '150px',
+                            'template' => '{view}',
+                            'buttons' => [
+                                'view' => function ($url, $model) {
+                                    return Html::a('<i class="fas fa-street-view"></i>', $url, [
+                                        'title' => 'Actualizar', 'data-toggle' => 'tooltip', 'role' => 'modal-remote', 'data-pjax' => "0", 'class' => 'hand'
+                                    ]);
                                 }
-                                echo '</td>';                    
-                                echo '<td>'.$mensaje->fecha_recepcion.'</td>';
-                                echo '<td>'.$mensaje->fecha_lectura.'</td>';
-                                echo '<td class="text-center">';
-                                echo Html::a('<i class="fas fa-eye"></i>',
-                                            ['detalle', 'id' => $mensaje->id],
-                                            ['style' => 'color: #ab0a3d', 'title' => 'Ver Detalle']);
-                                echo '</td>';
-                                echo '</tr>';
+                            ],
+                            'urlCreator' => function ($action, $model, $key) {
+                                if ($action === 'view') {
+                                    return \yii\helpers\Url::to(['view-message', 'id' => $key]);
+                                }
+//                        else if ($action === 'update') {
+//                            return \yii\helpers\Url::to(['update', 'id' => $key]);
+//                        }
                             }
-                        ?>
-                    </tbody>
-                    <tfoot>
-                        <tr style="background-color: #ff9e18;">
-
-                        </tr>
-                    </tfoot>
-                </table>
-            </div>
-
-            <!-- Fin tabla de Usuario -->
+                        ],
+                        /** FIN BOTONES DE ACCION * */
+                        'id',
+                        'message_id',
+                        'para_usuario',
+                        'estado',
+                        'fecha_recepcion',
+                        'fecha_lectura',
+                        // [
+                        //     'attribute' => 'ism_area_materia_id',
+                        //     'format' => 'raw',
+                        //     'value' => function ($model) {
+                        //         return $model->ismAreaMateria->materia->nombre;
+                        //     },
+                        //     'filter' => $listaM,
+                        //     'filterInputOptions' => [
+                        //         'class' => 'form-control',
+                        //         'prompt' => 'Seleccione asignatura...'
+                        //     ],
+                        // ],
+     
+                        // 'es_activo:boolean',
+                    ],
+                ]);
+                ?>
 
             </div>
             <!-- fin cuerpo de card -->
@@ -132,14 +129,3 @@ $this->params['breadcrumbs'][] = $this->title;
     </div>
 
 </div>
-
-<script src="https://code.jquery.com/jquery-2.2.4.js" integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI=" crossorigin="anonymous"></script>
-<!--<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jsgrid/1.5.3/jsgrid.min.js"></script>-->
-<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.js"></script>
-
-
-<script>
-    
-
-    $('#tabla').DataTable();
-</script>

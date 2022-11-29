@@ -23,6 +23,9 @@ use Yii;
  */
 class MessageHeader extends \yii\db\ActiveRecord
 {
+
+    public $estado;
+
     /**
      * {@inheritdoc}
      */
@@ -47,8 +50,37 @@ class MessageHeader extends \yii\db\ActiveRecord
             [['aplicacion_origen'], 'string', 'max' => 30],
             [['tabla_origen'], 'string', 'max' => 50],
             [['remite_usuario'], 'exist', 'skipOnError' => true, 'targetClass' => Usuario::className(), 'targetAttribute' => ['remite_usuario' => 'usuario']],
+
+            //Columnas virtuales
+            [['estado'], 'safe'],
         ];
     }
+
+
+    public function afterFind()
+    {
+        parent::afterFind();
+
+        $this->estado = $this->verificate_status();
+    }
+
+
+    /**
+     * Método que toma si el mesaje ya fue enviado
+     */
+    public function verificate_status(){
+        $data = MessagePara::find()->where([
+                'message_id' => $this->id,
+                'estado' => 'enviado'
+            ])->all();
+        if(count($data) > 0){
+            return 'enviado';
+        }else{
+            return 'borrador';
+        }
+    }
+
+
 
     /**
      * {@inheritdoc}
@@ -65,6 +97,7 @@ class MessageHeader extends \yii\db\ActiveRecord
             'aplicacion_origen' => 'Aplicacion Origen',
             'tabla_origen' => 'Tabla Origen',
             'tabla_origen_id' => 'Tabla Origen ID',
+            'estado' => 'Estado'
         ];
     }
 

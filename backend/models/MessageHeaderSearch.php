@@ -4,12 +4,12 @@ namespace backend\models;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use backend\models\MessagePara;
+use backend\models\MessageHeader;
 
 /**
- * MessageParaSearch represents the model behind the search form of `backend\models\MessagePara`.
+ * MessageHeaderSearch represents the model behind the search form of `backend\models\MessageHeader`.
  */
-class MessageParaSearch extends MessagePara
+class MessageHeaderSearch extends MessageHeader
 {
     /**
      * {@inheritdoc}
@@ -17,8 +17,8 @@ class MessageParaSearch extends MessagePara
     public function rules()
     {
         return [
-            [['id', 'message_id'], 'integer'],
-            [['para_usuario', 'estado', 'fecha_recepcion', 'fecha_lectura'], 'safe'],
+            [['id', 'tabla_origen_id'], 'integer'],
+            [['remite_usuario', 'created_at', 'updated_at', 'asunto', 'texto', 'aplicacion_origen', 'tabla_origen', 'estado'], 'safe'],
         ];
     }
 
@@ -38,16 +38,13 @@ class MessageParaSearch extends MessagePara
      *
      * @return ActiveDataProvider
      */
-    public function search($params, $to)
+    public function search($params, $from)
     {
-        $query = MessagePara::find()
-                ->where([
-                    'para_usuario' => $to
-                ])
-                ->orderBy(['estado' => SORT_DESC]);
+        $query = MessageHeader::find()
+                ->where(['remite_usuario' => $from]);
 
-                
         // add conditions that should always apply here
+
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
         ]);
@@ -63,13 +60,16 @@ class MessageParaSearch extends MessagePara
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
-            'message_id' => $this->message_id,
-            'fecha_recepcion' => $this->fecha_recepcion,
-            'fecha_lectura' => $this->fecha_lectura,
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at,
+            'tabla_origen_id' => $this->tabla_origen_id,
         ]);
 
-        $query->andFilterWhere(['ilike', 'para_usuario', $this->para_usuario])
-            ->andFilterWhere(['ilike', 'estado', $this->estado]);
+        $query->andFilterWhere(['ilike', 'remite_usuario', $this->remite_usuario])
+            ->andFilterWhere(['ilike', 'asunto', $this->asunto])
+            ->andFilterWhere(['ilike', 'texto', $this->texto])
+            ->andFilterWhere(['ilike', 'aplicacion_origen', $this->aplicacion_origen])
+            ->andFilterWhere(['ilike', 'tabla_origen', $this->tabla_origen]);
 
         return $dataProvider;
     }

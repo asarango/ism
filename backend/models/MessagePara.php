@@ -13,6 +13,7 @@ use Yii;
  * @property string $estado
  * @property string $fecha_recepcion
  * @property string $fecha_lectura
+ * @property int $grupo_id
  *
  * @property MessageHeader $message
  */
@@ -33,8 +34,8 @@ class MessagePara extends \yii\db\ActiveRecord
     {
         return [
             [['message_id', 'para_usuario', 'estado', 'fecha_recepcion'], 'required'],
-            [['message_id'], 'default', 'value' => null],
-            [['message_id'], 'integer'],
+            [['message_id', 'grupo_id'], 'default', 'value' => null],
+            [['message_id', 'grupo_id'], 'integer'],
             [['fecha_recepcion', 'fecha_lectura'], 'safe'],
             [['para_usuario'], 'string', 'max' => 200],
             [['estado'], 'string', 'max' => 30],
@@ -54,6 +55,7 @@ class MessagePara extends \yii\db\ActiveRecord
             'estado' => 'Estado',
             'fecha_recepcion' => 'Fecha Recepcion',
             'fecha_lectura' => 'Fecha Lectura',
+            'grupo_id' => 'Grupo ID',
         ];
     }
 

@@ -96,7 +96,7 @@ if (!Yii::$app->user->isGuest) {
                                         isset($data['icono']) ? $icono = $data['icono'] : $icono = '<i class="fas fa-laptop-code"></i>';
 
                                         echo Html::a(
-                                            '<li>'.$icono . ' ' . $data['nombre'].'</li>',
+                                            '<li>' . $icono . ' ' . $data['nombre'] . '</li>',
                                             ['site/get-sub-menu', 'menu_id' => $data['id']],
                                             ['class' => 'dropdown-item']
                                         );
@@ -107,42 +107,58 @@ if (!Yii::$app->user->isGuest) {
                                 <?php
                                     }
                                 }
-                                ?>                                
+                                ?>
                             </ul>
                         </li>
 
-                        <li class="nav-item">                            
-                            <?= 
-                                Html::a('Inicio', ['site/index'],
-                                ['class' => 'nav-link']        
+                        <li class="nav-item">
+                            <?=
+                            Html::a(
+                                'Inicio',
+                                ['site/index'],
+                                ['class' => 'nav-link']
                             );
                             ?>
-                            
+
                         </li>
 
-                        <li class="nav-item">                            
-                            <?= 
-                                Html::a('Cambiar clave', ['profesor-inicio/cambiarclave'],
-                                ['class' => 'nav-link']        
+                        <li class="nav-item">
+                            <?=
+                            Html::a(
+                                'Cambiar clave',
+                                ['profesor-inicio/cambiarclave'],
+                                ['class' => 'nav-link']
                             );
                             ?>
-                            
+
                         </li>
                         <!-- <li class="nav-item">
                             <a class="nav-link" href="#">Link</a>
                         </li> -->
 
-                        
+
                     </ul>
                     <!-- <form class="d-flex"> -->
                     <div>
-                    <?php
 
-echo Html::a("SALIR ( $usuario )", ['/site/logout'], ['data' => [
-         'method' => 'post',
-         'params' => ['derp' => 'herp'], // <- extra level
-     ], 'class' => 'nav__link'])
- ?>
+
+
+                        <?php
+
+                        $totalMessages = get_messages($usuario);
+
+                        if ($totalMessages == 0) {
+                            echo Html::a('<i class="fas fa-envelope-open"></i>', ['mensajes/received']);
+                        } else {
+                            echo Html::a('<i class="fas fa-envelope" style="color: #ff9e18"> ' . $totalMessages . '</i>', ['mensajes/received']);
+                        }
+
+
+                        echo Html::a("SALIR ( $usuario )", ['/site/logout'], ['data' => [
+                            'method' => 'post',
+                            'params' => ['derp' => 'herp'], // <- extra level
+                        ], 'class' => 'nav__link'])
+                        ?>
                     </div>
                     <!-- </form> -->
                 </div>
@@ -150,9 +166,48 @@ echo Html::a("SALIR ( $usuario )", ['/site/logout'], ['data' => [
         </nav>
     </header>
 
-    
+
     <div class="container-fluid">
 
+        <!-- inicio modal de mensajes -->
+        <?php
+        if ($totalMessages > 0) {
+        ?>
+            <!-- inicio de Modal -->
+            <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" 
+                                id="staticBackdropLabel"
+                                style="color: #9e28b5">
+                                Tienes notificaciones sin leer
+                            </h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body text-center" style="text-align: center;">
+                            <div style="margin: 0px auto; 
+                                   
+                                    height: 100%;
+                                    width: 28%;
+                                    font-size: 60px;">
+                                <p style="color: #898b8d;"><?= $totalMessages ?></p>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                            <?=
+                                Html::a('Ver notificaciones',['mensajes/received'],['class' => 'btn btn-primary']);
+                            ?>                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- fin de modal -->
+        <?php
+        }
+        ?>
+        <!-- fin modal de mensajes -->
 
         <section id="section-content" style="display: none;">
             <div class="container-fluid m-2">
@@ -205,6 +260,7 @@ echo Html::a("SALIR ( $usuario )", ['/site/logout'], ['data' => [
 
         $("#section-loading").hide();
         $("#section-content").show();
+        $('#staticBackdrop').modal('toggle')
     });
 
 
@@ -231,6 +287,19 @@ function consumo_servicio_mensajes()
     // fin de proceso web service academico
 
     return $messages->data;
+}
+
+
+function get_messages($user)
+{
+    $con = Yii::$app->db;
+    $query = "select 	count(id) as total 
+    from 	message_para
+    where 	para_usuario = '$user'
+            and estado = 'enviado';";
+    $res = $con->createCommand($query)->queryOne();
+
+    return $res['total'];
 }
 
 ?>

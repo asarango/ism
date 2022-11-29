@@ -9,7 +9,7 @@ use yii\helpers\Url;
 /* @var $searchModel backend\models\PlanificacionDesagregacionCabeceraSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Notificaciones enviadas';
+$this->title = 'Notificaciones recibidas';
 $this->params['breadcrumbs'][] = $this->title;
 
 // echo '<pre>';
@@ -54,13 +54,12 @@ $this->params['breadcrumbs'][] = $this->title;
                     <?=
                     Html::a(
                         '<span class="badge rounded-pill" style="background-color: #65b2e8">
-                            <i class="far fa-envelope-open" aria-hidden="true"></i> Recibidos
+                            <i class="far fa-envelope-open" aria-hidden="true"></i> Enviados
                         </span>',
-                        ['received'],
+                        ['index'],
                         ['class' => 'link']
                     );
                     ?>
-
                     |
                     <?=
                     Html::a(
@@ -89,17 +88,23 @@ $this->params['breadcrumbs'][] = $this->title;
                         [
                             'class' => 'yii\grid\ActionColumn',
                             //                    'width' => '150px',
-                            'template' => '{view}',
+                            'template' => '{read}',
                             'buttons' => [
-                                'view' => function ($url, $model) {
+                                'read' => function ($url, $model) {
                                     return Html::a('<i class="fas fa-street-view"></i>', $url, [
-                                        'title' => 'Actualizar', 'data-toggle' => 'tooltip', 'role' => 'modal-remote', 'data-pjax' => "0", 'class' => 'hand'
+                                        'title' => 'Leer notificación', 'data-toggle' => 'tooltip', 'role' => 'modal-remote', 'data-pjax' => "0", 'class' => 'hand'
                                     ]);
                                 }
                             ],
                             'urlCreator' => function ($action, $model, $key) {
-                                if ($action === 'view') {
-                                    return \yii\helpers\Url::to(['view', 'id' => $key]);
+                                if ($action === 'read') {
+                                    return \yii\helpers\Url::to([
+                                        'acciones',
+                                        'id' => $key,
+                                        'message_header_id' => $model->message_id,
+                                        'tipo_busqueda' => 'read',
+                                        'word' => ''
+                                    ]);
                                 }
                                 //                        else if ($action === 'update') {
                                 //                            return \yii\helpers\Url::to(['update', 'id' => $key]);
@@ -108,23 +113,22 @@ $this->params['breadcrumbs'][] = $this->title;
                         ],
                         /** FIN BOTONES DE ACCION * */
                         'id',
-                        'asunto',
-                        'created_at',
-                        'updated_at',
+                        'message.remite_usuario',
+                        [
+                            'attribute' => 'message_id',
+                            'format' => 'raw',
+                            'value' => function ($model) {
+                                return $model->message->asunto;
+                            },
+                            'filter' => $listaAsunto,
+                            'filterInputOptions' => [
+                                'class' => 'form-control',
+                                'prompt' => 'Seleccione desde...'
+                            ],
+                        ],
+                        'fecha_recepcion',
+                        'fecha_lectura',
                         'estado',
-                        // [
-                        //     'attribute' => 'ism_area_materia_id',
-                        //     'format' => 'raw',
-                        //     'value' => function ($model) {
-                        //         return $model->ismAreaMateria->materia->nombre;
-                        //     },
-                        //     'filter' => $listaM,
-                        //     'filterInputOptions' => [
-                        //         'class' => 'form-control',
-                        //         'prompt' => 'Seleccione asignatura...'
-                        //     ],
-                        // ],
-
                         // 'es_activo:boolean',
                     ],
                 ]);

@@ -102,7 +102,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                        data-bs-target="#exampleModal" 
                                        style="color: white"
                                        onclick="show_habilidades()">
-                                        HABILIDADES IB <i class="fas fa-mouse" style="color: "></i>
+                                        HABILIDADES IB <i class="fas fa-mouse" style="color: white"></i>
                                     </a>
                                 </th>
                                 <th class="text-center">EVALUACIÓN PD</th>                                    

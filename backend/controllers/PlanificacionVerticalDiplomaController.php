@@ -354,8 +354,7 @@ class PlanificacionVerticalDiplomaController extends Controller
                                     left join planificacion_vertical_diploma_habilidad dh on dh.opcion_habilidad_id = op.id
                                                     and dh.plan_vertical_id = $planVerticalId
                     order by h.nombre, sh.nombre, op.id;";
-        echo $query;
-        die();
+        
         $res = $con->createCommand($query)->queryAll();
         return $res;
     }

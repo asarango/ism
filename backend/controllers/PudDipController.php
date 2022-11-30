@@ -189,14 +189,14 @@ class PudDipController extends Controller {
     /*     * * Actualiza porcentaje de avance deL PUD del DIP */
 
     private function pud_dip_actualiza_porcentaje_avance($modelPlanVertDipl) 
-    {
+    {        
         $modelPlanBloqUni = PlanificacionBloquesUnidad::findOne($modelPlanVertDipl->planificacion_bloque_unidad_id);
-        //consulta para extraer el porcentaje de avance del PUD DIPLOMA
+        //consulta para extraer el porcentaje de avance del PUD DIPLOMA        
 
         $obj2 = new Scripts();
         $pud_dip_porc_avance = $obj2->pud_dip_porcentaje_avance($modelPlanVertDipl->id, $modelPlanVertDipl->planificacion_bloque_unidad_id);
 
-        $modelPlanBloqUni->avance_porcentaje = $pud_dip_porc_avance['porcentaje'];
+        $modelPlanBloqUni->avance_porcentaje = $pud_dip_porc_avance['porcentaje'];        
         $modelPlanBloqUni->save();
     }
 
@@ -852,6 +852,7 @@ class PudDipController extends Controller {
                     where 	op.tipo = 'ACCION'
                                     and op.categoria = 'PROCESO_APREN'
                                     and op.id not in (select opcion_id from pud_dip_proceso_aprendizaje pa where plan_unidad_id = $planUnidadId);";
+        
         $con->createCommand($query)->execute();
     }//fin de 5.2.
     
@@ -926,12 +927,13 @@ class PudDipController extends Controller {
             'planificacion_bloques_unidad_id' => $planBloqueUnidadId
         ])->one();
         
-        if(!$modelDetalle){
+        if(!$modelDetalle){            
             $model = new \backend\models\PudDip();
             $model->planificacion_bloques_unidad_id = $planBloqueUnidadId;
             $model->codigo = 'METACOGNICION';
             $model->campo_de = 'escrito';
             $model->opcion_texto = 'None';
+            $model->opcion_boolean = true;
             $model->save();
         }                
     }
@@ -1117,15 +1119,14 @@ class PudDipController extends Controller {
     
     public function actionUpdatePudDip(){
         $campoDe = $_POST['campo_de'];
-        $id = $_POST['id'];            
+        $id = $_POST['id'];                    
         
         $model = \backend\models\PudDip::findOne($id);  
         
         // //buscal el planVetiDip
         $modelPlanVertDipl = PlanificacionVerticalDiploma::find()
         ->where(['planificacion_bloque_unidad_id'=> $model->planificacion_bloques_unidad_id])
-        ->one(); 
-       
+        ->one();             
 
         //guarda el porcentaje de avance del pud dip
         $this->pud_dip_actualiza_porcentaje_avance($modelPlanVertDipl);
@@ -1133,7 +1134,7 @@ class PudDipController extends Controller {
         if($campoDe == 'seleccion'){            
             $model->opcion_boolean ? $model->opcion_boolean = false : $model->opcion_boolean = true;
             $model->save();            
-        }else{
+        }else{            
             $model->opcion_texto = $_POST['contenido'];
             $model->save();
             return $this->redirect(['index1', 'plan_bloque_unidad_id' => $model->planificacion_bloques_unidad_id]);

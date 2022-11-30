@@ -172,10 +172,13 @@ class PlanificacionAprobacionController extends Controller{
         $cabecera = PlanificacionDesagregacionCabecera::findOne($cabeceraId);
         $estado = $cabecera->estado;
         $pca = new Pca($cabeceraId);
+        $periodoId = Yii::$app->user->identity->periodo_id;
 
         $desagregacion = array();
         $bloques = $this->consultar_bloques($cabeceraId); //consulta los bloques configurados en el curriculo mec
-        
+
+        $seccionCode = $this->get_seccion($cabecera->ismAreaMateria->mallaArea->periodoMalla->malla->op_course_template_id, $periodoId);
+
         foreach($bloques as $blo){
             $bloqueId = $blo['id'];
 
@@ -229,8 +232,23 @@ class PlanificacionAprobacionController extends Controller{
         return $this->render('detalle', [
             'pca'       => $pca,
             'cabecera'  => $cabecera,
-            'desagregacion' => $desagregacion
+            'desagregacion' => $desagregacion,
+            'seccionCode' => $seccionCode
         ]);
+    }
+
+    private function get_seccion($opCourseTemplateId, $periodoId){
+        $con = Yii::$app->db;
+        $query = "select 	s.id 
+                                    ,s.code 
+                    from 	op_course_template t
+                                    inner join op_course c on c.x_template_id = t.id 
+                                    inner join op_section s on s.id = c.section
+                                    inner join scholaris_op_period_periodo_scholaris sop on sop.op_id = s.period_id 
+                    where 	t.id = $opCourseTemplateId
+                                    and sop.scholaris_id = $periodoId";
+        $res = $con->createCommand($query)->queryOne();
+        return $res['code'];
     }
 
     private function consultar_bloques($cabeceraId){

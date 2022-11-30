@@ -128,23 +128,23 @@ function contador_metacognicion($planUnidadId,$numCaracteresOk)
     'codigo' => 'METACOGNICION',
     //'opcion_boolean'=>true,
     //'opcion'
-    ])->all();
+    ])->all();    
     
     $contador_5_3_1 = 0;
     
     $cont = 0;
     $contDetalle = 0;
     foreach ($pudDip as $pud){
-        if($pud->opcion_boolean == true){
-            $cont++;
-        }
+        // if($pud->opcion_boolean == true){
+        //     $cont++;
+        // }
         
         if($pud->campo_de == 'escrito' && strlen($pud->opcion_texto) >$numCaracteresOk ){
             $contDetalle = 1;
         }
     }
     
-    if($cont>0 && $contDetalle > 0 ){
+    if($contDetalle > 0 ){
         $contador_5_3_1 = 1;
     }
     

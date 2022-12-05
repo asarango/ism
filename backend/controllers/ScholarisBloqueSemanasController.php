@@ -2,13 +2,16 @@
 
 namespace backend\controllers;
 
+use backend\models\ScholarisBloqueComparte;
 use Yii;
 use backend\models\ScholarisBloqueSemanas;
 use backend\models\ScholarisBloqueSemanasSearch;
+use backend\models\ScholarisPeriodo;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
+use yii\helpers\ArrayHelper;
 
 /**
  * ScholarisBloqueSemanasController implements the CRUD actions for ScholarisBloqueSemanas model.
@@ -68,32 +71,40 @@ class ScholarisBloqueSemanasController extends Controller {
      */
     public function actionIndex() {
 
-        $modelBloques = $this->get_bloques();
+        $periodoId = Yii::$app->user->identity->periodo_id;
+        $modelPeriodo = ScholarisPeriodo::findOne($periodoId);
+        $modelBloques = $this->get_bloques($modelPeriodo->codigo);
+        $listaB = ArrayHelper::map($modelBloques, 'id','bloque');
+        $tipoBloque = ScholarisBloqueComparte::find()->orderBy('nombre')->all();
+        $listaCom = ArrayHelper::map($tipoBloque, 'valor','nombre');
 
         $searchModel = new ScholarisBloqueSemanasSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        
 
         return $this->render('index', [
                     'searchModel' => $searchModel,
                     'dataProvider' => $dataProvider,
-                    'modelBloques' => $modelBloques
+                    'listaB' => $listaB,
+                    'listaCom' => $listaCom
         ]);
     }
     
     
-    private function get_bloques(){
-        $periodoId = \Yii::$app->user->identity->periodo_id;
-        $institutoId = \Yii::$app->user->identity->instituto_defecto;
-        $modelPeriodo = \backend\models\ScholarisPeriodo::findOne($periodoId);
+    private function get_bloques($periodoCodigo){
+        $con = Yii::$app->db;
+        $query = "select 	blo.id 
+                            ,concat(blo.name, ' | ',com.nombre) as bloque
+                    from 	scholaris_bloque_semanas sem
+                            inner join scholaris_bloque_actividad blo on blo.id = sem.bloque_id 
+                            inner join scholaris_bloque_comparte com on cast(com.valor as varchar) = blo.tipo_uso
+                    where 	blo.scholaris_periodo_codigo = '$periodoCodigo'
+                            and blo.tipo_bloque in ('PARCIAL','EXAMEN')
+                    group by blo.id, blo.name,com.nombre
+                    order by com.nombre,blo.orden;";
 
-        $modelBloques = \backend\models\ScholarisBloqueActividad::find()
-                        ->select(['scholaris_bloque_actividad.id', "concat(name,' - ',c.nombre) as name"])
-                        ->innerJoin("scholaris_bloque_comparte c","cast(c.valor as varchar) = scholaris_bloque_actividad.tipo_uso")
-                        ->where([
-                            'scholaris_periodo_codigo' => $modelPeriodo->codigo,
-                            'instituto_id' => $institutoId
-                        ])->all();
-        return $modelBloques;
+        $res = $con->createCommand($query)->queryAll();
+        return $res;
     }
     
 
@@ -115,9 +126,12 @@ class ScholarisBloqueSemanasController extends Controller {
      * @return mixed
      */
     public function actionCreate() {
+        $periodoId = Yii::$app->user->identity->periodo_id;
+        $modelPeriodo = ScholarisPeriodo::findOne($periodoId);
+
         $model = new ScholarisBloqueSemanas();
         
-        $modelBloques = $this->get_bloques();
+        $modelBloques = $this->get_bloques($modelPeriodo->codigo);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);

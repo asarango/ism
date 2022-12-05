@@ -16,15 +16,15 @@ use kartik\date\DatePicker;
     <?php $form = ActiveForm::begin(); ?>
 
     <?php 
-        $listData = ArrayHelper::map($modelBloques, 'id', 'name');
-        echo $form->field($model, 'bloque_id')->widget(Select2::className(),[
-            'data' => $listData,
-            'options' => ['placeholder' => 'Seleccione bloque...'],
-            'pluginLoading' => false,
-            'pluginOptions' => [
-                'allowClear' => false
-            ],
-        ]);
+        // $listData = ArrayHelper::map($modelBloques, 'id', 'name');
+        // echo $form->field($model, 'bloque_id')->widget(Select2::className(),[
+        //     'data' => $listData,
+        //     'options' => ['placeholder' => 'Seleccione bloque...'],
+        //     'pluginLoading' => false,
+        //     'pluginOptions' => [
+        //         'allowClear' => false
+        //     ],
+        // ]);
     ?>
 
     <?= $form->field($model, 'semana_numero')->textInput() ?>

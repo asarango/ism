@@ -2,13 +2,17 @@
 
 namespace backend\controllers;
 
+use backend\models\generarsemanas\ProcesarSemanas;
 use Yii;
 use backend\models\ScholarisBloqueActividad;
 use backend\models\ScholarisBloqueActividadSearch;
+use backend\models\ScholarisBloqueComparte;
+use backend\models\ScholarisBloqueSemanas;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
+use yii\helpers\ArrayHelper;
 
 /**
  * ScholarisBloqueActividadController implements the CRUD actions for ScholarisBloqueActividad model.
@@ -77,17 +81,14 @@ class ScholarisBloqueActividadController extends Controller
         $searchModel = new ScholarisBloqueActividadSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams, $modelPeriodo->codigo, $instituto);
         
-        $modelComparte = \backend\models\ScholarisBloqueComparte::find()
-        ->asArray()
-        ->orderBy(['id'=>SORT_ASC])
-        ->all();
-
-      
+        $modelComparte = ScholarisBloqueComparte::find()->where(['instituto_id' => $instituto])->all();
+        $listaComparte = ArrayHelper::map($modelComparte, 'valor', 'nombre');
+              
 
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
-            'modelComparte' => $modelComparte,
+            'listaComparte' => $listaComparte
         ]);
     }
 
@@ -99,8 +100,15 @@ class ScholarisBloqueActividadController extends Controller
      */
     public function actionView($id)
     {
+
+        $modelSemanas = ScholarisBloqueSemanas::find()
+        ->where(['bloque_id' => $id])
+        ->orderBy('semana_numero')
+        ->all();
+
         return $this->render('view', [
             'model' => $this->findModel($id),
+            'modelSemanas' => $modelSemanas
         ]);
     }
 
@@ -113,11 +121,10 @@ class ScholarisBloqueActividadController extends Controller
     {
         
         $instituto = \Yii::$app->user->identity->instituto_defecto;
-        
-        
         $modelComoCalifica = \backend\models\ScholarisBloqueComoCalifica::find()->all();
         
         $model = new ScholarisBloqueActividad();
+        
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
@@ -183,5 +190,17 @@ class ScholarisBloqueActividadController extends Controller
         }
 
         throw new NotFoundHttpException('The requested page does not exist.');
+    }
+
+
+
+    public function actionProcessWeeks(){
+        $bloqueId = $_GET['bloque_id'];
+        $generarSemanas = new ProcesarSemanas($bloqueId);
+        $insertWeeks = $generarSemanas->process();
+        return $this->redirect(['view', 
+            'id' => $bloqueId,
+            'processWeeks' => $insertWeeks
+        ]);
     }
 }

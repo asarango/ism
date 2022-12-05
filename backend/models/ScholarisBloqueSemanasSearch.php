@@ -46,9 +46,9 @@ class ScholarisBloqueSemanasSearch extends ScholarisBloqueSemanas
         
         $modelPeriodo = ScholarisPeriodo::findOne($periodoId);
         
-        $query = ScholarisBloqueSemanas::find()
-                ->innerJoin("scholaris_bloque_actividad b", "b.id = scholaris_bloque_semanas.bloque_id")
-                ->where(['b.scholaris_periodo_codigo' => $modelPeriodo->codigo, 'b.instituto_id' => $intitutoId]);
+        $query = ScholarisBloqueSemanas::find();
+                // ->innerJoin("scholaris_bloque_actividad b", "b.id = scholaris_bloque_semanas.bloque_id")
+                // ->where(['b.scholaris_periodo_codigo' => $modelPeriodo->codigo, 'b.instituto_id' => $intitutoId]);
 
         // add conditions that should always apply here
 

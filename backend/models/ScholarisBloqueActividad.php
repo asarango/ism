@@ -237,4 +237,9 @@ class ScholarisBloqueActividad extends \yii\db\ActiveRecord
     {
         return $this->hasMany(ScholarisTomaAsistecia::className(), ['bloque_id' => 'id']);
     }
+
+
+    public function getUso(){        
+        return $this->hasOne(ScholarisBloqueComparte::className(), ['valor' => 'tipo_uso']);
+    }
 }

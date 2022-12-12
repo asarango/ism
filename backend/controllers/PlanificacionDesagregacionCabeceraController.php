@@ -105,7 +105,7 @@ class PlanificacionDesagregacionCabeceraController extends Controller
             $html .= '<ul class="dropdown-menu" aria-labelledby="btnGroupDrop1">';
             $html .= '<li>';
             //$html .= Html::a('Desagregación', ['desagregacion', 'id' => $asignatura['id']], ['class' => 'dropdown-item', 'style' => 'font-size:10px']);
-            $html .= Html::a('Desagregación', ['planificacion-bloques-unidad/index1', 'id' => $asignatura['id']], ['class' => 'dropdown-item', 'style' => 'font-size:10px']);
+            $html .= Html::a('Planificar', ['planificacion-bloques-unidad/index1', 'id' => $asignatura['id']], ['class' => 'dropdown-item', 'style' => 'font-size:10px']);
             $html .= '</li>';
             $html .= '</ul>';
             $html .= '</div>';

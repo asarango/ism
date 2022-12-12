@@ -11,7 +11,7 @@ use yii\helpers\Url;
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 
-$this->title = 'Planificación de temas para desagregación de destrezas';
+$this->title = 'Planificación ';
 $this->params['breadcrumbs'][] = $this->title;
 
 //echo($seccion);
@@ -31,24 +31,18 @@ function pud_dip_porcentaje_avance($planVertDiplId,$planBloqueUniId)
 <div class="planificacion-desagregacion-cabecera-index">
 
     <div class="m-0 vh-50 row justify-content-center align-items-center">
-        <div class="card shadow col-lg-8 col-md-8">
+        <div class="card shadow col-lg-10 col-md-10">
             <div class=" row align-items-center p-2">
                 <div class="col-lg-1">
                     <h4><img src="ISM/main/images/submenu/herramientas-para-reparar.png" width="64px" class="img-thumbnail"></h4>
                 </div>
                 <div class="col-lg-11">
-                    <h4><?= Html::encode($this->title) ?></h4>
-                    <h5>                        
-                        <?= 'CURSO: ' . $cabecera->ismAreaMateria->mallaArea->periodoMalla->malla->opCourseTemplate->name ?>
-                    </h5>
-                    <small>
-                        (
-                        <?=                        
-                            $cabecera->ismAreaMateria->materia->nombre . ' -  MEC'
-                        ?>
-                        )
-                    </small>
-
+                    <h4><?= Html::encode($this->title) ?></h4>                    
+                    <small>                                                
+                        <?= $cabecera->ismAreaMateria->materia->nombre ?>
+                        - 
+                        <?= $cabecera->ismAreaMateria->mallaArea->periodoMalla->malla->opCourseTemplate->name ?>
+                    </small>                    
                 </div>
             </div>
             <!-- FIN DE CABECERA -->

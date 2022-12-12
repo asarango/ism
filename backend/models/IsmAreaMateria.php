@@ -22,6 +22,7 @@ use Yii;
  * @property string $idioma
  * @property int $total_horas_semana
  * @property string $responsable_planificacion
+ * @property bool $es_bi
  *
  * @property CurriculoMecAsignatutas $asignaturaCurriculo
  * @property CurriculoMecNiveles $cursoCurriculo
@@ -52,7 +53,7 @@ class IsmAreaMateria extends \yii\db\ActiveRecord
             [['malla_area_id', 'materia_id'], 'required'],
             [['malla_area_id', 'materia_id', 'asignatura_curriculo_id', 'curso_curriculo_id', 'orden', 'ambito_id', 'total_horas_semana'], 'default', 'value' => null],
             [['malla_area_id', 'materia_id', 'asignatura_curriculo_id', 'curso_curriculo_id', 'orden', 'ambito_id', 'total_horas_semana'], 'integer'],
-            [['promedia', 'imprime_libreta', 'es_cuantitativa'], 'boolean'],
+            [['promedia', 'imprime_libreta', 'es_cuantitativa', 'es_bi'], 'boolean'],
             [['porcentaje'], 'number'],
             [['tipo'], 'string', 'max' => 30],
             [['idioma'], 'string', 'max' => 5],
@@ -86,6 +87,7 @@ class IsmAreaMateria extends \yii\db\ActiveRecord
             'idioma' => 'Idioma',
             'total_horas_semana' => 'Total Horas Semana',
             'responsable_planificacion' => 'Responsable Planificacion',
+            'es_bi' => 'Es Bi',
         ];
     }
 

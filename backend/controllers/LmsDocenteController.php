@@ -114,6 +114,8 @@ class LmsDocenteController extends Controller {
                 where 	lms.semana_numero = $semanaNumero
                         and clase_id = $claseId
                 order by doc.fecha, hor.numero;";
+                // echo $query;
+                // die();
         $res = $con->createCommand($query)->queryAll();
         return $res;
     }

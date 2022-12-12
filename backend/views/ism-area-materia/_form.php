@@ -27,6 +27,8 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'tipo')->textInput(['maxlength' => true]) ?>
 
+    <?= $form->field($model, 'es_bi')->radioList([0 => 'NO', 1=>'SI']) ?>
+
     <?= $form->field($model, 'asignatura_curriculo_id')->textInput() ?>
 
     <?= $form->field($model, 'curso_curriculo_id')->textInput() ?>

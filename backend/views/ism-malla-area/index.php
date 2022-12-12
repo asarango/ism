@@ -71,6 +71,7 @@ $this->title = 'Detalle de Malla ' . $peridoMalla->malla->nombre;
                                     <th class="text-center">IMPR</th>
                                     <th class="text-center">CUANT</th>
                                     <th class="text-center">TIPO</th>
+                                    <th class="text-center">ES BI</th>
                                     <th class="text-center">%</th>
                                     <th class="text-center">ORDEN</th>
                                     <th class="text-center">H.SEM</th>
@@ -94,6 +95,7 @@ $this->title = 'Detalle de Malla ' . $peridoMalla->malla->nombre;
                                         <td class="text-center" style="background-color: #0a1f8f; color: white"><?= $m['imprime_libreta']?></td>
                                         <td class="text-center" style="background-color: #0a1f8f; color: white"><?= $m['es_cuantitativa']?></td>
                                         <td class="text-center" style="background-color: #0a1f8f; color: white"><?= $m['tipo']?></td>
+                                        <td class="text-center" style="background-color: #0a1f8f; color: white"></td>
                                         <td class="text-center" style="background-color: #0a1f8f; color: white"><?= $m['porcentaje']?></td>
                                         <td class="text-center" style="background-color: #0a1f8f; color: white"><?= $m['orden']?></td>                                        
                                         <td class="text-center" style="background-color: #0a1f8f; color: white">-</td>
@@ -117,6 +119,15 @@ $this->title = 'Detalle de Malla ' . $peridoMalla->malla->nombre;
                                         <td class="text-center"><?= $mat['imprime_libreta'] ?></td>
                                         <td class="text-center"><?= $mat['es_cuantitativa'] ?></td>
                                         <td class="text-center"><?= $mat['tipo'] ?></td>
+                                        <td class="text-center">
+                                            <?php
+                                                if($mat['es_bi']){
+                                                    echo '<i class="fas fa-check-circle" style="color:green"></i>';
+                                                }else{
+                                                    echo '<i class="fas fa-ban" style="color:red"></i>';
+                                                }
+                                            ?>
+                                        </td>
                                         <td class="text-center"><?= $mat['porcentaje'] ?></td>
                                         <td class="text-center"><?= $mat['orden'] ?></td>
                                         <td class="text-center"><?= $mat['total_horas_semana'] ?></td>

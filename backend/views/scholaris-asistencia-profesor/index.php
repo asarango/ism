@@ -67,6 +67,14 @@ $this->title = 'Mis actividades de hoy';
                     echo ' | ';
                 }
                 ?>
+                <?=
+                Html::a(
+                    '<span class="badge rounded-pill" style="background-color: black"><i class="fa fa-briefcase" aria-hidden="true"></i> Reporte </span>',
+                    ['reporte'],
+                    ['class' => 'link','target'=>'_blanck']
+                );
+                ?>
+                |
                
             </p>
 

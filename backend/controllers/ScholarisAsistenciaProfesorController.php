@@ -310,11 +310,23 @@ class ScholarisAsistenciaProfesorController extends Controller {
                     order by 2;";
         $con->createCommand($query)->execute();
     }
+
+    public function actionReporte()
+    {
+        $usuario = rtrim(\Yii::$app->user->identity->email);
+        $periodoId = \Yii::$app->user->identity->periodo_id; 
+        return $this->render('reporte',
+            [
+                'usuario'=>$usuario,
+                'periodoId'=>$periodoId,
+
+            ]
+        );
+    }
     
     
     
-    public function actionDocentes(){
-        
+    public function actionDocentes(){ 
         
         
         return $this->render('docentes');

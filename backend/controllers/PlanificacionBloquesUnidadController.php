@@ -94,6 +94,7 @@ class PlanificacionBloquesUnidadController extends Controller{
         $opCourseTemplateId = $cabecera->ismAreaMateria->mallaArea->periodoMalla->malla->op_course_template_id;
         //$materia = ScholarisMateria::findOne($cabecera->scholaris_materia_id);// toma datos de la materia scholaris
         $materia = IsmAreaMateria::findOne($cabecera->ismAreaMateria->materia_id);// toma datos de la materia scholaris
+        $ismAreaMateria = IsmAreaMateria::findOne($cabecera->ism_area_materia_id);// toma datos de la materia scholaris
 
         $seccion = $this->consultar_section($opCourseTemplateId, 
                                             $cabecera->scholaris_periodo_id, $institutoId);        
@@ -125,7 +126,8 @@ class PlanificacionBloquesUnidadController extends Controller{
             'seccion'   => $seccion,
             'perfil'    => $perfil,
             'firmaAprueba' => $firmaAprueba,
-            'firmaElaborado' => $firmaElaborado
+            'firmaElaborado' => $firmaElaborado,
+            'ismAreaMateria' => $ismAreaMateria
         ]);
     } 
 

@@ -41,7 +41,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
                     <div class="col-lg-3 col-md-3 text-center">
                         <div class="text-center animate__animated animate__fadeInRight">
-                            <img src="ISM/main/images/submenu/<?= $photo ?>" width="60%" class=" img-thumbnail" alt="<?= $photo ?>" style="align-items: center">
+                            <img src="../ISM/main/images/submenu/<?= $photo ?>" width="60%" class=" img-thumbnail" alt="<?= $photo ?>" style="align-items: center">
                             <div class="card-body">     
                                 
                                 <?= Html::a($sub['nombre'], ['/'.$ruta],['class' => 'link']) ?>

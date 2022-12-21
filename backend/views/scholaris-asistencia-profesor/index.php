@@ -57,14 +57,7 @@ $this->title = 'Mis actividades de hoy';
                         ['class' => 'link']
                     );
                     echo ' | ';
-                    echo Html::a(
-                        '<span class="badge rounded-pill" style="background-color: #65b2e8">
-                            <i class="fa fa-briefcase" aria-hidden="true"></i> Plan semanal
-                         </span>',
-                        ['ps/index1'],
-                        ['class' => 'link']
-                    );
-                    echo ' | ';
+                    
                 }
                 ?>
                 <?=

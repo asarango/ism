@@ -110,19 +110,28 @@ function pud_dip_porcentaje_avance($planVertDiplId, $planBloqueUniId)
                     }
 
                     if ($seccion == 'DIPL') {
-                        echo Html::a(
-                            '<span class="badge rounded-pill" style="background-color: #ff9e18 "><i class="far fa-file-pdf" aria-hidden="true"></i> PDF Plan Vertical</span>',
-                            ['pdf-pv-dp', 'cabecera_id' => $cabecera->id],
-                            ['class' => 'link', 'target' => '_blank']
-                        );
-                        echo ' | ';
 
-                        echo Html::a(
-                            '<span class="badge rounded-pill" style="background-color: #F08080 "><i class="far fa-file-pdf" aria-hidden="true"></i> PDF Plan Horizontal</span>',
-                            ['pdf-ph-dp', 'cabecera_id' => $cabecera->id],
-                            ['class' => 'link', 'target' => '_blank']
-                        );
-                        echo ' | ';
+                        if ($ismAreaMateria->es_bi == true) {
+                            echo Html::a(
+                                '<span class="badge rounded-pill" style="background-color: #ff9e18 "><i class="far fa-file-pdf" aria-hidden="true"></i> PDF Plan Vertical</span>',
+                                ['pdf-pv-dp', 'cabecera_id' => $cabecera->id],
+                                ['class' => 'link', 'target' => '_blank']
+                            );
+                            echo ' | ';
+
+                            echo Html::a(
+                                '<span class="badge rounded-pill" style="background-color: #F08080 "><i class="far fa-file-pdf" aria-hidden="true"></i> PDF Plan Horizontal</span>',
+                                ['pdf-ph-dp', 'cabecera_id' => $cabecera->id],
+                                ['class' => 'link', 'target' => '_blank']
+                            );
+                            echo ' | ';
+                        } else {
+                            echo Html::a(
+                                '<span class="badge rounded-pill" style="background-color: #f9b900 "><i class="far fa-calendar" aria-hidden="true"></i> 4.-PCA</span>',
+                                ['pca/index1', 'cabecera_id' => $cabecera->id],
+                                ['class' => 'link']
+                            );
+                        }
                     }
                     ?>
 
@@ -155,49 +164,53 @@ function pud_dip_porcentaje_avance($planVertDiplId, $planBloqueUniId)
                                     <!-- Columna del PUD -->
                                     <td class="text-center">
                                         <?php
-                                        $model = PlanificacionBloquesUnidad::findOne($unidad->id);
-                                        $modelPudAprBit = PudAprobacionBitacora::find()
-                                            ->where(['unidad_id' => $model->id])
-                                            ->orderBy(['fecha_notifica' => SORT_DESC])
-                                            ->one();
+                                        if ($ismAreaMateria->es_bi) {
+                                            $model = PlanificacionBloquesUnidad::findOne($unidad->id);
+                                            $modelPudAprBit = PudAprobacionBitacora::find()
+                                                ->where(['unidad_id' => $model->id])
+                                                ->orderBy(['fecha_notifica' => SORT_DESC])
+                                                ->one();
 
-                                        // echo '<pre>';
-                                        // print_r($modelPudAprBit);
-                                        // die();
+                                            // echo '<pre>';
+                                            // print_r($modelPudAprBit);
+                                            // die();
 
 
 
-                                        $icono = '<i class="fas fa-times"  title="PUD PENDIENTE" ></i>';
-                                        $style = 'color: red';
-                                        $actionController = '';
+                                            $icono = '<i class="fas fa-times"  title="PUD PENDIENTE" ></i>';
+                                            $style = 'color: red';
+                                            $actionController = '';
 
-                                        echo 'Avance: ' . $model->avance_porcentaje . '% | &nbsp';
+                                            echo 'Avance: ' . $model->avance_porcentaje . '% | &nbsp';
 
-                                        if ($seccion == 'BAS') {
-                                            $actionController = 'pud-pep/index1';
-                                        } elseif ($seccion == 'PAI') {
-                                            $actionController = 'pud-pai/index1';
-                                        } elseif ($seccion == 'DIPL') {
-                                            $actionController = 'pud-dip/index1';
-                                        }
-                                        if ($modelPudAprBit) {
-
-                                            if ($modelPudAprBit->estado_jefe_coordinador == 'ENVIADO') {
-                                                $icono = '<i class="fas fa-user-clock"  title="PUD EN REVISION" ></i>';
-                                                $style = 'color: blue';
-                                            } elseif ($modelPudAprBit->estado_jefe_coordinador == 'DEVUELTO') {
-                                                $icono = '<i class="fas fa-user-clock"  title="PUD DEVUELTO" ></i>';
-                                                $style = 'color: red';
-                                            } elseif ($unidad->pud_status == 1) {
-                                                $icono = '<i class="fas fa-check"  title="PUD APROBADO" ></i>';
-                                                $style = 'color: green';
+                                            if ($seccion == 'BAS') {
+                                                $actionController = 'pud-pep/index1';
+                                            } elseif ($seccion == 'PAI') {
+                                                $actionController = 'pud-pai/index1';
+                                            } elseif ($seccion == 'DIPL') {
+                                                $actionController = 'pud-dip/index1';
                                             }
+                                            if ($modelPudAprBit) {
+
+                                                if ($modelPudAprBit->estado_jefe_coordinador == 'ENVIADO') {
+                                                    $icono = '<i class="fas fa-user-clock"  title="PUD EN REVISION" ></i>';
+                                                    $style = 'color: blue';
+                                                } elseif ($modelPudAprBit->estado_jefe_coordinador == 'DEVUELTO') {
+                                                    $icono = '<i class="fas fa-user-clock"  title="PUD DEVUELTO" ></i>';
+                                                    $style = 'color: red';
+                                                } elseif ($unidad->pud_status == 1) {
+                                                    $icono = '<i class="fas fa-check"  title="PUD APROBADO" ></i>';
+                                                    $style = 'color: green';
+                                                }
+                                            }
+                                            echo Html::a(
+                                                $icono,
+                                                [$actionController, 'plan_bloque_unidad_id' => $unidad->id],
+                                                ['style' => $style]
+                                            );
+                                        }else{
+                                            echo 'No es BI, revisar punto 3';
                                         }
-                                        echo Html::a(
-                                            $icono,
-                                            [$actionController, 'plan_bloque_unidad_id' => $unidad->id],
-                                            ['style' => $style]
-                                        );
                                         ?>
                                     </td>
                                     <!-- fin Columna del PUD -->
@@ -430,11 +443,15 @@ function calcula_total_criterios($unidadId)
 <div id="google_translate_element" class="google"></div>
 
 <script type="text/javascript">
-function googleTranslateElementInit() {
-	// new google.translate.TranslateElement({pageLanguage: 'es', includedLanguages: 'ca,eu,gl,en,fr,it,pt,de', layout: google.translate.TranslateElement.InlineLayout.SIMPLE, gaTrack: true}, 'google_translate_element');
-	new google.translate.TranslateElement({pageLanguage: 'es', includedLanguages: 'en,fr,es', layout: google.translate.TranslateElement.InlineLayout.SIMPLE, gaTrack: true}, 'google_translate_element');
-        }
+    function googleTranslateElementInit() {
+        // new google.translate.TranslateElement({pageLanguage: 'es', includedLanguages: 'ca,eu,gl,en,fr,it,pt,de', layout: google.translate.TranslateElement.InlineLayout.SIMPLE, gaTrack: true}, 'google_translate_element');
+        new google.translate.TranslateElement({
+            pageLanguage: 'es',
+            includedLanguages: 'en,fr,es',
+            layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+            gaTrack: true
+        }, 'google_translate_element');
+    }
 </script>
 
 <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
-

@@ -20,7 +20,7 @@ $this->title = 'Usuarios';
 
             <div class=" row align-items-center p-2">
                 <div class="col-lg-1">
-                    <h4><img src="ISM/main/images/submenu/empleados.png" width="64px" class="img-thumbnail"></h4>
+                    <h4><img src="../ISM/main/images/submenu/empleados.png" width="64px" class="img-thumbnail"></h4>
                 </div>
                 <div class="col-lg-11">
                     <h4><?= Html::encode($this->title) ?></h4>
@@ -97,7 +97,7 @@ $this->title = 'Usuarios';
                             // isset($user['firma']) ? $firma = $user['firma'] : $firma = 'firma-digital.png';
                         ?>
                             <tr>
-                                <td class="text-center"><img src="ISM/avatars/<?= $avatar ?>" width="25px"></td>
+                                <td class="text-center"><img src="../ISM/avatars/<?= $avatar ?>" width="25px"></td>
                                 <td><?= $user['usuario'] ?></td>
                                 <td><?= $user['rol'] ?></td>
                                 <td class="text-center">
@@ -115,7 +115,7 @@ $this->title = 'Usuarios';
                                     ?>
                                 </td>
                                 <td><?= $user['email'] ?></td>
-                                <td class="text-center"><img src="ISM/firmas/<?= $firma ?>" width="40px" height="20"></td>
+                                <td class="text-center"><img src="../ISM/firmas/<?= $firma ?>" width="40px" height="20"></td>
                                 <td class="text-center">
                                     <div class="btn-group" role="group">
                                         <button style="font-size: 10px; border-radius: 0px" id="btnGroupDrop1" type="button" class="btn btn-outline-warning btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">

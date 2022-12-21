@@ -44,6 +44,11 @@ use yii\widgets\ActiveForm;
         );
     ?>
 
+    <?= $form->field($model, 'idioma')->dropDownList([
+        'es' => 'Español',
+        'en' => 'Inglés',
+        'fr' => 'Francés'
+    ]) ?>
     
     <hr>
     

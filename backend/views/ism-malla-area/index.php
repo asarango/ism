@@ -76,6 +76,7 @@ $this->title = 'Detalle de Malla ' . $peridoMalla->malla->nombre;
                                     <th class="text-center">ORDEN</th>
                                     <th class="text-center">H.SEM</th>
                                     <th class="text-center">PLANIFICA</th>
+                                    <th class="text-center">IDIOMA</th>
                                     <th class="text-center">ACCIONES</th>
 
                                 </tr>
@@ -99,6 +100,7 @@ $this->title = 'Detalle de Malla ' . $peridoMalla->malla->nombre;
                                         <td class="text-center" style="background-color: #0a1f8f; color: white"><?= $m['porcentaje']?></td>
                                         <td class="text-center" style="background-color: #0a1f8f; color: white"><?= $m['orden']?></td>                                        
                                         <td class="text-center" style="background-color: #0a1f8f; color: white">-</td>
+                                        <td class="text-center" style="background-color: #0a1f8f; color: white">-</td>                                        
                                         <td class="text-center" style="background-color: #0a1f8f; color: white">-</td>                                        
                                         <td class="text-center" style="background-color: #0a1f8f; color: white">
                                             <?= 
@@ -132,6 +134,7 @@ $this->title = 'Detalle de Malla ' . $peridoMalla->malla->nombre;
                                         <td class="text-center"><?= $mat['orden'] ?></td>
                                         <td class="text-center"><?= $mat['total_horas_semana'] ?></td>
                                         <td class="text-center"><?= $mat['responsable_planificacion'] ?></td>
+                                        <td class="text-center"><?= $mat['idioma'] ?></td>
                                         <td class="zoom">
                                             <?= 
                                                 Html::a('<i class="fas fa-edit" style="color: #ab0a3d"></i>', ['ism-area-materia/update', 

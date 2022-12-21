@@ -47,14 +47,14 @@ return [
 //        ['class' => 'yii\rest\UrlRule', 'controller' => 'user'],
 //    ],
 //]
-    /*
+    
       'urlManager' => [
       'enablePrettyUrl' => true,
       'showScriptName' => false,
       'rules' => [
       ],
       ],
-     */
+     
     ],
     'params' => $params,
     'modules' => [

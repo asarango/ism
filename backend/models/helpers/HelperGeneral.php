@@ -129,6 +129,9 @@ class HelperGeneral extends ActiveRecord{
                     where	use.login = '$user'
                                     and sop.scholaris_id = $periodoId
                     group by t.id, t.name, sec.code;";
+                    // echo '<pre>';
+                    // print_r($query);
+                    // die();
         $resp = $this->consultaBD($query);                   
         
         return $resp;

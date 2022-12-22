@@ -6,6 +6,7 @@ use backend\models\IsmGrupoMateriaPlanInterdiciplinar;
 use Yii;
 use backend\models\IsmGrupoPlanInterdiciplinar;
 use backend\models\IsmGrupoPlanInterdiciplinarSearch;
+use backend\models\OpCourse;
 use backend\models\ScholarisBloqueActividad;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -38,8 +39,9 @@ class IsmGrupoPlanInterdiciplinarController extends Controller
      */
     public function actionIndex()
     {
-        $searchModel = new IsmGrupoPlanInterdiciplinarSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        // $searchModel = new IsmGrupoPlanInterdiciplinarSearch();
+        // $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+
         $seleccion_a_buscar ="PAI";
         $cursos = $this->obtener_cursos($seleccion_a_buscar);
         $listaBloques = ScholarisBloqueActividad::find()
@@ -48,8 +50,8 @@ class IsmGrupoPlanInterdiciplinarController extends Controller
         ->all();        
 
         return $this->render('index', [
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
+            // 'searchModel' => $searchModel,
+            // 'dataProvider' => $dataProvider,
             'cursos'=>$cursos,
             'listaBloques'=>$listaBloques,
         ]);
@@ -140,6 +142,7 @@ class IsmGrupoPlanInterdiciplinarController extends Controller
       /************************************************************************************************************** */
     public function obtener_cursos($seccion)
     {
+        //Devuelve los cursos del pai, septimo, octavo, noveno,decimo, bach1
         //$user = Yii::$app->user->identity->usuario;
         $periodoId = Yii::$app->user->identity->periodo_id;
         $con = Yii::$app->db;
@@ -151,16 +154,15 @@ class IsmGrupoPlanInterdiciplinarController extends Controller
         
         $resp = $con->createCommand($query)->queryAll();
 
-        return $resp;
-        
+        return $resp;        
     }
     public function actionObtenerMateria()
     {
-        //$user = Yii::$app->user->identity->usuario;
-        //$periodoId = Yii::$app->user->identity->periodo_id;
+        //carga en pantalla las materias, una vez seleccionado bloque y curso        
         $idCurso = $_POST['curso_id'];
+        $idbloque = $_POST['idbloque'];
         $con = Yii::$app->db;
-        $html = "";
+       
         $query = "select id,nombre,siglas from ism_materia im 
                     where id in 
                     (
@@ -172,89 +174,198 @@ class IsmGrupoPlanInterdiciplinarController extends Controller
                                 from op_course_paralelo where course_id =$idCurso
                             )
                         )
-                    ) order by nombre ;";        
+                        and materia_id not in (
+                            select s3.materia_id  
+                            from ism_grupo_materia_plan_interdiciplinar s, ism_area_materia  s3,
+                            ism_grupo_plan_interdiciplinar s1 
+                            where s.id_grupo_plan_inter  = s1.id
+                            and s1.id_op_course = $idCurso and s1.id_bloque = $idbloque 
+                            and s3.id = s.id_ism_area_materia
+                        )
+                    ) order by nombre ;";  
         
         $listaMaterias = $con->createCommand($query)->queryAll();
 
-        // echo '<pre>';
-        // print_r($resp);
-        // die();
-
-        foreach ($listaMaterias as $materias) {
-            $html .= '<tr>';
-            $html .= '<td class="text-center">' . $materias['id'] . '</td>';            
-            $html .= '<td class="text-center">' . $materias['nombre'] . '</td>';          
-            $html .= '<td class="text-center">';
-                $html .= '<div class="btn-group" role="group">';
-                $html .= '<button style="font-size: 10px; border-radius: 0px" id="btnGroupDrop1" type="button" class="btn btn-outline-warning btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">';
-                $html .= 'Acciones';
-                $html .= '</button>';
-                $html .= '<ul class="dropdown-menu" aria-labelledby="btnGroupDrop1">';
-                $html .= '<li>';
-                $html .= Html::a('Planificar', ['planificacion-bloques-unidad/index1', 'id' => $materias['id']], ['class' => 'dropdown-item', 'style' => 'font-size:10px']);
-                $html .= '</li>';
-                $html .= '</ul>';
-                $html .= '</div>';
-            $html .= '</td>';
-            $html .= '<td class="text-center">
-                        <input class="form-control" type="text" id="'.$materias['id'].'_materia" style="width:35px;" />
-                    </td>'; 
-            $html .= '<td class="text-center">
-                        <button class="form-control" type="text" id="'.$materias['id'].'_materia" style="width:35px;" onclick=asignar_grupo("'.$materias['id'].'_materia")>
-                            pasar
-                        </button>
-                     </td>'; 
-            $html .= '</tr>';
-        }
-
-        return $html;
+        return $this->html_materias_por_curso($listaMaterias);      
         
     }
+    public function html_materias_por_curso($listaMaterias)
+    {
+        $html = "";
+            //generamos la tabla para presentar en pantalla
+            $html.='<h6><b>Materias:'.count($listaMaterias).'</b></h6>';
+            //$html.='<hr>';
+            $html.='<table class="table table-striped ">
+                    <thead>
+                        <tr>
+                            <th class="text-center">Id</th>
+                            <th class="text-center">Asginaturas</th> 
+                            <th class="text-center">Grupo</th>
+                            <th class="text-center">Pasar</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-body">';
+            foreach ($listaMaterias as $materias) 
+            {
+                $html .= '<tr>';
+                $html .= '<td class="text-center">' . $materias['id'] . '</td>';            
+                $html .= '<td class="text-center">' . $materias['nombre'] . '</td>';   
+                $html .= '<td class="text-center">
+                            <input class="form-control" type="text" id="'.$materias['id'].'_materia" style="width:35px;" />
+                        </td>'; 
+                $html .= '<td class="text-center">
+                            <button style="border:0;" class="form-center" type="text" id="'.$materias['id'].'_materia"  onclick=asignar_grupo("'.$materias['id'].'","'.$materias['id'].'_materia")>
+                                <i style="color:blue;" class="fas fa-arrow-circle-right"></i>
+                            </button>
+                        </td>'; 
+                $html .= '</tr>';
+            }
+
+            $html .= '</tbody>
+                        </table>';
+
+
+            return $html;
+    }
+    
     public function actionAsignarGrupo()
     {
-        $con = Yii::$app->db;
-        $fechaActual = date('Y-m-d');
-        $hora = date('H:i:s');
+        //Se activa al momento de gar click en el boton pasar
+        // $con = Yii::$app->db;
+        // $fechaActual = date('Y-m-d');
+        // $hora = date('H:i:s');
 
         $grupo= $_POST['grupo'];
         $idbloque = $_POST['idbloque'];
         $idcurso = $_POST['idcurso'];
+        $idMateria = $_POST['idMateria'];
+        $textGrupo = "Grupo ".$grupo;
+
+        // $periodoId = Yii::$app->user->identity->periodo_id;
+        // $user = Yii::$app->user->identity->usuario;
+
+        //revisamos si el grupo existe
+        $modelGrupoInter = IsmGrupoPlanInterdiciplinar::find()
+        ->where(['id_bloque'=>$idbloque,'id_op_course'=>$idcurso,'nombre_grupo'=>$textGrupo])
+        ->one();
+        if(!$modelGrupoInter)
+        {
+            //guardamos el grupo
+            $modelGrupoInter = $this->genera_grupo_interdiciplinar($textGrupo, $idbloque,$idcurso); 
+        }            
+        //busqueda de ism_area_materia
+        $idAreaMateria = $this->obtener_ism_area_materia($idcurso,$idMateria);       
+        //Guardamos las materias asociadas al grupo
+        $modelGrupoMateriaInter = $this->genera_grupo_materia_inter($modelGrupoInter,$idAreaMateria);   
+        
+
+        $resp = $this->html_grupos_materias($idbloque,$idcurso);
+        echo '<pre>';
+        print_r($resp );
+        die();
+        return $resp ;
+
+    }
+    public function html_grupos_materias($idbloque,$idcurso)
+    {
+        //extraer Grupos,segun bloque, y curso
+        $modelGrupoInter = IsmGrupoPlanInterdiciplinar::find()
+        ->where(['id_bloque'=>$idbloque,'id_op_course'=>$idcurso])
+        ->all();
+        //extraer el curso
+        $modelCurso = OpCourse::findOne($idcurso);          
+        //<div class="row ">
+        $html = "";
+        $html.='<h6><b>Grupos Generados</b></h6>
+                    
+                        <div class="col-sm-6 mx-auto">'; 
+                        foreach($modelGrupoInter as $grupo)
+                        {   
+                            $html.='<h6><b>'.$grupo->nombre_grupo.' - '.$modelCurso->name.'</b></h6>
+                                    <table class="table table-striped">
+                                        <tr>
+                                            <th>Materia</th>
+                                            <th>Acción</th>
+                                        </tr>';
+                            //extraer las materias asociadas a los grupos
+                            $modelGrupoMaterias = IsmGrupoMateriaPlanInterdiciplinar::find()
+                            ->where(['id_grupo_plan_inter'=>$grupo->id])
+                            ->all();
+                            foreach($modelGrupoMaterias as $materia)
+                            {
+                            $html.='
+                                            <tr>
+                                                <td>* '.$materia->ismAreaMateria->materia->nombre.'</td>  
+                                                <td>
+                                                    <button id="button" style="border:0;">
+                                                        <i style="color:red;" class="fas fa-trash-alt"></i>
+                                                    </button>
+                                                </td>                               
+                                            </tr>
+                                        ';
+                            }
+                            $html.='</table>';
+                        }
+                $html.='</div>';
+        
+        return $html;       
+
+    }
+
+    private function genera_grupo_interdiciplinar($textGrupo,$idbloque,$idcurso)
+    {
         $periodoId = Yii::$app->user->identity->periodo_id;
         $user = Yii::$app->user->identity->usuario;
+        $fechaActual = date('Y-m-d');
+        $hora = date('H:i:s');
 
         $modelGrupoInter = new IsmGrupoPlanInterdiciplinar();
         $modelGrupoInter->id_bloque = $idbloque;
         $modelGrupoInter->id_op_course = $idcurso;
-        $modelGrupoInter->nombre_grupo = "Grupo ".$grupo;
+        $modelGrupoInter->nombre_grupo = $textGrupo;
         $modelGrupoInter->id_periodo =  $periodoId;
         $modelGrupoInter->created_at =  $fechaActual.' '.$hora;
         $modelGrupoInter->created =  $user;
         $modelGrupoInter->save();
-        //pendiente modificar en el modelo el nol null de las fechas de modificacion
 
+        return $modelGrupoInter;
+    }
+    private function genera_grupo_materia_inter($modelGrupoInter,$idAreaMateria)
+    {
+        $user = Yii::$app->user->identity->usuario;
+        $fechaActual = date('Y-m-d');
+        $hora = date('H:i:s');
 
+        $modelGrupoMaterias = new IsmGrupoMateriaPlanInterdiciplinar();
+        $modelGrupoMaterias->id_grupo_plan_inter = $modelGrupoInter->id;
+        $modelGrupoMaterias->id_ism_area_materia = $idAreaMateria['id'];
+        $modelGrupoMaterias->created_at =  $fechaActual.' '. $hora;
+        $modelGrupoMaterias->created = $user;
+        $modelGrupoMaterias->save();
 
+        return $modelGrupoMaterias;
+    }
 
-        $modelMateriaGrupo = new IsmGrupoMateriaPlanInterdiciplinar();
-        $modelMateriaGrupo->
-
-
+    private function obtener_ism_area_materia($idcurso,$idMateria)
+    {
+        // $periodoId = Yii::$app->user->identity->periodo_id;
+        // $user = Yii::$app->user->identity->usuario;
+        // $fechaActual = date('Y-m-d');
+        // $hora = date('H:i:s');
+        $con = Yii::$app->db;
+        $query = "select id,malla_area_id,materia_id 
+                from ism_area_materia iam where id in 
+                (
+                    select  ism_area_materia_id from scholaris_clase 
+                    where paralelo_id in (
+                        select id
+                        from op_course_paralelo where course_id ='$idcurso'
+                    )
+                ) and materia_id = '$idMateria' ;";
         
-        $html = "";
-        $query = "select id,nombre,siglas from ism_materia im 
-                    where id in 
-                    (
-                        select materia_id from ism_area_materia iam where id in 
-                        (
-                            select  ism_area_materia_id from scholaris_clase 
-                            where paralelo_id in (
-                                select id
-                                from op_course_paralelo where course_id =$idCurso
-                            )
-                        )
-                    ) order by nombre ;";        
-        
-        $listaMaterias = $con->createCommand($query)->queryAll();
+        $resp = $con->createCommand($query)->queryOne();   
+       
+        return $resp;
 
     }
     

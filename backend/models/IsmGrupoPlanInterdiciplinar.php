@@ -39,7 +39,7 @@ class IsmGrupoPlanInterdiciplinar extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id_bloque', 'id_op_course', 'nombre_grupo', 'id_periodo', 'created_at', 'created', 'updated_at', 'updated'], 'required'],
+            [['id_bloque', 'id_op_course', 'nombre_grupo', 'id_periodo', 'created_at', 'created'], 'required'],
             [['id_bloque', 'id_op_course', 'id_periodo'], 'default', 'value' => null],
             [['id_bloque', 'id_op_course', 'id_periodo'], 'integer'],
             [['created_at', 'updated_at'], 'safe'],

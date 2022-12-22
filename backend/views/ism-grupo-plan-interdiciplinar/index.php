@@ -20,7 +20,7 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="ism-grupo-plan-interdiciplinar-index">
 
 <div class="m-0 vh-50 row justify-content-center align-items-center">
-        <div class="card shadow col-lg-8 col-md-8">
+        <div class="card shadow col-lg-10 col-md-10">
             <div class=" row align-items-center p-2">
                 <div class="col-lg-2">
                     <h4><img src="../ISM/main/images/submenu/reunion.png" width="100px" class="img-thumbnail"></h4>
@@ -72,16 +72,16 @@ $this->params['breadcrumbs'][] = $this->title;
                     ?>
                 </select> 
             </div> <!-- /.form-group -->
-            <hr>
+            
             <div class="row border">
                 <div class="col border">
-                    <div class="table table-responsive">
+                    <div id="div_tabla_materias" class="table table-responsive">
+                        <h6><b>Materias</b></h6>
                         <table class="table table-hover table-striped">
                             <thead>
                                 <tr>
                                     <th class="text-center">Id</th>
-                                    <th class="text-center">Asginaturas</th>                                
-                                    <th class="text-center">Acciones</th>
+                                    <th class="text-center">Asginaturas</th> 
                                     <th class="text-center">Grupo</th>
                                     <th class="text-center">Accion</th>
                                 </tr>
@@ -93,40 +93,12 @@ $this->params['breadcrumbs'][] = $this->title;
                     </div>
                 </div>
                 <div class="col border">
-                    <div class="table table-responsive">
-                        Grupos Generados
+                    <div id="div_tabla_grupos" class="table table-responsive">                        
+                        
                     </div>
                 </div>
             </div> 
         </div>
-</div>
-
-    <!-- <h1><?= Html::encode($this->title) ?></h1>
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
-
-    <p>
-        <?= Html::a('Create Ism Grupo Plan Interdiciplinar', ['create'], ['class' => 'btn btn-success']) ?>
-    </p> -->
-
-    <!-- <?= GridView::widget([
-        'dataProvider' => $dataProvider,
-        'filterModel' => $searchModel,
-        'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
-
-            'id',
-            'id_bloque',
-            'id_op_course',
-            'nombre_grupo',
-            'id_periodo',
-            //'created_at',
-            //'created',
-            //'updated_at',
-            //'updated',
-
-            ['class' => 'yii\grid\ActionColumn'],
-        ],
-    ]); ?> -->
 </div>
 <!-- SCRIPT PARA SELECT2 -->
 <script>
@@ -139,9 +111,11 @@ $this->params['breadcrumbs'][] = $this->title;
     
     function showAsignaturas() {
         var nivel = $('#nivel').val();
+        var idbloque = $("#bloque").val();
         var url = '<?= Url::to(['obtener-materia']) ?>';
         var params = {
-            curso_id: nivel
+            curso_id: nivel,
+            idbloque:idbloque,
         };
        
         $.ajax({
@@ -150,22 +124,25 @@ $this->params['breadcrumbs'][] = $this->title;
             type: 'POST',
             beforeSend: function () {},
             success: function (response) {
-                $("#table-body").html(response);
-                //console.log(response);
+                $("#div_tabla_materias").html(response);
+                
             }
         });
     }
-    function asignar_grupo(idMateria)
+    function asignar_grupo(idMateria,idNombre)
     {
         var idcurso = $('#nivel').val();
         var idbloque = $("#bloque").val();
-        var grupo = $("#"+idMateria).val();
+        var grupo = $("#"+idNombre).val();
+
+        //alert(idNombre);
        
-        var url = '<?= Url::to(['asignar_grupo']) ?>';
+        var url = '<?= Url::to(['asignar-grupo']) ?>';
         var params = {
             grupo: grupo,
             idbloque:idbloque,
             idcurso: idcurso,
+            idMateria:idMateria,
         };
        
         $.ajax({
@@ -174,7 +151,7 @@ $this->params['breadcrumbs'][] = $this->title;
             type: 'POST',
             beforeSend: function () {},
             success: function (response) {
-                //$("#table-body").html(response);
+                $("#div_tabla_grupos").html(response);
                 //console.log(response);
             }
         });

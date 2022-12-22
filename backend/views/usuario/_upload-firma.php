@@ -31,7 +31,7 @@ use backend\models\ScholarisPeriodo;
 
         <div class="row">
             <div class="col-lg-4 col-md-4">
-                <img src="ISM/firmas/<?= $model->firma ?>" width="200px" class="img-thumbnail">
+                <img src="../ISM/firmas/<?= $model->firma ?>" width="200px" class="img-thumbnail">
             </div>
 
             <div class="col-lg-4 col-md-4"><?= $form->field($model, 'firma')->fileInput() ?></div>

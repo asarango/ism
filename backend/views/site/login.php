@@ -27,7 +27,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
         <div class="card col-lg-5 p-5" style="box-shadow: 20px 20px 20px -20px black">
 
-            <img src="ISM/login/ISM-Color-PNG.png" width="250px" class="">
+            <img src="../ISM/login/ISM-Color-PNG.png" width="250px" class="">
 
 
             <?php $form = ActiveForm::begin(['id' => 'login-form', 'class' => '']); ?>

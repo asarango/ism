@@ -25,7 +25,7 @@ $this->params['breadcrumbs'][] = $this->title;
         <div class="card shadow col-lg-12 col-md-12 col-sm-12">
             <div class=" row align-items-center p-2">
                 <div class="col-lg-1">
-                    <h4><img src="ISM/main/images/submenu/herramientas-para-reparar.png" width="64px" style="" class="img-thumbnail"></h4>
+                    <h4><img src="../ISM/main/images/submenu/herramientas-para-reparar.png" width="64px" style="" class="img-thumbnail"></h4>
                 </div>
                 <div class="col-lg-11">
                     <h4><?= Html::encode($this->title) ?></h4>
@@ -98,6 +98,16 @@ $this->params['breadcrumbs'][] = $this->title;
                                 <i class="fas fa-arrow-circle-right" style="color: white; font-size: 13px" ></i>
                             </span>                        
                         </li>
+
+                        <li class="list-group-item d-flex justify-content-between align-items-start">
+                            <div class="ms-2 me-auto">
+                                <div class="fw-bold">Objetivos del grado/curso</div>
+                            </div>
+                            <span type="button" class="badge bg-primary rounded-pill" onclick="showObjGrados()" >
+                                <i class="fas fa-arrow-circle-right" style="color: white; font-size: 13px" ></i>
+                            </span>                        
+                        </li>
+
                         <li class="list-group-item d-flex justify-content-between align-items-start">
                             <div class="ms-2 me-auto">
                                 <div class="fw-bold">Ejes Transversales</div>
@@ -191,6 +201,27 @@ $this->params['breadcrumbs'][] = $this->title;
         var params = {
             cabecera_id: cabeceraId,
             menu: menu
+        };
+
+        $.ajax({
+            data: params,
+            url: url,
+            type: 'GET',
+            beforeSend: function () {},
+            success: function (response) {
+                $("#div-formulario").html(response);
+            }
+        });
+
+    }
+    
+//Para Objetivos de grado / curso
+    function showObjGrados() {
+//        alert(menu);
+        var cabeceraId = <?= $cabecera->id ?>;
+        var url = '<?= Url::to(['ajax-objetivos-grado']) ?>';
+        var params = {
+            cabecera_id: cabeceraId
         };
 
         $.ajax({

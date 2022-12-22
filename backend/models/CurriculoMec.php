@@ -21,6 +21,7 @@ use Yii;
  *
  * @property CurriculoMecAsignatutas $asignatura
  * @property CurriculoMecNiveles $subnivel
+ * @property PlanificacionDesagregacionCriteriosDestreza[] $planificacionDesagregacionCriteriosDestrezas
  * @property PlanificacionDesagregacionCriteriosEvaluacion[] $planificacionDesagregacionCriteriosEvaluacions
  */
 class CurriculoMec extends \yii\db\ActiveRecord
@@ -85,6 +86,14 @@ class CurriculoMec extends \yii\db\ActiveRecord
     public function getSubnivel()
     {
         return $this->hasOne(CurriculoMecNiveles::className(), ['id' => 'subnivel_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getPlanificacionDesagregacionCriteriosDestrezas()
+    {
+        return $this->hasMany(PlanificacionDesagregacionCriteriosDestreza::className(), ['curriculo_destreza_id' => 'id']);
     }
 
     /**

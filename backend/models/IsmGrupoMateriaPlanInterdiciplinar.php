@@ -34,7 +34,7 @@ class IsmGrupoMateriaPlanInterdiciplinar extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id_grupo_plan_inter', 'id_ism_area_materia', 'created_at', 'created', 'updated_at', 'updated'], 'required'],
+            [['id_grupo_plan_inter', 'id_ism_area_materia', 'created_at', 'created'], 'required'],
             [['id_grupo_plan_inter', 'id_ism_area_materia'], 'default', 'value' => null],
             [['id_grupo_plan_inter', 'id_ism_area_materia'], 'integer'],
             [['created_at', 'updated_at'], 'safe'],

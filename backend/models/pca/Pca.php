@@ -42,6 +42,7 @@ class Pca extends ActiveRecord {
         $this->datos_informativos();
         $this->tiempo();
         $this->objetivos_generales();
+        $this->objetivos_grado();
         $this->ejes_transversale();
         $this->unidades_microcurriculares();
         $this->observaciones();
@@ -127,9 +128,33 @@ class Pca extends ActiveRecord {
         $this->html .= '<hr>';
     }
 
+    private function objetivos_grado() {
+
+        $pca = PcaDetalle::find()->where([
+                    'desagregacion_cabecera_id' => $this->cabeceraId,
+                    'tipo' => 'objgrado'
+                ])->all();
+
+        $this->html .= '<div class="row">';
+        $this->html .= '<strong><u class="text-color-s">4. OBJETIVOS DE GRADO/CURSO</u></strong>';
+        $this->html .= '</div>';
+        $this->html .= '<br>';
+
+        foreach ($pca as $objetivos) {
+            if($this->cabecera->estado == 'APROBADO' || $this->cabecera->estado == 'EN_COORDINACION' ){
+                $this->html .= '<li style="color:black"><strong>' . $objetivos->codigo . '</strong> ' . $objetivos->contenido . '</li>';
+            }else{
+                $this->html .= '<p style="color:black"><a href="#" onclick="ajaxDeletePca(' . $objetivos->id . ')"><i class="fas fa-trash" style="color:#ab0a3d" ></i></a><strong>' . $objetivos->codigo . '</strong>' . $objetivos->contenido . '</p>';
+            }
+            
+        }
+
+        $this->html .= '<hr>';
+    }
+
     private function ejes_transversale() {
         $this->html .= '<div class="row">';
-        $this->html .= '<strong><u class="text-color-s">4. EJES TRANSVERSALES</u></strong>';
+        $this->html .= '<strong><u class="text-color-s">5. EJES TRANSVERSALES</u></strong>';
         $this->html .= '<div class="col-lg-12 col-md-12" style="margin-left:10px;color:black" >';
         $this->html .= '<u>';
         $this->html .= '<li>Justicia</li>';
@@ -150,7 +175,7 @@ class Pca extends ActiveRecord {
                 ->all();
 
         $this->html .= '<div class="row">';
-        $this->html .= '<strong><u class="text-color-s">5. UNIDADES MICROCURRICULARES</u></strong>';
+        $this->html .= '<strong><u class="text-color-s">6. UNIDADES MICROCURRICULARES</u></strong>';
         $this->html .= '<div class="col-lg-12 col-md-12">';
         $this->html .= '<table class="table table-hover table-striped table-bordered">';
         $this->html .= '<thead>';
@@ -195,7 +220,7 @@ class Pca extends ActiveRecord {
 
     private function observaciones() {
         $this->html .= '<div class="row">';
-        $this->html .= '<strong><u class="text-color-s">6. OBSERVACIONES</u></strong>';
+        $this->html .= '<strong><u class="text-color-s">7. OBSERVACIONES</u></strong>';
         $this->html .= '<div class="col-lg-12 col-md-12" style="color:black">';
 
         foreach ($this->pcaDetalle as $observacion) {
@@ -215,7 +240,7 @@ class Pca extends ActiveRecord {
 
     private function bibliografia() {
         $this->html .= '<div class="row">';
-        $this->html .= '<strong><u class="text-color-s">7. BIBLIOGRAFÍA</u></strong>';
+        $this->html .= '<strong><u class="text-color-s">8. BIBLIOGRAFÍA</u></strong>';
         $this->html .= '<div class="col-lg-12 col-md-12" style="color:black">';
 
         foreach ($this->pcaDetalle as $bibliografia) {

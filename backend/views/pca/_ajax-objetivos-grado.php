@@ -9,7 +9,7 @@ use yii\grid\GridView;
 </div>
 
 <!-- inicio de modal -->
-<p>    
+<p>
     <!-- Button trigger modal -->
     <a href="" type="" class="" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
         <i class="fas fa-plus-square" style="color: green;"> Nuevo objetivo</i>
@@ -33,11 +33,11 @@ use yii\grid\GridView;
                     <label class="form-label" for="codigo">Descripción:</label>
                     <textarea name="descripcion" id="descripcion" class="form-control" require></textarea>
                 </div>
-                
+
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                <button type="button" class="btn btn-primary" onclick="addObjective()">Grabar</button>
+                <button type="button" class="btn btn-primary" onclick="addObjective()" data-bs-dismiss="modal">Grabar</button>
             </div>
         </div>
     </div>
@@ -50,29 +50,74 @@ use yii\grid\GridView;
     <table class="table table-hover table-condensed">
         <thead>
             <tr>
-                <td>OBJETIVO</td>            
+                <td>OBJETIVO</td>
             </tr>
         </thead>
 
         <tbody>
             <?php
-                foreach($detalle as $det){
-                    ?>
-                    <tr>
-                        <td><?= $det['code'].' '.$det['description'] ?></td>
-                    </tr>
-                    <?php
-                }
+            foreach ($detalle as $det) {
+            ?>
+                <tr>
+                    <td>
+                        <a href="#" onclick="addPcaDetail('<?= $det['code'] ?>')">
+                            <b><?= $det['code'] . '</b> ' . $det['description'] ?>
+                        </a>
+                        
+                    </td>
+                </tr>
+            <?php
+            }
             ?>
         </tbody>
     </table>
 </div>
 
 <script>
-    function addObjective(){
-        let codigo      = $('#codigo').val();
+    function addObjective() {
+        let codigo = $('#codigo').val();
         let descripcion = $('#descripcion').val();
-        alert(codigo);
-        alert(descripcion);
+        let cabeceraId = '<?= $cabeceraId ?>';
+        
+        let url = '<?= yii\helpers\Url::to(['ajax-add-objective-grado']) ?>';
+
+        var params = {
+            codigo      : codigo,
+            descripcion : descripcion,
+            cabeceraId  : cabeceraId
+        };
+
+        $.ajax({
+            data: params,
+            url: url,
+            type: 'POST',
+            beforeSend: function() {},
+            success: function() {
+                showObjGrados();                
+            }
+        });
     }
+
+    function addPcaDetail(code) {        
+        let cabeceraId = '<?= $cabeceraId ?>';
+        
+        let url = '<?= yii\helpers\Url::to(['ajax-add-detail']) ?>';
+
+        var params = {
+            code      : code,            
+            cabecera_id  : cabeceraId
+        };
+
+        $.ajax({
+            data: params,
+            url: url,
+            type: 'POST',
+            beforeSend: function() {},
+            success: function() {
+                showObjGrados();     
+                showReporte();           
+            }
+        });
+    }
+    
 </script>

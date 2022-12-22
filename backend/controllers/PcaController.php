@@ -22,12 +22,14 @@ use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
 use yii\helpers\Html;
 
-class PcaController extends Controller {
+class PcaController extends Controller
+{
 
     /**
      * {@inheritdoc}
      */
-    public function behaviors() {
+    public function behaviors()
+    {
         return [
             'access' => [
                 'class' => AccessControl::className(),
@@ -47,7 +49,8 @@ class PcaController extends Controller {
         ];
     }
 
-    public function beforeAction($action) {
+    public function beforeAction($action)
+    {
         if (!parent::beforeAction($action)) {
             return false;
         }
@@ -71,31 +74,34 @@ class PcaController extends Controller {
         return true;
     }
 
-    public function actionIndex1() {
+    public function actionIndex1()
+    {
         $cabeceraId = $_GET['cabecera_id'];
         $cabecera = PlanificacionDesagregacionCabecera::findOne($cabeceraId);
         $pca = PcaDetalle::find()->where([
-                    'desagregacion_cabecera_id' => $cabeceraId
-                ])
-                ->orderBy('tipo')
-                ->all();
+            'desagregacion_cabecera_id' => $cabeceraId
+        ])
+            ->orderBy('tipo')
+            ->all();
 
         return $this->render('index1', [
-                    'cabecera' => $cabecera,
-                    'pca' => $pca
+            'cabecera' => $cabecera,
+            'pca' => $pca
         ]);
     }
 
-    
-    public function actionAjaxPcaReporte() {
+
+    public function actionAjaxPcaReporte()
+    {
         $cabeceraId = $_GET['cabecera_id'];
-     
+
         $pcaReporte = new Pca($cabeceraId);
 
         return $pcaReporte->html;
     }
 
-    public function actionAjaxPcaFormulario() {
+    public function actionAjaxPcaFormulario()
+    {
         $cabeceraId = $_GET['cabecera_id'];
         $formulario = $_GET['menu'];
 
@@ -105,7 +111,7 @@ class PcaController extends Controller {
 
         if ($formulario == 'objetivos_generales') {
             $formAjax = new FormObjetivosGenerales($cabeceraId);
-        }        
+        }
         if ($formulario == 'ejes_transversales') {
             $formAjax = new FormEjesTransversales($cabeceraId);
         }
@@ -122,16 +128,19 @@ class PcaController extends Controller {
         return $formAjax->html;
     }
 
-    public function actionAjaxObjetivosGrado(){
+    public function actionAjaxObjetivosGrado()
+    {
         $cabeceraId = $_GET['cabecera_id'];
         $detalle = $this->get_objetos_grado($cabeceraId);
 
-        return $this->renderPartial('_ajax-objetivos-grado',[
-            'detalle' => $detalle
+        return $this->renderPartial('_ajax-objetivos-grado', [
+            'detalle' => $detalle,
+            'cabeceraId' => $cabeceraId
         ]);
     }
 
-    private function get_objetos_grado($cabeceraId){
+    private function get_objetos_grado($cabeceraId)
+    {
         $con = Yii::$app->db;
         $query = "select 	mec.code, mec.description  
                     from 	curriculo_mec mec
@@ -144,7 +153,68 @@ class PcaController extends Controller {
     }
 
 
-    public function actionSaveForm() {
+    public function actionAjaxAddObjectiveGrado()
+    {
+        $codigo         = $_POST['codigo'];
+        $descripcion    = $_POST['descripcion'];
+        $cabeceraId     = $_POST['cabeceraId'];
+
+        $objectGrado = CurriculoMec::find()->where([
+            'code' => $codigo,
+            'reference_type' => 'objgrado'
+        ])->one();
+
+        if (!$objectGrado) {
+            $model = new CurriculoMec();
+            $model->asignatura_id   = 4;
+            $model->subnivel_id     = 4;
+            $model->reference_type  = 'objgrado';
+            $model->code            = $codigo;
+            $model->description     = $descripcion;
+            $model->save();
+        }
+
+        $pcaDetalle = PcaDetalle::find()
+            ->where([
+                'desagregacion_cabecera_id' => $cabeceraId,
+                'codigo' => $codigo,
+                'tipo'  => 'objgrado'
+            ])->one();
+
+        if (!$pcaDetalle) {
+            echo 'grabar';
+            $modelDetail = new PcaDetalle();
+            $modelDetail->desagregacion_cabecera_id = $cabeceraId;
+            $modelDetail->tipo      = 'objgrado';
+            $modelDetail->codigo    = $codigo;
+            $modelDetail->contenido = $descripcion;
+            $modelDetail->estado    = true;
+            $modelDetail->save();
+        }
+    }
+
+    public function actionAjaxAddDetail()
+    {
+        $cabeceraId = $_POST['cabecera_id'];
+        $code = $_POST['code'];
+
+        $modelCurriculo = CurriculoMec::find()->where([
+            'reference_type' => 'objgrado',
+            'code' => $code
+        ])->one();
+
+        $model = new PcaDetalle();
+        $model->desagregacion_cabecera_id = $cabeceraId;
+        $model->tipo      = 'objgrado';
+        $model->codigo    = $code;
+        $model->contenido = $modelCurriculo->description;
+        $model->estado    = true;
+        $model->save();
+    }
+
+
+    public function actionSaveForm()
+    {
         $cabeceraId = $_POST['cabecera_id'];
         $tipo = $_POST['tipo'];
         $contenido = $_POST['contenido'];
@@ -154,20 +224,19 @@ class PcaController extends Controller {
             $planCabecera = PlanificacionDesagregacionCabecera::findOne($cabeceraId);
             $planCabecera->$codigo = $contenido;
             $planCabecera->save();
-                
+
             $operacion = PlanificacionDesagregacionCabecera::findOne($cabeceraId);
 
             isset($operacion->semanas_trabajo) ? $semanTrabajo = $operacion->semanas_trabajo : $semanTrabajo = 0;
             isset($operacion->evaluacion_aprend_imprevistos) ? $imprevistos = $operacion->evaluacion_aprend_imprevistos : $imprevistos = 0;
 
-            $totalSemanasClase  = $semanTrabajo-$imprevistos;
+            $totalSemanasClase  = $semanTrabajo - $imprevistos;
             $totalPeriodos      = $totalSemanasClase * $operacion->carga_horaria_semanal;
-                        
+
             $operacion->total_semanas_clase = $totalSemanasClase;
             $operacion->total_periodos      = $totalPeriodos;
-            $operacion->save();            
-
-        }else{
+            $operacion->save();
+        } else {
             $pca = new PcaDetalle();
             $pca->desagregacion_cabecera_id = $cabeceraId;
             $pca->tipo                      = $tipo;
@@ -178,16 +247,17 @@ class PcaController extends Controller {
         }
     }
 
-    public function actionDeletePca(){
+    public function actionDeletePca()
+    {
         $id = $_GET['id'];
         $model = PcaDetalle::findOne($id);
         $model->delete();
     }
 
-    public function actionPcaMateria(){
+    public function actionPcaMateria()
+    {
         $cabeceraId = $_GET['cabecera_id'];
 
-        $pca = new PcaPdf( $cabeceraId );
+        $pca = new PcaPdf($cabeceraId);
     }
-
 }

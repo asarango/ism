@@ -301,6 +301,7 @@ $this->params['breadcrumbs'][] = $this->title;
             beforeSend: function () {},
             success: function () {
                 showReporte();
+                showObjGrados();
                 alert ('¡Se ha eliminado objeto seleccionado!');
             }
         });

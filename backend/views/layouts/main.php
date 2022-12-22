@@ -54,11 +54,11 @@ if (!Yii::$app->user->isGuest) {
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/themes/default/style.min.css" />-->
 
     <!--Librerias css propias -->
-    <link rel="stylesheet" href="ISM/main/hamburger/style.css">
-    <link rel="stylesheet" href="ISM/main/menuvertical/style.css">
-    <link rel="stylesheet" href="css/ismStyles.css" />
-    <link rel="stylesheet" href="css/coloresPersonalizados.css" />
-    <script src="ISM/main/signature/signature_pad.js"></script>
+    <link rel="stylesheet" href="../ISM/main/hamburger/style.css">
+    <link rel="stylesheet" href="../ISM/main/menuvertical/style.css">
+    <link rel="stylesheet" href="../css/ismStyles.css" />
+    <link rel="stylesheet" href="../css/coloresPersonalizados.css" />
+    <script src="../ISM/main/signature/signature_pad.js"></script>
     <?= Html::csrfMetaTags() ?>
     <title><?= Html::encode($this->title) ?></title>
     <?php // $this->head()  

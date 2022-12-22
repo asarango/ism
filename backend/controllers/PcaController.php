@@ -2,11 +2,14 @@
 
 namespace backend\controllers;
 
+use backend\models\CurriculoMec;
+use backend\models\CurriculoMecSearch;
 use backend\models\pca\FormBibliografia;
 use backend\models\pca\FormObservaciones;
 use backend\models\pca\FormUnidadesMicrocurriculares;
 use backend\models\pca\FormEjesTransversales;
 use backend\models\pca\FormObjetivosGenerales;
+use backend\models\pca\FormObjetivosGrado;
 use backend\models\pca\FormTiempo;
 use backend\models\PcaDetalle;
 use backend\models\PlanificacionDesagregacionCabecera;
@@ -102,8 +105,7 @@ class PcaController extends Controller {
 
         if ($formulario == 'objetivos_generales') {
             $formAjax = new FormObjetivosGenerales($cabeceraId);
-        }
-        
+        }        
         if ($formulario == 'ejes_transversales') {
             $formAjax = new FormEjesTransversales($cabeceraId);
         }
@@ -119,6 +121,28 @@ class PcaController extends Controller {
 
         return $formAjax->html;
     }
+
+    public function actionAjaxObjetivosGrado(){
+        $cabeceraId = $_GET['cabecera_id'];
+        $detalle = $this->get_objetos_grado($cabeceraId);
+
+        return $this->renderPartial('_ajax-objetivos-grado',[
+            'detalle' => $detalle
+        ]);
+    }
+
+    private function get_objetos_grado($cabeceraId){
+        $con = Yii::$app->db;
+        $query = "select 	mec.code, mec.description  
+                    from 	curriculo_mec mec
+                    where	mec.code not in (select codigo from pca_detalle 
+                                             where desagregacion_cabecera_id = $cabeceraId 
+                                                    and codigo = mec.code)
+                            and mec.reference_type = 'objgrado';";
+        $res = $con->createCommand($query)->queryAll();
+        return $res;
+    }
+
 
     public function actionSaveForm() {
         $cabeceraId = $_POST['cabecera_id'];

@@ -324,7 +324,16 @@ class PcaPdf extends \yii\db\ActiveRecord{
         
         $html .= '</td>';
 
-        $html .= '<td class="border">No existe proceso de objetivos especificos</td>';  
+        // para objetivos de grado
+        $html .= '<td class="border">';
+        foreach($this->modelPcaDetalle as $detalle){
+            if($detalle->tipo == 'objgrado'){
+                $html.= '<b>'.$detalle->codigo.'</b><br>';
+                $html.= $detalle->contenido.'<br>';
+            }
+        }
+        $html .= '</td>';  
+        // fin de objetivos de grado
         
         $html .= '</tr>';
                     

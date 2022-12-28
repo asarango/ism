@@ -364,4 +364,12 @@ class PlanificacionBloquesUnidadController extends Controller{
         return $this->redirect(['index1', 'id' =>  $modelPlanBloqUnidad->plan_cabecera_id]);
     }
 
+
+
+    public function actionPudNacional(){
+        $planificacionBloquesUnidadId = $_GET['plan_bloque_unidad_id'];
+
+        return $this->redirect(['pud-nacional-diploma/index1', 'plan_bloque_unidad_id' => $planificacionBloquesUnidadId]);
+    }
+
 }

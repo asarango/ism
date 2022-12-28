@@ -209,7 +209,11 @@ function pud_dip_porcentaje_avance($planVertDiplId, $planBloqueUniId)
                                                 ['style' => $style]
                                             );
                                         }else{
-                                            echo 'No es BI, revisar punto 3';
+                                            echo Html::a(
+                                                '<i class="fas fa-fighter-jet"></i>',
+                                                ['pud-nacional', 'plan_bloque_unidad_id' => $unidad->id],
+                                                ['style' => 'color: #0a1f8f', 'title' => 'Pud Nacional']
+                                            );
                                         }
                                         ?>
                                     </td>

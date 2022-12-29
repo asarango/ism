@@ -4,6 +4,7 @@ namespace backend\controllers;
 
 use backend\models\IsmGrupoMateriaPlanInterdiciplinar;
 use Yii;
+use yii\filters\AccessControl;
 use backend\models\IsmGrupoPlanInterdiciplinar;
 use backend\models\IsmGrupoPlanInterdiciplinarSearch;
 use backend\models\OpCourse;
@@ -13,6 +14,7 @@ use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\helpers\Html;
 
+
 /**
  * IsmGrupoPlanInterdiciplinarController implements the CRUD actions for IsmGrupoPlanInterdiciplinar model.
  */
@@ -20,10 +22,19 @@ class IsmGrupoPlanInterdiciplinarController extends Controller
 {
     /**
      * {@inheritdoc}
-     */
+     */ 
     public function behaviors()
     {
         return [
+            'access' => [
+                'class' => AccessControl::className(),
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'roles' => ['@'],
+                    ],
+                ],
+            ],
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
@@ -32,6 +43,31 @@ class IsmGrupoPlanInterdiciplinarController extends Controller
             ],
         ];
     }
+
+    // public function beforeAction($action)
+    // {
+    //     if (!parent::beforeAction($action)) {
+    //         return false;
+    //     }
+
+    //     if (Yii::$app->user->identity) {
+
+    //         //OBTENGO LA OPERACION ACTUAL
+    //         list($controlador, $action) = explode("/", Yii::$app->controller->route);
+    //         $operacion_actual = $controlador . "-" . $action;
+    //         //SI NO TIENE PERMISO EL USUARIO CON LA OPERACION ACTUAL
+    //         if (!Yii::$app->user->identity->tienePermiso($operacion_actual)) {
+    //             echo $this->render('/site/error', [
+    //                 'message' => "Acceso denegado. No puede ingresar a este sitio !!!",
+    //                 'name' => 'Acceso denegado!!',
+    //             ]);
+    //         }
+    //     } else {
+    //         header("Location:" . \yii\helpers\Url::to(['site/login']));
+    //         exit();
+    //     }
+    //     return true;
+    // }
 
     /**
      * Lists all IsmGrupoPlanInterdiciplinar models.
@@ -192,7 +228,7 @@ class IsmGrupoPlanInterdiciplinarController extends Controller
     public function html_materias_por_curso($listaMaterias)
     {
         $html = "";
-            //generamos la tabla para presentar en pantalla
+            //generamos la tabla para presentar en pantalla, las materias por curso
             $html.='<h6><b>Materias:'.count($listaMaterias).'</b></h6>';
             //$html.='<hr>';
             $html.='<table class="table table-striped ">
@@ -260,11 +296,53 @@ class IsmGrupoPlanInterdiciplinarController extends Controller
         
 
         $resp = $this->html_grupos_materias($idbloque,$idcurso);
-        echo '<pre>';
-        print_r($resp );
-        die();
+       
         return $resp ;
 
+    }
+                    
+    public function actionMateriasAgrupadas()
+    {
+        
+        $idbloque = $_POST['idbloque'];
+        $idcurso = $_POST['idcurso'];
+
+        $resp = $this->html_grupos_materias($idbloque,$idcurso); 
+        return  $resp;
+    }
+    public function actionEliminarGrupoMateria()
+    {
+        
+        $idbloque = $_POST['idbloque'];
+        $idcurso = $_POST['idcurso'];
+        $idGrupo = $_POST['idGrupo'];
+
+          //llamamos al grupo
+          $modelGrupoInter = IsmGrupoPlanInterdiciplinar::find()
+          ->where(['id_bloque'=>$idbloque,'id_op_course'=>$idcurso,'id'=>$idGrupo])
+          ->one();
+          
+          //1.-Eliminamos las materias asociadas al grupo
+        if( $modelGrupoInter)
+        {
+            $modelGrupoMateria = IsmGrupoMateriaPlanInterdiciplinar::find()
+            ->where(['id_grupo_plan_inter'=>$modelGrupoInter->id])
+            ->all();
+            foreach($modelGrupoMateria as $materias){
+                $materias->delete();
+            }
+            $modelGrupoInter->delete();
+        }       
+     
+    }
+    public function actionEliminarMateria()
+    {
+        
+        $idMateria = $_POST['idMateria'];
+        //llamamos al modelo de la materia
+        $modelMateriaGrupo  = IsmGrupoMateriaPlanInterdiciplinar::findOne($idMateria);
+        $modelMateriaGrupo->delete();
+     
     }
     public function html_grupos_materias($idbloque,$idcurso)
     {
@@ -278,15 +356,21 @@ class IsmGrupoPlanInterdiciplinarController extends Controller
         $html = "";
         $html.='<h6><b>Grupos Generados</b></h6>
                     
-                        <div class="col-sm-6 mx-auto">'; 
+                        <div class="col-sm-10 mx-auto">'; 
                         foreach($modelGrupoInter as $grupo)
                         {   
-                            $html.='<h6><b>'.$grupo->nombre_grupo.' - '.$modelCurso->name.'</b></h6>
-                                    <table class="table table-striped">
+                            $html.='<h6 style="background-color: while;color:brown"><b>'.$grupo->nombre_grupo.' - '.$modelCurso->name.'</b>';
+                         
+                            $html.='<button id="button" style="border:0;" onclick=eliminar_grupo('.$grupo->id.');>
+                                        <i style="color:blue;" class="fas fa-trash-alt" ></i>
+                                    </button>';
+                            $html.='
+                                    <table class="table table-striped table-bordered">
                                         <tr>
                                             <th>Materia</th>
                                             <th>Acción</th>
                                         </tr>';
+                            $html.='</h6>';
                             //extraer las materias asociadas a los grupos
                             $modelGrupoMaterias = IsmGrupoMateriaPlanInterdiciplinar::find()
                             ->where(['id_grupo_plan_inter'=>$grupo->id])
@@ -297,7 +381,7 @@ class IsmGrupoPlanInterdiciplinarController extends Controller
                                             <tr>
                                                 <td>* '.$materia->ismAreaMateria->materia->nombre.'</td>  
                                                 <td>
-                                                    <button id="button" style="border:0;">
+                                                    <button id="button" style="border:0;" onclick=eliminar_materia('.$materia->id.')>
                                                         <i style="color:red;" class="fas fa-trash-alt"></i>
                                                     </button>
                                                 </td>                               

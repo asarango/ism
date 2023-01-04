@@ -7,6 +7,7 @@ $pudPep;-->
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\helpers\ArrayHelper;
+use yii\widgets\ActiveForm;
 
 /* @var $this yii\web\View */
 /* @var $searchModel backend\models\PlanificacionDesagregacionCabeceraSearch */
@@ -24,6 +25,7 @@ $this->params['breadcrumbs'][] = $this->title;
 <!--Scripts para que funcionen AJAX'S-->
 <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>-->
 <script src="https://cdn.ckeditor.com/4.17.1/standard/ckeditor.js"></script>
+<!-- <script src="https://cdn.ckeditor.com/4.17.1/basic/ckeditor.js"></script> -->
 
 
 <div class="pud-pep-index">
@@ -87,40 +89,108 @@ $this->params['breadcrumbs'][] = $this->title;
 
             <!-- inicia cuerpo de card -->
 
-            <div class="accordion" id="accordionExample">
+            <div class="accordion" id="accordionExample" style="margin-top: 10px; margin-bottom: 10px;">
                 <div class="accordion-item">
                     <h2 class="accordion-header" id="headingOne">
-                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                            Accordion Item #1
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse" 
+                                data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne" 
+                                style="background-color: #e7f1ff;">
+                            Objetivos específicos de la unidad
                         </button>
                     </h2>
                     <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
                         <div class="accordion-body">
-                            <strong>This is the first item's accordion body.</strong> It is shown by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
+                            <?php
+                            foreach ($objetivos as $obj) {
+                            ?>
+                                <p>
+                                    <strong><?= $obj->codigo ?></strong> <?= $obj->contenido ?>
+                                </p>
+                            <?php
+                            }
+                            ?>
                         </div>
                     </div>
                 </div>
+
                 <div class="accordion-item">
                     <h2 class="accordion-header" id="headingTwo">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                            Accordion Item #2
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                                data-bs-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo" 
+                                style="background-color: #e7f1ff;">
+                            ¿Qué va a aprender?<br>
+                            Destrezas con criterios de desempeño
                         </button>
                     </h2>
                     <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
                         <div class="accordion-body">
-                            <strong>This is the second item's accordion body.</strong> It is hidden by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
+                            <?php
+                            foreach ($criterios as $cri) {
+                            ?>
+                                <strong><?= $cri->criterioEvaluacion->code ?></strong> <?= $cri->criterioEvaluacion->description ?>
+                            <?php
+                            }
+
+                            ?>
                         </div>
                     </div>
                 </div>
+
+                <!-- inicio de actividades de aprendizaje -->
+                <?= Html::beginForm(['add-activities'], 'post', ['enctype' => 'multipart/form-data']) ?>
                 <div class="accordion-item">
                     <h2 class="accordion-header" id="headingThree">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                            Accordion Item #3
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                                data-bs-target="#collapseThree" aria-expanded="false" 
+                                aria-controls="collapseThree"
+                                style="background-color: #e7f1ff;">
+                            ¿Cómo va a aprender?<br>
+                            Actividades de aprendizaje
                         </button>
                     </h2>
                     <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
                         <div class="accordion-body">
-                            <strong>This is the third item's accordion body.</strong> It is hidden by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
+
+                            <input type="hidden" name="id" value="<?= $planUnidad->id ?>">
+
+                            <textarea name="actividades" id="editor">
+                                    <?= $planUnidad->actividades_aprendizaje ?>
+                                </textarea>
+
+                            <div class="form-group">
+                                <?= Html::submitButton('GUARDAR', ['class' => 'btn btn-success']) ?>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+
+                <?= Html::endForm() ?>
+                <!-- fin de actividades de aprendizaje -->
+
+
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingThree">
+                        <button class="accordion-button collapsed" 
+                                type="button" data-bs-toggle="collapse" 
+                                data-bs-target="#collapseFour" 
+                                aria-expanded="false" aria-controls="collapseThree"
+                                style="background-color: #e7f1ff;">
+                            ¿Qué y cómo evaluar?<br>
+                            Indicadores de evaluación de la unidad
+                        </button>
+                    </h2>
+                    <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
+                        <div class="accordion-body">
+                            <?php
+                                foreach($indicators as $ind){
+                                    ?>
+                                        <strong><?= $ind['code'] ?></strong> <?= $ind['description'] ?>
+                                    <?php
+                                }
+
+                            ?>                            
                         </div>
                     </div>
                 </div>
@@ -129,3 +199,10 @@ $this->params['breadcrumbs'][] = $this->title;
             <!-- fin cuerpo de card -->
         </div>
     </div>
+
+
+    <script>
+        var actividad = CKEDITOR.replace('editor', {
+            customConfig: '/ckeditor_settings/config.js',
+        });
+    </script>

@@ -17,6 +17,7 @@ use Yii;
  * @property bool $is_open
  * @property bool $pud_status
  * @property int $avance_porcentaje
+ * @property string $actividades_aprendizaje
  *
  * @property CurriculoMecBloque $curriculoBloque
  * @property PlanificacionDesagregacionCabecera $planCabecera
@@ -25,6 +26,10 @@ use Yii;
  * @property PlanificacionVerticalDiploma[] $planificacionVerticalDiplomas
  * @property PlanificacionVerticalPaiDescriptores[] $planificacionVerticalPaiDescriptores
  * @property PlanificacionVerticalPaiOpciones[] $planificacionVerticalPaiOpciones
+ * @property PudAprobacionBitacora[] $pudAprobacionBitacoras
+ * @property PudDip[] $pudDips
+ * @property PudDipEvaluaciones[] $pudDipEvaluaciones
+ * @property PudDipProcesoAprendizaje[] $pudDipProcesoAprendizajes
  * @property PudPai[] $pudPais
  * @property PudPaiServicioAccion[] $pudPaiServicioAccions
  * @property PudPep[] $pudPeps
@@ -48,7 +53,7 @@ class PlanificacionBloquesUnidad extends \yii\db\ActiveRecord
             [['curriculo_bloque_id', 'plan_cabecera_id', 'unit_title', 'settings_status'], 'required'],
             [['curriculo_bloque_id', 'plan_cabecera_id', 'avance_porcentaje'], 'default', 'value' => null],
             [['curriculo_bloque_id', 'plan_cabecera_id', 'avance_porcentaje'], 'integer'],
-            [['enunciado_indagacion', 'contenidos'], 'string'],
+            [['enunciado_indagacion', 'contenidos', 'actividades_aprendizaje'], 'string'],
             [['is_open', 'pud_status'], 'boolean'],
             [['unit_title'], 'string', 'max' => 150],
             [['settings_status'], 'string', 'max' => 30],
@@ -73,6 +78,7 @@ class PlanificacionBloquesUnidad extends \yii\db\ActiveRecord
             'is_open' => 'Is Open',
             'pud_status' => 'Pud Status',
             'avance_porcentaje' => 'Avance Porcentaje',
+            'actividades_aprendizaje' => 'Actividades Aprendizaje',
         ];
     }
 
@@ -130,6 +136,38 @@ class PlanificacionBloquesUnidad extends \yii\db\ActiveRecord
     public function getPlanificacionVerticalPaiOpciones()
     {
         return $this->hasMany(PlanificacionVerticalPaiOpciones::className(), ['plan_unidad_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getPudAprobacionBitacoras()
+    {
+        return $this->hasMany(PudAprobacionBitacora::className(), ['unidad_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getPudDips()
+    {
+        return $this->hasMany(PudDip::className(), ['planificacion_bloques_unidad_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getPudDipEvaluaciones()
+    {
+        return $this->hasMany(PudDipEvaluaciones::className(), ['plan_unidad_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getPudDipProcesoAprendizajes()
+    {
+        return $this->hasMany(PudDipProcesoAprendizaje::className(), ['plan_unidad_id' => 'id']);
     }
 
     /**

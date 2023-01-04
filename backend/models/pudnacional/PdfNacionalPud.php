@@ -1,6 +1,6 @@
 <?php
 
-namespace backend\models\pca;
+namespace backend\models\pudnacional;
 
 use Yii;
 use yii\web\Controller;
@@ -18,28 +18,30 @@ use backend\models\PlanificacionDesagregacionCabecera;
 use backend\models\pca\Pca;
 use backend\models\PlanificacionBloquesUnidad;
 use backend\models\PlanificacionDesagregacionCriteriosEvaluacion;
-use backend\models\ScholarisClase;
 use backend\models\ScholarisPeriodo;
 
-class PcaPdf extends \yii\db\ActiveRecord{
+class PdfNacionalPud extends \yii\db\ActiveRecord{
 
-    private $pcaId;
-    private $modelPca;
-    private $modelPcaDetalle;
+    private $planUnidadId;
+    private $modelPud;
+    private $modelPcaId;
+    // private $modelPcaDetalle;
     private $opCourseTemplateId;
     public $html;
 
     private $modelInstitute;
     private $modelPeriodo;
 
-    public function __construct($pcaId){
+    public function __construct($planUnidadId){
         $this->modelInstitute = OpInstitute::findOne(Yii::$app->user->identity->instituto_defecto);
         $this->modelPeriodo = ScholarisPeriodo::findOne(Yii::$app->user->identity->periodo_id);
-        $this->pcaId = $pcaId;
+        $this->planUnidadId = $planUnidadId;
         $this->html = '';       
-        $this->modelPca = PlanificacionDesagregacionCabecera::findOne($this->pcaId);
-        $this->opCourseTemplateId = $this->modelPca->ismAreaMateria->mallaArea->periodoMalla->malla->op_course_template_id;
-        $this->modelPcaDetalle = PcaDetalle::find()->where(['desagregacion_cabecera_id' => $pcaId])->all();
+        $this->modelPud = PlanificacionBloquesUnidad::findOne($this->planUnidadId);
+        $this->opCourseTemplateId = $this->modelPud->planCabecera->ismAreaMateria->mallaArea->periodoMalla->malla->op_course_template_id;
+
+        // $this->modelPcaDetalle = PcaDetalle::find()->where(['desagregacion_cabecera_id' => $pcaId])->all();
+        $this->modelPcaId = $this->modelPud->plan_cabecera_id;
 
         $this->genera_pfd();       
     }
@@ -48,7 +50,7 @@ class PcaPdf extends \yii\db\ActiveRecord{
 
         $mpdf = new mPDF([
             'mode' => 'utf-8',
-            'format' => 'A4-L',
+            'format' => 'A4-P',
             'margin_left' => 10,
             'margin_right' => 10,
             'margin_top' => 10,
@@ -62,14 +64,14 @@ class PcaPdf extends \yii\db\ActiveRecord{
         // $pie = '<h4>Genera Pie</h4>';
 
         $mpdf->SetHtmlHeader($cabecera);
-        $mpdf->showImageErrors = true;
+        // $mpdf->showImageErrors = true;
 
         $html = $this->cuerpo();
 
         $mpdf->WriteHTML($html);
         $mpdf->SetFooter();
 
-        $mpdf->Output('PCA' . "curso" . '.pdf', 'D');
+        $mpdf->Output('PUD' . "curso" . '.pdf', 'D');
         exit;
     }
     
@@ -123,11 +125,11 @@ class PcaPdf extends \yii\db\ActiveRecord{
 
     private function cabecera() {
         $html = '';
-        $html .= '<table width="100%" cellspacing="0" cellpadding="10">';
+        $html .= '<table width="100%" cellspacing="0" cellpadding="10" class="tamano8">';
         $html .= '<tr>';
         // $html .= '<td class="border" align="center" width="20%"><img src="imagenes/instituto/logo/logo2.png" width="60px"></td>';
         $html .= '<td class="" align="center" width="20%">'.date('Y-m-d H:i').'</td>';
-        $html .= '<td class="" align="center" width="">Plan Anual Curricular</td>';
+        $html .= '<td class="" align="center" width="">Plan de Unidad Curricular</td>';
         // $html .= '<td class="border" align="right" width="20%">
         //             Código: ISMR20-22 <br>
         //             Versión: 5.0<br>
@@ -162,11 +164,8 @@ class PcaPdf extends \yii\db\ActiveRecord{
         
         $html .= $this->uno();
         $html .= $this->dos();
-        $html .= $this->tres();
-        $html .= $this->cuatro();
-        $html .= $this->cinco();
-        $html .= $this->seis();
-        $html .= $this->firmas();
+        $html .= $this->tres();       
+        // $html .= $this->firmas();
 
         return $html;
     }
@@ -174,30 +173,36 @@ class PcaPdf extends \yii\db\ActiveRecord{
     private function uno(){
         
         $html = '';
-        $html .= '<table width="100%" cellspacing="0" cellpadding="5">';        
+        $html .= '<table width="100%" cellspacing="0" cellpadding="5" class="tamano10">';        
         
-        $html .= '<tr><td class="centrarTexto border" colspan="4"><b>PLAN ANUAL CURRICULAR</b></td></tr>';
+        $html .= '<tr><td class="centrarTexto border" colspan="6"><b>PLAN ANUAL CURRICULAR</b></td></tr>';
         
-        $html .= '<tr><td class="border" colspan="4" style="background-color: #eee"><b>1.- DATOS INFORMATIVOS</b></td></tr>';
+        $html .= '<tr><td class="border" colspan="6" style="background-color: #eee"><b>1.- DATOS INFORMATIVOS</b></td></tr>';
 
         $html .= '<tr>';
-        $html .= '<td width="20%" class="border"><b>Área:</b></td>';
-            
-        $html .= '<td width="30%" class="border">';
-        $html .= $this->modelPca->ismAreaMateria->mallaArea->area->nombre;
-        $html .= '</td>';
+            $html .= '<td width="10%" class="border"><b>Área:</b></td>';
+                
+            $html .= '<td width="25%" class="border">';
+            $html .= $this->modelPud->planCabecera->ismAreaMateria->mallaArea->area->nombre;
+            $html .= '</td>';
 
-        $html .= '<td width="20%" class="border"><b>Asignatura:</b></td>';
+            $html .= '<td width="5%" class="border"><b>Asignatura:</b></td>';
+                
+            $html .= '<td width="25%" class="border">';
+            $html .= $this->modelPud->planCabecera->ismAreaMateria->materia->nombre;
+            $html .= '</td>'; 
             
-        $html .= '<td width="30%" class="border">';
-        $html .= $this->modelPca->ismAreaMateria->materia->nombre;
-        $html .= '</td>';        
+            $html .= '<td width="15%" class="border"><b>Año Lectivo:</b></td>';
+            $html .= '<td width="20%" class="border">';
+            $html .= $this->modelPeriodo->codigo;
+            $html .= '</td>'; 
+
         $html .= '</tr>';
 
 
         $html .= '<tr>';
         $html .= '<td width="20%" class="border"><b>Docentes:</b></td>';
-        $html .= '<td width="80%" class="border" colspan="3">';
+        $html .= '<td width="80%" class="border" colspan="5">';
         $teachers = $this->get_teachers();
         foreach($teachers as $teacher){
             $html.= $teacher['docente'].' ';
@@ -207,7 +212,7 @@ class PcaPdf extends \yii\db\ActiveRecord{
                 
         $html .= '<tr>';
         $html .= '<td width="20%" class="border"><b>GRADO / CURSO:</b></td>';
-        $html .= '<td width="30%" class="border">';
+        $html .= '<td width="30%" class="border" colspan="2">';
         $parallels = $this->get_parallels();
         foreach($parallels as $parallel){
             $html.= $parallel['paralelo'].' ';
@@ -216,8 +221,8 @@ class PcaPdf extends \yii\db\ActiveRecord{
 
         $html .= '<td width="20%" class="border"><b>Nivel Educativo:</b></td>';
             
-        $html .= '<td width="30%" class="border">';
-        $html .= $this->modelPca->ismAreaMateria->mallaArea->periodoMalla->malla->opCourseTemplate->name;
+        $html .= '<td width="30%" class="border" colspan="2">';
+        $html .= $this->modelPud->planCabecera->ismAreaMateria->mallaArea->periodoMalla->malla->opCourseTemplate->name;
         $html .= '</td>'; 
         
         // $helpers = new \backend\models\helpers\HelperGeneral();
@@ -235,7 +240,8 @@ class PcaPdf extends \yii\db\ActiveRecord{
     }
 
     private function get_parallels(){
-        $ismAreaMateriaId = $this->modelPca->ism_area_materia_id;
+        $ismAreaMateriaId = $this->modelPud->planCabecera->ism_area_materia_id;
+        $pcaId = $this->modelPud->plan_cabecera_id;
         $con = Yii::$app->db;
         $query = "select 	concat(tem.name,' ',par.name) as paralelo
                     from 	planificacion_desagregacion_cabecera cab
@@ -246,7 +252,7 @@ class PcaPdf extends \yii\db\ActiveRecord{
                             inner join ism_malla im on im.id = ipm.malla_id 
                             inner join op_course_template tem on tem.id = im.op_course_template_id 
                             inner join op_course_paralelo par on par.id = cla.paralelo_id 
-                    where 	cab.id = $this->pcaId
+                    where 	cab.id = $pcaId
                             and im.op_course_template_id = $this->opCourseTemplateId
                     group by tem.name, par.name
                     order by par.name;";
@@ -257,7 +263,7 @@ class PcaPdf extends \yii\db\ActiveRecord{
 
     private function get_teachers(){
 
-        $ismAreaMateriaId = $this->modelPca->ism_area_materia_id;
+        $ismAreaMateriaId = $this->modelPud->planCabecera->ism_area_materia_id;
         $con = Yii::$app->db;
         $query = "select 	concat(fac.x_first_name,' ', fac.last_name) as docente
                     from 	scholaris_clase cla 
@@ -271,7 +277,7 @@ class PcaPdf extends \yii\db\ActiveRecord{
     private function dos(){
         
         $html = '';
-        $html .= '<table width="100%" cellspacing="0" cellpadding="5">';
+        $html .= '<table width="100%" cellspacing="0" cellpadding="5" class="tamano10">';
         $html .= '<tr>';
         $html .= '<td class="border" colspan="6" style="background-color: #eee"><b>2.- TIEMPO</b></td>';
         $html .= '</tr>';
@@ -290,11 +296,11 @@ class PcaPdf extends \yii\db\ActiveRecord{
         
         // incio de respuestas
         $html .= '<tr>';
-        $html .= '<td class="border centrarTexto">'.$this->modelPca->carga_horaria_semanal.'</td>';
-        $html .= '<td class="border centrarTexto">'.$this->modelPca->semanas_trabajo.'</td>';
-        $html .= '<td class="border centrarTexto">'.$this->modelPca->evaluacion_aprend_imprevistos.'</td>';
-        $html .= '<td class="border centrarTexto">'.$this->modelPca->total_semanas_clase.'</td>';
-        $html .= '<td class="border centrarTexto">'.$this->modelPca->total_periodos.'</td>';
+        $html .= '<td class="border centrarTexto">'.$this->modelPud->planCabecera->carga_horaria_semanal.'</td>';
+        $html .= '<td class="border centrarTexto">'.$this->modelPud->planCabecera->semanas_trabajo.'</td>';
+        $html .= '<td class="border centrarTexto">'.$this->modelPud->planCabecera->evaluacion_aprend_imprevistos.'</td>';
+        $html .= '<td class="border centrarTexto">'.$this->modelPud->planCabecera->total_semanas_clase.'</td>';
+        $html .= '<td class="border centrarTexto">'.$this->modelPud->planCabecera->total_periodos.'</td>';
         $html .= '</tr>';
         // Fin de respuestas
 
@@ -305,38 +311,63 @@ class PcaPdf extends \yii\db\ActiveRecord{
     
     public function tres(){
         $html = '';
-        $html .= '<table width="100%" cellspacing="0" cellpadding="5">';
+        $html .= '<table width="100%" cellspacing="0" cellpadding="5" class="tamano10">';
         $html .= '<tr>';
-        $html .= '<td class="border" colspan="2" style="background-color: #eee"><b>3.- OBJETIVOS GENERALES</b></td>';
+        $html .= '<td class="border" colspan="6" style="background-color: #eee"><b>3.- RESUMEN DE UNIDAD MICROCURRICULAR</b></td>';
         $html .= '</tr>';
 
         $html .= '<tr>';
-        $html .= '<td class="border centrarTexto" width="60%"><b>Objetivos del área</b></td>';
-        $html .= '<td class="border centrarTexto" width="40%"><b>Objetivos del grado/curso</b></td>';
+        $html .= '<td class="border centrarTexto" width="5%"><b>N°</b></td>';
+        $html .= '<td class="border centrarTexto" width="20%"><b>Título de la unidad de planificación</b></td>';
+        $html .= '<td class="border centrarTexto" width="20%"><b>Objetivos Específicos de la Unidad</b></td>';
+        $html .= '<td class="border centrarTexto" width="20%"><b>¿Qué van a aprender?<br>DESTREZAS CONCRTITERIO DE DESEMPEÑO</b></td>';
+        $html .= '<td class="border centrarTexto" width="20%"><b>¿Cómo van a aprender?<br>ACTIVIDADES DE APRENDIZAJE</b></td>';
+        $html .= '<td class="border centrarTexto" width="15%"><b>¿Qué y cómo evaluar?<br>Indicadores de evaluación de la Unidad</b></td>';
         $html .= '</tr>';
         
         $html .= '<tr>';  
-        $html .= '<td class="border">';  
+
+        $html .= '<td class="border">1</td>';
+
+        $html .= '<td class="border">'.$this->modelPud->unit_title.'</td>';
+
+        $html .= '<td class="border">';     
+
+        $objetivos = PcaDetalle::find()->where([
+            'desagregacion_cabecera_id' => $this->modelPcaId,
+            'tipo' => 'objetivos_generales'
+        ])->all();
         
-        foreach($this->modelPcaDetalle as $detalle){
-            if($detalle->tipo == 'objetivos_generales'){
-                $html.= '<b>'.$detalle->codigo.'</b><br>';
-                $html.= $detalle->contenido;
-            }
+        foreach($objetivos as $obj){
+                $html.= '<b>'.$obj->codigo.'</b> '.$obj->contenido.'<br><br>';
         }
         
         $html .= '</td>';
 
-        // para objetivos de grado
+        // para criterios de evaluación
+        $criterios = PlanificacionDesagregacionCriteriosEvaluacion::find()
+                    ->where(['bloque_unidad_id' => $this->planUnidadId])
+                    ->all();
+        
         $html .= '<td class="border">';
-        foreach($this->modelPcaDetalle as $detalle){
-            if($detalle->tipo == 'objgrado'){
-                $html.= '<b>'.$detalle->codigo.'</b><br>';
-                $html.= $detalle->contenido.'<br>';
-            }
+        foreach($criterios as $cri){
+                $html.= '<strong>'.$cri->criterioEvaluacion->code.'</strong> '.$cri->criterioEvaluacion->description;
         }
         $html .= '</td>';  
-        // fin de objetivos de grado
+        // fin criterios de evaluación
+
+        $html .= '<td class="border">';
+        $html .= $this->modelPud->actividades_aprendizaje;
+        $html .= '</td>';
+
+
+        $html .= '<td class="border">';
+        $indicators = $this->getIndicators($this->planUnidadId);
+        foreach($indicators as $ind){
+            $html .= '<strong>'.$ind['code'].'</strong> '.$ind['description'];
+        }
+        $html .= '</td>';
+
         
         $html .= '</tr>';
                     
@@ -345,170 +376,19 @@ class PcaPdf extends \yii\db\ActiveRecord{
         return $html;
     }
 
-    public function cuatro(){
-        $html = '';
-        $html .= '<table width="100%" cellspacing="0" cellpadding="5">';
-        $html .= '<tr>';
-        $html .= '<td class="border" colspan="1" style="background-color: #eee"><b>4.- EJES TRANSVERSALES</b></td>';
-        $html .= '<td class="border">';  
-        $html .= '<ul>';
-        $html .= '<li>Justicia</li>';
-        $html .= '<li>Solidaridad</li>';
-        $html .= '<li>Innovador</li>';
-        $html .= '</ul>';
-        $html .= '</td>';
-        $html .= '</tr>';                            
-        $html .= '</table>';
-        
-        return $html;
-    }
-    
-    public function cinco(){        
-
-        $unidades = PlanificacionBloquesUnidad::find()
-            ->where(['plan_cabecera_id' => $this->pcaId])
-            ->orderBy('curriculo_bloque_id')
-            ->all();            
-        
-        $html = '';
-        $html .= '<table width="100%" cellspacing="0" cellpadding="5">';
-        $html .= '<tr>';
-        $html .= '<td class="border" colspan="7" style="background-color: #eee"><b>5.- DESARROLLO DE UNIDADES DE PLANIFICACIÓN</b></td>';
-        $html .= '</tr>';
-
-        $html .= '<tr>';
-        // $html .= '<td>traer desde la PUD</td>';
-        $html .= '<td class="border centrarTexto"><b>N°</b></td>';
-        $html .= '<td class="border centrarTexto"><b>Título de la unidad de planificación</b></td>';
-        $html .= '<td class="border centrarTexto"><b>Objetivos específicos de la unidad de planificación</b></td>';
-        $html .= '<td class="border centrarTexto"><b>Contenidos de aprendizaje</b></td>';
-        $html .= '<td class="border centrarTexto"><b>Orientaciones metodológicas</b></td>';
-        $html .= '<td class="border centrarTexto"><b>Evaluación</b></td>';
-        $html .= '<td class="border centrarTexto"><b>Duración en semanas</b></td>';
-
-        $html .= '</tr>';      
-        
-        $objetivos = PcaDetalle::find()->where([
-            'desagregacion_cabecera_id' => $this->pcaId,
-            'tipo' => 'objetivos_generales'
-        ])->all();
-        
-        $i = 0;
-        foreach( $unidades as $unidad ){            
-            $i++;
-            $html .= '<tr>';
-            $html .= '<td class="border centrarTexto">'.$i.'</td>';
-            $html .= '<td class="border centrarTexto">'.$unidad->unit_title.'</td>';
-            $html .= '<td class="border">';
-            foreach($objetivos as $obj){
-                $html.= '<b>'.$obj->codigo.'</b> '.$obj->contenido.'<br><br>';
-            }
-            $html .= '</td>';
-            
-            $html .= '<td class="border">';
-            $criterios = PlanificacionDesagregacionCriteriosEvaluacion::find()
-            ->where(['bloque_unidad_id' => $unidad->id])
-            ->all();
-            foreach($criterios as $cri){
-                    $html.= '<strong>'.$cri->criterioEvaluacion->code.'</strong> '.$cri->criterioEvaluacion->description;
-            }
-            $html .= '</td>'; 
-
-            // actividades de aprendizaje (Orientacaiones metodológicas)
-            $html .= '<td class="border">';
-                $html .= $unidad->actividades_aprendizaje;
-            $html .= '</td>';
-            // fin de actividades de aprendizaje (Orientacaiones metodológicas)
-
-
-            // inicio de evaluaciones
-            $html .= '<td class="border">';
-                $indicators = $this->getIndicators($unidad->id);
-                foreach($indicators as $ind){
-                    $html .= '<strong>'.$ind['code'].'</strong> '.$ind['description'];
-                }
-            $html .= '</td>';
-            // fin de evaluaciones
-
-
-            //inicio total de semanas
-            $html .= '<td class="border centrarTexto">';
-            $clase = ScholarisClase::find()->where([
-                'ism_area_materia_id' => $unidad->planCabecera->ismAreaMateria->id
-            ])->one();
-    
-            $totalSemanas = $this->count_weeks($clase->tipo_usu_bloque, $unidad->curriculo_bloque_id, $this->modelPeriodo->codigo);
-
-            $html.= $totalSemanas;
-            //fin total de semanas
-            $html .= '</td>';
-            $html .= '</tr>';   
-        }              
-                
-        $html .= '</table>';
-        
-        return $html;
-    }
-
-    private function count_weeks($uso, $orden, $periodoCodigo){
-        $con = Yii::$app->db;
-        $query = "select 	count(sem.id) as total_semanas 
-        from 	scholaris_bloque_actividad blo
-                inner join scholaris_bloque_semanas sem on sem.bloque_id = blo.id
-        where	blo.tipo_uso = '$uso'
-                and blo.orden = $orden
-                and blo.scholaris_periodo_codigo = '$periodoCodigo';";
-        $res = $con->createCommand($query)->queryOne();
-        return $res['total_semanas'];
-    }
-
-
-    private function getIndicators($unidadId){
+    private function getIndicators(){
         $con = Yii::$app->db;
         $query = "select 	ind.code 
                             ,ind.description 
                     from 	planificacion_desagregacion_criterios_evaluacion eva
                             inner join curriculo_mec mec on mec.id = eva.criterio_evaluacion_id 
                             inner join curriculo_mec ind on ind.belongs_to = mec.code  
-                    where 	eva.bloque_unidad_id = $unidadId
+                    where 	eva.bloque_unidad_id = $this->planUnidadId
                             and ind.reference_type = 'indicador';";
         $res = $con->createCommand($query)->queryAll();
         return $res;
     }
-    
-    public function seis(){
-        
-        $html = '';
-        $html .= '<table width="100%" cellspacing="0" cellpadding="5">';
-        $html .= '<tr>';
-        $html .= '<td class="border" colspan="1" style="background-color: #eee" width="60%"><b>6.- BIBLIOGRAFÍA / WEBGRAFÍA: (UTILIZAR NORMAS APA VI EDICIÓN)</b></td>';
-        $html .= '<td class="border" colspan="1" style="background-color: #eee" width="40%"><b>7.- OBSERVACIONES</b></td>';
-        $html .= '</tr>';
-        
-        $html .= '<tr>';  
-        $html .= '<td class="border">';  
-        foreach($this->modelPcaDetalle as $detalle){
-            if($detalle->tipo == 'bibliografia'){
-                $html .= $detalle->contenido;
-            }
-        }
-        $html .= '</td>';
 
-        $html .= '<td class="border">';
-        foreach($this->modelPcaDetalle as $detalle){
-            if($detalle->tipo == 'observaciones'){
-                $html .= $detalle->contenido;
-            }
-        }
-        $html .= '</td>';
-
-        $html .= '</tr>';
-                  
-        $html .= '</table>';
-        
-        return $html;
-    }
-    
     
     public function firmas(){
         

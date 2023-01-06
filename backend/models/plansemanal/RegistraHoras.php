@@ -19,6 +19,7 @@ class RegistraHoras{
     private $datosSemana;
 
     public function __construct($semanaNumero, $claseId){
+
         $modelClase             = ScholarisClase::findOne($claseId);
         
         $this->ismAreaMateriaId  = $modelClase->ism_area_materia_id;
@@ -41,12 +42,11 @@ class RegistraHoras{
             'semana_numero' => $this->semanaNumero
         ])
         ->orderBy('hora_numero')
-        ->all();
-
+        ->all();        
 
         $posicion = 0;
         foreach($lms as $l){
-            $existe = $this->busca_registro($l->id);
+            $existe = $this->busca_registro($l->id, $l->hora_numero);
             if(!$existe){
                 $this->inserta_lms_docente($l->id, $posicion);
             }
@@ -59,15 +59,22 @@ class RegistraHoras{
     /**
      * METODO PARA BUSCAR LA EXISTENCIA DE REGISTRO
      */
-    private function busca_registro($lmsId){
-        $model = LmsDocente::find()->where(['lms_id' => $lmsId])->one();
+    private function busca_registro($lmsId, $horaNumeroLms){
+        // $modelAux = LmsDocente::find()->where(['lms_id' => $lmsId])->one();
+
+        $model = LmsDocente::find()->where([
+            'lms_id'          => $lmsId,
+            'hora_numero_lms' => $horaNumeroLms,
+            'clase_id'        => $this->claseId
+        ])->one();
+
         return $model;
     }
 
     /**
      * MÉTODO QUE INGRESA EL REGISTRO DEL LMS DOCENTE
      */
-    private function inserta_lms_docente($lmsId, $posicion){
+    private function inserta_lms_docente($lmsId, $posicion){        
         
         $usuarioLog = Yii::$app->user->identity->usuario;
         $hoy = date('Y-m-d H:i:s');        

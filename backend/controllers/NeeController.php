@@ -85,25 +85,25 @@ class NeeController extends Controller
     private function consulta_estudiantes($scholarisPeriodoId, $usuarioLog)
     {
         $con = Yii::$app->db;
-        $query = "select 	s.id 
-		,concat(s.last_name, ' ',s.first_name,' ',s.middle_name) as student
-from 	res_users u 
-		inner join op_faculty f on f.partner_id = u.partner_id 
-		inner join scholaris_clase c on c.idprofesor = f.id 
-		--inner join scholaris_periodo p on p.codigo = c.periodo_scholaris 
-		inner join scholaris_grupo_alumno_clase g on g.clase_id = c.id 
-		inner join op_student_inscription i on i.student_id = g.estudiante_id 
-		inner join op_student s on s.id = i.student_id 
-		inner join op_course_paralelo par on par.id = c.paralelo_id 
-		inner join op_course cur on cur.id = par.course_id 
-		inner join op_section sec on sec.id = cur.section
-		inner join scholaris_op_period_periodo_scholaris sop on sop.op_id = sec.period_id 
-where u.login = '$usuarioLog' 
-		and sop.scholaris_id = $scholarisPeriodoId 
-		order by s.last_name, s.first_name, s.middle_name ;";
+
+        $query = "select  c4.id,concat(c4.last_name, ' ',c4.first_name,' ',c4.middle_name) as student,
+                    concat( c8.name,' ', c7.name ) curso
+                    from scholaris_clase c1 , scholaris_grupo_alumno_clase c2 ,
+                        op_institute_authorities c3 ,op_student c4 ,op_student_inscription c5, 
+                        scholaris_op_period_periodo_scholaris c6,op_course_paralelo c7, op_course c8
+                    where c3.usuario  = '$usuarioLog' 
+                            and c3.id = c1.dece_dhi_id 
+                            and c1.id = c2.clase_id 
+                            and c2.estudiante_id = c4.id 
+                            and c4.id = c5.student_id 
+                            and c5.period_id  = c6.op_id 
+                            and c6.scholaris_id = $scholarisPeriodoId
+                            and c7.id = c1.paralelo_id 
+                            and c8.id = c7.course_id 
+                    order by student;";
         
-//        echo $query;
-//        die();
+    //    echo $query;
+    //    die();
         $res = $con->createCommand($query)->queryAll();
 
         return $res;
@@ -112,28 +112,32 @@ where u.login = '$usuarioLog'
     private function consulta_nee($scholarisPeriodoId, $usuarioLog)
     {
         $con = Yii::$app->db;
-        $query = "select 	nee.id ,concat(s.last_name, ' ',s.first_name,' ',s.middle_name) as student 
-                                    ,nee.created_at 
-                    from res_users u 
-                                    inner join op_faculty f on f.partner_id = u.partner_id 
-                                    inner join scholaris_clase c on c.idprofesor = f.id 
-                                    --inner join scholaris_periodo p on p.codigo = c.periodo_scholaris 
-                                    inner join scholaris_grupo_alumno_clase g on g.clase_id = c.id 
-                                    inner join op_student_inscription i on i.student_id = g.estudiante_id 
-                                    inner join op_student s on s.id = i.student_id 
-                                    inner join op_course_paralelo p on p.id = c.paralelo_id 
-                                    inner join op_course oc on oc.id = p.course_id 
-                                    inner join op_section os on os.id = oc.section
-                                    inner join scholaris_op_period_periodo_scholaris sop on sop.op_id = os.period_id 
-                                    inner join nee on nee.student_id = i.student_id
-                    where 	u.login = '$usuarioLog' 
-                                    and sop.scholaris_id = $scholarisPeriodoId 
-                    group by nee.id, s.last_name, s.first_name, s.middle_name
-                    order by s.last_name, s.first_name, s.middle_name;";
+        $query = "select  nee.id,concat(c4.last_name, ' ',c4.first_name,' ',c4.middle_name) as student,
+                            concat( c8.name,' ', c7.name ) curso
+                    from 	scholaris_clase c1 
+                            ,scholaris_grupo_alumno_clase c2 
+                            ,op_institute_authorities c3 
+                            ,op_student c4 
+                            ,op_student_inscription c5
+                            ,scholaris_op_period_periodo_scholaris c6
+                            ,op_course_paralelo c7
+                            ,op_course c8
+                            ,nee 
+                    where 	c3.usuario  = '$usuarioLog' 
+                            and c3.id = c1.dece_dhi_id 
+                            and c1.id = c2.clase_id 
+                            and c2.estudiante_id = c4.id 
+                            and c4.id = c5.student_id 
+                            and c5.period_id  = c6.op_id 
+                            and c6.scholaris_id = $scholarisPeriodoId
+                            and c7.id = c1.paralelo_id 
+                            and c8.id = c7.course_id
+                            and nee.student_id = c5.student_id
+                    order by student;";
         $res = $con->createCommand($query)->queryAll();
         
-//        echo $query;
-//        die();
+    //    echo $query;
+    //    die();
 
         return $res;
     }
@@ -251,8 +255,13 @@ where u.login = '$usuarioLog'
                             inner join ism_periodo_malla pm on pm.id = ma.periodo_malla_id
                     where 	g.estudiante_id = $studentId 
                             and pm.scholaris_periodo_id = $periodoId 
-                            and c.id not in ( select clase_id from nee_x_clase where clase_id = c.id and fecha_finaliza is null ) 
-                    order by m.nombre;";
+                            and c.id not in ( select clase_id 
+							from nee_x_clase x
+									inner join nee on nee.id = x.nee_id 
+							where clase_id = c.id 
+							and fecha_finaliza is null 
+							and nee.student_id = g.estudiante_id ) 
+                    order by m.nombre;";            
 
             $res = $con->createCommand($query)->queryAll();
             return $res;

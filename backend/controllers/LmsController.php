@@ -202,7 +202,6 @@ class LmsController extends Controller
             'clase_id'      => $claseId,
             'semana_numero' => $lms->semana_numero,
             'nombre_semana' => $nombreSemana
-            
             ]);
         
     }
@@ -211,6 +210,16 @@ class LmsController extends Controller
     private function update_estado_activo_falso($ismAreaMateriaId, $semanaNumero){
         $con = \Yii::$app->db;
         $query = "update lms set estado_activo = false where ism_area_materia_id = $ismAreaMateriaId and semana_numero = $semanaNumero";
+        $con->createCommand($query)->execute();
+    }
+
+    private function update_conceptos_semanal($conceptos, $ismAreaMateriaId, $semanaNumero){
+        $con = Yii::$app->db;
+        $query = "update lms
+        set	conceptos = '$conceptos'
+        where 	ism_area_materia_id = $ismAreaMateriaId
+                and semana_numero = $semanaNumero
+                and conceptos = '<p><b>Concepto:</b></p><p><b>Atributo:</b></p><p><b>Línea de indagación:</b></p><p><b>Enfoque:</b></p><p><b>ODS:</b></p>';";
         $con->createCommand($query)->execute();
     }
     
@@ -234,13 +243,15 @@ class LmsController extends Controller
             $descripcion_actividades = $_POST['descripcion_actividades'];        
             $tarea = $_POST['tarea'];        
             $recursos = $_POST['recursos'];   
-            $model = Lms::findOne($lmsId);
+            $model = Lms::findOne($lmsId);            
             $model->descripcion_actividades = $descripcion_actividades;
             $model->tarea = $tarea;
             $model->recursos = $recursos;
             $model->conceptos = $conceptos;
             $model->$campo = $valor;
             $model->save();
+
+            $this->update_conceptos_semanal($conceptos, $model->ism_area_materia_id, $model->semana_numero);
         }
         else if($campo == 'actividad'){
             

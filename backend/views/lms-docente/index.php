@@ -28,7 +28,7 @@ $helper = new HelperGeneral();
         <div class="card shadow col-lg-8 col-md-8">
             <div class=" row align-items-center p-2">
                 <div class="col-lg-1">
-                    <h4><img src="ISM/main/images/submenu/aula.png" width="64px" style="" class="img-thumbnail"></h4>
+                    <h4><img src="../ISM/main/images/submenu/aula.png" width="64px" style="" class="img-thumbnail"></h4>
                 </div>
                 <div class="col-lg-11">
                     <h4><?= Html::encode($this->title) ?></h4>
@@ -51,7 +51,7 @@ $helper = new HelperGeneral();
                     foreach ($detalle as $det) {
                         $dia = $helper->get_dia_fecha($det['fecha']);
                         $seRealizo = $det['se_realizo'] ? 'SI' : 'NO';
-                        
+
                     ?>
                         <div class="card" style="margin-bottom: 30px;">
                             <div class="card-header" style="background: linear-gradient(#898b8d, #ab0a3d); color: white;">
@@ -71,7 +71,8 @@ $helper = new HelperGeneral();
                             </div>
                             <!--FIN DE CLASS-HEADER-->
 
-                            <div class="card-body my-scroll" style="height: 50vh;">
+                            <!-- <div class="card-body my-scroll" style="height: 50vh;"> -->
+                            <div class="card-body my-scroll" style="">
 
                                 <div class="row" style="background-color: #eee;">
                                     <div class="col-lg-6 col-md-6" style="font-size: 10px;">
@@ -96,21 +97,31 @@ $helper = new HelperGeneral();
                                         ?>
                                             <i class="fas fa-ban" style="color: red;"> NO SE REALIZÓ</i>
                                         <?php
-                                        }                                        
+                                        }
                                         ?>
 
                                         |
 
                                         <?=
-                                            Html::a('<i class="fas fa-tasks" style="color: #9e28b5;"> TOTAL INSUMOS: </i>'.$det['total_insumos'], 
-                                            ['scholaris-actividad/lista',
+                                        Html::a(
+                                            '<i class="fas fa-tasks" style="color: #9e28b5;"> TOTAL INSUMOS: </i>' . $det['total_insumos'],
+                                            [
+                                                'scholaris-actividad/lista',
                                                 'clase_id' => $clase_id,
                                                 'semana_numero' => $semana_numero,
                                                 'detalle_horario_id' => $det['detalle_id'],
                                                 'lms_id' => $det['lms_id']
-                                            ])
+                                            ]
+                                        )
                                         ?>
-                                        
+
+                                        |
+
+                                        <a data-bs-toggle="collapse" href="#collapseExample<?= $det['lms_doc_id'] ?>" role="button" 
+                                            aria-expanded="false" aria-controls="collapseExample">
+                                            Ver más ...
+                                        </a>
+
 
                                     </div> <!-- FIN DE COL DE ICONOS IZQUIERDA -->
 
@@ -130,40 +141,40 @@ $helper = new HelperGeneral();
                                                     </div>
                                                     <div class="modal-body" style="text-align: left;">
                                                         <?= Html::beginForm(['update'], 'post', ['enctype' => 'multipart/form-data']) ?>
-                                                            
-                                                            <input type="hidden" name="lms_docente_id" value="<?= $det['lms_doc_id'] ?>">
-                                                            <input type="hidden" name="nombre_semana" value="<?= $nombre_semana ?>">
-                                                            <input type="hidden" name="semana_numero" value="<?= $semana_numero ?>">
-                                                            <input type="hidden" name="clase_id" value="<?= $clase_id ?>">
+
+                                                        <input type="hidden" name="lms_docente_id" value="<?= $det['lms_doc_id'] ?>">
+                                                        <input type="hidden" name="nombre_semana" value="<?= $nombre_semana ?>">
+                                                        <input type="hidden" name="semana_numero" value="<?= $semana_numero ?>">
+                                                        <input type="hidden" name="clase_id" value="<?= $clase_id ?>">
 
 
 
-                                                            <div class="form-group">
-                                                                <label for="serealizo" class="form-label">Se realizó</label>
-                                                                <select name="se_realizo" class="form-control">
-                                                                    <option value="<?= $det['se_realizo'] ?>"><?= $seRealizo ?></option>
-                                                                    <option value="1">SI</option>
-                                                                    <option value="0">NO</option>
-                                                                </select>
-                                                            </div>
+                                                        <div class="form-group">
+                                                            <label for="serealizo" class="form-label">Se realizó</label>
+                                                            <select name="se_realizo" class="form-control">
+                                                                <option value="<?= $det['se_realizo'] ?>"><?= $seRealizo ?></option>
+                                                                <option value="1">SI</option>
+                                                                <option value="0">NO</option>
+                                                            </select>
+                                                        </div>
 
-                                                            <div class="form-group" style="margin-top: 15px;">
-                                                                <label for="motivo" class="form-label">¿Por qué no se realizó?</label>
-                                                                <textarea name="motivo_no_realizado" class="form-control"><?= $det['motivo_no_realizado'] ?></textarea>
-                                                            </div>
+                                                        <div class="form-group" style="margin-top: 15px;">
+                                                            <label for="motivo" class="form-label">¿Por qué no se realizó?</label>
+                                                            <textarea name="motivo_no_realizado" class="form-control"><?= $det['motivo_no_realizado'] ?></textarea>
+                                                        </div>
 
-                                                            <div class="form-group" style="margin-top: 15px;">
-                                                                <label for="justificativo" class="form-label">¿Cómo recuperará?</label>
-                                                                <textarea name="justificativo" class="form-control"><?= $det['justificativo'] ?></textarea>
-                                                            </div>
+                                                        <div class="form-group" style="margin-top: 15px;">
+                                                            <label for="justificativo" class="form-label">¿Cómo recuperará?</label>
+                                                            <textarea name="justificativo" class="form-control"><?= $det['justificativo'] ?></textarea>
+                                                        </div>
 
-                                                            <hr>
-                                                            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cerrar</button>
-                                                            <!-- <button type="button" class="btn btn-primary">Understood</button> -->
-                                                            <?= Html::submitButton('Guardar', ['class' => 'btn btn-outline-primary']) ?>
+                                                        <hr>
+                                                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cerrar</button>
+                                                        <!-- <button type="button" class="btn btn-primary">Understood</button> -->
+                                                        <?= Html::submitButton('Guardar', ['class' => 'btn btn-outline-primary']) ?>
                                                         <?= Html::endForm() ?>
                                                     </div>
-                                                    
+
                                                 </div>
                                             </div>
                                         </div>
@@ -172,50 +183,57 @@ $helper = new HelperGeneral();
                                 <!--fin de row de iconos-->
                                 <hr>
 
-                                <div class="row" style="padding-left: 10%;">
-                                    <div class="col-lg-12 col-md-12">
-                                        <?= $det['conceptos'] ?>
-                                    </div>
-                                </div>
-                                <hr>
+                                <div class="collapse" id="collapseExample<?= $det['lms_doc_id'] ?>">
+                                    <div class="card card-body">                                        
 
-                                <div class="row" style="padding-left: 10%;">
-                                    <b>ESTRATEGIA METODOLÓGICA:</b>
-                                    <div class="col-lg-12 col-md-12">
-                                        <?= $det['indicaciones'] ?>
-                                    </div>
-                                </div>
-                                <hr>
+                                        <div class="row" style="padding-left: 10%;">
+                                            <div class="col-lg-12 col-md-12">
+                                                <?= $det['conceptos'] ?>
+                                            </div>
+                                        </div>
+                                        <hr>
 
-                                <div class="row" style="padding-left: 10%;">
-                                    <b>DESCRIPCIÓN DE ACTIVIDADES:</b>
-                                    <div class="col-lg-12 col-md-12">
-                                        <?= $det['descripcion_actividades'] ?>
-                                    </div>
-                                </div>
-                                <hr>
+                                        <div class="row" style="padding-left: 10%;">
+                                            <b>ESTRATEGIA METODOLÓGICA:</b>
+                                            <div class="col-lg-12 col-md-12">
+                                                <?= $det['indicaciones'] ?>
+                                            </div>
+                                        </div>
+                                        <hr>
 
-                                <div class="row" style="padding-left: 10%;">
-                                    <b>TAREA:</b>
-                                    <div class="col-lg-12 col-md-12">
-                                        <?= $det['tarea'] ?>
-                                    </div>
-                                </div>
-                                <hr>
+                                        <div class="row" style="padding-left: 10%;">
+                                            <b>DESCRIPCIÓN DE ACTIVIDADES:</b>
+                                            <div class="col-lg-12 col-md-12">
+                                                <?= $det['descripcion_actividades'] ?>
+                                            </div>
+                                        </div>
+                                        <hr>
 
-                                <div class="row" style="padding-left: 10%;">
-                                    <b>RECURSOS:</b>
-                                    <div class="col-lg-12 col-md-12">
-                                        <?= $det['recursos'] ?>
+                                        <div class="row" style="padding-left: 10%;">
+                                            <b>TAREA:</b>
+                                            <div class="col-lg-12 col-md-12">
+                                                <?= $det['tarea'] ?>
+                                            </div>
+                                        </div>
+                                        <hr>
+
+                                        <div class="row" style="padding-left: 10%;">
+                                            <b>RECURSOS:</b>
+                                            <div class="col-lg-12 col-md-12">
+                                                <?= $det['recursos'] ?>
+                                            </div>
+                                        </div>
+                                        <hr>
                                     </div>
+
                                 </div>
-                                <hr>
                             </div>
 
                             <div class="card-footer" style="background: linear-gradient(white, #898b8d); color: black;">
-                                
+
                             </div>
                         </div>
+                        <hr>
                     <?php
                     }
                     ?>

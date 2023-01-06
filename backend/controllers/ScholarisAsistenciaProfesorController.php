@@ -331,6 +331,15 @@ class ScholarisAsistenciaProfesorController extends Controller {
         
         return $this->render('docentes');
     }
+
+
+    /**
+     * Método para tomar todos los insumos calificados del docente
+     */
+    public function actionInsumos(){
+        $user = Yii::$app->user->identity->usuario;
+        echo $user;
+    }
     
 
 }

@@ -147,7 +147,7 @@ use yii\grid\GridView;
 
 <script>
 
-    function grabar_text_indicaciones(campoId, lmsId) {        
+    function grabar_text_indicaciones(campoId, lmsId) {  
         var valor1              = editor1.getData();
         var conceptos           = editorconceptos.getData();
         var descActividades     = editordescripcionactividades.getData();

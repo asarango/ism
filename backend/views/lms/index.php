@@ -23,7 +23,7 @@ $this->title = 'Lms - ' . $modelClase->ismAreaMateria->materia->nombre . ' - ' .
 
         <div class="card shadow col-lg-12 col-md-12">
             <div class=" row align-items-center p-2">
-                <div class="col-lg-1"><h4><img src="ISM/main/images/submenu/aula.png" width="64px" style="" class="img-thumbnail"></h4></div>
+                <div class="col-lg-1"><h4><img src="../ISM/main/images/submenu/aula.png" width="64px" style="" class="img-thumbnail"></h4></div>
                 <div class="col-lg-11"><h4><?= Html::encode($this->title) ?></h4></div>
             </div>
             <hr>
@@ -68,7 +68,6 @@ $this->title = 'Lms - ' . $modelClase->ismAreaMateria->materia->nombre . ' - ' .
                         <?php
                         if ($modelDetalleActivo) {
                             
-
                             echo $this->render('detalle', [
                                 'modelDetalleActivo'    => $modelDetalleActivo,
                                 'tipoActividadNac'      => $tipoActividadNac,

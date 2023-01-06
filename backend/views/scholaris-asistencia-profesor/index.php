@@ -67,7 +67,17 @@ $this->title = 'Mis actividades de hoy';
                     ['class' => 'link','target'=>'_blanck']
                 );
                 ?>
+                
                 |
+                <?=
+                Html::a(
+                    '<span class="badge rounded-pill" style="background-color: #9e28b5">
+                        <i class="fa fa-briefcase" aria-hidden="true"></i> Mis Insumos
+                    </span>',
+                    ['insumos'],
+                    ['class' => 'link']
+                );
+                ?>
                
             </p>
 

@@ -76,17 +76,17 @@ $iconoColor = 'blue';
                 </a>
             </li>
             <li class="zoom">
-                <a href="#" onclick="ver_detalle('3.1.-');">3.2.- Exploración
+                <a href="#" onclick="ver_detalle('3.2.-');">3.2.- Exploración
                     <i class="<?= $iconoOk; ?>" title="" style="color: <?= $iconoColor; ?>;"></i>
                 </a>
             </li>
             <li class="zoom">
-                <a href="#" onclick="ver_detalle('3.1.-');">3.3.- Actividad
+                <a href="#" onclick="ver_detalle('3.3.-');">3.3.- Actividad
                     <i class="<?= $iconoOk; ?>" title="" style="color: <?= $iconoColor; ?>;"></i>
                 </a>
             </li>
             <li class="zoom">
-                <a href="#" onclick="ver_detalle('3.1.-');">3.4.- Atributo del Perfil
+                <a href="#" onclick="ver_detalle('3.4.-');">3.4.- Atributo del Perfil
                     <i class="<?= $iconoOk; ?>" title="" style="color: <?= $iconoColor; ?>;"></i>
                 </a>
             </li>
@@ -124,22 +124,22 @@ $iconoColor = 'blue';
         <b>5.- EVALUACIÓN</b>
         <ul>
             <li class="zoom">
-                <a href="#" onclick="ver_detalle('4.4.-');">5.1.- Criterios Interdisciplicarios
+                <a href="#" onclick="ver_detalle('5.1.-');">5.1.- Criterios Interdisciplicarios
                     <i class="<?= $iconoOk; ?>" title="" style="color: <?= $iconoColor; ?>;"></i>
                 </a>
             </li>
             <li class="zoom">
-                <a href="#" onclick="ver_detalle('4.4.-');">5.2.- Evaluaciones Formativas Disciplinarias
+                <a href="#" onclick="ver_detalle('5.2.-');">5.2.- Evaluaciones Formativas Disciplinarias
                     <i class="<?= $iconoOk; ?>" title="" style="color: <?= $iconoColor; ?>;"></i>
                 </a>
             </li>
             <li class="zoom">
-                <a href="#" onclick="ver_detalle('4.4.-');">5.3.- Evaluaciones Formativas Interdiciplinarias
+                <a href="#" onclick="ver_detalle('5.3.-');">5.3.- Evaluaciones Formativas Interdiciplinarias
                     <i class="<?= $iconoOk; ?>" title="" style="color: <?= $iconoColor; ?>;"></i>
                 </a>
             </li>
             <li class="zoom">
-                <a href="#" onclick="ver_detalle('4.4.-');">5.4.- Evaluación Sumativa
+                <a href="#" onclick="ver_detalle('5.4.-');">5.4.- Evaluación Sumativa
                     <i class="<?= $iconoOk; ?>" title="" style="color: <?= $iconoColor; ?>;"></i>
                 </a>
             </li>
@@ -158,12 +158,12 @@ $iconoColor = 'blue';
         <b>7.- PROCESO DE APRENDIZAJE INTERDISCIPLINARIO</b>
         <ul>
             <li class="zoom">
-                <a href="#" onclick="ver_detalle('4.4.-');">7.1.- Experiencias de Aprendizaje y Estrategias de Enseñanza Interdisciplinarios
+                <a href="#" onclick="ver_detalle('7.1.-');">7.1.- Experiencias de Aprendizaje y Estrategias de Enseñanza Interdisciplinarios
                     <i class="<?= $iconoOk; ?>" title="" style="color: <?= $iconoColor; ?>;"></i>
                 </a>
             </li>
             <li class="zoom">
-                <a href="#" onclick="ver_detalle('4.4.-');">7.2.- Atención a las Necesidades Educativas Especiales
+                <a href="#" onclick="ver_detalle('7.2.-');">7.2.- Atención a las Necesidades Educativas Especiales
                     <i class="<?= $iconoOk; ?>" title="" style="color: <?= $iconoColor; ?>;"></i>
                 </a>
             </li>
@@ -174,7 +174,7 @@ $iconoColor = 'blue';
         <b>8.- RECURSOS</b>
         <ul>
             <li class="zoom">
-                <a href="#" onclick="ver_detalle('4.4.-');">8.1.- Recursos
+                <a href="#" onclick="ver_detalle('8.1.-');">8.1.- Recursos
                     <i class="<?= $iconoOk; ?>" title="" style="color: <?= $iconoColor; ?>;"></i>
                 </a>
             </li>
@@ -186,7 +186,7 @@ $iconoColor = 'blue';
         <b>9.- REFLEXIÓN</b>
         <ul>
             <li class="zoom">
-                <a href="#" onclick="ver_detalle('4.4.-');">9.1.- Reflexión
+                <a href="#" onclick="ver_detalle('9.1.-');">9.1.- Reflexión
                     <i class="<?= $iconoOk; ?>" title="" style="color: <?= $iconoColor; ?>;"></i>
                 </a>
             </li>

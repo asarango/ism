@@ -44,11 +44,6 @@ $this->title = 'Mis asignaturas';
                         
                         <div class="col-lg-10 col-md-10">
                             <div class="card" id="div-detalle" style="display: none; margin-top: 5px; padding: 15px"></div>
-
-                            <!--
-                            <div class="card" id="div-info-bloque" style="display: none; margin-top: 5px;"></div>
-                            <div class="card p-3" id="div-actividades" style="display: none; margin-top: 5px;"></div>
-                            -->
                             <div class="card p-3" id="div-semanas" style="display: none; margin-top: 15px;"></div>                           
                         </div>
                     </div>
@@ -84,10 +79,8 @@ $this->title = 'Mis asignaturas';
     }
     
     
-    function muestra_informacion_bloque(claseId, bloqueId, accion){
-        
-        var url = '<?= Url::to(['docente-clases/detalle-bloque']) ?>';       
-        
+    function muestra_informacion_bloque(claseId, bloqueId, accion){        
+        var url = '<?= Url::to(['docente-clases/detalle-bloque']) ?>';        
         var params = {
             clase_id: claseId,
             accion: accion,

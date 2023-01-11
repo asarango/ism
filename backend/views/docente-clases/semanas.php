@@ -30,7 +30,8 @@ if (isset($modelSemanas[0]['bloque'])) {
                     
                     <div class="card-footer">
                         <?php
-                            if($usuarioLog == $responsable){
+                            
+                            if(trim($usuarioLog) == ($responsable)){
                                 echo Html::a('<i class="fas fa-user-cog"></i>',['lms/index1',
                                     'semana_numero' => $semana['semana_numero'],
                                     'nombre_semana' => $semana['nombre_semana'],

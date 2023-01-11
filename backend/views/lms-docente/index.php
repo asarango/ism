@@ -75,7 +75,7 @@ $helper = new HelperGeneral();
                             <div class="card-body my-scroll" style="">
 
                                 <div class="row" style="background-color: #eee;">
-                                    <div class="col-lg-6 col-md-6" style="font-size: 10px;">
+                                    <div class="col-lg-8 col-md-8" style="font-size: 10px;">
                                         <?php
                                         if ($det['es_aprobado']) {
                                         ?>
@@ -117,15 +117,33 @@ $helper = new HelperGeneral();
 
                                         |
 
-                                        <a data-bs-toggle="collapse" href="#collapseExample<?= $det['lms_doc_id'] ?>" role="button" 
-                                            aria-expanded="false" aria-controls="collapseExample">
+                                        <a data-bs-toggle="collapse" href="#collapseExample<?= $det['lms_doc_id'] ?>" role="button" aria-expanded="false" aria-controls="collapseExample">
                                             Ver más ...
                                         </a>
+
+                                        |
+
+                                        <?php
+                                        if (count($nees) > 0) {
+                                            echo Html::a(
+                                                '<i class="fas fa-tasks" style="color: #9e28b5;"> NEE GRADO 3: </i> ' . count($nees),
+                                                [
+                                                    'nee',
+                                                    'clase_id' => $clase_id,
+                                                    'semana_numero' => $semana_numero,
+                                                    'lsm_docente_id' => $det['lms_doc_id'],
+                                                    'lms_id' => $det['lms_id']
+                                                ]
+                                            );
+                                        }
+                                        ?>
+
+                                        |
 
 
                                     </div> <!-- FIN DE COL DE ICONOS IZQUIERDA -->
 
-                                    <div class="col-lg-6 col-md-6" style="font-size: 10px; text-align: right;">
+                                    <div class="col-lg-4 col-md-4" style="font-size: 10px; text-align: right;">
                                         <!-- Button trigger modal motivo de no realizó la actividad de la hora-->
                                         <a class="zoom" data-bs-toggle="modal" data-bs-target="#staticBackdrop<?= $det['lms_doc_id'] ?>">
                                             <i class="fas fa-ellipsis-h zoom" style="color: #65b2e8; font-size: 12px;"> </i>
@@ -184,7 +202,7 @@ $helper = new HelperGeneral();
                                 <hr>
 
                                 <div class="collapse" id="collapseExample<?= $det['lms_doc_id'] ?>">
-                                    <div class="card card-body">                                        
+                                    <div class="card card-body">
 
                                         <div class="row" style="padding-left: 10%;">
                                             <div class="col-lg-12 col-md-12">

@@ -230,7 +230,7 @@ function verifica_curso($cabecera, $grupoMateria)
                                     <td class="text-center"><?= $unidad->curriculoBloque->last_name ?></td>
                                     <td class="text-center"><?= $unidad->unit_title ?></td>
                                     <!-- Columna del PUD -->
-                                    <td class="text-center">
+                                    <td class="text-left">
                                         <?php
 
                                         if ($existeCurso && $unidad->curriculoBloque->shot_name == $grupoMateria['abreviatura']) {
@@ -243,7 +243,9 @@ function verifica_curso($cabecera, $grupoMateria)
                                                  'idgrupointer'=>$grupoMateria['idgrupointer']],
                                                 ['style' => $style]
                                             );
-                                        } else {
+
+                                        }else{
+                                            
                                             if ($ismAreaMateria->es_bi) {
                                                 $model = PlanificacionBloquesUnidad::findOne($unidad->id);
                                                 $modelPudAprBit = PudAprobacionBitacora::find()
@@ -284,7 +286,7 @@ function verifica_curso($cabecera, $grupoMateria)
                                                 );
                                             } else {
                                                 echo Html::a(
-                                                    '<i class="fas fa-fighter-jet"></i>',
+                                                    '<img src="../ISM/main/images/bandera-ec.png" width="20px>',
                                                     ['pud-nacional', 'plan_bloque_unidad_id' => $unidad->id],
                                                     ['style' => 'color: #0a1f8f', 'title' => 'Pud Nacional']
                                                 );

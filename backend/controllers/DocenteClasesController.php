@@ -123,7 +123,10 @@ class DocenteClasesController extends Controller
         $modelClase     = \backend\models\ScholarisClase::findOne($claseId);
         $modelSemanas   = $this->get_semanas($bloqueId);                
 
-        $responsable = $modelClase->ismAreaMateria->responsable_planificacion;           
+        $responsable = $modelClase->ismAreaMateria->responsable_planificacion;          
+        
+        // print_r($claseId);
+        // die();
         
         return $this->renderPartial('semanas',[
             'modelSemanas' => $modelSemanas,

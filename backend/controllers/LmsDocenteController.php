@@ -3,6 +3,8 @@
 namespace backend\controllers;
 
 use backend\models\LmsDocente;
+use backend\models\LmsDocenteNee;
+use backend\models\NeeXClase;
 use backend\models\plansemanal\RegistraHoras;
 use backend\models\ScholarisClase;
 use Yii;
@@ -74,12 +76,15 @@ class LmsDocenteController extends Controller {
         $modelClase = ScholarisClase::findOne($claseId);
         $detalle    = $this->get_lms($claseId, $semanaNumero);
 
+        $nees = NeeXClase::find()->where(['clase_id' => $claseId])->all();
+
         return $this->render('index',[
             'modelClase'    => $modelClase,
             'detalle'       => $detalle,
             'semana_numero' => $semanaNumero,
             'nombre_semana' => $semanaNombre,     
-            'clase_id'      => $claseId
+            'clase_id'      => $claseId,
+            'nees'          => $nees
         ]);
     }
 
@@ -144,6 +149,61 @@ class LmsDocenteController extends Controller {
             'semana_numero' => $_POST['semana_numero'],
             'clase_id' => $_POST['clase_id']
         ]);
+    }
+
+    public function actionNee(){
+        $claseId        = $_GET['clase_id'];
+        $semanaNumero   = $_GET['semana_numero'];
+        $lmsDocenteId   = $_GET['lsm_docente_id'];
+        $lmsId   = $_GET['lms_id'];
+
+        $con = Yii::$app->db;
+        $query = "insert into lms_docente_nee(lms_docente_id, nee_x_clase_id, adaptacion_curricular)
+                    select 	$lmsDocenteId, nxc.id, 'None'
+                    from	nee_x_clase nxc 
+                    where 	nxc.clase_id = $claseId
+                            and nxc.id not in (select nee_x_clase_id 
+                                                from lms_docente_nee 
+                                                where lms_docente_id = $lmsDocenteId 
+                                                        and nee_x_clase_id = nxc.id
+                                                        and nxc.fecha_finaliza is null);";
+        $con->createCommand($query)->execute();
+
+        $nees = $this->get_nees($lmsId, $claseId);
+        $lmsDocente = LmsDocente::findOne($lmsDocenteId);
+
+        return $this->render('nee', [
+            'nees'          => $nees,
+            'lmsDocente'    => $lmsDocente
+        ]);
+    }
+
+    private function get_nees($lmsId, $claseId){
+        $con = Yii::$app->db;
+        $query = "select 	lne.id 
+                            ,concat(est.last_name, ' ', est.first_name, ' ', est.middle_name) as student
+                            ,lne.adaptacion_curricular 
+                            ,nxc.diagnostico_inicia 
+                            ,nxc.recomendacion_clase 
+                    from 	lms_docente_nee lne
+                            inner join lms_docente ldo on ldo.id = lne.lms_docente_id
+                            inner join nee_x_clase nxc on nxc.id = lne.nee_x_clase_id 
+                            inner join nee on nee.id = nxc.nee_id 
+                            inner join op_student est on est.id = nee.student_id 
+                    where 	ldo.lms_id = $lmsId
+                            and ldo.clase_id = $claseId
+                    order by student;";
+        $res = $con->createCommand($query)->queryAll();
+        return $res;
+    }
+
+
+    public function actionNeeDetalle(){
+        $lmsDocenteId = $_POST['lms_docente_nee_id'];
+
+        $lmsDocenteNee = LmsDocenteNee::findOne($lmsDocenteId);
+
+        return $this->renderPartial('_nee-detalle', ['lmsDocenteNee' => $lmsDocenteNee]);
     }
     
 }

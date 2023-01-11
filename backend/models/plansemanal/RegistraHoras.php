@@ -60,7 +60,6 @@ class RegistraHoras{
      * METODO PARA BUSCAR LA EXISTENCIA DE REGISTRO
      */
     private function busca_registro($lmsId, $horaNumeroLms){
-        // $modelAux = LmsDocente::find()->where(['lms_id' => $lmsId])->one();
 
         $model = LmsDocente::find()->where([
             'lms_id'          => $lmsId,

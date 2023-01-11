@@ -162,7 +162,7 @@ function pud_dip_porcentaje_avance($planVertDiplId, $planBloqueUniId)
                                     <td class="text-center"><?= $unidad->curriculoBloque->last_name ?></td>
                                     <td class="text-center"><?= $unidad->unit_title ?></td>
                                     <!-- Columna del PUD -->
-                                    <td class="text-center">
+                                    <td class="text-left">
                                         <?php
                                         if ($ismAreaMateria->es_bi) {
                                             $model = PlanificacionBloquesUnidad::findOne($unidad->id);
@@ -210,7 +210,8 @@ function pud_dip_porcentaje_avance($planVertDiplId, $planBloqueUniId)
                                             );
                                         }else{
                                             echo Html::a(
-                                                '<i class="fas fa-fighter-jet"></i>',
+                                                //'<i class="fas fa-fighter-jet"></i>',
+                                                '<img src="../ISM/main/images/bandera-ec.png" width="20px>',
                                                 ['pud-nacional', 'plan_bloque_unidad_id' => $unidad->id],
                                                 ['style' => 'color: #0a1f8f', 'title' => 'Pud Nacional']
                                             );

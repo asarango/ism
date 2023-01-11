@@ -1,8 +1,12 @@
 <?php
 
+use backend\models\IsmGrupoMateriaPlanInterdiciplinar;
+use backend\models\IsmGrupoPlanInterdiciplinar;
+use backend\models\OpCourse;
 use backend\models\PlanificacionDesagregacionCriteriosEvaluacion;
 use backend\models\PlanificacionBloquesUnidad;
 use backend\models\PudAprobacionBitacora;
+use backend\models\ScholarisBloqueActividad;
 use yii\helpers\Html;
 use yii\helpers\Url;
 
@@ -14,9 +18,6 @@ use yii\helpers\Url;
 $this->title = 'Planificación ';
 $this->params['breadcrumbs'][] = $this->title;
 
-//echo($seccion);
-//echo($perfil);
-
 //consulta para extraer el porcentaje de avance del PUD DIPLOMA
 function pud_dip_porcentaje_avance($planVertDiplId, $planBloqueUniId)
 {
@@ -27,6 +28,61 @@ function pud_dip_porcentaje_avance($planVertDiplId, $planBloqueUniId)
 
     return $pud_dip_porc_avance;
 }
+//busqueda de las materias para ver si son planificación interdisciplinar
+/*
+  1.- buscamos por ism area materia
+2.- extraermos todos los opcourse que tengan el id del opcourse template
+3.- buscamos el id del opcourse , en la lista del punto 2
+4.- buscamos por referencia textal, al bloque al que pertenece
+5.- Agregamos la I, para identificar
+ */
+//1.-
+$existeCurso = false;
+$grupoMateria = mostrar_datos_materia($cabecera);
+//si existe la materia, podemos hacer el resto del proceso
+if ($grupoMateria) {
+    $existeCurso = verifica_curso($cabecera, $grupoMateria);
+}
+/********************************************************************* */
+function mostrar_datos_materia($cabecera)
+{
+    $con = Yii::$app->db;
+    //buscamos el periodo
+    $periodo_id = Yii::$app->user->identity->periodo_id;
+    //ism area materia
+    $id_ism_area_materia = $cabecera->ismAreaMateria->id;
+    //devuelve los datos de la materias interdisciplinar
+    $query = "select i.id ,i.id_ism_area_materia,i2.id as idGrupoInter ,i2.id_bloque ,i2.id_op_course,i3.id,i3.abreviatura    
+            from ism_grupo_materia_plan_interdiciplinar i,
+            ism_grupo_plan_interdiciplinar i2,scholaris_bloque_actividad i3
+            where i.id_grupo_plan_inter =i2.id 
+            and i2.id_bloque = i3.id
+            and i.id_ism_area_materia =162--$id_ism_area_materia
+            and i2.id_periodo =$periodo_id;";
+    $resp = $con->createCommand($query)->queryOne();
+    return $resp;
+}
+/********************************************************************* */
+function verifica_curso($cabecera, $grupoMateria)
+{
+
+    $modelOpCourse = OpCourse::find()
+        ->select(['id', 'code', 'name', 'x_template_id', 'x_institute', 'abreviatura', 'period_id', 'section'])
+        //->where(['x_template_id'=>$cabecera->ismAreaMateria->mallaArea->periodoMalla->malla->opCourseTemplate->id])
+        ->where(['x_template_id' => 3])
+        ->all();
+    $resp = false;
+    $idCoursoGrupo = $grupoMateria['id_op_course'];
+
+    //buscamos si existe el id del curso
+    foreach ($modelOpCourse as $curso) {
+        if ($curso->id == $idCoursoGrupo) {
+            $resp = true;
+        }
+    }
+    return $resp;
+}
+
 ?>
 
 
@@ -42,8 +98,10 @@ function pud_dip_porcentaje_avance($planVertDiplId, $planBloqueUniId)
                     <h4><?= Html::encode($this->title) ?></h4>
                     <small>
                         <?= $cabecera->ismAreaMateria->materia->nombre ?>
+                        (<?= $cabecera->ismAreaMateria->materia->id ?>)
                         -
                         <?= $cabecera->ismAreaMateria->mallaArea->periodoMalla->malla->opCourseTemplate->name ?>
+                        (<?= $cabecera->ismAreaMateria->mallaArea->periodoMalla->malla->opCourseTemplate->id ?>)
                     </small>
                 </div>
             </div>
@@ -145,6 +203,7 @@ function pud_dip_porcentaje_avance($planVertDiplId, $planBloqueUniId)
                     <table class="table table-condensed table-hover table-striped">
                         <thead>
                             <tr>
+                                <th></th>
                                 <th class="text-center">BLOQUE</th>
                                 <th class="text-center">TÍTULO</th>
                                 <th class="text-center">PUD</th>
@@ -159,62 +218,79 @@ function pud_dip_porcentaje_avance($planVertDiplId, $planBloqueUniId)
                             foreach ($unidades as $unidad) {
                             ?>
                                 <tr>
+                                    <td class="text-center">
+                                        <?php
+                                        if ($existeCurso) {
+                                            if ($unidad->curriculoBloque->shot_name == $grupoMateria['abreviatura']) {
+                                                echo '<i class="fas fa-users" title="Interdisciplinar" style="color:#ab0a3d;"></i>';                                               
+                                            }
+                                        }
+                                        ?>
+                                    </td>
                                     <td class="text-center"><?= $unidad->curriculoBloque->last_name ?></td>
                                     <td class="text-center"><?= $unidad->unit_title ?></td>
                                     <!-- Columna del PUD -->
                                     <td class="text-left">
                                         <?php
-                                        if ($ismAreaMateria->es_bi) {
-                                            $model = PlanificacionBloquesUnidad::findOne($unidad->id);
-                                            $modelPudAprBit = PudAprobacionBitacora::find()
-                                                ->where(['unidad_id' => $model->id])
-                                                ->orderBy(['fecha_notifica' => SORT_DESC])
-                                                ->one();
 
-                                            // echo '<pre>';
-                                            // print_r($modelPudAprBit);
-                                            // die();
-
-
-
+                                        if ($existeCurso && $unidad->curriculoBloque->shot_name == $grupoMateria['abreviatura']) {
                                             $icono = '<i class="fas fa-times"  title="PUD PENDIENTE" ></i>';
                                             $style = 'color: red';
-                                            $actionController = '';
-
-                                            echo 'Avance: ' . $model->avance_porcentaje . '% | &nbsp';
-
-                                            if ($seccion == 'BAS') {
-                                                $actionController = 'pud-pep/index1';
-                                            } elseif ($seccion == 'PAI') {
-                                                $actionController = 'pud-pai/index1';
-                                            } elseif ($seccion == 'DIPL') {
-                                                $actionController = 'pud-dip/index1';
-                                            }
-                                            if ($modelPudAprBit) {
-
-                                                if ($modelPudAprBit->estado_jefe_coordinador == 'ENVIADO') {
-                                                    $icono = '<i class="fas fa-user-clock"  title="PUD EN REVISION" ></i>';
-                                                    $style = 'color: blue';
-                                                } elseif ($modelPudAprBit->estado_jefe_coordinador == 'DEVUELTO') {
-                                                    $icono = '<i class="fas fa-user-clock"  title="PUD DEVUELTO" ></i>';
-                                                    $style = 'color: red';
-                                                } elseif ($unidad->pud_status == 1) {
-                                                    $icono = '<i class="fas fa-check"  title="PUD APROBADO" ></i>';
-                                                    $style = 'color: green';
-                                                }
-                                            }
+                                            echo 'Avance: ' . '10000' . '% | &nbsp';
                                             echo Html::a(
                                                 $icono,
-                                                [$actionController, 'plan_bloque_unidad_id' => $unidad->id],
+                                                ['ism-respuesta-plan-interdiciplinar/index1', 'plan_bloque_unidad_id' => $unidad->id,
+                                                 'idgrupointer'=>$grupoMateria['idgrupointer']],
                                                 ['style' => $style]
                                             );
+
                                         }else{
-                                            echo Html::a(
-                                                //'<i class="fas fa-fighter-jet"></i>',
-                                                '<img src="../ISM/main/images/bandera-ec.png" width="20px>',
-                                                ['pud-nacional', 'plan_bloque_unidad_id' => $unidad->id],
-                                                ['style' => 'color: #0a1f8f', 'title' => 'Pud Nacional']
-                                            );
+                                            
+                                            if ($ismAreaMateria->es_bi) {
+                                                $model = PlanificacionBloquesUnidad::findOne($unidad->id);
+                                                $modelPudAprBit = PudAprobacionBitacora::find()
+                                                    ->where(['unidad_id' => $model->id])
+                                                    ->orderBy(['fecha_notifica' => SORT_DESC])
+                                                    ->one();
+
+                                                $icono = '<i class="fas fa-times"  title="PUD PENDIENTE" ></i>';
+                                                $style = 'color: red';
+                                                $actionController = '';
+
+                                                echo 'Avance: ' . $model->avance_porcentaje . '% | &nbsp';
+
+                                                if ($seccion == 'BAS') {
+                                                    $actionController = 'pud-pep/index1';
+                                                } elseif ($seccion == 'PAI') {
+                                                    $actionController = 'pud-pai/index1';
+                                                } elseif ($seccion == 'DIPL') {
+                                                    $actionController = 'pud-dip/index1';
+                                                }
+                                                if ($modelPudAprBit) {
+
+                                                    if ($modelPudAprBit->estado_jefe_coordinador == 'ENVIADO') {
+                                                        $icono = '<i class="fas fa-user-clock"  title="PUD EN REVISION" ></i>';
+                                                        $style = 'color: blue';
+                                                    } elseif ($modelPudAprBit->estado_jefe_coordinador == 'DEVUELTO') {
+                                                        $icono = '<i class="fas fa-user-clock"  title="PUD DEVUELTO" ></i>';
+                                                        $style = 'color: red';
+                                                    } elseif ($unidad->pud_status == 1) {
+                                                        $icono = '<i class="fas fa-check"  title="PUD APROBADO" ></i>';
+                                                        $style = 'color: green';
+                                                    }
+                                                }
+                                                echo Html::a(
+                                                    $icono,
+                                                    [$actionController, 'plan_bloque_unidad_id' => $unidad->id],
+                                                    ['style' => $style]
+                                                );
+                                            } else {
+                                                echo Html::a(
+                                                    '<img src="../ISM/main/images/bandera-ec.png" width="20px>',
+                                                    ['pud-nacional', 'plan_bloque_unidad_id' => $unidad->id],
+                                                    ['style' => 'color: #0a1f8f', 'title' => 'Pud Nacional']
+                                                );
+                                            }
                                         }
                                         ?>
                                     </td>

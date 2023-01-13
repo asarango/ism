@@ -49,7 +49,7 @@ $iconoColor = 'blue';
                 </a>
             </li>
             <li class="zoom">
-                <a href="#" onclick="ver_detalle('2.2.-');">2.2.- Conceptos Relacionados
+                <a href="#" onclick="ver_detalle('2.2.-');">2.2.- Conceptos Clave
                     <i class="<?= $iconoOk; ?>" title="FALTA INGRESAR DATOS" style="color: green;"></i>
                 </a>
             </li>
@@ -63,6 +63,11 @@ $iconoColor = 'blue';
                     <i class="<?= $iconoOk; ?>" title="" style="color: <?= $iconoColor; ?>;"></i>
                 </a>
             </li>
+            <li class="zoom">
+                <a href="#" onclick="ver_detalle('2.5.-');">2.5.- Contexto Global
+                    <i class="<?= $iconoOk; ?>" title="" style="color: <?= $iconoColor; ?>;"></i>
+                </a>
+            </li>
         </ul>
     </li>
     <hr>
@@ -71,22 +76,22 @@ $iconoColor = 'blue';
         <b>3.- ENFOQUES DEL APRENDIZAJE</b>
         <ul>
             <li class="zoom">
-                <a href="#" onclick="ver_detalle('3.1.-');">3.1.- Habilidad
+                <a href="#" onclick="ver_detalle('3.1.-');">3.1.- Habilidad y Exploración
                     <i class="<?= $iconoOk; ?>" title="" style="color: <?= $iconoColor; ?>;"></i>
                 </a>
             </li>
-            <li class="zoom">
+            <!-- <li class="zoom">
                 <a href="#" onclick="ver_detalle('3.2.-');">3.2.- Exploración
                     <i class="<?= $iconoOk; ?>" title="" style="color: <?= $iconoColor; ?>;"></i>
                 </a>
-            </li>
+            </li> -->
             <li class="zoom">
-                <a href="#" onclick="ver_detalle('3.3.-');">3.3.- Actividad
+                <a href="#" onclick="ver_detalle('3.2.-');">3.2.- Actividad
                     <i class="<?= $iconoOk; ?>" title="" style="color: <?= $iconoColor; ?>;"></i>
                 </a>
             </li>
             <li class="zoom">
-                <a href="#" onclick="ver_detalle('3.4.-');">3.4.- Atributo del Perfil
+                <a href="#" onclick="ver_detalle('3.4.-');">3.3.- Atributo del Perfil
                     <i class="<?= $iconoOk; ?>" title="" style="color: <?= $iconoColor; ?>;"></i>
                 </a>
             </li>
@@ -266,5 +271,28 @@ $iconoColor = 'blue';
                 ver_detalle(pestana); 
             }
         });
+    }
+    function guardar_pregunta_reflexion(id_pregunta,tipo_pregunta)
+    {      
+        var idGrupoInter = $("#id_grupo_inter").val();    
+        var url = '<?= Url::to(['guardar-pregunta-reflexion']) ?>';
+       
+        var params = {
+            idGrupoInter : idGrupoInter,
+            id_pregunta: id_pregunta,
+            tipo_pregunta:tipo_pregunta,
+        };
+        
+  
+        $.ajax({
+            data: params,
+            url: url,
+            type: 'POST',
+            beforeSend: function() {},
+            success: function(response) {
+                $("#table-reflexion-seleccionadas").html(response);
+            }
+        });
+        
     }
 </script>

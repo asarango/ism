@@ -37,6 +37,7 @@ function pud_dip_porcentaje_avance($planVertDiplId, $planBloqueUniId)
 5.- Agregamos la I, para identificar
  */
 //1.-
+
 $existeCurso = false;
 $grupoMateria = mostrar_datos_materia($cabecera);
 //si existe la materia, podemos hacer el resto del proceso
@@ -57,22 +58,25 @@ function mostrar_datos_materia($cabecera)
             ism_grupo_plan_interdiciplinar i2,scholaris_bloque_actividad i3
             where i.id_grupo_plan_inter =i2.id 
             and i2.id_bloque = i3.id
-            and i.id_ism_area_materia =162--$id_ism_area_materia
+            and i.id_ism_area_materia =$id_ism_area_materia
             and i2.id_periodo =$periodo_id;";
+        
     $resp = $con->createCommand($query)->queryOne();
     return $resp;
 }
 /********************************************************************* */
 function verifica_curso($cabecera, $grupoMateria)
 {
-
+    //R1: VERIFICAR LA UTILIDAD DE ESTE METODO
+    $resp = false;
+    $idCoursoGrupo = $grupoMateria['id_op_course'];
     $modelOpCourse = OpCourse::find()
         ->select(['id', 'code', 'name', 'x_template_id', 'x_institute', 'abreviatura', 'period_id', 'section'])
         //->where(['x_template_id'=>$cabecera->ismAreaMateria->mallaArea->periodoMalla->malla->opCourseTemplate->id])
         ->where(['x_template_id' => 3])
         ->all();
-    $resp = false;
-    $idCoursoGrupo = $grupoMateria['id_op_course'];
+   
+    
 
     //buscamos si existe el id del curso
     foreach ($modelOpCourse as $curso) {
@@ -220,7 +224,7 @@ function verifica_curso($cabecera, $grupoMateria)
                                 <tr>
                                     <td class="text-center">
                                         <?php
-                                        if ($existeCurso) {
+                                        if (/*$existeCurso*/$grupoMateria) {
                                             if ($unidad->curriculoBloque->shot_name == $grupoMateria['abreviatura']) {
                                                 echo '<i class="fas fa-users" title="Interdisciplinar" style="color:#ab0a3d;"></i>';                                               
                                             }
@@ -233,7 +237,7 @@ function verifica_curso($cabecera, $grupoMateria)
                                     <td class="text-center">
                                         <?php
 
-                                        if ($existeCurso && $unidad->curriculoBloque->shot_name == $grupoMateria['abreviatura']) {
+                                        if (/*$existeCurso &&*/ $unidad->curriculoBloque->shot_name == $grupoMateria['abreviatura']) {
                                             $icono = '<i class="fas fa-times"  title="PUD PENDIENTE" ></i>';
                                             $style = 'color: red';
                                             echo 'Avance: ' . '10000' . '% | &nbsp';

@@ -139,9 +139,8 @@ if (!Yii::$app->user->isGuest) {
 
                     </ul>
                     <!-- <form class="d-flex"> -->
-                    <div>
-
-
+                    <div id="google_translate_element" class="google" style="margin-right: 10px;"></div>
+                    <div>                    
 
                         <?php
 
@@ -236,6 +235,22 @@ if (!Yii::$app->user->isGuest) {
             from <a href="https://www.flaticon.es/" title="Flaticon" target="_blank">www.flaticon.es</a></div>
 
     </footer>
+
+ 
+
+<script type="text/javascript">
+    function googleTranslateElementInit() {
+        // new google.translate.TranslateElement({pageLanguage: 'es', includedLanguages: 'ca,eu,gl,en,fr,it,pt,de', layout: google.translate.TranslateElement.InlineLayout.SIMPLE, gaTrack: true}, 'google_translate_element');
+        new google.translate.TranslateElement({
+            pageLanguage: 'es',
+            includedLanguages: 'en,fr,es',
+            layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+            gaTrack: true
+        }, 'google_translate_element');
+    }
+</script>
+
+<script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>

@@ -126,11 +126,12 @@ $helper = new HelperGeneral();
                                         <?php
                                         if (count($nees) > 0) {
                                             echo Html::a(
-                                                '<i class="fas fa-tasks" style="color: #9e28b5;"> NEE GRADO 3: </i> ' . count($nees),
+                                                '<i class="fas fa-users-class" style="color: #ff9e18;"> ADAPTACIONES CURRICULARES: </i> ' . count($nees),
                                                 [
                                                     'nee',
                                                     'clase_id' => $clase_id,
                                                     'semana_numero' => $semana_numero,
+                                                    'nombre_semana' => $nombre_semana,
                                                     'lsm_docente_id' => $det['lms_doc_id'],
                                                     'lms_id' => $det['lms_id']
                                                 ]

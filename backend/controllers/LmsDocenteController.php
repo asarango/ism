@@ -76,7 +76,9 @@ class LmsDocenteController extends Controller {
         $modelClase = ScholarisClase::findOne($claseId);
         $detalle    = $this->get_lms($claseId, $semanaNumero);
 
-        $nees = NeeXClase::find()->where(['clase_id' => $claseId])->all();
+        $nees = NeeXClase::find()->where([
+                'clase_id' => $claseId                
+            ])->all();
 
         return $this->render('index',[
             'modelClase'    => $modelClase,
@@ -154,6 +156,7 @@ class LmsDocenteController extends Controller {
     public function actionNee(){
         $claseId        = $_GET['clase_id'];
         $semanaNumero   = $_GET['semana_numero'];
+        $semanaNombre   = $_GET['nombre_semana'];
         $lmsDocenteId   = $_GET['lsm_docente_id'];
         $lmsId   = $_GET['lms_id'];
 
@@ -162,11 +165,13 @@ class LmsDocenteController extends Controller {
                     select 	$lmsDocenteId, nxc.id, 'None'
                     from	nee_x_clase nxc 
                     where 	nxc.clase_id = $claseId
+                            --and nxc.grado_nee = 3
                             and nxc.id not in (select nee_x_clase_id 
                                                 from lms_docente_nee 
                                                 where lms_docente_id = $lmsDocenteId 
                                                         and nee_x_clase_id = nxc.id
                                                         and nxc.fecha_finaliza is null);";
+
         $con->createCommand($query)->execute();
 
         $nees = $this->get_nees($lmsId, $claseId);
@@ -174,7 +179,10 @@ class LmsDocenteController extends Controller {
 
         return $this->render('nee', [
             'nees'          => $nees,
-            'lmsDocente'    => $lmsDocente
+            'lmsDocente'    => $lmsDocente,
+            'semanaNumero'  => $semanaNumero,
+            'nombre_semana' => $semanaNombre,
+            'clase_id'      => $claseId
         ]);
     }
 
@@ -185,6 +193,7 @@ class LmsDocenteController extends Controller {
                             ,lne.adaptacion_curricular 
                             ,nxc.diagnostico_inicia 
                             ,nxc.recomendacion_clase 
+                            ,nxc.grado_nee 
                     from 	lms_docente_nee lne
                             inner join lms_docente ldo on ldo.id = lne.lms_docente_id
                             inner join nee_x_clase nxc on nxc.id = lne.nee_x_clase_id 
@@ -193,6 +202,9 @@ class LmsDocenteController extends Controller {
                     where 	ldo.lms_id = $lmsId
                             and ldo.clase_id = $claseId
                     order by student;";
+        // echo $query;
+        // die();
+
         $res = $con->createCommand($query)->queryAll();
         return $res;
     }
@@ -204,6 +216,17 @@ class LmsDocenteController extends Controller {
         $lmsDocenteNee = LmsDocenteNee::findOne($lmsDocenteId);
 
         return $this->renderPartial('_nee-detalle', ['lmsDocenteNee' => $lmsDocenteNee]);
+    }
+
+
+    public function actionNeeUpdateAdaptacion(){
+        $lmsDocenteId = $_POST['lms_docente_nee_id'];
+        $adaptacionCu = $_POST['adaptacion'];
+
+        $model = LmsDocenteNee::findOne($lmsDocenteId);
+        $model->adaptacion_curricular = $adaptacionCu;
+
+        $model->save();
     }
     
 }

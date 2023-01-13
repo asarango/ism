@@ -9,7 +9,7 @@ use yii\helpers\Url;
 /* @var $searchModel backend\models\MenuSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Detalle NEE grado 3 - ' . $lmsDocente->clase->ismAreaMateria->materia->nombre;
+$this->title = 'Adaptación curricular - ' . $lmsDocente->clase->ismAreaMateria->materia->nombre;
 
 
 $helper = new HelperGeneral();
@@ -30,7 +30,7 @@ $helper = new HelperGeneral();
                 <div class="col-lg-1">
                     <h4><img src="../ISM/main/images/submenu/aula.png" width="64px" style="" class="img-thumbnail"></h4>
                 </div>
-                <div class="col-lg-11">
+                <div class="col-lg-8">
                     <h4><?= Html::encode($this->title) ?></h4>
                     <small>
                         <?=
@@ -38,6 +38,21 @@ $helper = new HelperGeneral();
                             ' ' . $lmsDocente->clase->paralelo->name
                         ?>
                     </small>
+                </div>
+
+                <div class="col-lg-3 col-md-3">
+                    <?=
+                    Html::a(
+                        '<span class="badge rounded-pill" style="background-color: #9e28b5"><i class="fas fa-step-backward"></i> Asignaturas</span>',
+                        ['index1',
+                            'semana_numero' => $semanaNumero,
+                            'nombre_semana' => $nombre_semana,
+                            'clase_id'      => $clase_id
+                        ],
+                        ['class' => 'link']
+                    );
+                    ?>
+                    |
                 </div>
             </div>
             <hr>
@@ -47,10 +62,26 @@ $helper = new HelperGeneral();
                 <!-- inicio de lista de estudiantes -->
                 <div class="col-lg-4 col-md-4">
 
+                    <div class="row">
+                        <div class="col-lg-4 col-md-4"><i class="fas fa-circle" style="color: green;"> Grado 1</i></div>
+                        <div class="col-lg-4 col-md-4"><i class="fas fa-circle" style="color: orange;"> Grado 2</i></div>
+                        <div class="col-lg-4 col-md-4"><i class="fas fa-circle" style="color: red;"> Grado 3</i></div>
+                    </div>
+                    
+                    <hr>
+                    
                     <?php
                     foreach ($nees as $nee) {
+                        $grado = $nee['grado_nee'];
+                        if($grado == 3){
+                            $color = 'red';
+                        }else if($grado == 2){
+                            $color = 'orange';
+                        }else{
+                            $color = 'green';
+                        }
                     ?>
-                        <div class="card zoom" style="margin-bottom: 10px; padding: 5px;">
+                        <div class="card zoom" style="margin-bottom: 10px; padding: 5px; background-color: <?= $color ?>;">
                             <div class="row">
                                 <div class="col-lg-1 col-md-1">
                                     <img src="../ISM/main/images/estudiante.png">
@@ -63,7 +94,7 @@ $helper = new HelperGeneral();
                                         echo '<i class="fas fa-times-circle" style="color: #ab0a3d"> </i>';
                                     }
 
-                                    echo ' <a href="#" onclick="showDetail(' . $nee['id'] . ')">' . $nee['student'] . '</a>';
+                                    echo ' '.'<a href="#" onclick="showDetail(' . $nee['id'] . ')" style="color: white">' . $nee['student'] . '</a>';
                                     ?>
                                 </div>
                             </div>
@@ -77,7 +108,7 @@ $helper = new HelperGeneral();
 
                 <!-- inicio de detalle -->
                 <div class="col-lg-8 col-md-8">
-                    <div id="div-nee-detalle"></div>                    
+                    <div id="div-nee-detalle"></div>
                 </div>
                 <!-- fin de detalle -->
             </div>
@@ -87,21 +118,20 @@ $helper = new HelperGeneral();
     </div>
 </div>
 
-<script>    
-
-    function showDetail(id) {        
+<script>
+    function showDetail(id) {
         var url = '<?= Url::to(['nee-detalle']) ?>';
 
         var params = {
             lms_docente_nee_id: id
-        }; 
+        };
 
         $.ajax({
             data: params,
             url: url,
             type: 'POST',
-            beforeSend: function(){},
-            success: function(response){
+            beforeSend: function() {},
+            success: function(response) {
                 $('#div-nee-detalle').html(response);
             }
         });

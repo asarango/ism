@@ -521,7 +521,7 @@ function calcula_total_criterios($unidadId)
 
 
 
-<div id="google_translate_element" class="google"></div>
+<!-- <div id="google_translate_element" class="google"></div>
 
 <script type="text/javascript">
     function googleTranslateElementInit() {
@@ -535,4 +535,4 @@ function calcula_total_criterios($unidadId)
     }
 </script>
 
-<script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+<script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script> -->

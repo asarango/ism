@@ -212,6 +212,29 @@ class HelperGeneral extends ActiveRecord{
         $diferencia = $ahora->diff($nacimiento);
         return $diferencia->format("%y");
     }
+
+    public function obtener_docentes_por_curso($areaMateriaId,$periodoId,$templateId)
+    {
+        //muestra lso profesores que corresponden, enviando el curso/periodo/op course templade
+        //utilizado mas en planificaciones
+        $con = Yii::$app->db;
+        $query = "select 	concat(f.x_first_name,' ', f.last_name) as docente
+                            from 	scholaris_clase c 
+                                    --inner join scholaris_periodo p on p.codigo = c.periodo_scholaris
+                                    inner join ism_area_materia iam on iam.id = c.ism_area_materia_id 
+                                    inner join ism_malla_area ima on ima.id = iam.malla_area_id 
+                                    inner join ism_periodo_malla ipm on ipm.id  = ima.periodo_malla_id 
+                                    inner join ism_malla im on im.id = ipm.malla_id                                     
+                                    inner join op_faculty f on f.id = c.idprofesor 
+                            where 	c.ism_area_materia_id  = $areaMateriaId
+                                    and ipm.scholaris_periodo_id  = $periodoId
+                                    and im.op_course_template_id  = $templateId
+                            group by f.x_first_name, f.last_name;"; 
+                            
+
+                            $resp = $con->createCommand($query)->queryAll();  
+        return $resp;
+    }
     
     
 }

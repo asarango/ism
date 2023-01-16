@@ -2,6 +2,7 @@
 
 use backend\models\PlanificacionDesagregacionCriteriosEvaluacion;
 use backend\controllers\PudPepController;
+use backend\models\IsmGrupoMateriaPlanInterdiciplinar;
 use backend\models\PlanificacionBloquesUnidad;
 use backend\models\PlanificacionVerticalDiploma;
 use backend\models\PudAprobacionBitacora;
@@ -20,6 +21,11 @@ use yii\helpers\ArrayHelper;
 $this->title = 'PUD INTERDISCIPLINAR - ' . $planUnidad->curriculoBloque->last_name . ' - ' . $planUnidad->unit_title;
 $this->params['breadcrumbs'][] = $this->title;
 
+//extraemos las materias que pértenecen al grupo para la planificacion
+
+$modelIsmGrupoMaterias = IsmGrupoMateriaPlanInterdiciplinar::find()
+->where(['id_grupo_plan_inter'=>$idGrupoInter])
+->all();
 
 ?>
 
@@ -36,9 +42,11 @@ $this->params['breadcrumbs'][] = $this->title;
                 <div class="col-lg-1">
                     <h4><img src="../ISM/main/images/submenu/herramientas-para-reparar.png" width="64px" class="img-thumbnail"></h4>
                 </div>
-                <div class="col-lg-8">
+                <div class="col-lg-6">
                     <h4><?= Html::encode($this->title) ?></h4>
-                    <small>
+                </div>
+                <div class="col-lg-3">
+                    <!-- <small>
                         <h6>
                             (
                             Curso: <?= $planUnidad->planCabecera->ismAreaMateria->mallaArea->periodoMalla->malla->opCourseTemplate->name ?> |
@@ -47,7 +55,36 @@ $this->params['breadcrumbs'][] = $this->title;
                             Id: <?= $planUnidad->planCabecera->ismAreaMateria->materia->id ?>
                             )
                         </h6>
-                    </small>
+                    </small> -->
+                    <div class="card ">
+                        <div class="card-header">
+                           <div class="row">
+                                <div class="col"><span style="color:red">Grupo</div>
+                                <div class="col"><span style="color:red">Curso</div>
+                                <div class="col"><span style="color:red">Materia</div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                        <?php
+                            foreach($modelIsmGrupoMaterias as $modelGrupo)
+                            {
+                        ?>
+                            <div class="row ">
+                                <div class="col">
+                                    <?=$modelGrupo->grupoPlanInter->nombre_grupo?>
+                                </div>
+                                <div class="col">
+                                    <?=$modelGrupo->ismAreaMateria->mallaArea->periodoMalla->malla->opCourseTemplate->name?>
+                                </div>
+                                <div class="col">
+                                    <?=$modelGrupo->ismAreaMateria->materia->nombre ?>
+                                </div>
+                            </div>
+                        <?php
+                            }
+                        ?>
+                        </div>
+                    </div>
                 </div>
             </div><!-- FIN DE CABECERA -->
 

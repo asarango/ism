@@ -2,16 +2,25 @@
 
 namespace backend\controllers;
 
+use backend\models\CurriculoMecBloque;
+use backend\models\helpers\HelperGeneral;
+use backend\models\IsmGrupoMateriaPlanInterdiciplinar;
 use backend\models\IsmContenidoPlanInterdiciplinar;
-use Yii;
+use backend\models\IsmGrupoPlanInterdiciplinar;
 use backend\models\IsmRespuestaPlanInterdiciplinar;
 use backend\models\IsmRespuestaPlanInterdiciplinarSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use backend\models\PlanificacionBloquesUnidad;
+use backend\models\PlanificacionDesagregacionCabecera;
+use backend\models\PlanificacionOpciones;
 use backend\models\pudpai\Datos;
 use phpDocumentor\Reflection\Types\This;
+use backend\models\PlanificacionVerticalPaiOpciones;
+use backend\models\IsmRespuestaReflexionPaiInterdiciplinar;
+use yii\filters\AccessControl;
+use Yii;
 
 /**
  * IsmRespuestaPlanInterdiciplinarController implements the CRUD actions for IsmRespuestaPlanInterdiciplinar model.
@@ -24,6 +33,15 @@ class IsmRespuestaPlanInterdiciplinarController extends Controller
     public function behaviors()
     {
         return [
+            'access' => [
+                'class' => AccessControl::className(),
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'roles' => ['@'],
+                    ]
+                ],
+            ],
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
@@ -32,6 +50,31 @@ class IsmRespuestaPlanInterdiciplinarController extends Controller
             ],
         ];
     }
+
+    // public function beforeAction($action)
+    // {
+    //     if (!parent::beforeAction($action)) {
+    //         return false;
+    //     }
+
+    //     if (Yii::$app->user->identity) {
+
+    //         //OBTENGO LA OPERACION ACTUAL
+    //         list($controlador, $action) = explode("/", Yii::$app->controller->route);
+    //         $operacion_actual = $controlador . "-" . $action;
+    //         //SI NO TIENE PERMISO EL USUARIO CON LA OPERACION ACTUAL
+    //         if (!Yii::$app->user->identity->tienePermiso($operacion_actual)) {
+    //             echo $this->render('/site/error', [
+    //                 'message' => "Acceso denegado. No puede ingresar a este sitio !!!",
+    //                 'name' => 'Acceso denegado!!',
+    //             ]);
+    //         }
+    //     } else {
+    //         header("Location:" . \yii\helpers\Url::to(['site/login']));
+    //         exit();
+    //     }
+    //     return true;
+    // }
 
     /**
      * Lists all IsmRespuestaPlanInterdiciplinar models.
@@ -56,6 +99,12 @@ class IsmRespuestaPlanInterdiciplinarController extends Controller
     {
         $planBloqueUnidadId = $_GET['plan_bloque_unidad_id'];
         $idGrupoInter = $_GET['idgrupointer'];
+
+        $habilidadesSeleccionadas = PlanificacionVerticalPaiOpciones::find()
+            ->where([
+                'plan_unidad_id' => $planBloqueUnidadId,
+                'tipo' => 'habilidad_enfoque'
+            ])->all();
 
         $planUnidad = PlanificacionBloquesUnidad::findOne($planBloqueUnidadId);
         //crea el catalogo de respuestas si estas no existen
@@ -153,15 +202,16 @@ class IsmRespuestaPlanInterdiciplinarController extends Controller
         $pestana = $_POST['pestana'];
         $idGrupoInter = $_POST['idgrupointer'];
 
+
         switch ($pestana) {
             case '1.1.-':
-                $html = $this->datos_informativos($planUnidadId);
+                $html = $this->datos_informativos($planUnidadId, $idGrupoInter);
                 break;
             case '2.1.-':
-                $html = $this->proposito_indagacion($idGrupoInter);
+                $html = $this->proposito_integracion($idGrupoInter);
                 break;
             case '2.2.-':
-                $html = '';
+                $html = $this->conceptos_clave($idGrupoInter);
                 break;
             case '2.3.-':
                 $html = $this->enunciado_indagacion($idGrupoInter);
@@ -169,7 +219,19 @@ class IsmRespuestaPlanInterdiciplinarController extends Controller
             case '2.4.-':
                 $html = $this->preguntas_indagacion($idGrupoInter);
                 break;
-            case '3.3.-':
+            case '2.5.-':
+                $html = $this->contexto_global($idGrupoInter);
+                break;
+            case '3.1.-':
+                $html = $this->enfoque_habilidad($idGrupoInter);
+                break;
+                // case '3.2.-':
+                //     $html = $this->enfoque_exploracion($idGrupoInter);
+                //     break;
+            case '3.2.-':
+                $html = $this->enfoque_actividad($idGrupoInter);
+                break;
+            case '3.4.-':
                 $html = $this->enfoque_actividad($idGrupoInter);
                 break;
             case '4.1.-':
@@ -205,6 +267,9 @@ class IsmRespuestaPlanInterdiciplinarController extends Controller
             case '8.1.-':
                 $html = $this->recursos($idGrupoInter);
                 break;
+            case '9.1.-':
+                $html = $this->reflexion($idGrupoInter);
+                break;
         }
         return $html;
     }
@@ -219,6 +284,17 @@ class IsmRespuestaPlanInterdiciplinarController extends Controller
         $modelRespuesta = IsmRespuestaPlanInterdiciplinar::findOne($idRespuesta);
         $modelRespuesta->respuesta = $nuevoDato;
         $modelRespuesta->save();
+    }
+    public function actionGuardarPreguntaReflexion()
+    {
+        $idGrupoInter = $_POST['idGrupoInter'];
+        $id_pregunta = $_POST['id_pregunta'];
+        $tipo_pregunta = $_POST['tipo_pregunta'];
+       
+        //insertamos datos de la pregunta
+        $this->guardar_pregunta_reflexion($id_pregunta,$tipo_pregunta,$idGrupoInter);
+
+
     }
     /*************************************************************************************************************** */
     /*************************************************************************************************************** */
@@ -254,12 +330,13 @@ class IsmRespuestaPlanInterdiciplinarController extends Controller
     }
 
     //1.-
-    public function datos_informativos($planUnidadId)
+    public function datos_informativos($planUnidadId, $idGrupoInter)
     {
         $titulo = '1.- DATOS INFORMATIVOS';
         $esEditable = false;
         $objDatos = new Datos($planUnidadId);
         $planUnidad   = PlanificacionBloquesUnidad::findOne($planUnidadId);
+
 
         $tiempo = $objDatos->calcula_horas(
             $planUnidad->planCabecera->ismAreaMateria->materia_id,
@@ -270,14 +347,9 @@ class IsmRespuestaPlanInterdiciplinarController extends Controller
         // inicia row
         $html .= '<div class="row">';
         $html .= '<div class="col"><b>GRUPO DE ASIGNATURAS</b></div>';
-        $html .= '<div class="col">' . $planUnidad->planCabecera->ismAreaMateria->materia->nombre . '</div>';
+        $html .= '<div class="col">' . $this->get_materias($idGrupoInter) . '</div>';
         $html .= '<div class="col"><b>PROFESOR(ES)</b></div>';
-        //$docentes = $objDatos->get_docentes();
-        //$html .= '<div class="col">';
-        // foreach ($docentes as $docente) {
-        //     $html .= $docente['docente'] . ' | ';
-        // }
-        // $html .= '</div>';
+        $html .= '<div class="col">' . $this->get_docentes($idGrupoInter) . '</div>';
         $html .= '</div>';
         // //******finaliza row
         $html .= '<hr>';
@@ -311,26 +383,105 @@ class IsmRespuestaPlanInterdiciplinarController extends Controller
 
         return $html;
     }
-
-    //2.-
-    private function proposito_indagacion($idGrupoInter)
+    private function get_materias($idGrupoInter)
     {
-        $titulo = '2.1.- Propósito de Indagación';
+        $modelIsmGrupoMaterias = IsmGrupoMateriaPlanInterdiciplinar::find()
+            ->where(['id_grupo_plan_inter' => $idGrupoInter])
+            ->all();
+
+        $html = "";
+
+        $html .= '<div class="card ">
+                    <div class="card-header">
+                        <div class="row">                           
+                            <div class="col"><span style="color:red">Materia</div>
+                        </div>
+                    </div>
+                    <div class="card-body">';
+        foreach ($modelIsmGrupoMaterias as $modelGrupo) {
+            $html .= '<div class="col"> - ' .
+                $modelGrupo->ismAreaMateria->materia->nombre
+                . '</div>';
+        }
+        $html .= '</div>
+                </div>';
+
+        return $html;
+    }
+    public function get_docentes($idGrupoInter)
+    {
+        $objHelper = new HelperGeneral();
+        $modelIsmGrupoMaterias = IsmGrupoMateriaPlanInterdiciplinar::find()
+            ->where(['id_grupo_plan_inter' => $idGrupoInter])
+            ->all();
+
+        $html = "";
+        $periodoId = \Yii::$app->user->identity->periodo_id;
+
+        $html .= '<div class="card ">
+                    <div class="card-header">
+                        <div class="row">                           
+                            <div class="col"><span style="color:red">Profesores</div>
+                        </div>
+                    </div>
+                    <div class="card-body">';
+        foreach ($modelIsmGrupoMaterias as $modelGrupo) {
+            $areaMateriaId = $modelGrupo->ismAreaMateria->id;
+            $templateId = $modelGrupo->ismAreaMateria->mallaArea->periodoMalla->malla->op_course_template_id;
+
+            $resp = $objHelper->obtener_docentes_por_curso($areaMateriaId, $periodoId, $templateId);
+
+            foreach ($resp as $r) {
+                $html .= '<div class="col"> - ' .
+                    $r['docente']
+                    . '</div>';
+            }
+        }
+        $html .= '</div>
+                </div>';
+
+        return $html;
+    }
+
+    //2.1.-
+    private function proposito_integracion($idGrupoInter)
+    {
+        $titulo = '2.1.- Propósito de Integración';
         $idIsmGrupoInter = $idGrupoInter;
         $esEditable = true;
         $pestana = '2.1.-';
         $campo = 'PROPÓSITO DE LA INTEGRACIÓN';
         $seccion = 2;
 
-
         $html = $this->generico_consulta_base_campo_texto($seccion, $campo, $esEditable, $titulo, $pestana, $idIsmGrupoInter);
 
         return $html;
     }
+    //2.2.-
+    private function conceptos_clave($idGrupoInter)
+    {        
+        $arrayInterno = array();
+        $arrayHabilidades = $this->obtener_array_opciones_pai($idGrupoInter, 'concepto_clave');
+
+        $html = $this->html_enfoque_habilidad($arrayHabilidades, 'CONCEPTO CLAVE', 'contenido');
+
+        return $html;
+    }
+    //2.5.-
+    private function contexto_global($idGrupoInter)
+    {        
+        $arrayInterno = array();
+        $arrayHabilidades = $this->obtener_array_opciones_pai($idGrupoInter, 'contexto_global');
+
+        $html = $this->html_enfoque_habilidad($arrayHabilidades, 'CONTEXTO CLAVE', 'contenido');
+
+        return $html;
+    }
+    //2.3.-
     private function enunciado_indagacion($idGrupoInter)
     {
         $titulo = '2.3.- Enunciado de la Indagación';
-        $descripcion = "<p><font size=1px> : (expresa claramente una comprensión conceptual importante que tiene un profundo significado y un valor a 
+        $descripcion = "<p><font size=3px> : (expresa claramente una comprensión conceptual importante que tiene un profundo significado y un valor a 
         largo plazo para los alumnos. Incluye claramente un concepto clave, conceptos relacionados y una exploración del contexto global 
         específica, que da una perspectiva creativa y compleja del mundo real; describe una comprensión transferible y a la vez importante 
         para la asignatura; establece un propósito claro para la indagación).</font></p>";
@@ -345,6 +496,7 @@ class IsmRespuestaPlanInterdiciplinarController extends Controller
 
         return $html;
     }
+    //2.4.-
     private function preguntas_indagacion($idGrupoInter)
     {
         $titulo = '2.4.- Preguntas de Indagación';
@@ -358,9 +510,10 @@ class IsmRespuestaPlanInterdiciplinarController extends Controller
 
         return $html;
     }
+    //2
     private function html_preguntas_indagacion($idGrupoInter)
     {
-        $titulo = 'Fácticas: <font size=1px>(se basan en conocimientos y datos, ayudan a comprender terminología del enunciado, 
+        $titulo = 'Fácticas: <font size=3px>(se basan en conocimientos y datos, ayudan a comprender terminología del enunciado, 
                     facilitan la comprensión, se pueden buscar)</font>';
         $idIsmGrupoInter = $idGrupoInter;
         $esEditable = true;
@@ -368,14 +521,14 @@ class IsmRespuestaPlanInterdiciplinarController extends Controller
         $campo = 'Fácticas';
         $seccion = 2;
         $htmlFacticas = $this->generico_consulta_base_campo_texto($seccion, $campo, $esEditable, $titulo, $pestana, $idIsmGrupoInter);
-        $titulo = 'Conceptuales: <font size=1px>(conectar los datos, comparar y contrastar, explorar contradicciones, comprensión más profunda, 
+        $titulo = 'Conceptuales: <font size=3px>(conectar los datos, comparar y contrastar, explorar contradicciones, comprensión más profunda, 
                     transferir a otras situaciones, contextos e ideas, analizar y aplicar)</font>';
         $esEditable = true;
         $pestana = '2.4.-';
         $campo = 'Conceptuales';
         $seccion = 2;
         $htmlConceptuales = $this->generico_consulta_base_campo_texto($seccion, $campo, $esEditable, $titulo, $pestana, $idIsmGrupoInter);;
-        $titulo = 'Debatibles: <font size=1px>(promover la discusión, debatir una posición, explorar cuestiones importantes desde múltiples perspectivas, 
+        $titulo = 'Debatibles: <font size=3px>(promover la discusión, debatir una posición, explorar cuestiones importantes desde múltiples perspectivas, 
         deliberadamente polémicas, presentar tensión, evaluar)</font>';
         $esEditable = true;
         $pestana = '2.4.-';
@@ -407,18 +560,118 @@ class IsmRespuestaPlanInterdiciplinarController extends Controller
 
         return $html;
     }
-    //3.-
+    //3.2.-
     private function enfoque_actividad($idGrupoInter)
     {
-        $titulo = '3.3.- Actividad';
+        $titulo = '3.2.- Actividad';
         $idIsmGrupoInter = $idGrupoInter;
         $esEditable = true;
-        $pestana = '3.3.-';
+        $pestana = '3.2.-';
         $campo = 'ACTIVIDAD';
         $seccion = 3;
 
+
+
         $html = $this->generico_consulta_base_campo_texto($seccion, $campo, $esEditable, $titulo, $pestana, $idIsmGrupoInter);
 
+        return $html;
+    }
+    //3.1
+    private function enfoque_habilidad($idGrupoInter)
+    {
+        $arrayInterno = array();
+        $arrayHabilidades = $this->obtener_array_opciones_pai($idGrupoInter, 'habilidad_enfoque');
+
+        $html = $this->html_enfoque_habilidad($arrayHabilidades, 'HABILIDADES', 'tipo');
+
+        return $html;
+    }
+    //3.2
+    private function enfoque_exploracion($idGrupoInter)
+    {
+        $arrayInterno = array();
+        $arrayHabilidades = $this->obtener_array_opciones_pai($idGrupoInter, 'habilidad_enfoque');
+
+        $html = $this->html_enfoque_habilidad($arrayHabilidades, 'EXPLORACION', 'contenido');
+
+        return $html;
+    }
+
+    private function obtener_array_opciones_pai($idGrupoInter, $tipo)
+    {
+        $arrayInterno = array();
+        $arrayHabilidades = array();
+
+        $modelGrupoInte = IsmGrupoPlanInterdiciplinar::findOne($idGrupoInter);
+        $abreviaturaBloque = $modelGrupoInte->bloque->abreviatura;
+
+        $modelCurriculoMec = CurriculoMecBloque::find()
+            ->where(['shot_name' => $abreviaturaBloque])
+            ->one();
+
+        //1.-buscamos los id_are_materias
+        $modelGrupoMaterias = IsmGrupoMateriaPlanInterdiciplinar::find()
+            ->where(['id_grupo_plan_inter' => $idGrupoInter])
+            ->all();
+
+        //2.- buscamos plan desag cab , con el ism_area_materia
+        foreach ($modelGrupoMaterias as $modelGrupo) {
+            $modelPlanDesagCabecera = PlanificacionDesagregacionCabecera::find()
+                ->where(['ism_area_materia_id' => $modelGrupo->id_ism_area_materia])
+                ->one();
+
+            if ($modelPlanDesagCabecera) {
+                $modelPlanBloqueUndiad = PlanificacionBloquesUnidad::find()
+                    ->where(['plan_cabecera_id' => $modelPlanDesagCabecera->id])
+                    ->andWhere(['curriculo_bloque_id' => $modelCurriculoMec->id])
+                    ->one();
+
+                $modelPlanVertOpPai = PlanificacionVerticalPaiOpciones::find()
+                    ->where(['plan_unidad_id' => $modelPlanBloqueUndiad->id])
+                    ->andWhere(['tipo' => $tipo])
+                    ->all();
+
+                foreach ($modelPlanVertOpPai as $modelOpcion) {
+                    $arrayInterno = array(
+                        'tipo' => $modelOpcion->tipo2,
+                        'contenido'  => $modelOpcion->contenido
+                    );
+                    $arrayHabilidades[] = $arrayInterno;
+                }
+            }
+        }
+        return $arrayHabilidades;
+    }
+    private function html_enfoque_habilidad($arrayHabilidades, $titulo, $index)
+    {
+        $html = "";
+        $html .= '<div class="" style="align-items: center; display: flex; justify-content: center;">
+                    <div class="card" style="width: 90%; margin-top:20px">
+                        <div class="card-header" style="background-color:#800834">                           
+                                <h6 class="text-center" style="color:#ffffff">' . $titulo . '</h6>                         
+                        </div>
+                    
+                        <div class="card-body">
+                            <table class="table table-striped table-bordered">
+                                <tr style="font-size:15px;"> 
+                                    <td><b>TIPO</b></td>
+                                    <td><b>CONTENIDO</b></td>
+                                </tr>';
+
+        foreach ($arrayHabilidades as $array) {
+            $html .= '<tr style="font-size:13px;"> 
+                                                <td>';
+            $html .= $array['tipo'];
+            $html .= '</td>
+                                                <td>';
+            $html .= $array['contenido'];
+            $html .= '</td>                                            
+                                            </tr>';
+        }
+        $html .= '          </table>
+                        </div>
+                    </div>
+                 </div>';
         return $html;
     }
     //4.-
@@ -474,7 +727,7 @@ class IsmRespuestaPlanInterdiciplinarController extends Controller
 
         return $html;
     }
-    //5.-
+    //5.2.-
     private function evaluacion_formativas_disciplinar($idGrupoInter)
     {
         $titulo = '5.2.- Evaluación Formativa Disciplinar';
@@ -488,6 +741,7 @@ class IsmRespuestaPlanInterdiciplinarController extends Controller
 
         return $html;
     }
+    //5.3.-
     private function evaluacion_formativas_interdisciplinar($idGrupoInter)
     {
         $titulo = '5.3.- Evaluación Formativa Interdisciplinar';
@@ -501,6 +755,7 @@ class IsmRespuestaPlanInterdiciplinarController extends Controller
 
         return $html;
     }
+    //5.4.-
     private function evaluacion_formativas_sumativa($idGrupoInter)
     {
         $titulo = '5.4.- Evaluación Sumativa';
@@ -590,44 +845,44 @@ class IsmRespuestaPlanInterdiciplinarController extends Controller
 
         return $html;
     }
-     //8.-
-     private function recursos($idGrupoInter)
-     {
-         $titulo = '8.1.- Recursos';
-         $idIsmGrupoInter = $idGrupoInter;
-         $esEditable = true;
-         $pestana = '8.1.-';
-         $campo = 'RECURSOS';
-         $seccion = 8;
- 
-         $html = $this->html_recursos($idGrupoInter);
- 
-         return $html;
-     }   
-     private function html_recursos($idGrupoInter)
-     {
-         $titulo = 'Bibliográfico';
-         $idIsmGrupoInter = $idGrupoInter;
-         $esEditable = true;
-         $pestana = '8.1.-';
-         $campo = 'BIBLIOGRÁFICO';
-         $seccion = 8;
-         $htmlBibliografia = $this->generico_consulta_base_campo_texto($seccion, $campo, $esEditable, $titulo, $pestana, $idIsmGrupoInter);
-         $titulo = 'Tecnológico';
-         $esEditable = true;
-         $pestana = '8.1.-';
-         $campo = 'TECNOLÓGICO';
-         $seccion = 8;
-         $htmlTecnologico = $this->generico_consulta_base_campo_texto($seccion, $campo, $esEditable, $titulo, $pestana, $idIsmGrupoInter);;
-         $titulo = 'Otros';
-         $esEditable = true;
-         $pestana = '8.1.-';
-         $campo = 'OTROS';
-         $seccion = 8;
-         $htmlOtros = $this->generico_consulta_base_campo_texto($seccion, $campo, $esEditable, $titulo, $pestana, $idIsmGrupoInter);;
-         $html = "";
- 
-         $html .= '<div class="content">
+    //8.-
+    private function recursos($idGrupoInter)
+    {
+        $titulo = '8.1.- Recursos';
+        $idIsmGrupoInter = $idGrupoInter;
+        $esEditable = true;
+        $pestana = '8.1.-';
+        $campo = 'RECURSOS';
+        $seccion = 8;
+
+        $html = $this->html_recursos($idGrupoInter);
+
+        return $html;
+    }
+    private function html_recursos($idGrupoInter)
+    {
+        $titulo = 'Bibliográfico';
+        $idIsmGrupoInter = $idGrupoInter;
+        $esEditable = true;
+        $pestana = '8.1.-';
+        $campo = 'BIBLIOGRÁFICO';
+        $seccion = 8;
+        $htmlBibliografia = $this->generico_consulta_base_campo_texto($seccion, $campo, $esEditable, $titulo, $pestana, $idIsmGrupoInter);
+        $titulo = 'Tecnológico';
+        $esEditable = true;
+        $pestana = '8.1.-';
+        $campo = 'TECNOLÓGICO';
+        $seccion = 8;
+        $htmlTecnologico = $this->generico_consulta_base_campo_texto($seccion, $campo, $esEditable, $titulo, $pestana, $idIsmGrupoInter);;
+        $titulo = 'Otros';
+        $esEditable = true;
+        $pestana = '8.1.-';
+        $campo = 'OTROS';
+        $seccion = 8;
+        $htmlOtros = $this->generico_consulta_base_campo_texto($seccion, $campo, $esEditable, $titulo, $pestana, $idIsmGrupoInter);;
+        $html = "";
+
+        $html .= '<div class="content">
                      <h4 style="text-align:center;">RECURSOS</h4>
                          <p style="text-align:center;">
                             En esta sección especificar claramente cada recurso que se utilizará. Podría mejorarse incluyendo recursos 
@@ -636,25 +891,190 @@ class IsmRespuestaPlanInterdiciplinarController extends Controller
                          </p>
                      <div class="row"> 
                          <div class="col">';
-         $html .= $htmlBibliografia;
-         $html .= '</div>
+        $html .= $htmlBibliografia;
+        $html .= '</div>
                      </div>
                      <div class="row"> 
                          <div class="col">';
-         $html .= $htmlTecnologico;
-         $html .= '</div>                        
+        $html .= $htmlTecnologico;
+        $html .= '</div>                        
                      </div>
                      <div class="row"> 
                          <div class="col">';
-         $html .= $htmlOtros;
-         $html .= '</div>
+        $html .= $htmlOtros;
+        $html .= '</div>
                      </div>
                  </div>';
- 
- 
-         return $html;
-     }
 
+
+        return $html;
+    }
+    //9.
+    private function reflexion($idGrupoInter)
+    {
+         $html="";
+        $html .= '<div class="" style="align-items: center; display: flex; justify-content: center;">';
+        $html .= '<div class="card" style="width: 90%; margin-top:20px">';
+        
+            $html .= '<div class="card-header" style="background-color:#800834;">';                    
+                $html .= '<h5 class="" style="color: #ffffff;"><b>9.1.- REFLEXIÓN: '.$idGrupoInter.' </b></h5>';                        
+                $html .= '<small style="color: #ffffff; font-size:12px">(Consideración de la planificación, el proceso y el impacto de la indagación. En el proceso de reflexión, garantizar dar respuesta a varias de la preguntas planteadas en cada momento.)</small>';
+            $html .= '</div>';
+                
+            $html .= '<div class="card-body">';
+                $html .= '<div class="ocultar">';
+                $html .= $this->modal_refelxion($idGrupoInter);
+                $html .='</div>';
+                $html .= '<div class="table table-responsive">';     
+
+                $html .= '<table class="table table-hover table-condensed table-bordered">';          
+                        $html .= '<div class="table table-responsive">';
+                            $html .= '<table class="table table-condensed table-bordered">';
+                                $html .= '<thead>';
+                                    $html .= '<tr style="background-color:#CCC">';
+                                        $html .= '<th class="text-center" style="background-color: #0a1f8f; color: white">ANTES DE ENSEÑAR LA UNIDAD</th>';
+                                        $html .= '<th class="text-center" style="background-color: #9e28b5; color: white">MIENTRAS SE ENSEÑA LA UNIDAD</th>';
+                                        $html .= '<th class="text-center" style="background-color: #ab0a3d; color: white">DESPUÉS DE ENSEÑAR LA UNIDAD</th>';
+                                    $html .= '</tr>';
+                                $html .= '</thead>';
+                                $html .= '<tbody id="table-reflexion-disponibles">';
+                                        $html.= '<tr>';
+                                            $html.='<td>'.$this->mostrar_preguntas_reflexion_seleccionadas($idGrupoInter,'antes').'</td>';
+                                            $html.='<td>'.$this->mostrar_preguntas_reflexion_seleccionadas($idGrupoInter,'mientras').'</td>';
+                                            $html.='<td>'.$this->mostrar_preguntas_reflexion_seleccionadas($idGrupoInter,'despues').'</td>';
+                                        $html.= '</tr>';
+                                     $html.='</tbody>';
+                            $html .= '</table>';
+                        $html .= '</div>';
+
+                $html .= '</table>';            
+                $html .= '</div>';
+
+            $html .= '</div>';
+        $html .= '</div>';
+        $html .= '</div>'; 
+
+        
+        return $html;
+    }
+    //9
+    private function modal_refelxion($idGrupoInter){
+        $html = '<a href="#"  data-bs-toggle="modal" data-bs-target="#reflexionModal" onclick="show_reflexion_disponibles()"> 
+                              <span class="badge rounded-pill" 
+                              style="background-color: #ab0a3d"><i class="fa fa-briefcase" aria-hidden="true"></i> 
+                              Seleccionar Preguntas
+                              </span>';
+                $html .= '</a>';
+      
+                $html.= '<div class="modal fade" id="reflexionModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-xl">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="exampleModalLabel">SELECCIONAR PREGUNTAS</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>                      
+                    </div>'; //FIN DE MODAL -HEADER
+
+                    $html .= '<div class="modal-body">'; //Inicio de modal-body
+                
+                        $html .= '<div class="table table-responsive">';
+                            $html .= '<table class="table table-condensed table-bordered">';
+                                $html .= '<thead>';
+                                    $html .= '<tr>';
+                                        $html .= '<th class="text-center" style="background-color: #0a1f8f; color: white">ANTES DE ENSEÑAR LA UNIDAD</th>';
+                                        $html .= '<th class="text-center" style="background-color: #9e28b5; color: white">MIENTRAS SE ENSEÑA LA UNIDAD</th>';
+                                        $html .= '<th class="text-center" style="background-color: #ab0a3d; color: white">DESPUÉS DE ENSEÑAR LA UNIDAD</th>';
+                                    $html .= '</tr>';
+                                $html .= '</thead>';
+                                $html .= '<tbody id="table-reflexion-disponibles">';
+                                        $html.= '<tr>';
+                                            $html.='<td>'.$this->mostrar_preguntas_reflexion_disponibles($idGrupoInter,'antes').'</td>';
+                                            $html.='<td>'.$this->mostrar_preguntas_reflexion_disponibles($idGrupoInter,'mientras').'</td>';
+                                            $html.='<td>'.$this->mostrar_preguntas_reflexion_disponibles($idGrupoInter,'despues').'</td>';
+                                        $html.= '</tr>';
+                                $html.='</tbody>';
+                            $html .= '</table>';
+                        $html .= '</div>';
+
+                      
+                    $html .= '</div>';// fin de modal-body
+
+                    $html .= '<div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="recargar_pagina()">Cerrar</button>                      
+                      
+                    </div>
+                  </div>
+                </div>
+              </div>';
+        return $html;
+    }
+    //9
+    private function mostrar_preguntas_reflexion_disponibles($idGrupoInter,$tipo_pregunta)
+    {
+        $con = Yii::$app->db;
+        $query="select id,tipo ,categoria ,opcion  from planificacion_opciones po 
+        where id not in (
+        select id_planificacion_opciones  from ism_respuesta_reflexion_pai_interdiciplinar irrpi where id_respuesta_plan_inter_pai =$idGrupoInter
+        ) and tipo='REFLEXION' and categoria='$tipo_pregunta' and estado = true";      
+
+        $arraylPlanOpciones = $con->createCommand($query)->queryAll();
+
+        $html ="";
+        $html.='<table>';
+                    foreach($arraylPlanOpciones as $array)
+                    {
+                        $html.='<tr><td><a href="#" onclick="guardar_pregunta_reflexion('.$array['id'].',\''.strtoupper($tipo_pregunta).'\');">'.$array['opcion'].'</a></td></tr>';
+                    }
+        $html.='</table>';
+        return $html;
+    }
+    //9
+    private function mostrar_preguntas_reflexion_seleccionadas($idIsmGrupoInter,$tipo_pregunta)
+    {     
+        $con = Yii::$app->db;   
+
+        //script para mostar id correspondiente a la ´respuesta en el plan interdiciplinar pai para reflexion
+        $query = "select i1.id_respuesta_plan_inter_pai ,i1.id_planificacion_opciones ,
+                    i1.respuesta ,i2.tipo ,i2.categoria,i2.opcion  
+                    from ism_respuesta_reflexion_pai_interdiciplinar i1,
+                    planificacion_opciones i2
+                    where i1.id_planificacion_opciones  = i2.id 
+                    and i1.id_respuesta_plan_inter_pai = $idIsmGrupoInter
+                    and i2.seccion ='PAI' and i2.categoria ='$tipo_pregunta';";
+   
+        $resp = $con->createCommand($query)->queryAll();   
+
+        $html="";
+        $html.='<table>';
+        foreach($resp as $r)
+        {     
+            $html.='<tr><td><a href="#">'.$r['opcion'].'</a></td></tr>';
+        }
+        $html.='</table>';    
+
+        return $html;       
+    }
+    //9
+    private function guardar_pregunta_reflexion($idPregunta,$tipo_pregunta,$idIsmGrupoInter)
+    {
+        $con = Yii::$app->db;
+
+        //script para mostar id correspondiente a la ´respuesta en el plan interdiciplinar pai para reflexion
+
+        $query = "select id  from ism_respuesta_plan_interdiciplinar irpi 
+                    where id_contenido_plan_inter in 
+                    (select id from ism_contenido_plan_interdiciplinar icpi where nombre_campo = upper('$tipo_pregunta') )
+                    and id_grupo_plan_inter  = $idIsmGrupoInter;";
+        $resp = $con->createCommand($query)->queryOne();
+
+     
+
+        $modelRespuestaReflexion = new IsmRespuestaReflexionPaiInterdiciplinar();
+        $modelRespuestaReflexion->id_respuesta_plan_inter_pai = $resp['id'];
+        $modelRespuestaReflexion->id_planificacion_opciones = $idPregunta;
+        $modelRespuestaReflexion->respuesta = " - ";
+    
+        $modelRespuestaReflexion->save();
+    }
     /********************************************************************************************************* */
     /********************************************************************************************************* */
     /********************************************************************************************************* */
@@ -698,7 +1118,7 @@ class IsmRespuestaPlanInterdiciplinarController extends Controller
         $html .= '<div class="" style="align-items: center; display: flex; justify-content: center;">';
         $html .= '<div class="card" style="width: 90%; margin-top:20px">';
         $html .= '<div class="card-header" style="background-color:#800834">';
-        $html .= '<h6 class="text-center" style="color:#ffffff" ><b>' . $titulo . '</b></h6>';
+        $html .= '<h6 class="text-center" style="color:#ffffff" >' . $titulo . '</h6>';
         $html .= '</div>';
         $html .= '<div class="card-body">';
         if ($esEditable) {

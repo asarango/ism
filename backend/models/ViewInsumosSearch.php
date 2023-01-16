@@ -2,15 +2,13 @@
 
 namespace backend\models;
 
-use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use backend\models\ViewInsumos;
 
 /**
- * UsuarioSearch represents the model behind the search form of `backend\models\Usuario`.
+ * IsmAreaSearch represents the model behind the search form of `backend\models\IsmArea`.
  */
-class ViewInsumosSearch extends ViewKidsTareas
+class ViewInsumosSearch extends ViewInsumos
 {
     /**
      * {@inheritdoc}
@@ -18,9 +16,8 @@ class ViewInsumosSearch extends ViewKidsTareas
     public function rules()
     {
         return [
-            [['curso', 'paralelo', 'materia', 'fecha_presentacion', 'titulo'], 'safe'],
-            [['clase_id'], 'integer'],
-            // [['activo'], 'boolean'],
+            [['clase_id', 'actividad_id', 'periodo_id', 'total_calificados', 'total_estudiantes'], 'integer'],
+            [['curso', 'paralelo', 'nombre', 'nombre_nacional', 'inicio', 'title', 'login'], 'safe'],
         ];
     }
 
@@ -40,11 +37,13 @@ class ViewInsumosSearch extends ViewKidsTareas
      *
      * @return ActiveDataProvider
      */
-    public function search($params, $usuario)
+    public function search($params, $user, $periodoId)
     {
-        $query = ViewKidsTareas::find()
-        ->where(['usuario' => $usuario])
-        ->orderBy(['fecha_presentacion' => SORT_DESC]);
+        $query = ViewInsumos::find()
+                ->where([
+                    'login' => $user,
+                    'periodo_id' => $periodoId
+                ]);
 
         // add conditions that should always apply here
 
@@ -62,19 +61,22 @@ class ViewInsumosSearch extends ViewKidsTareas
 
         // grid filtering conditions
         $query->andFilterWhere([
-             'tarea_id' => $this->tarea_id,
-            // 'activo' => $this->activo,
-            // 'numero_incremento' => $this->numero_incremento,
-            // 'instituto_defecto' => $this->instituto_defecto,
-            // 'periodo_id' => $this->periodo_id,
+            'clase_id'          => $this->clase_id,
+            'actividad_id'      => $this->actividad_id,
+            'periodo_id'        => $this->periodo_id, 
+            'total_calificados' => $this->total_calificados, 
+            'total_estudiantes' => $this->total_estudiantes
         ]);
 
-        $query->andFilterWhere(['ilike', 'curso', $this->curso])
-            ->andFilterWhere(['ilike', 'paralelo', $this->paralelo])
-            ->andFilterWhere(['ilike', 'materia', $this->materia])
-            ->andFilterWhere(['ilike', 'fecha_presentacion', $this->fecha_presentacion])
-            ->andFilterWhere(['ilike', 'usuario', $this->usuario])
-            ->andFilterWhere(['ilike', 'titulo', $this->titulo]);
+        $query->andFilterWhere(['ilike', 'nombre', $this->nombre])
+        
+        ->andFilterWhere(['ilike', 'curso', $this->curso])
+        ->andFilterWhere(['ilike', 'paralelo', $this->paralelo])
+        ->andFilterWhere(['ilike', 'nombre', $this->nombre])
+        ->andFilterWhere(['ilike', 'nombre_nacional', $this->nombre_nacional]) 
+        ->andFilterWhere(['ilike', 'inicio', $this->inicio])
+        ->andFilterWhere(['ilike', 'title', $this->title])
+        ->andFilterWhere(['ilike', 'login', $this->login]);
 
         return $dataProvider;
     }

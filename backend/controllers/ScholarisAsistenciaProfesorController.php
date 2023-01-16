@@ -13,6 +13,7 @@ use yii\filters\AccessControl;
 use frontend\models\SentenciasSql;
 use backend\models\ScholarisPeriodo;
 use backend\models\ResUsers;
+use backend\models\ViewInsumosSearch;
 
 /**
  * ScholarisAsistenciaProfesorController implements the CRUD actions for ScholarisAsistenciaProfesor model.
@@ -338,7 +339,14 @@ class ScholarisAsistenciaProfesorController extends Controller {
      */
     public function actionInsumos(){
         $user = Yii::$app->user->identity->usuario;
-        echo $user;
+        $periodId = Yii::$app->user->identity->periodo_id;
+        $searchModel = new ViewInsumosSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams, $user, $periodId);
+
+        return $this->render('insumos', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider
+        ]);
     }
     
 

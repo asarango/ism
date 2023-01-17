@@ -16,8 +16,8 @@ class ViewInsumosSearch extends ViewInsumos
     public function rules()
     {
         return [
-            [['clase_id', 'actividad_id', 'periodo_id', 'total_calificados', 'total_estudiantes'], 'integer'],
-            [['curso', 'paralelo', 'nombre', 'nombre_nacional', 'inicio', 'title', 'login'], 'safe'],
+            [['clase_id', 'actividad_id', 'periodo_id', 'total_calificados', 'total_estudiantes', 'semana_numero'], 'integer'],
+            [['curso', 'paralelo', 'nombre', 'nombre_nacional', 'inicio', 'title', 'login', 'bloque'], 'safe'],
         ];
     }
 
@@ -65,7 +65,8 @@ class ViewInsumosSearch extends ViewInsumos
             'actividad_id'      => $this->actividad_id,
             'periodo_id'        => $this->periodo_id, 
             'total_calificados' => $this->total_calificados, 
-            'total_estudiantes' => $this->total_estudiantes
+            'total_estudiantes' => $this->total_estudiantes,
+            'semana_numero' => $this->semana_numero
         ]);
 
         $query->andFilterWhere(['ilike', 'nombre', $this->nombre])
@@ -76,6 +77,7 @@ class ViewInsumosSearch extends ViewInsumos
         ->andFilterWhere(['ilike', 'nombre_nacional', $this->nombre_nacional]) 
         ->andFilterWhere(['ilike', 'inicio', $this->inicio])
         ->andFilterWhere(['ilike', 'title', $this->title])
+        ->andFilterWhere(['ilike', 'bloque', $this->bloque])
         ->andFilterWhere(['ilike', 'login', $this->login]);
 
         return $dataProvider;

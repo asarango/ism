@@ -71,6 +71,8 @@ $this->title = 'Mis insumos';
                         ],
                         /** FIN BOTONES DE ACCION * */
                         'clase_id',
+                        'bloque',
+                        'semana_numero',
                         'curso',
                         'paralelo',
                         'nombre',

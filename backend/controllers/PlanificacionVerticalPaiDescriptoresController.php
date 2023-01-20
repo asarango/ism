@@ -266,6 +266,8 @@ order by ic.nombre, id.nombre;";
                                         and tipo = 'habilidad_enfoque' 
                                         and contenido = c.es_exploracion
                 ) order by c.es_titulo2, c.es_exploracion ;";
+        
+                
 
         $res = $con->createCommand($query)->queryAll();
         return $res;

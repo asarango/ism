@@ -155,7 +155,11 @@ $iconoColor = 'blue';
     <li>
         <b>6.- ACCIÓN: ENSEÑANZA Y APRENDIZAJE A TRAVÉS DE LA INDAGACIÓN INTERDISCIPLINARIA</b>
         <ul>
-
+            <li class="zoom">
+                <a href="#" onclick="ver_detalle('6.1.-');">6.1.- Acción
+                    <i class="<?= $iconoOk; ?>" title="" style="color: <?= $iconoColor; ?>;"></i>
+                </a>
+            </li>
         </ul>
     </li>
     <hr>
@@ -281,8 +285,7 @@ $iconoColor = 'blue';
             idGrupoInter : idGrupoInter,
             id_pregunta: id_pregunta,
             tipo_pregunta:tipo_pregunta,
-        };
-        
+        };        
   
         $.ajax({
             data: params,
@@ -290,9 +293,75 @@ $iconoColor = 'blue';
             type: 'POST',
             beforeSend: function() {},
             success: function(response) {
-                $("#table-reflexion-seleccionadas").html(response);
+                $("#table-reflexion-disponibles").html(response);                
+              
             }
-        });
+        });        
+    }
+    function eliminar_pregunta_reflexion(id_pregunta)
+    {
+        var idGrupoInter = $("#id_grupo_inter").val();    
+        var url = '<?= Url::to(['eliminar-pregunta-reflexion']) ?>';      
+
+        
+        var params = {
+            idGrupoInter : idGrupoInter,
+            id_pregunta: id_pregunta,
+        };   
+  
+        $.ajax({
+            data: params,
+            url: url,
+            type: 'POST',
+            beforeSend: function() {},
+            success: function(response) {                                   
+                $("#table-reflexion-selecionadas").html(response);    
+            }
+        });  
+
+    }
+    function actualizar_pregunta(id_pregunta)
+    {
+        var respuesta = $("#respuesta_"+id_pregunta).val();
+        var url = '<?= Url::to(['actualizar-pregunta-reflexion']) ?>';
+        var params = {
+            id_pregunta : id_pregunta,
+            respuesta : respuesta,
+        };         
+  
+        $.ajax({
+            data: params,
+            url: url,
+            type: 'POST',
+            beforeSend: function() {},
+            success: function(response) {                                   
+                //$("#table-reflexion-selecionadas").html(response);    
+            }
+        });  
+
+    }
+    function quitar_agregar_seleccion(bandera,id_Respuesta,pestana)
+    {        
+        var url = '<?= Url::to(['quitar-agregar-seleccion']) ?>';
+        var params = {
+            id_Respuesta : id_Respuesta,
+            pestana : pestana,
+            bandera : bandera,
+        };         
+  
+        $.ajax({
+            data: params,
+            url: url,
+            type: 'POST',
+            beforeSend: function() {},
+            success: function(response) {                                   
+                ver_detalle(pestana);  
+            }
+        }); 
+
+    }
+    function recargar_pagina(){
+        //location.reload();      
         
     }
 </script>

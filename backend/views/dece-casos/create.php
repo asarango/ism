@@ -24,7 +24,7 @@ $ahora = date('Y-m-d H:i:s');
         <div class="card shadow col-lg-7 col-md-7">
             <div class=" row align-items-center p-2">
                 <div class="col-lg-1">
-                    <img src="ISM/main/images/submenu/firma-electronica.png" width="" class="img-thumbnail">                    
+                    <img src="../ISM/main/images/submenu/firma-electronica.png" width="" class="img-thumbnail">                    
                 </div>
 
                 <div class="col-lg-11">

@@ -147,7 +147,7 @@ $helper = new HelperGeneral();
                                     <div class="col-lg-3 col-md-3" style="font-size: 10px; text-align: right;">
                                         <!-- Button trigger modal motivo de no realizó la actividad de la hora-->
                                         <a class="zoom" data-bs-toggle="modal" data-bs-target="#staticBackdrop<?= $det['lms_doc_id'] ?>">
-                                            <i class="fas fa-ellipsis-h zoom" style="color: #65b2e8; font-size: 12px;"> Observaciones</i>
+                                            <i class="fas fa-ellipsis-h zoom" style="color: #65b2e8; font-size: 12px;"> </i>
                                         </a>
 
                                         <!-- Modal -->
@@ -185,11 +185,71 @@ $helper = new HelperGeneral();
                                                         <div class="form-group" style="margin-top: 15px;">
                                                             <label for="justificativo" class="form-label">¿Cómo recuperará?</label>
                                                             <textarea name="justificativo" class="form-control"><?= $det['justificativo'] ?></textarea>
+                                                        </div>                                                        
+
+                                                        <hr>
+                                                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cerrar</button>
+                                                        <!-- <button type="button" class="btn btn-primary">Understood</button> -->
+                                                        <?= Html::submitButton('Guardar', ['class' => 'btn btn-outline-primary']) ?>
+                                                        <?= Html::endForm() ?>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- para observaciones -->
+                                <div class="row" style="background-color: #eee;">
+                                <div class="col-lg-9 col-md-9" style="font-size: 10px; text-align: left;">
+                                        <!-- Button trigger modal motivo de no realizó la actividad de la hora-->
+                                        <a class="zoom" data-bs-toggle="modal" data-bs-target="#observations<?= $det['lms_doc_id'] ?>">
+                                            <i class="fas fa-binoculars zoom" style="color: #0a1f8f; font-size: 12px;"> OBSERVACIONES</i>
+                                        </a>
+
+                                        <!-- Modal -->
+                                        <div class="modal fade" id="observations<?= $det['lms_doc_id'] ?>" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="staticBackdropLabel">Observaciones:</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body" style="text-align: left;">
+                                                        <?= Html::beginForm(['update'], 'post', ['enctype' => 'multipart/form-data']) ?>
+
+                                                        <input type="hidden" name="lms_docente_id" value="<?= $det['lms_doc_id'] ?>">
+                                                        <input type="hidden" name="nombre_semana" value="<?= $nombre_semana ?>">
+                                                        <input type="hidden" name="semana_numero" value="<?= $semana_numero ?>">
+                                                        <input type="hidden" name="clase_id" value="<?= $clase_id ?>">
+                                                        <input type="hidden" name="se_realizo" value="<?= $det['se_realizo'] ?>">
+                                                        <input type="hidden" name="motivo_no_realizado" value="<?= $det['motivo_no_realizado'] ?>">
+                                                        <input type="hidden" name="justificativo" value="<?= $det['justificativo'] ?>">
+
+
+
+                                                        <!-- <div class="form-group">
+                                                            <label for="serealizo" class="form-label">Se realizó</label>
+                                                            <select name="se_realizo" class="form-control">
+                                                                <option value="<?= $det['se_realizo'] ?>"><?= $seRealizo ?></option>
+                                                                <option value="1">SI</option>
+                                                                <option value="0">NO</option>
+                                                            </select>
                                                         </div>
 
+                                                        <div class="form-group" style="margin-top: 15px;">
+                                                            <label for="motivo" class="form-label">¿Por qué no se realizó?</label>
+                                                            <textarea name="motivo_no_realizado" class="form-control"><?= $det['motivo_no_realizado'] ?></textarea>
+                                                        </div>
 
                                                         <div class="form-group" style="margin-top: 15px;">
-                                                            <label for="observaciones" class="form-label">Observaciones</label>
+                                                            <label for="justificativo" class="form-label">¿Cómo recuperará?</label>
+                                                            <textarea name="justificativo" class="form-control"><?= $det['justificativo'] ?></textarea>
+                                                        </div>        -->
+                                                        
+                                                        <div class="form-group" style="margin-top: 15px;">
+                                                            <label for="observaciones" class="form-label">Observaciones:</label>
                                                             <textarea name="observaciones" class="form-control"><?= $det['observaciones'] ?></textarea>
                                                         </div>
 

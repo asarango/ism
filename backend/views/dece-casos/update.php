@@ -37,7 +37,7 @@ $modelAsistProfesor = ScholarisAsistenciaProfesor::find()
         <div class="card shadow col-lg-8 col-md-8">
             <div class=" row align-items-center p-2">                
                 <div class="col-lg-1">
-                    <img src="ISM/main/images/submenu/firma-electronica.png" width="" class="img-thumbnail">                    
+                    <img src="../ISM/main/images/submenu/firma-electronica.png" width="" class="img-thumbnail">                    
                 </div> 
                 <div class="col-lg-3">   
                        |

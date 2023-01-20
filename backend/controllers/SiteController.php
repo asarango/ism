@@ -137,8 +137,8 @@ class SiteController extends Controller {
         return $this->goHome();
     }
 
-    public function actionGetSubMenu() {
-
+    public function actionGetSubMenu() 
+    {
         if (isset(\Yii::$app->user->identity->usuario)) {
             $userLog = \Yii::$app->user->identity->usuario;
             $scholarisPeriodoId = \Yii::$app->user->identity->periodo_id;
@@ -146,8 +146,7 @@ class SiteController extends Controller {
             $rolId = $user->rol_id;
         } else {
             $this->redirect(['site/login']);
-        }
-        
+        }        
         
         $secciones = $this->get_secciones_usuario($userLog, $scholarisPeriodoId);
         

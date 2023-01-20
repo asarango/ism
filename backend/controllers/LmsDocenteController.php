@@ -112,6 +112,7 @@ class LmsDocenteController extends Controller {
                         ,doc.justificativo 
                         ,(select count(id) from lms_actividad where lms_id = lms.id) as total_insumos
                         ,det.id as detalle_id
+                        ,doc.observaciones
                 from 	lms_docente doc
                         inner join lms on lms.id = doc.lms_id
                         inner join ism_area_materia iam on iam.id = lms.ism_area_materia_id 
@@ -135,6 +136,7 @@ class LmsDocenteController extends Controller {
         $seRealizo      = $_POST['se_realizo'];
         $motivo         = $_POST['motivo_no_realizado'];
         $justificativo  = $_POST['justificativo'];
+        $observaciones  = $_POST['observaciones'];
 
         $seRealizo == true ? $realizo = true : $realizo = false;
 
@@ -144,6 +146,7 @@ class LmsDocenteController extends Controller {
         $model->justificativo       = $justificativo;
         $model->updated             = $usuarioLog;
         $model->updated_at          = $hoy;
+        $model->observaciones       = $observaciones;
         $model->save();
 
         return $this->redirect(['index1',

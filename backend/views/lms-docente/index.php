@@ -75,7 +75,7 @@ $helper = new HelperGeneral();
                             <div class="card-body my-scroll" style="">
 
                                 <div class="row" style="background-color: #eee;">
-                                    <div class="col-lg-8 col-md-8" style="font-size: 10px;">
+                                    <div class="col-lg-9 col-md-9" style="font-size: 10px;">
                                         <?php
                                         if ($det['es_aprobado']) {
                                         ?>
@@ -144,10 +144,10 @@ $helper = new HelperGeneral();
 
                                     </div> <!-- FIN DE COL DE ICONOS IZQUIERDA -->
 
-                                    <div class="col-lg-4 col-md-4" style="font-size: 10px; text-align: right;">
+                                    <div class="col-lg-3 col-md-3" style="font-size: 10px; text-align: right;">
                                         <!-- Button trigger modal motivo de no realizó la actividad de la hora-->
                                         <a class="zoom" data-bs-toggle="modal" data-bs-target="#staticBackdrop<?= $det['lms_doc_id'] ?>">
-                                            <i class="fas fa-ellipsis-h zoom" style="color: #65b2e8; font-size: 12px;"> </i>
+                                            <i class="fas fa-ellipsis-h zoom" style="color: #65b2e8; font-size: 12px;"> Observaciones</i>
                                         </a>
 
                                         <!-- Modal -->
@@ -185,6 +185,12 @@ $helper = new HelperGeneral();
                                                         <div class="form-group" style="margin-top: 15px;">
                                                             <label for="justificativo" class="form-label">¿Cómo recuperará?</label>
                                                             <textarea name="justificativo" class="form-control"><?= $det['justificativo'] ?></textarea>
+                                                        </div>
+
+
+                                                        <div class="form-group" style="margin-top: 15px;">
+                                                            <label for="observaciones" class="form-label">Observaciones</label>
+                                                            <textarea name="observaciones" class="form-control"><?= $det['observaciones'] ?></textarea>
                                                         </div>
 
                                                         <hr>

@@ -20,10 +20,12 @@ use Yii;
  * @property string $create_at
  * @property string $updated
  * @property string $updated_at
+ * @property string $observaciones
  *
  * @property Lms $lms
  * @property ScholarisClase $clase
  * @property ScholarisHorariov2Detalle $horarioDetalle
+ * @property LmsDocenteNee[] $lmsDocenteNees
  */
 class LmsDocente extends \yii\db\ActiveRecord
 {
@@ -46,7 +48,7 @@ class LmsDocente extends \yii\db\ActiveRecord
             [['lms_id', 'horario_detalle_id', 'hora_numero_lms', 'clase_id'], 'integer'],
             [['fecha', 'create_at', 'updated_at'], 'safe'],
             [['se_realizo'], 'boolean'],
-            [['motivo_no_realizado', 'justificativo'], 'string'],
+            [['motivo_no_realizado', 'justificativo', 'observaciones'], 'string'],
             [['created', 'updated'], 'string', 'max' => 200],
             [['lms_id'], 'exist', 'skipOnError' => true, 'targetClass' => Lms::className(), 'targetAttribute' => ['lms_id' => 'id']],
             [['clase_id'], 'exist', 'skipOnError' => true, 'targetClass' => ScholarisClase::className(), 'targetAttribute' => ['clase_id' => 'id']],
@@ -73,6 +75,7 @@ class LmsDocente extends \yii\db\ActiveRecord
             'create_at' => 'Create At',
             'updated' => 'Updated',
             'updated_at' => 'Updated At',
+            'observaciones' => 'Observaciones',
         ];
     }
 
@@ -98,5 +101,13 @@ class LmsDocente extends \yii\db\ActiveRecord
     public function getHorarioDetalle()
     {
         return $this->hasOne(ScholarisHorariov2Detalle::className(), ['id' => 'horario_detalle_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getLmsDocenteNees()
+    {
+        return $this->hasMany(LmsDocenteNee::className(), ['lms_docente_id' => 'id']);
     }
 }

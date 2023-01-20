@@ -29,7 +29,7 @@ $modelAsistProfesor = ScholarisAsistenciaProfesor::find()
 
             <div class=" row align-items-center p-2">
                 <div class="col-lg-2">
-                    <h4><img src="ISM/main/images/submenu/retroalimentacion.png" width="64px" class="img-thumbnail"></h4>
+                    <h4><img src="../ISM/main/images/submenu/retroalimentacion.png" width="64px" class="img-thumbnail"></h4>
                 </div>
                 <div class="col-lg-10">
                     <h1><?= Html::encode($this->title) ?></h1>

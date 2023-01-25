@@ -13,6 +13,7 @@ use Yii;
  * @property bool $mostrar
  * @property string $tipo
  * @property string $contenido
+ * @property string $actividad
  *
  * @property IsmRespuestaPlanInterdiciplinar $respuestaPlanInterPai
  * @property PlanificacionVerticalPaiOpciones $planVertOpciones
@@ -39,6 +40,7 @@ class IsmRespuestaOpcionesPaiInterdiciplinar extends \yii\db\ActiveRecord
             [['mostrar'], 'boolean'],
             [['tipo'], 'string', 'max' => 50],
             [['contenido'], 'string', 'max' => 100],
+            [['actividad'], 'string', 'max' => 500],
             [['id_respuesta_plan_inter_pai'], 'exist', 'skipOnError' => true, 'targetClass' => IsmRespuestaPlanInterdiciplinar::className(), 'targetAttribute' => ['id_respuesta_plan_inter_pai' => 'id']],
             [['id_plan_vert_opciones'], 'exist', 'skipOnError' => true, 'targetClass' => PlanificacionVerticalPaiOpciones::className(), 'targetAttribute' => ['id_plan_vert_opciones' => 'id']],
         ];
@@ -56,6 +58,7 @@ class IsmRespuestaOpcionesPaiInterdiciplinar extends \yii\db\ActiveRecord
             'mostrar' => 'Mostrar',
             'tipo' => 'Tipo',
             'contenido' => 'Contenido',
+            'actividad' => 'Actividad',
         ];
     }
 

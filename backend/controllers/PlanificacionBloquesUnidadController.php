@@ -139,6 +139,10 @@ class PlanificacionBloquesUnidadController extends Controller{
                     inner join scholaris_op_period_periodo_scholaris sop on sop.op_id = s.period_id 
                     where c.x_template_id = $templateId and sop.scholaris_id = $scholarisPeriodoId and c.x_institute = $institutoId";
 
+        // echo '<pre>';
+        // print_r( $query);
+        // die();
+
         $res = $con->createCommand($query)->queryOne();
         return $res['code'];
     }

@@ -412,6 +412,9 @@ function contador_diferenciacion($planUnidadId,$numCaracteresOk){
 
                 $("#div-detalle").html(response);      
                            
+            },
+            error: function(){
+                alert("Por favor, verifique PLAN VERTICAL");
             }
         });        
     }

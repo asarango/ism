@@ -575,9 +575,9 @@ class PudDipController extends Controller {
                     'planificacion_bloque_unidad_id' => $planBloqueUnidad->id
                 ])->one();
 
-//        echo '<pre>';
-//print_r($planifVertDipl);
-//die();
+    //    echo '<pre>';
+    //     print_r($planBloqueUnidad);
+    //     die();
 
         return $this->mostrar_campo_simple($planifVertDipl->id, $planifVertDipl->descripcion_texto_unidad, $titulo, $accion_update, "");
     }

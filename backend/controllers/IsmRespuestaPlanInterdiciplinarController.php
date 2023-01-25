@@ -25,6 +25,8 @@ use backend\models\IsmRes;
 use backend\models\IsmRespuestaOpcionesPaiInterdiciplinar;
 use backend\models\PlanificacionVerticalPaiDescriptores;
 use yii\filters\AccessControl;
+use backend\models\PlanificacionBloquesUnidadSubtitulo2;
+use backend\models\helpers\Scripts;
 use Yii;
 
 /**
@@ -1005,47 +1007,55 @@ class IsmRespuestaPlanInterdiciplinarController extends Controller
     //6.1.-
     private function accion_ensenianza_aprendizaje($idGrupoInter)
     {
+        // $modelIsmGrupoMaterias = IsmGrupoMateriaPlanInterdiciplinar::find()
+        // ->where(['id_grupo_plan_inter'=>$idGrupoInter])
+        // ->all();
 
-        $modelIsmGrupoMaterias = IsmGrupoMateriaPlanInterdiciplinar::find()
-            ->where(['id_grupo_plan_inter' => $idGrupoInter])
-            ->all();
-
-        foreach ($modelIsmGrupoMaterias as $modelIsmGM) {
-        }
-
-        $html = '';
-        $html .= '<div class="card-header" style="background-color:#800834;">';
-        $html .= '<h5 class="text-center" style="color: #ffffff;"><b>BASE DISCIPLINARIA</b></h5>';
+        $html='';
+        $html .= '<div class="card-header" style="background-color:#800834;">';                    
+                $html .= '<h5 class="text-center" style="color: #ffffff;"><b>BASE DISCIPLINARIA</b></h5>';                        
         $html .= '</div>';
-        $html .= '<table style="border: 1px solid black; border-spacing: 30px; padding: 15px;" >';
-        $html .= '<tr>';
-        $html .= '<td colspan="2">ASGINATURA</td>';
-        $html .= '</tr>';
-        $html .= '<tr>';
-        $html .= '<td>Objetivo específico del PAI</td>';
-        $html .= '<td>' . $this->obtener_objetivo_especifico_pai($idGrupoInter) . '</td>';
-        $html .= '</tr>';
-        $html .= '<tr>';
-        $html .= '<td>Conceptos relacionados</td>';
-        $html .= '<td></td>';
-        $html .= '</tr>';
-        $html .= '<tr>';
-        $html .= '<td>Contenidos</td>';
-        $html .= '<td></td>';
-        $html .= '</tr>';
-        $html .= '<tr>';
-        $html .= '<td>Actividades de Aprendizaje y estrategias de enseñanza disciplinarias</td>';
-        $html .= '<td></td>';
-        $html .= '</tr>';
-        $html .= '</table>';
+        $html .='<table>';
+
+        //foreach($modelIsmGrupoMaterias as $modelIsmGM)
+        //{            
+            $html .='<tr>'; 
+                $html.='<table>';
+                    $html.='<tr>';
+                        $html.='<td style ="border: 1px solid grey; text-align:center"  colspan="2">
+                                    <font size="4px">ASIGNATURAS</font>
+                                </td>';
+                    $html.='</tr>';
+                    $html.='<tr>';
+                        $html.='<td style ="border: 1px solid grey">Objetivo específico del PAI</td>';
+                        $html.='<td style ="border: 1px solid grey">'.$this->obtener_objetivo_especifico_pai($idGrupoInter).'</td>';
+                    $html.='</tr>';
+                    $html.='<tr>';
+                        $html.='<td style ="border: 1px solid grey">Conceptos relacionados</td>';
+                        $html.='<td style ="border: 1px solid grey">'.$this->obtener_concepto_relacionado_pai($idGrupoInter).'</td>';
+                    $html.='</tr>';
+                    $html.='<tr>';
+                        $html.='<td style ="border: 1px solid grey">Contenidos</td>';
+                        $html.='<td style ="border: 1px solid grey">'.$this->obtener_contenido_pai($idGrupoInter).'</td>';
+                    $html.='</tr>';
+                    $html.='<tr>';
+                        $html.='<td style ="border: 1px solid grey">Actividades de Aprendizaje y estrategias de enseñanza disciplinarias</td>';
+                        $html.='<td style ="border: 1px solid grey">'.$this->obtener_actividad_aprendizaje_pai($idGrupoInter).'</td>';
+                    $html.='</tr>';
+                $html.='</table>';       
+            $html .='</tr>'; 
+        //}
+        $html .='</table>';
+
         return $html;
+        
     }
     //6
     private function obtener_objetivo_especifico_pai($idGrupoInter)
     {
         $arrayInterno = array();
         $arrayHabilidades = array();
-        $html = '';
+        $html='';
 
         $modelGrupoInte = IsmGrupoPlanInterdiciplinar::findOne($idGrupoInter);
         $abreviaturaBloque = $modelGrupoInte->bloque->abreviatura;
@@ -1060,43 +1070,188 @@ class IsmRespuestaPlanInterdiciplinarController extends Controller
             ->all();
 
         //2.- buscamos plan desag cab , con el ism_area_materia
-        foreach ($modelGrupoMaterias as $modelGrupo) {
+        foreach ($modelGrupoMaterias as $modelGrupo) 
+        {
             $modelPlanDesagCabecera = PlanificacionDesagregacionCabecera::find()
                 ->where(['ism_area_materia_id' => $modelGrupo->id_ism_area_materia])
                 ->one();
 
-            if ($modelPlanDesagCabecera) {
+            if ($modelPlanDesagCabecera) 
+            {
                 $modelPlanBloqueUndiad = PlanificacionBloquesUnidad::find()
                     ->where(['plan_cabecera_id' => $modelPlanDesagCabecera->id])
                     ->andWhere(['curriculo_bloque_id' => $modelCurriculoMec->id])
                     ->one();
 
                 $modelPlanVertPaiDesc = PlanificacionVerticalPaiDescriptores::find()
-                    ->where(['plan_unidad_id' => $modelPlanBloqueUndiad->id])
-                    ->all();
+                    ->where(['plan_unidad_id'=>$modelPlanBloqueUndiad->id])
+                    ->all();              
 
-                foreach ($modelPlanVertPaiDesc as $modelDescri) {
+                foreach ($modelPlanVertPaiDesc as $modelDescri) 
+                {
                     //buscamos en ism_criterio_descriptores_area
                     $modelCriterioDesc = IsmCriterioDescriptorArea::findOne($modelDescri->descriptor_id);
                     $area = $modelCriterioDesc->area->nombre;
-                    $curso = $modelCriterioDesc->curso->name;
-                    $criterio = $modelCriterioDesc->criterio->nombre;
-                    $criterio_literal = $modelCriterioDesc->literalCriterio->nombre_espanol;
-                    $descriptor = $modelCriterioDesc->descriptor->nombre;
-                    $descriptor_literal = $modelCriterioDesc->literalDescriptor->descripcion;
+                    $curso =$modelCriterioDesc->curso->name;
+                    $criterio =$modelCriterioDesc->criterio->nombre;
+                    $criterio_literal =$modelCriterioDesc->literalCriterio->nombre_espanol;
+                    $descriptor =$modelCriterioDesc->descriptor->nombre;
+                    $descriptor_literal =$modelCriterioDesc->literalDescriptor->descripcion;
 
-                    $html .= '<table width="500px" >';
-                    $html .= '<tr border="1">
-                                    <td width="75px" >' . $area . '</td>
-                                    <td width="50px" >' . $criterio . '</td>   
-                                    <td width="425px">' . $descriptor_literal . '</td>
+                    $html.='<table  >';
+                        $html.='<tr  >
+                                    <td style ="border: 1px solid grey;padding: 15px;">'.$area.'</td>
+                                    <td style ="border: 1px solid grey;padding: 15px;">'.$criterio.'</td>   
+                                    <td style ="border: 1px solid grey;padding: 15px;">'.$descriptor_literal.'</td>
                                 </tr>';
-                    $html .= '</table>';
+                    $html.='</table>';
                 }
             }
         }
         return $html;
     }
+    //6
+    private function obtener_concepto_relacionado_pai($idGrupoInter)
+    {
+        $arrayInterno = array();
+        $arrayHabilidades = array();
+        $html='';
+
+        $modelGrupoInte = IsmGrupoPlanInterdiciplinar::findOne($idGrupoInter);
+        $abreviaturaBloque = $modelGrupoInte->bloque->abreviatura;
+
+        $modelCurriculoMec = CurriculoMecBloque::find()
+            ->where(['shot_name' => $abreviaturaBloque])
+            ->one();
+
+        //1.-buscamos los id_are_materias
+        $modelGrupoMaterias = IsmGrupoMateriaPlanInterdiciplinar::find()
+            ->where(['id_grupo_plan_inter' => $idGrupoInter])
+            ->all();
+
+        //2.- buscamos plan desag cab , con el ism_area_materia
+        foreach ($modelGrupoMaterias as $modelGrupo) 
+        {
+            $modelPlanDesagCabecera = PlanificacionDesagregacionCabecera::find()
+                ->where(['ism_area_materia_id' => $modelGrupo->id_ism_area_materia])
+                ->one();
+
+            if ($modelPlanDesagCabecera) 
+            {
+                $modelPlanBloqueUndiad = PlanificacionBloquesUnidad::find()
+                    ->where(['plan_cabecera_id' => $modelPlanDesagCabecera->id])
+                    ->andWhere(['curriculo_bloque_id' => $modelCurriculoMec->id])
+                    ->one();
+
+                $modelPlanVertPaiOp = PlanificacionVerticalPaiOpciones::find()
+                    ->where(['plan_unidad_id'=>$modelPlanBloqueUndiad->id])
+                    ->andWhere(['tipo'=>'concepto_relacionado'])
+                    ->all();              
+
+                foreach ($modelPlanVertPaiOp as $modelOpciones) 
+                {
+                    $materia = $modelOpciones->planUnidad->planCabecera->ismAreaMateria->materia->nombre;
+                    $id = $modelOpciones->id;
+                    $tipo = $modelOpciones->tipo;
+                    $contenido = $modelOpciones->contenido;
+
+                    $html.='<table >';
+                        $html.='<tr>
+                                    <td style ="border: 1px solid grey;padding: 15px;">'.$materia.'</td>                                     
+                                    <td style ="border: 1px solid grey;padding: 15px;">'.$contenido.'</td>   
+                                </tr>';
+                    $html.='</table>';
+                }
+            }
+        }
+        return $html;
+    }
+    //6
+    private function obtener_contenido_pai($idGrupoInter)
+    {
+        $arrayInterno = array();
+        $arrayHabilidades = array();
+        $html='';
+
+        $modelGrupoInte = IsmGrupoPlanInterdiciplinar::findOne($idGrupoInter);
+        $abreviaturaBloque = $modelGrupoInte->bloque->abreviatura;
+
+        $modelCurriculoMec = CurriculoMecBloque::find()
+            ->where(['shot_name' => $abreviaturaBloque])
+            ->one();
+
+        //1.-buscamos los id_are_materias
+        $modelGrupoMaterias = IsmGrupoMateriaPlanInterdiciplinar::find()
+            ->where(['id_grupo_plan_inter' => $idGrupoInter])
+            ->all();
+
+        $temario = array();
+
+        //2.- buscamos plan desag cab , con el ism_area_materia
+        foreach ($modelGrupoMaterias as $modelGrupo) 
+        {
+            $modelPlanDesagCabecera = PlanificacionDesagregacionCabecera::find()
+                ->where(['ism_area_materia_id' => $modelGrupo->id_ism_area_materia])
+                ->one();
+
+            if ($modelPlanDesagCabecera) 
+            {
+                $modelPlanBloqueUndiad = PlanificacionBloquesUnidad::find()
+                    ->where(['plan_cabecera_id' => $modelPlanDesagCabecera->id])
+                    ->andWhere(['curriculo_bloque_id' => $modelCurriculoMec->id])
+                    ->one();
+                    
+                    $objScripts = new Scripts();
+                    $subtitulos = $objScripts->selecciona_subtitulos($modelPlanBloqueUndiad->id);
+            
+                    foreach($subtitulos as $subtitulo)
+                    {                        
+                        $subtitulo2 = PlanificacionBloquesUnidadSubtitulo2::find()->where([
+                            'subtitulo_id' => $subtitulo['id']
+                        ])->orderBy('orden')->all();
+            
+                        $subtitulo['subtitulos'] = $subtitulo2;
+                    
+                        array_push($temario, $subtitulo);
+                    }
+            }
+        }
+
+
+        $html.='<table>';
+        foreach ($temario as $temario) 
+        {                                                   
+            $html.='<tr>';
+                $html.='<td style ="border: 1px solid grey;padding: 15px;"> '.$temario['subtitulo'].'</td>
+                <td style ="border: 1px solid grey;padding: 15px;">';                
+                    foreach ($temario['subtitulos'] as $subtitulos) 
+                    {
+                    $html.='<li>'.
+                            $subtitulos['contenido']
+                        .'</li>';                                   
+                    }                             
+                $html.='</td>';
+            $html.='</tr>';        
+        }
+        $html.='</table>';
+       
+        return $html;
+    }
+    //6.-
+    private function obtener_actividad_aprendizaje_pai($idGrupoInter)
+    {
+        $titulo = 'Actividades de Aprendizaje y estrategias de enseñanza disciplinarias';
+        $idIsmGrupoInter = $idGrupoInter;
+        $esEditable = true;
+        $pestana = '6.1.-';
+        $campo = 'ACCIÓN';
+        $seccion = 6;
+
+        $html = $this->generico_consulta_base_campo_texto($seccion, $campo, $esEditable, $titulo, $pestana, $idIsmGrupoInter);
+
+        return $html;
+    }
+
     //7.-
     private function proceso_experiencia_aprendizaje($idGrupoInter)
     {

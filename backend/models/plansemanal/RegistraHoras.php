@@ -42,12 +42,14 @@ class RegistraHoras{
             'semana_numero' => $this->semanaNumero
         ])
         ->orderBy('hora_numero')
-        ->all();        
+        ->all();       
 
         $posicion = 0;
+        
         foreach($lms as $l){
             $existe = $this->busca_registro($l->id, $l->hora_numero);
-            if(!$existe){
+            
+            if(!$existe){                              
                 $this->inserta_lms_docente($l->id, $posicion);
             }
             $posicion ++;
@@ -60,8 +62,7 @@ class RegistraHoras{
      * METODO PARA BUSCAR LA EXISTENCIA DE REGISTRO
      */
     private function busca_registro($lmsId, $horaNumeroLms){
-
-        $model = LmsDocente::find()->where([
+        $model = LmsDocente::find()->where([            
             'lms_id'          => $lmsId,
             'hora_numero_lms' => $horaNumeroLms,
             'clase_id'        => $this->claseId
@@ -78,8 +79,8 @@ class RegistraHoras{
         $usuarioLog = Yii::$app->user->identity->usuario;
         $hoy = date('Y-m-d H:i:s');        
                 
-        $detalleHorario = $this->consulta_detalle_horario();
-
+        $detalleHorario = $this->consulta_detalle_horario();       
+        
         $detalle = $detalleHorario[$posicion]; //Array con el dato de la semana
         $fecha = $this->busca_fecha($detalle);        
         $model = new LmsDocente();

@@ -133,25 +133,25 @@ class PlanSemanalDocenteController extends Controller {
         else if($action == 'detail-week'){
             $weekId = $_GET['week_id'];
 
-            $dates = $this->get_dates($weekId, $user, $periodId);
+            $week = ScholarisBloqueSemanas::findOne($weekId);
+
+            $dates = $this->get_dates($week->fecha_inicio, $week->fecha_finaliza, $user, $periodId);
             $hours = $this->get_hours($user, $periodId);
 
             return $this->renderPartial('detail-week', [
                 'dates' => $dates,
                 'hours' => $hours,
-                'user'  => $user
+                'user'  => $user,
+                'bloqueId' => $week->bloque->id,
+                'weekNumber' => $week->semana_numero
             ]);
         }
 
         
     }
 
-    private function get_dates($weekId, $user, $periodId){        
-        
-        $week = ScholarisBloqueSemanas::findOne($weekId);
-
-        $days = new CalendarioSemanal($week->fecha_inicio, $week->fecha_finaliza, $user);        
-
+    private function get_dates($fechaInicio, $fechaFinaliza,  $user, $periodId){                
+        $days = new CalendarioSemanal($fechaInicio, $fechaFinaliza, $user);        
         return $days->fechas;
     }
 

@@ -181,7 +181,7 @@ class IsmRespuestaPlanInterdiciplinarController extends Controller
     public function actionDelete($id)
     {
         $this->findModel($id)->delete();
-        
+
 
         return $this->redirect(['index']);
     }
@@ -217,7 +217,7 @@ class IsmRespuestaPlanInterdiciplinarController extends Controller
                 $html = $this->proposito_integracion($idGrupoInter);
                 break;
             case '2.2.-':
-                $html = $this->conceptos_clave($idGrupoInter,$pestana);
+                $html = $this->conceptos_clave($idGrupoInter, $pestana);
                 break;
             case '2.3.-':
                 $html = $this->enunciado_indagacion($idGrupoInter);
@@ -226,10 +226,10 @@ class IsmRespuestaPlanInterdiciplinarController extends Controller
                 $html = $this->preguntas_indagacion($idGrupoInter);
                 break;
             case '2.5.-':
-                $html = $this->contexto_global($idGrupoInter,$pestana);
+                $html = $this->contexto_global($idGrupoInter, $pestana);
                 break;
             case '3.1.-':
-                $html = $this->enfoque_habilidad($idGrupoInter,$pestana);
+                $html = $this->enfoque_habilidad($idGrupoInter, $pestana);
                 break;
                 // case '3.2.-':
                 //     $html = $this->enfoque_exploracion($idGrupoInter);
@@ -266,7 +266,7 @@ class IsmRespuestaPlanInterdiciplinarController extends Controller
                 break;
             case '6.1.-':
                 $html = $this->accion_ensenianza_aprendizaje($idGrupoInter);
-                break;    
+                break;
             case '7.1.-':
                 $html = $this->proceso_experiencia_aprendizaje($idGrupoInter);
                 break;
@@ -299,21 +299,21 @@ class IsmRespuestaPlanInterdiciplinarController extends Controller
         $idGrupoInter = $_POST['idGrupoInter'];
         $id_pregunta = $_POST['id_pregunta'];
         $tipo_pregunta = $_POST['tipo_pregunta'];
-       
+
         //insertamos datos de la pregunta
-        $this->guardar_pregunta_reflexion($id_pregunta,$tipo_pregunta,$idGrupoInter);
+        $this->guardar_pregunta_reflexion($id_pregunta, $tipo_pregunta, $idGrupoInter);
 
         $html = $this->mostrar_preguntas_disponibles($idGrupoInter);
 
         return $html;
-    }                     
+    }
     public function actionEliminarPreguntaReflexion()
     {
         $idGrupoInter = $_POST['idGrupoInter'];
-        $id_pregunta = $_POST['id_pregunta'];        
+        $id_pregunta = $_POST['id_pregunta'];
 
         $model = IsmRespuestaReflexionPaiInterdiciplinar::findOne($id_pregunta);
-        
+
 
         $model->delete();
 
@@ -323,26 +323,35 @@ class IsmRespuestaPlanInterdiciplinarController extends Controller
     }
     public function actionActualizarPreguntaReflexion()
     {
-       
-        $id_pregunta = $_POST['id_pregunta']; 
-        $respuesta = $_POST['respuesta'];        
+
+        $id_pregunta = $_POST['id_pregunta'];
+        $respuesta = $_POST['respuesta'];
 
         $model = IsmRespuestaReflexionPaiInterdiciplinar::findOne($id_pregunta);
         $model->respuesta = $respuesta;
-        $model->save(); 
+        $model->save();
+    }
+    public function actionActualizarPreguntaOpciones()
+    {
 
+        $id_pregunta = $_POST['id_pregunta'];
+        $respuesta = $_POST['respuesta'];
+
+        $model = IsmRespuestaOpcionesPaiInterdiciplinar::findOne($id_pregunta);
+        $model->actividad = $respuesta;
+        $model->save();
     }
     public function actionQuitarAgregarSeleccion()
-    {       
-        $id_Respuesta = $_POST['id_Respuesta'];  
-        $bandera = $_POST['bandera'];        
+    {
+        $id_Respuesta = $_POST['id_Respuesta'];
+        $bandera = $_POST['bandera'];
 
-        $model = IsmRespuestaOpcionesPaiInterdiciplinar::findOne($id_Respuesta); 
-        $model->mostrar = $bandera;     
+        $model = IsmRespuestaOpcionesPaiInterdiciplinar::findOne($id_Respuesta);
+        $model->mostrar = $bandera;
 
         $model->save();
     }
-    
+
     /*************************************************************************************************************** */
     /*************************************************************************************************************** */
     /*************************************************************************************************************** */
@@ -505,69 +514,74 @@ class IsmRespuestaPlanInterdiciplinarController extends Controller
         return $html;
     }
     //2.2.-
-    private function conceptos_clave($idGrupoInter,$pestana)
-    {        
+    private function conceptos_clave($idGrupoInter, $pestana)
+    {
         $arrayInterno = array();
-        $tipo ='concepto_clave';
-        $tipoM='CONCEPTO CLAVE'; //DESCRIPCION PARA LAS RESPUESTAS DEL INTER DISCIPLINAR PAI
-        $tipoM2='CONCEPTO CLAVE'; //DESCRIPCION PARA OPCIONES PAI
-       
-        return $this->extrae_datos_plan_vertical($idGrupoInter,$tipo,$tipoM,$tipoM2,$pestana);
+        $tipo = 'concepto_clave';
+        $tipoM = 'CONCEPTO CLAVE'; //DESCRIPCION PARA LAS RESPUESTAS DEL INTER DISCIPLINAR PAI
+        $tipoM2 = 'CONCEPTO CLAVE'; //DESCRIPCION PARA OPCIONES PAI
+
+        return $this->extrae_datos_plan_vertical($idGrupoInter, $tipo, $tipoM, $tipoM2, $pestana);
     }
     //2.5.-
-    private function contexto_global($idGrupoInter,$pestana)
-    {       
-        $arrayInterno = array();
-        $tipo ='contexto_global';
-        $tipoM='CONTEXTO GLOBAL'; //DESCRIPCION PARA LAS RESPUESTAS DEL INTER DISCIPLINAR PAI
-        $tipoM2='CONTEXTO GOBAL'; //DESCRIPCION PARA OPCIONES PAI
-
-        return $this->extrae_datos_plan_vertical($idGrupoInter,$tipo,$tipoM,$tipoM2,$pestana);
-       
-    }
-    private function extrae_datos_plan_vertical($idGrupoInter,$tipo,$tipoM,$tipoM2,$pestana)
+    private function contexto_global($idGrupoInter, $pestana)
     {
-         //buscamos los tipos seleccionados de las materias
-         $arrayHabilidades = $this->obtener_array_opciones_pai($idGrupoInter, $tipo);
+        $arrayInterno = array();
+        $tipo = 'contexto_global';
+        $tipoM = 'CONTEXTO GLOBAL'; //DESCRIPCION PARA LAS RESPUESTAS DEL INTER DISCIPLINAR PAI
+        $tipoM2 = 'CONTEXTO GOBAL'; //DESCRIPCION PARA OPCIONES PAI
 
-         //buscamos el id de la respuesta para planificar pai inter
-         $con = Yii::$app->db;
-         $query ="select i1.id ,i1.id_grupo_plan_inter,i1.id_contenido_plan_inter,i1.respuesta  
+        return $this->extrae_datos_plan_vertical($idGrupoInter, $tipo, $tipoM, $tipoM2, $pestana);
+    }
+    // 2 y 3
+    private function extrae_datos_plan_vertical($idGrupoInter, $tipo, $tipoM, $tipoM2, $pestana)
+    {
+        //buscamos los tipos seleccionados de las materias
+        $arrayHabilidades = $this->obtener_array_opciones_pai($idGrupoInter, $tipo);
+
+        //buscamos el id de la respuesta para planificar pai inter
+        $con = Yii::$app->db;
+        $query = "select i1.id ,i1.id_grupo_plan_inter,i1.id_contenido_plan_inter,i1.respuesta  
                      from ism_respuesta_plan_interdiciplinar i1,
                      ism_contenido_plan_interdiciplinar i2
                      where i1.id_contenido_plan_inter = i2.id 
                      and i2.nombre_campo ='$tipoM'
                      and i1.id_grupo_plan_inter = $idGrupoInter;";
- 
-         $arraylPlanOpciones = $con->createCommand($query)->queryOne();
- 
-        
- 
-         foreach($arrayHabilidades as $item)
-         {
-             //buscamos si existe el ism respuesta, con los datos de concepto clave
-             $modelBusqueda = IsmRespuestaOpcionesPaiInterdiciplinar::find()
-             ->where(['id_respuesta_plan_inter_pai'=>$arraylPlanOpciones['id']])
-             ->andWhere(['id_plan_vert_opciones'=> $item['id'] ])
-             ->all();
-            
-             if(!$modelBusqueda )
-             {
-                 $modelRespOp = new IsmRespuestaOpcionesPaiInterdiciplinar();
-                 $modelRespOp->id_respuesta_plan_inter_pai = $arraylPlanOpciones['id'];
-                 $modelRespOp->id_plan_vert_opciones = $item['id'];
-                 $modelRespOp->mostrar = true;
-                 $modelRespOp->tipo =$item['tipo'];
-                 $modelRespOp->contenido =$item['contenido'];
-                 $modelRespOp->save();
-             }
-            
-         }    
- 
-         $html = $this->html_enfoque_habilidad($arrayHabilidades, $idGrupoInter,$tipoM, $tipoM2,$arraylPlanOpciones['id'],$pestana);
- 
-         return $html;
 
+        $arraylPlanOpciones = $con->createCommand($query)->queryOne();
+
+
+
+        foreach ($arrayHabilidades as $item) {
+            //buscamos si existe el ism respuesta, con los datos de concepto clave
+            $modelBusqueda = IsmRespuestaOpcionesPaiInterdiciplinar::find()
+                ->where(['id_respuesta_plan_inter_pai' => $arraylPlanOpciones['id']])
+                ->andWhere(['id_plan_vert_opciones' => $item['id']])
+                ->all();
+
+            if (!$modelBusqueda) {
+                $modelRespOp = new IsmRespuestaOpcionesPaiInterdiciplinar();
+                $modelRespOp->id_respuesta_plan_inter_pai = $arraylPlanOpciones['id'];
+                $modelRespOp->id_plan_vert_opciones = $item['id'];
+                $modelRespOp->mostrar = true;
+                $modelRespOp->tipo = $item['tipo'];
+                $modelRespOp->contenido = $item['contenido'];
+                $modelRespOp->save();
+            }
+        }
+        switch ($tipo) {
+            case 'habilidad_enfoque':
+                $html = $this->html_enfoque_habilidad($arrayHabilidades, $idGrupoInter, $tipoM, $tipoM2, $arraylPlanOpciones['id'], $pestana);
+                break;
+            case 'concepto_clave':
+                $html = $this->html_concepto_clave_global($arrayHabilidades, $idGrupoInter, $tipoM, $tipoM2, $arraylPlanOpciones['id'], $pestana);
+                break;
+            case 'contexto_global':
+                $html = $this->html_concepto_clave_global($arrayHabilidades, $idGrupoInter, $tipoM, $tipoM2, $arraylPlanOpciones['id'], $pestana);
+                break;
+        }
+
+        return $html;
     }
     //2.3.-
     private function enunciado_indagacion($idGrupoInter)
@@ -669,17 +683,21 @@ class IsmRespuestaPlanInterdiciplinarController extends Controller
         return $html;
     }
     //3.1
-    private function enfoque_habilidad($idGrupoInter,$pestana)
+    private function enfoque_habilidad($idGrupoInter, $pestana)
     {
-
+        $html = '';
         $arrayInterno = array();
-        $tipo ='habilidad_enfoque';
-        $tipoM='HABILIDAD'; //DESCRIPCION PARA LAS RESPUESTAS DEL INTER DISCIPLINAR PAI
-        $tipoM2=''; //DESCRIPCION PARA OPCIONES PAI
-       
-        return $this->extrae_datos_plan_vertical($idGrupoInter,$tipo,$tipoM,$tipoM2,$pestana);
-    }   
+        $tipo = 'habilidad_enfoque';
+        $tipoM = 'HABILIDAD'; //DESCRIPCION PARA LAS RESPUESTAS DEL INTER DISCIPLINAR PAI
+        $tipoM2 = ''; //DESCRIPCION PARA OPCIONES PAI
 
+        $html = $this->extrae_datos_plan_vertical($idGrupoInter, $tipo, $tipoM, $tipoM2, $pestana);
+
+   
+
+        return $html;
+    }
+    //2
     private function obtener_array_opciones_pai($idGrupoInter, $tipo)
     {
         $arrayInterno = array();
@@ -698,14 +716,12 @@ class IsmRespuestaPlanInterdiciplinarController extends Controller
             ->all();
 
         //2.- buscamos plan desag cab , con el ism_area_materia
-        foreach ($modelGrupoMaterias as $modelGrupo) 
-        {
+        foreach ($modelGrupoMaterias as $modelGrupo) {
             $modelPlanDesagCabecera = PlanificacionDesagregacionCabecera::find()
                 ->where(['ism_area_materia_id' => $modelGrupo->id_ism_area_materia])
                 ->one();
 
-            if ($modelPlanDesagCabecera) 
-            {
+            if ($modelPlanDesagCabecera) {
                 $modelPlanBloqueUndiad = PlanificacionBloquesUnidad::find()
                     ->where(['plan_cabecera_id' => $modelPlanDesagCabecera->id])
                     ->andWhere(['curriculo_bloque_id' => $modelCurriculoMec->id])
@@ -718,7 +734,7 @@ class IsmRespuestaPlanInterdiciplinarController extends Controller
 
                 foreach ($modelPlanVertOpPai as $modelOpcion) {
                     $arrayInterno = array(
-                        'id'=> $modelOpcion->id,
+                        'id' => $modelOpcion->id,
                         'tipo' => $modelOpcion->tipo2,
                         'contenido'  => $modelOpcion->contenido
                     );
@@ -728,55 +744,61 @@ class IsmRespuestaPlanInterdiciplinarController extends Controller
         }
         return $arrayHabilidades;
     }
-    private function html_enfoque_habilidad($arrayHabilidades,$idGrupoInter, $titulo, $tipo,$idRespuestPlanInterPai,$pestana)
+    //3
+    private function html_enfoque_habilidad($arrayHabilidades, $idGrupoInter, $titulo, $tipo, $idRespuestPlanInterPai, $pestana)
     {
         //extraigo los datos que estan seleccionados
         $modelOpcionesSeleccionadas = IsmRespuestaOpcionesPaiInterdiciplinar::find()
-                                //->where(['tipo'=>$tipo])
-                                ->where(['mostrar'=>true])
-                                ->andWhere(['id_respuesta_plan_inter_pai'=>$idRespuestPlanInterPai])
-                                ->all();
-                        
-        $modelOpcionesNoSeleccionadas= IsmRespuestaOpcionesPaiInterdiciplinar::find()
-                                //->where(['tipo'=>$tipo])
-                                ->where(['mostrar'=>false])
-                                ->andWhere(['id_respuesta_plan_inter_pai'=>$idRespuestPlanInterPai])
-                                ->all();
+            //->where(['tipo'=>$tipo])
+            ->where(['mostrar' => true])
+            ->andWhere(['id_respuesta_plan_inter_pai' => $idRespuestPlanInterPai])
+            ->all();
+
+        $modelOpcionesNoSeleccionadas = IsmRespuestaOpcionesPaiInterdiciplinar::find()
+            //->where(['tipo'=>$tipo])
+            ->where(['mostrar' => false])
+            ->andWhere(['id_respuesta_plan_inter_pai' => $idRespuestPlanInterPai])
+            ->all();
         $html = "";
         $html .= '<div class="" style="align-items: center; display: flex; justify-content: center;">
                     <div class="card" style="width: 90%; margin-top:20px">
                         <div class="card-header" style="background-color:#800834">                           
                                 <h6 class="text-center" style="color:#ffffff">' . $titulo . '</h6>                         
                         </div>';
-                    
-                $html.='<div class="card-body">
+
+        $html .= '<div class="card-body">
                             <h3>Seleccionado</h3>
                             <table class="table table-striped table-bordered">
                                 <tr style="font-size:15px;"> 
-                                    <td><b>TIPO</b></td>
-                                    <td><b>CONTENIDO</b></td>
-                                    <td><b>ACCION</b></td>
+                                    <td><b>HABILIDAD</b></td>
+                                    <td><b>EXPLORACION</b></td>
+                                    <td><b>ACTIVIDAD</b></td>
+                                    <td><b>ATRIBUTOS DEL PERFIL</b></td>
                                 </tr>';
 
-                                    foreach ($modelOpcionesSeleccionadas as $model) {
-                                        $html .= '<tr style="font-size:13px;">
-                                                    <td>';
-                                            $html .= $model->tipo;
-                                            $html .= '</td>
-                                                      <td>';
-                                            $html .= $model->contenido;
-                                            $html .= '</td>
-                                                      <td>';
-                                            $html .= '<a href="#"  data-bs-toggle="modal" data-bs-target="#reflexionModal" onclick="quitar_agregar_seleccion(0,'.$model->id.',\''.$pestana.'\')"> 
-                                                            <i style="color:red;" class="fas fa-trash"></i> 
-                                                    </a>';
-                                            $html .= '</a>';
-                                            $html .= '</td>                                            
-                                                   </tr>';
-                                    }
-                $html .= '  </table>
+        foreach ($modelOpcionesSeleccionadas as $model) 
+        {
+            $html .= '<tr style="font-size:13px;">
+                            <td>';
+                        $html .= $model->tipo;
+                    $html .= '</td>
+                            <td>';
+                                $html .= $model->contenido;
+                                $html .= '<a href="#"  data-bs-toggle="modal" data-bs-target="#reflexionModal" onclick="quitar_agregar_seleccion(0,' . $model->id . ',\'' . $pestana . '\')"> 
+                                                <i style="color:red;" class="fas fa-trash"></i> 
+                                        </a>';
+                    $html .= '</td>';
+                    $html .= '<td>
+                                    <textarea id="respuesta_op' . $model->id . '" class="form-control" style="max-width: 100%;" 
+                                    onchange="actualizar_pregunta_opciones(' . $model->id. ')">' . $model->actividad . '</textarea>
+                                </td>';
+
+                    $html .= '</td>';
+            $html .= '</tr>';
+        }
+        $html .= '  </table>
                         </div>';
-                $html.='<div class="card-body">
+        $html .= '<div class="card-body">
                         <h3>No Seleccionado</h3>
                         <table class="table table-striped table-bordered">
                             <tr style="font-size:15px;"> 
@@ -785,24 +807,103 @@ class IsmRespuestaPlanInterdiciplinarController extends Controller
                                 <td><b>ACCION</b></td>
                             </tr>';
 
-                                foreach ($modelOpcionesNoSeleccionadas as $model) {
-                                    $html .= '<tr style="font-size:13px;">
+        foreach ($modelOpcionesNoSeleccionadas as $model) {
+            $html .= '<tr style="font-size:13px;">
                                                 <td>';
-                                        $html .= $model->tipo;
-                                        $html .= '</td>
+            $html .= $model->tipo;
+            $html .= '</td>
                                                   <td>';
-                                        $html .= $model->contenido;
-                                        $html .= '</td>
+            $html .= $model->contenido;
+            $html .= '</td>
                                                   <td>';
-                                        $html .= '<a href="#"  data-bs-toggle="modal" data-bs-target="#reflexionModal" onclick="quitar_agregar_seleccion(1,'.$model->id.',\''.$pestana.'\')"> 
+            $html .= '<a href="#"  data-bs-toggle="modal" data-bs-target="#reflexionModal" onclick="quitar_agregar_seleccion(1,' . $model->id . ',\'' . $pestana . '\')"> 
                                                         <i style="color:green;" class="fas fa-check-circle"></i>
                                                     </a>';
-                                        $html .= '</td>                                            
+            $html .= '</td>                                            
                                                </tr>';
-                                }
-            $html .= '  </table>
+        }
+        $html .= '  </table>
                     </div>';
-                $html .= '</div>
+        $html .= '</div>
+                 </div>';
+        return $html;
+    }
+    //2
+    private function html_concepto_clave_global($arrayHabilidades, $idGrupoInter, $titulo, $tipo, $idRespuestPlanInterPai, $pestana)
+    {
+        //extraigo los datos que estan seleccionados
+        $modelOpcionesSeleccionadas = IsmRespuestaOpcionesPaiInterdiciplinar::find()
+            //->where(['tipo'=>$tipo])
+            ->where(['mostrar' => true])
+            ->andWhere(['id_respuesta_plan_inter_pai' => $idRespuestPlanInterPai])
+            ->all();
+
+        $modelOpcionesNoSeleccionadas = IsmRespuestaOpcionesPaiInterdiciplinar::find()
+            //->where(['tipo'=>$tipo])
+            ->where(['mostrar' => false])
+            ->andWhere(['id_respuesta_plan_inter_pai' => $idRespuestPlanInterPai])
+            ->all();
+        $html = "";
+        $html .= '<div class="" style="align-items: center; display: flex; justify-content: center;">
+                    <div class="card" style="width: 90%; margin-top:20px">
+                        <div class="card-header" style="background-color:#800834">                           
+                                <h6 class="text-center" style="color:#ffffff">' . $titulo . '</h6>                         
+                        </div>';
+
+        $html .= '<div class="card-body">
+                            <h3>Seleccionado</h3>
+                            <table class="table table-striped table-bordered">
+                                <tr style="font-size:15px;"> 
+                                    <td><b>TIPO</b></td>
+                                    <td><b>CONTENIDO</b></td>
+                                    <td><b>ACCION</b></td>
+                                </tr>';
+
+        foreach ($modelOpcionesSeleccionadas as $model) {
+            $html .= '<tr style="font-size:13px;">
+                                                    <td>';
+            $html .= $model->tipo;
+            $html .= '</td>
+                                                      <td>';
+            $html .= $model->contenido;
+            $html .= '</td>
+                                                      <td>';
+            $html .= '<a href="#"  data-bs-toggle="modal" data-bs-target="#reflexionModal" onclick="quitar_agregar_seleccion(0,' . $model->id . ',\'' . $pestana . '\')"> 
+                                                            <i style="color:red;" class="fas fa-trash"></i> 
+                                                    </a>';
+            $html .= '</a>';
+            $html .= '</td>                                            
+                                                   </tr>';
+        }
+        $html .= '  </table>
+                        </div>';
+        $html .= '<div class="card-body">
+                        <h3>No Seleccionado</h3>
+                        <table class="table table-striped table-bordered">
+                            <tr style="font-size:15px;"> 
+                                <td><b>TIPO</b></td>
+                                <td><b>CONTENIDO</b></td>
+                                <td><b>ACCION</b></td>
+                            </tr>';
+
+        foreach ($modelOpcionesNoSeleccionadas as $model) {
+            $html .= '<tr style="font-size:13px;">
+                                                <td>';
+            $html .= $model->tipo;
+            $html .= '</td>
+                                                  <td>';
+            $html .= $model->contenido;
+            $html .= '</td>
+                                                  <td>';
+            $html .= '<a href="#"  data-bs-toggle="modal" data-bs-target="#reflexionModal" onclick="quitar_agregar_seleccion(1,' . $model->id . ',\'' . $pestana . '\')"> 
+                                                        <i style="color:green;" class="fas fa-check-circle"></i>
+                                                    </a>';
+            $html .= '</td>                                            
+                                               </tr>';
+        }
+        $html .= '  </table>
+                    </div>';
+        $html .= '</div>
                  </div>';
         return $html;
     }
@@ -906,39 +1007,37 @@ class IsmRespuestaPlanInterdiciplinarController extends Controller
     {
 
         $modelIsmGrupoMaterias = IsmGrupoMateriaPlanInterdiciplinar::find()
-                ->where(['id_grupo_plan_inter'=>$idGrupoInter])
-                ->all();
+            ->where(['id_grupo_plan_inter' => $idGrupoInter])
+            ->all();
 
-        foreach($modelIsmGrupoMaterias as $modelIsmGM)
-        {
-            
+        foreach ($modelIsmGrupoMaterias as $modelIsmGM) {
         }
 
-        $html='';
-        $html .= '<div class="card-header" style="background-color:#800834;">';                    
-                $html .= '<h5 class="text-center" style="color: #ffffff;"><b>BASE DISCIPLINARIA</b></h5>';                        
+        $html = '';
+        $html .= '<div class="card-header" style="background-color:#800834;">';
+        $html .= '<h5 class="text-center" style="color: #ffffff;"><b>BASE DISCIPLINARIA</b></h5>';
         $html .= '</div>';
-        $html.='<table style="border: 1px solid black; border-spacing: 30px; padding: 15px;" >';
-            $html.='<tr>';
-                $html.='<td colspan="2">ASGINATURA</td>';
-            $html.='</tr>';
-            $html.='<tr>';
-                $html.='<td>Objetivo específico del PAI</td>';
-                $html.='<td>'.$this->obtener_objetivo_especifico_pai($idGrupoInter).'</td>';
-            $html.='</tr>';
-            $html.='<tr>';
-                $html.='<td>Conceptos relacionados</td>';
-                $html.='<td></td>';
-            $html.='</tr>';
-            $html.='<tr>';
-                $html.='<td>Contenidos</td>';
-                $html.='<td></td>';
-            $html.='</tr>';
-            $html.='<tr>';
-                $html.='<td>Actividades de Aprendizaje y estrategias de enseñanza disciplinarias</td>';
-                $html.='<td></td>';
-            $html.='</tr>';
-        $html.='</table>';
+        $html .= '<table style="border: 1px solid black; border-spacing: 30px; padding: 15px;" >';
+        $html .= '<tr>';
+        $html .= '<td colspan="2">ASGINATURA</td>';
+        $html .= '</tr>';
+        $html .= '<tr>';
+        $html .= '<td>Objetivo específico del PAI</td>';
+        $html .= '<td>' . $this->obtener_objetivo_especifico_pai($idGrupoInter) . '</td>';
+        $html .= '</tr>';
+        $html .= '<tr>';
+        $html .= '<td>Conceptos relacionados</td>';
+        $html .= '<td></td>';
+        $html .= '</tr>';
+        $html .= '<tr>';
+        $html .= '<td>Contenidos</td>';
+        $html .= '<td></td>';
+        $html .= '</tr>';
+        $html .= '<tr>';
+        $html .= '<td>Actividades de Aprendizaje y estrategias de enseñanza disciplinarias</td>';
+        $html .= '<td></td>';
+        $html .= '</tr>';
+        $html .= '</table>';
         return $html;
     }
     //6
@@ -946,7 +1045,7 @@ class IsmRespuestaPlanInterdiciplinarController extends Controller
     {
         $arrayInterno = array();
         $arrayHabilidades = array();
-        $html='';
+        $html = '';
 
         $modelGrupoInte = IsmGrupoPlanInterdiciplinar::findOne($idGrupoInter);
         $abreviaturaBloque = $modelGrupoInte->bloque->abreviatura;
@@ -961,41 +1060,38 @@ class IsmRespuestaPlanInterdiciplinarController extends Controller
             ->all();
 
         //2.- buscamos plan desag cab , con el ism_area_materia
-        foreach ($modelGrupoMaterias as $modelGrupo) 
-        {
+        foreach ($modelGrupoMaterias as $modelGrupo) {
             $modelPlanDesagCabecera = PlanificacionDesagregacionCabecera::find()
                 ->where(['ism_area_materia_id' => $modelGrupo->id_ism_area_materia])
                 ->one();
 
-            if ($modelPlanDesagCabecera) 
-            {
+            if ($modelPlanDesagCabecera) {
                 $modelPlanBloqueUndiad = PlanificacionBloquesUnidad::find()
                     ->where(['plan_cabecera_id' => $modelPlanDesagCabecera->id])
                     ->andWhere(['curriculo_bloque_id' => $modelCurriculoMec->id])
                     ->one();
 
                 $modelPlanVertPaiDesc = PlanificacionVerticalPaiDescriptores::find()
-                    ->where(['plan_unidad_id'=>$modelPlanBloqueUndiad->id])
-                    ->all();              
+                    ->where(['plan_unidad_id' => $modelPlanBloqueUndiad->id])
+                    ->all();
 
-                foreach ($modelPlanVertPaiDesc as $modelDescri) 
-                {
+                foreach ($modelPlanVertPaiDesc as $modelDescri) {
                     //buscamos en ism_criterio_descriptores_area
                     $modelCriterioDesc = IsmCriterioDescriptorArea::findOne($modelDescri->descriptor_id);
                     $area = $modelCriterioDesc->area->nombre;
-                    $curso =$modelCriterioDesc->curso->name;
-                    $criterio =$modelCriterioDesc->criterio->nombre;
-                    $criterio_literal =$modelCriterioDesc->literalCriterio->nombre_espanol;
-                    $descriptor =$modelCriterioDesc->descriptor->nombre;
-                    $descriptor_literal =$modelCriterioDesc->literalDescriptor->descripcion;
+                    $curso = $modelCriterioDesc->curso->name;
+                    $criterio = $modelCriterioDesc->criterio->nombre;
+                    $criterio_literal = $modelCriterioDesc->literalCriterio->nombre_espanol;
+                    $descriptor = $modelCriterioDesc->descriptor->nombre;
+                    $descriptor_literal = $modelCriterioDesc->literalDescriptor->descripcion;
 
-                    $html.='<table width="500px" >';
-                        $html.='<tr border="1">
-                                    <td width="75px" >'.$area.'</td>
-                                    <td width="50px" >'.$criterio.'</td>   
-                                    <td width="425px">'.$descriptor_literal.'</td>
+                    $html .= '<table width="500px" >';
+                    $html .= '<tr border="1">
+                                    <td width="75px" >' . $area . '</td>
+                                    <td width="50px" >' . $criterio . '</td>   
+                                    <td width="425px">' . $descriptor_literal . '</td>
                                 </tr>';
-                    $html.='</table>';
+                    $html .= '</table>';
                 }
             }
         }
@@ -1144,95 +1240,96 @@ class IsmRespuestaPlanInterdiciplinarController extends Controller
     //9.
     private function reflexion($idGrupoInter)
     {
-         $html="";
+        $html = "";
         $html .= '<div class="" style="align-items: center; display: flex; justify-content: center;">';
         $html .= '<div class="card" style="width: 90%; margin-top:20px">';
-        
-            $html .= '<div class="card-header" style="background-color:#800834;">';                    
-                $html .= '<h5 class="" style="color: #ffffff;"><b>9.1.- REFLEXIÓN: </b></h5>';                        
-                $html .= '<small style="color: #ffffff; font-size:12px">(Consideración de la planificación, el proceso y el impacto de la indagación. En el proceso de reflexión, garantizar dar respuesta a varias de la preguntas planteadas en cada momento.)</small>';
-            $html .= '</div>';
-                
-            $html .= '<div class="card-body">';
-                $html .= '<div class="ocultar">';
-                $html .= $this->modal_reflexion($idGrupoInter);
-                $html .='</div>';
-                $html .= '<div class="table table-responsive">';     
 
-                $html .= '<table class="table table-hover table-condensed table-bordered">';          
-                        $html .= '<div class="table table-responsive">';
-                            $html .= '<table class="table table-condensed table-bordered">';
-                                $html .= '<thead>';
-                                    $html .= '<tr style="background-color:#CCC">';
-                                        $html .= '<th class="text-center" style="background-color: #0a1f8f; color: white">ANTES DE ENSEÑAR LA UNIDAD</th>';
-                                        $html .= '<th class="text-center" style="background-color: #9e28b5; color: white">MIENTRAS SE ENSEÑA LA UNIDAD</th>';
-                                        $html .= '<th class="text-center" style="background-color: #ab0a3d; color: white">DESPUÉS DE ENSEÑAR LA UNIDAD</th>';
-                                    $html .= '</tr>';
-                                $html .= '</thead>';
-                                $html .= '<tbody id="table-reflexion-selecionadas">';
-                                        $html.= '<tr>';
-                                            $html.='<td>'.$this->mostrar_preguntas_reflexion_seleccionadas($idGrupoInter,'antes').'</td>';
-                                            $html.='<td>'.$this->mostrar_preguntas_reflexion_seleccionadas($idGrupoInter,'mientras').'</td>';
-                                            $html.='<td>'.$this->mostrar_preguntas_reflexion_seleccionadas($idGrupoInter,'despues').'</td>';
-                                        $html.= '</tr>';
-                                     $html.='</tbody>';
-                            $html .= '</table>';
-                        $html .= '</div>';
-
-                $html .= '</table>';            
-                $html .= '</div>';
-
-            $html .= '</div>';
+        $html .= '<div class="card-header" style="background-color:#800834;">';
+        $html .= '<h5 class="" style="color: #ffffff;"><b>9.1.- REFLEXIÓN: </b></h5>';
+        $html .= '<small style="color: #ffffff; font-size:12px">(Consideración de la planificación, el proceso y el impacto de la indagación. En el proceso de reflexión, garantizar dar respuesta a varias de la preguntas planteadas en cada momento.)</small>';
         $html .= '</div>';
-        $html .= '</div>'; 
 
-        
+        $html .= '<div class="card-body">';
+        $html .= '<div class="ocultar">';
+        $html .= $this->modal_reflexion($idGrupoInter);
+        $html .= '</div>';
+        $html .= '<div class="table table-responsive">';
+
+        $html .= '<table class="table table-hover table-condensed table-bordered">';
+        $html .= '<div class="table table-responsive">';
+        $html .= '<table class="table table-condensed table-bordered">';
+        $html .= '<thead>';
+        $html .= '<tr style="background-color:#CCC">';
+        $html .= '<th class="text-center" style="background-color: #0a1f8f; color: white">ANTES DE ENSEÑAR LA UNIDAD</th>';
+        $html .= '<th class="text-center" style="background-color: #9e28b5; color: white">MIENTRAS SE ENSEÑA LA UNIDAD</th>';
+        $html .= '<th class="text-center" style="background-color: #ab0a3d; color: white">DESPUÉS DE ENSEÑAR LA UNIDAD</th>';
+        $html .= '</tr>';
+        $html .= '</thead>';
+        $html .= '<tbody id="table-reflexion-selecionadas">';
+        $html .= '<tr>';
+        $html .= '<td>' . $this->mostrar_preguntas_reflexion_seleccionadas($idGrupoInter, 'antes') . '</td>';
+        $html .= '<td>' . $this->mostrar_preguntas_reflexion_seleccionadas($idGrupoInter, 'mientras') . '</td>';
+        $html .= '<td>' . $this->mostrar_preguntas_reflexion_seleccionadas($idGrupoInter, 'despues') . '</td>';
+        $html .= '</tr>';
+        $html .= '</tbody>';
+        $html .= '</table>';
+        $html .= '</div>';
+
+        $html .= '</table>';
+        $html .= '</div>';
+
+        $html .= '</div>';
+        $html .= '</div>';
+        $html .= '</div>';
+
+
         return $html;
     }
     //9
-    private function modal_reflexion($idGrupoInter){
+    private function modal_reflexion($idGrupoInter)
+    {
         $pestana = '9.1.-';
         $html = '<a href="#"  data-bs-toggle="modal" data-bs-target="#reflexionModal" onclick="show_reflexion_disponibles()"> 
                               <span class="badge rounded-pill" 
                               style="background-color: #ab0a3d; font-size:13px;"><i class="fa fa-briefcase" aria-hidden="true"></i> 
                               Seleccionar Preguntas
                               </span>';
-                $html .= '</a>';
-      
-                $html.= '<div class="modal fade" id="reflexionModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        $html .= '</a>';
+
+        $html .= '<div class="modal fade" id="reflexionModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div class="modal-dialog modal-xl">
                   <div class="modal-content">
                     <div class="modal-header">
                       <h5 class="modal-title" id="exampleModalLabel">SELECCIONAR PREGUNTAS</h5>
-                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="ver_detalle(\''.$pestana.'\')"></button>                      
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="ver_detalle(\'' . $pestana . '\')"></button>                      
                     </div>'; //FIN DE MODAL -HEADER
 
-                    $html .= '<div class="modal-body">'; //Inicio de modal-body
-                
-                        $html .= '<div class="table table-responsive">';
-                            $html .= '<table class="table table-condensed table-bordered">';
-                                $html .= '<thead>';
-                                    $html .= '<tr>';
-                                        $html .= '<th class="text-center" style="background-color: #0a1f8f; color: white">ANTES DE ENSEÑAR LA UNIDAD</th>';
-                                        $html .= '<th class="text-center" style="background-color: #9e28b5; color: white">MIENTRAS SE ENSEÑA LA UNIDAD</th>';
-                                        $html .= '<th class="text-center" style="background-color: #ab0a3d; color: white">DESPUÉS DE ENSEÑAR LA UNIDAD</th>';
-                                    $html .= '</tr>';
-                                $html .= '</thead>';
-                                $html .= '<tbody id="table-reflexion-disponibles">';
-                                        $html.= '<tr>';
-                                            $html.='<td>'.$this->mostrar_preguntas_reflexion_disponibles($idGrupoInter,'antes').'</td>';
-                                            $html.='<td>'.$this->mostrar_preguntas_reflexion_disponibles($idGrupoInter,'mientras').'</td>';
-                                            $html.='<td>'.$this->mostrar_preguntas_reflexion_disponibles($idGrupoInter,'despues').'</td>';
-                                        $html.= '</tr>';
-                                $html.='</tbody>';
-                            $html .= '</table>';
-                        $html .= '</div>';
+        $html .= '<div class="modal-body">'; //Inicio de modal-body
 
-                      
-                    $html .= '</div>';// fin de modal-body
+        $html .= '<div class="table table-responsive">';
+        $html .= '<table class="table table-condensed table-bordered">';
+        $html .= '<thead>';
+        $html .= '<tr>';
+        $html .= '<th class="text-center" style="background-color: #0a1f8f; color: white">ANTES DE ENSEÑAR LA UNIDAD</th>';
+        $html .= '<th class="text-center" style="background-color: #9e28b5; color: white">MIENTRAS SE ENSEÑA LA UNIDAD</th>';
+        $html .= '<th class="text-center" style="background-color: #ab0a3d; color: white">DESPUÉS DE ENSEÑAR LA UNIDAD</th>';
+        $html .= '</tr>';
+        $html .= '</thead>';
+        $html .= '<tbody id="table-reflexion-disponibles">';
+        $html .= '<tr>';
+        $html .= '<td>' . $this->mostrar_preguntas_reflexion_disponibles($idGrupoInter, 'antes') . '</td>';
+        $html .= '<td>' . $this->mostrar_preguntas_reflexion_disponibles($idGrupoInter, 'mientras') . '</td>';
+        $html .= '<td>' . $this->mostrar_preguntas_reflexion_disponibles($idGrupoInter, 'despues') . '</td>';
+        $html .= '</tr>';
+        $html .= '</tbody>';
+        $html .= '</table>';
+        $html .= '</div>';
 
-                    $html .= '<div class="modal-footer">
-                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="ver_detalle(\''.$pestana.'\');">Cerrar</button>                      
+
+        $html .= '</div>'; // fin de modal-body
+
+        $html .= '<div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="ver_detalle(\'' . $pestana . '\');">Cerrar</button>                      
                       
                     </div>
                   </div>
@@ -1241,10 +1338,10 @@ class IsmRespuestaPlanInterdiciplinarController extends Controller
         return $html;
     }
     //9
-    private function mostrar_preguntas_reflexion_disponibles($idGrupoInter,$tipo_pregunta)
+    private function mostrar_preguntas_reflexion_disponibles($idGrupoInter, $tipo_pregunta)
     {
         $con = Yii::$app->db;
-        $query ="select id,tipo ,categoria ,opcion  from planificacion_opciones po 
+        $query = "select id,tipo ,categoria ,opcion  from planificacion_opciones po 
                 where id not in (
                         select i1.id_planificacion_opciones  from ism_respuesta_reflexion_pai_interdiciplinar i1, 
                         ism_respuesta_plan_interdiciplinar i2
@@ -1253,19 +1350,18 @@ class IsmRespuestaPlanInterdiciplinarController extends Controller
 
         $arraylPlanOpciones = $con->createCommand($query)->queryAll();
 
-        $html ="";
-        $html.='<table>';
-                    foreach($arraylPlanOpciones as $array)
-                    {
-                        $html.='<tr><td><a href="#" onclick="guardar_pregunta_reflexion('.$array['id'].',\''.strtoupper($tipo_pregunta).'\');">'.$array['opcion'].'</a></td></tr>';
-                    }
-        $html.='</table>';
+        $html = "";
+        $html .= '<table>';
+        foreach ($arraylPlanOpciones as $array) {
+            $html .= '<tr><td><a href="#" onclick="guardar_pregunta_reflexion(' . $array['id'] . ',\'' . strtoupper($tipo_pregunta) . '\');">' . $array['opcion'] . '</a></td></tr>';
+        }
+        $html .= '</table>';
         return $html;
     }
     //9
-    private function mostrar_preguntas_reflexion_seleccionadas($idIsmGrupoInter,$tipo_pregunta)
-    {     
-        $con = Yii::$app->db;          
+    private function mostrar_preguntas_reflexion_seleccionadas($idIsmGrupoInter, $tipo_pregunta)
+    {
+        $con = Yii::$app->db;
 
         //script para mostar id correspondiente a la ´respuesta en el plan interdiciplinar pai para reflexion
         $query = "select i1.id,i1.id_respuesta_plan_inter_pai ,i1.id_planificacion_opciones ,
@@ -1276,65 +1372,62 @@ class IsmRespuestaPlanInterdiciplinarController extends Controller
                     and i1.id_respuesta_plan_inter_pai  = i3.id 
                     and i3.id_grupo_plan_inter  = $idIsmGrupoInter
                     and i2.seccion ='PAI' and i2.categoria ='$tipo_pregunta';";
-   
-        $resp = $con->createCommand($query)->queryAll();   
+
+        $resp = $con->createCommand($query)->queryAll();
 
         $html = "";
-        $html.='<table>';
-        foreach($resp as $r)
-        {     
-            
-            $html.='<tr><td><a href="#" onclick="eliminar_pregunta_reflexion('.$r['id'].');"><i style="color:red;" class="fas fa-trash"></i></a>
-            <span style="color:blue;">'.$r['opcion'].'</span></td></tr>';
-            $html.='<tr><td>
-                    <textarea id="respuesta_'.$r['id'].'" class="form-control" style="max-width: 100%;" 
-                    onchange="actualizar_pregunta('.$r['id'].')">'.$r['respuesta'].'</textarea>
-                </td></tr>';
-           
-        }
-        $html.='</table>';    
+        $html .= '<table>';
+        foreach ($resp as $r) {
 
-        return $html;       
+            $html .= '<tr><td><a href="#" onclick="eliminar_pregunta_reflexion(' . $r['id'] . ');"><i style="color:red;" class="fas fa-trash"></i></a>
+            <span style="color:blue;">' . $r['opcion'] . '</span></td></tr>';
+            $html .= '<tr><td>
+                    <textarea id="respuesta_' . $r['id'] . '" class="form-control" style="max-width: 100%;" 
+                    onchange="actualizar_pregunta(' . $r['id'] . ')">' . $r['respuesta'] . '</textarea>
+                </td></tr>';
+        }
+        $html .= '</table>';
+
+        return $html;
     }
     //9
-    private function guardar_pregunta_reflexion($idPregunta,$tipo_pregunta,$idIsmGrupoInter)
+    private function guardar_pregunta_reflexion($idPregunta, $tipo_pregunta, $idIsmGrupoInter)
     {
-        $con = Yii::$app->db;      
+        $con = Yii::$app->db;
         //script para mostar id correspondiente a la ´respuesta en el plan interdiciplinar pai para reflexion
 
         $query = "select id  from ism_respuesta_plan_interdiciplinar irpi 
                     where id_contenido_plan_inter in 
                     (select id from ism_contenido_plan_interdiciplinar icpi where nombre_campo = upper('$tipo_pregunta') )
                     and id_grupo_plan_inter  = $idIsmGrupoInter;";
-        $resp = $con->createCommand($query)->queryOne();    
+        $resp = $con->createCommand($query)->queryOne();
 
         $modelRespuestaReflexion = new IsmRespuestaReflexionPaiInterdiciplinar();
         $modelRespuestaReflexion->id_respuesta_plan_inter_pai = $resp['id'];
         $modelRespuestaReflexion->id_planificacion_opciones = $idPregunta;
-        $modelRespuestaReflexion->respuesta = " - ";        
-        $modelRespuestaReflexion->save();   
-
+        $modelRespuestaReflexion->respuesta = " - ";
+        $modelRespuestaReflexion->save();
     }
-    
+
     private function mostrar_preguntas_seleccionadas($idGrupoInter)
     {
-        $html ="";
-        $html.= '<tr>';
-        $html.='<td>'.$this->mostrar_preguntas_reflexion_seleccionadas($idGrupoInter,'antes').'</td>';
-        $html.='<td>'.$this->mostrar_preguntas_reflexion_seleccionadas($idGrupoInter,'mientras').'</td>';
-        $html.='<td>'.$this->mostrar_preguntas_reflexion_seleccionadas($idGrupoInter,'despues').'</td>';
-        $html.= '</tr>';
+        $html = "";
+        $html .= '<tr>';
+        $html .= '<td>' . $this->mostrar_preguntas_reflexion_seleccionadas($idGrupoInter, 'antes') . '</td>';
+        $html .= '<td>' . $this->mostrar_preguntas_reflexion_seleccionadas($idGrupoInter, 'mientras') . '</td>';
+        $html .= '<td>' . $this->mostrar_preguntas_reflexion_seleccionadas($idGrupoInter, 'despues') . '</td>';
+        $html .= '</tr>';
 
         return $html;
     }
     private function mostrar_preguntas_disponibles($idGrupoInter)
     {
-        $html ="";
-        $html.= '<tr>';
-        $html.='<td>'.$this->mostrar_preguntas_reflexion_disponibles($idGrupoInter,'antes').'</td>';
-        $html.='<td>'.$this->mostrar_preguntas_reflexion_disponibles($idGrupoInter,'mientras').'</td>';
-        $html.='<td>'.$this->mostrar_preguntas_reflexion_disponibles($idGrupoInter,'despues').'</td>';
-        $html.= '</tr>';
+        $html = "";
+        $html .= '<tr>';
+        $html .= '<td>' . $this->mostrar_preguntas_reflexion_disponibles($idGrupoInter, 'antes') . '</td>';
+        $html .= '<td>' . $this->mostrar_preguntas_reflexion_disponibles($idGrupoInter, 'mientras') . '</td>';
+        $html .= '<td>' . $this->mostrar_preguntas_reflexion_disponibles($idGrupoInter, 'despues') . '</td>';
+        $html .= '</tr>';
 
         return $html;
     }

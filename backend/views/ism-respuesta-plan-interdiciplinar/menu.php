@@ -85,7 +85,7 @@ $iconoColor = 'blue';
                     <i class="<?= $iconoOk; ?>" title="" style="color: <?= $iconoColor; ?>;"></i>
                 </a>
             </li> -->
-            <li class="zoom">
+            <!-- <li class="zoom">
                 <a href="#" onclick="ver_detalle('3.2.-');">3.2.- Actividad
                     <i class="<?= $iconoOk; ?>" title="" style="color: <?= $iconoColor; ?>;"></i>
                 </a>
@@ -94,7 +94,7 @@ $iconoColor = 'blue';
                 <a href="#" onclick="ver_detalle('3.4.-');">3.3.- Atributo del Perfil
                     <i class="<?= $iconoOk; ?>" title="" style="color: <?= $iconoColor; ?>;"></i>
                 </a>
-            </li>
+            </li> -->
         </ul>
     </li>
     <hr>
@@ -358,6 +358,26 @@ $iconoColor = 'blue';
                 ver_detalle(pestana);  
             }
         }); 
+
+    }
+    function actualizar_pregunta_opciones(id_pregunta)
+    {
+        var respuesta = $("#respuesta_op"+id_pregunta).val();
+        var url = '<?= Url::to(['actualizar-pregunta-opciones']) ?>';
+        var params = {
+            id_pregunta : id_pregunta,
+            respuesta : respuesta,
+        };         
+
+        $.ajax({
+            data: params,
+            url: url,
+            type: 'POST',
+            beforeSend: function() {},
+            success: function(response) {                                   
+                //$("#table-reflexion-selecionadas").html(response);    
+            }
+        });  
 
     }
     function recargar_pagina(){

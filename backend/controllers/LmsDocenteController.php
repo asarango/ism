@@ -69,10 +69,10 @@ class LmsDocenteController extends Controller {
 
         $semanaNumero   = $_GET['semana_numero'];
         $semanaNombre   = $_GET['nombre_semana' ];
-        $claseId        = $_GET['clase_id'];  
+        $claseId        = $_GET['clase_id'];          
         
         new RegistraHoras($semanaNumero, $claseId);
-        
+               
         $modelClase = ScholarisClase::findOne($claseId);
         $detalle    = $this->get_lms($claseId, $semanaNumero);
 
@@ -122,8 +122,7 @@ class LmsDocenteController extends Controller {
                 where 	lms.semana_numero = $semanaNumero
                         and clase_id = $claseId
                 order by doc.fecha, hor.numero;";
-                // echo $query;
-                // die();
+                
         $res = $con->createCommand($query)->queryAll();
         return $res;
     }

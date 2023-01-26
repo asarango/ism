@@ -2,6 +2,7 @@
 
 namespace backend\controllers;
 
+use backend\models\ContenidoPaiOpciones;
 use backend\models\CurriculoMecBloque;
 use backend\models\helpers\HelperGeneral;
 use backend\models\IsmGrupoMateriaPlanInterdiciplinar;
@@ -23,6 +24,7 @@ use backend\models\PlanificacionVerticalPaiOpciones;
 use backend\models\IsmRespuestaReflexionPaiInterdiciplinar;
 use backend\models\IsmRes;
 use backend\models\IsmRespuestaOpcionesPaiInterdiciplinar;
+use backend\models\IsmRespuestaContenidoPaiInterdiciplinar;
 use backend\models\PlanificacionVerticalPaiDescriptores;
 use yii\filters\AccessControl;
 use backend\models\PlanificacionBloquesUnidadSubtitulo2;
@@ -333,6 +335,7 @@ class IsmRespuestaPlanInterdiciplinarController extends Controller
         $model->respuesta = $respuesta;
         $model->save();
     }
+    //9
     public function actionActualizarPreguntaOpciones()
     {
 
@@ -343,6 +346,7 @@ class IsmRespuestaPlanInterdiciplinarController extends Controller
         $model->actividad = $respuesta;
         $model->save();
     }
+    //9
     public function actionQuitarAgregarSeleccion()
     {
         $id_Respuesta = $_POST['id_Respuesta'];
@@ -352,6 +356,34 @@ class IsmRespuestaPlanInterdiciplinarController extends Controller
         $model->mostrar = $bandera;
 
         $model->save();
+    }
+    //3                   
+    public function actionAgregarAtributoPerfil()
+    {
+        $id_Respuesta = $_POST['idRespOpciones'];
+        $idContOp = $_POST['idRespContenido'];
+       
+        $modelContOpc = ContenidoPaiOpciones::find()
+        ->where(['id'=>$idContOp])
+        ->one();
+
+        $model = new IsmRespuestaContenidoPaiInterdiciplinar();    
+        $model->id_respuesta_opciones_pai = $id_Respuesta;
+        $model->id_contenido_pai =$modelContOpc->id;
+        $model->mostrar = 1;
+        $model->tipo =$modelContOpc->tipo;
+        $model->contenido =$modelContOpc->contenido_es;         
+     
+
+        $model->save();
+    }
+    //3
+    public function actionQuitarAtributoPerfil()
+    {
+        $id_Respuesta = $_POST['idRespContenido'];
+
+        $model = IsmRespuestaContenidoPaiInterdiciplinar::findOne($id_Respuesta);        
+        $model->delete();
     }
 
     /*************************************************************************************************************** */
@@ -746,90 +778,6 @@ class IsmRespuestaPlanInterdiciplinarController extends Controller
         }
         return $arrayHabilidades;
     }
-    //3
-    private function html_enfoque_habilidad($arrayHabilidades, $idGrupoInter, $titulo, $tipo, $idRespuestPlanInterPai, $pestana)
-    {
-        //extraigo los datos que estan seleccionados
-        $modelOpcionesSeleccionadas = IsmRespuestaOpcionesPaiInterdiciplinar::find()
-            //->where(['tipo'=>$tipo])
-            ->where(['mostrar' => true])
-            ->andWhere(['id_respuesta_plan_inter_pai' => $idRespuestPlanInterPai])
-            ->all();
-
-        $modelOpcionesNoSeleccionadas = IsmRespuestaOpcionesPaiInterdiciplinar::find()
-            //->where(['tipo'=>$tipo])
-            ->where(['mostrar' => false])
-            ->andWhere(['id_respuesta_plan_inter_pai' => $idRespuestPlanInterPai])
-            ->all();
-        $html = "";
-        $html .= '<div class="" style="align-items: center; display: flex; justify-content: center;">
-                    <div class="card" style="width: 90%; margin-top:20px">
-                        <div class="card-header" style="background-color:#800834">                           
-                                <h6 class="text-center" style="color:#ffffff">' . $titulo . '</h6>                         
-                        </div>';
-
-        $html .= '<div class="card-body">
-                            <h3>Seleccionado</h3>
-                            <table class="table table-striped table-bordered">
-                                <tr style="font-size:15px;"> 
-                                    <td><b>HABILIDAD</b></td>
-                                    <td><b>EXPLORACION</b></td>
-                                    <td><b>ACTIVIDAD</b></td>
-                                    <td><b>ATRIBUTOS DEL PERFIL</b></td>
-                                </tr>';
-
-        foreach ($modelOpcionesSeleccionadas as $model) 
-        {
-            $html .= '<tr style="font-size:13px;">
-                            <td>';
-                        $html .= $model->tipo;
-                    $html .= '</td>
-                            <td>';
-                                $html .= $model->contenido;
-                                $html .= '<a href="#"  data-bs-toggle="modal" data-bs-target="#reflexionModal" onclick="quitar_agregar_seleccion(0,' . $model->id . ',\'' . $pestana . '\')"> 
-                                                <i style="color:red;" class="fas fa-trash"></i> 
-                                        </a>';
-                    $html .= '</td>';
-                    $html .= '<td>
-                                    <textarea id="respuesta_op' . $model->id . '" class="form-control" style="max-width: 100%;" 
-                                    onchange="actualizar_pregunta_opciones(' . $model->id. ')">' . $model->actividad . '</textarea>
-                                </td>';
-
-                    $html .= '</td>';
-            $html .= '</tr>';
-        }
-        $html .= '  </table>
-                        </div>';
-        $html .= '<div class="card-body">
-                        <h3>No Seleccionado</h3>
-                        <table class="table table-striped table-bordered">
-                            <tr style="font-size:15px;"> 
-                                <td><b>TIPO</b></td>
-                                <td><b>CONTENIDO</b></td>
-                                <td><b>ACCION</b></td>
-                            </tr>';
-
-        foreach ($modelOpcionesNoSeleccionadas as $model) {
-            $html .= '<tr style="font-size:13px;">
-                                                <td>';
-            $html .= $model->tipo;
-            $html .= '</td>
-                                                  <td>';
-            $html .= $model->contenido;
-            $html .= '</td>
-                                                  <td>';
-            $html .= '<a href="#"  data-bs-toggle="modal" data-bs-target="#reflexionModal" onclick="quitar_agregar_seleccion(1,' . $model->id . ',\'' . $pestana . '\')"> 
-                                                        <i style="color:green;" class="fas fa-check-circle"></i>
-                                                    </a>';
-            $html .= '</td>                                            
-                                               </tr>';
-        }
-        $html .= '  </table>
-                    </div>';
-        $html .= '</div>
-                 </div>';
-        return $html;
-    }
     //2
     private function html_concepto_clave_global($arrayHabilidades, $idGrupoInter, $titulo, $tipo, $idRespuestPlanInterPai, $pestana)
     {
@@ -909,6 +857,205 @@ class IsmRespuestaPlanInterdiciplinarController extends Controller
                  </div>';
         return $html;
     }
+    //3
+    private function html_enfoque_habilidad($arrayHabilidades, $idGrupoInter, $titulo, $tipo, $idRespuestPlanInterPai, $pestana)
+    {
+        //extraigo los datos que estan seleccionados
+        $modelOpcionesSeleccionadas = IsmRespuestaOpcionesPaiInterdiciplinar::find()
+            //->where(['tipo'=>$tipo])
+            ->where(['mostrar' => true])
+            ->andWhere(['id_respuesta_plan_inter_pai' => $idRespuestPlanInterPai])
+            ->all();
+
+        $modelOpcionesNoSeleccionadas = IsmRespuestaOpcionesPaiInterdiciplinar::find()
+            //->where(['tipo'=>$tipo])
+            ->where(['mostrar' => false])
+            ->andWhere(['id_respuesta_plan_inter_pai' => $idRespuestPlanInterPai])
+            ->all();
+        $html = "";
+         //*********************************************************************************************** */
+        //tabla de la parte superior donde se muestran las opciones de habilidades que  estan seleccionadas
+        $html .= '<div class="" style="align-items: center; display: flex; justify-content: center;">
+                    <div class="card" style="width: 90%; margin-top:20px">
+                        <div class="card-header" style="background-color:#800834">                           
+                                <h6 class="text-center" style="color:#ffffff">' . $titulo . '</h6>                         
+                        </div>';
+
+        $html .= '<div class="card-body">
+                            <h3>Seleccionado</h3>
+                            <table class="table table-striped table-bordered; " >
+                                <tr style="font-size:15px;"> 
+                                    <td><b>HABILIDAD</b></td>
+                                    <td style="width:20%"><b>EXPLORACIÓN</b></td>
+                                    <td><b>ACTIVIDAD</b></td>
+                                    <td><b>ATRIBUTOS DEL PERFIL</b></td>
+                                </tr>';
+
+        foreach ($modelOpcionesSeleccionadas as $model) 
+        {
+            $html .= '<tr style="font-size:13px;">
+                            <td>';
+                        $html .= $model->tipo;
+                    $html .= '</td>
+                            <td>';                                
+                                $html .= '<a href="#"  data-bs-toggle="modal" data-bs-target="#reflexionModal" onclick="quitar_agregar_seleccion(0,' . $model->id . ',\'' . $pestana . '\')"> 
+                                                <i style="color:red;" class="fas fa-trash"></i> 
+                                        </a>';
+                                $html .= $model->contenido;
+                    $html .= '</td>';
+                    $html .= '<td>
+                                    <textarea id="respuesta_op' . $model->id . '" class="form-control" style="max-width: 100%;" 
+                                    onchange="actualizar_pregunta_opciones(' . $model->id. ')">' . $model->actividad . '</textarea>
+                                </td>';
+                    $html .= '<td style="text-align:right;">';
+                                    $html .= '<a href="#"  data-bs-toggle="modal" data-bs-target="#modalOpciones_'.$model->id.'" > 
+                                                        <i class="fas fa-object-ungroup"> Selecionar</i>                                                     
+                                              </a>';
+                                    $html .= $this->mostrar_atributos_perfil_seleccionados($model->id);
+                                    
+                                   
+                    $html .= '</td>';
+            $html .= '</tr>';
+        }
+        $html .= '  </table>
+                        </div>';
+        //*********************************************************************************************** */
+        //tabla de la parte inferior donde se muestran las opciones de habilidades que no estan seleccionadas
+        $html .= '<div class="card-body">
+                        <h3>No Seleccionado</h3>
+                        <table class="table table-striped table-bordered">
+                            <tr style="font-size:15px;"> 
+                                <td><b>TIPO</b></td>
+                                <td><b>CONTENIDO</b></td>
+                                <td><b>ACCION</b></td>
+                            </tr>';
+
+        foreach ($modelOpcionesNoSeleccionadas as $model) 
+        {
+            $html .= '<tr style="font-size:13px;">';                  
+                    $html .= '<td>';                                                
+                         $html .= $model->tipo;
+                    $html .= '</td>';
+                    $html .= '<td>';
+                        $html .= $model->contenido;
+                    $html .= '</td>';    
+                    $html .= '<td>';
+                    $html .= '<a href="#"  data-bs-toggle="modal" data-bs-target="#reflexionModal" onclick="quitar_agregar_seleccion(1,' . $model->id . ',\'' . $pestana . '\')"> 
+                                                            <i style="color:green;" class="fas fa-check-circle"></i>
+                                                        </a>';
+                     $html .= '</td>';                                                   
+            $html .= '</tr>';
+        }
+        $html .= '  </table>
+                    </div>';
+        $html .= '</div>
+                 </div>';
+        
+    
+        //*********************************************************************************************** */
+        //empieza modal para seleccionar los atributos del perfil
+        foreach ($modelOpcionesSeleccionadas as $model) 
+        {
+
+                $html .= '<div class="modal fade" id="modalOpciones_'.$model->id.'" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog modal-x">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="exampleModalLabel">Enfoques del Aprendizaje</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="ver_detalle(\'' . $pestana . '\')"></button>                      
+                                        </div>'; //FIN DE MODAL -HEADER
+
+                                //Inicio de modal-body
+                                $html .= '<div class="modal-body">'; 
+                                        $html .= '<div class="table table-responsive">';
+                                            $html .= '<table class="table table-condensed table-bordered">';
+                                            $html .= '<thead>';
+                                            $html .= '<tr>';
+                                            $html .= '<th class="text-center" style="background-color: #0a1f8f; color: white">ATRIBUTOS DE PERFIL</th>';
+                                            $html .= '</tr>';
+                                            $html .= '</thead>';
+                                            $html .= '<tbody id="table-reflexion-disponibles">';
+                                            $html .= '<tr>';
+                                            $html .= '<td>' . $this->mostrar_atributos_perfil_no_seleccionados($model->id) . '</td>';
+                                            $html .= '</tr>';
+                                            $html .= '</tbody>';
+                                            $html .= '</table>';
+                                        $html .= '</div>';
+                                $html .= '</div>'; 
+                            $html .= '</div>'; 
+                        $html .= '</div>'; 
+                $html .= '</div>'; 
+        }
+        // fin de modal opciones 3
+
+        return $html;
+    }
+    //3
+    private function mostrar_atributos_perfil_seleccionados($idRespOpciones)
+    {
+        $con = Yii::$app->db;
+        $query = "select i1.id ,i2.id as idRespuesta,i1.tipo,i1.contenido,i1.mostrar
+                    from ism_respuesta_contenido_pai_interdiciplinar i1,
+                    ism_respuesta_opciones_pai_interdiciplinar i2,
+                    contenido_pai_opciones i3
+                    where i1.id_contenido_pai = i3.id 
+                    and i1.id_respuesta_opciones_pai = i2.id 
+                    and i1.mostrar = true
+                    and i2.mostrar = true 
+                    and i1.id_respuesta_opciones_pai = '$idRespOpciones';";
+
+        $arraylRespContenido = $con->createCommand($query)->queryAll();
+        
+
+        $html = "";
+        $html .= '<table >';
+        foreach ($arraylRespContenido as $array) {
+            $html .= '<tr>';
+               
+                $html .= '<td style="text-align:left;">';                 
+                 $html .= '<a href="#" onclick="quitar_atributo_perfil('.$array['id'].')"><i style="color:red;" class="fas fa-trash"></i></a>';
+                 $html .= ' --> '.$array['contenido'];
+                $html .= '</td>';
+            $html .= '</tr>';
+        }
+        $html .= '</table>';
+
+        
+        return $html;
+
+    }
+    //3
+    private function mostrar_atributos_perfil_no_seleccionados($idRespOpciones)
+    {
+        $con = Yii::$app->db;
+        $query = "select id,tipo,contenido_es ,contenido_en ,contenido_fr 
+                    from contenido_pai_opciones cpo 
+                    where id not in (
+                    select i1.id_contenido_pai
+                    from ism_respuesta_contenido_pai_interdiciplinar i1
+                    where i1.id_respuesta_opciones_pai = $idRespOpciones
+                    )
+                    and tipo ='atributos_perfil';";
+
+        $arraylRespContenido = $con->createCommand($query)->queryAll();
+       
+        $html = "";
+        $html .= '<table>';
+        foreach ($arraylRespContenido as $array) {
+            $html .= '<tr>';
+               
+                $html .= '<td>';                 
+                 $html .= '<a href="#" onclick="agregar_atributo_perfil('.$idRespOpciones.','.$array['id'].')">'.$array['contenido_es'].'</a>';
+                $html .= '</td>';
+            $html .= '</tr>';
+        }
+        $html .= '</table>';
+
+        
+        return $html;
+
+    }
+    
     //4.-
     private function objetivos_desarrollo_sostenible_competencia($idGrupoInter)
     {

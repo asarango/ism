@@ -16,12 +16,14 @@ use yii\web\NotFoundHttpException;
 /**
  * ScholarisActividadController implements the CRUD actions for ScholarisActividad model.
  */
-class LmsDocenteController extends Controller {
+class LmsDocenteController extends Controller
+{
 
     /**
      * {@inheritdoc}
      */
-    public function behaviors() {
+    public function behaviors()
+    {
         return [
             'access' => [
                 'class' => AccessControl::className(),
@@ -41,7 +43,8 @@ class LmsDocenteController extends Controller {
         ];
     }
 
-    public function beforeAction($action) {
+    public function beforeAction($action)
+    {
         if (!parent::beforeAction($action)) {
             return false;
         }
@@ -65,32 +68,39 @@ class LmsDocenteController extends Controller {
         return true;
     }
 
-    public function actionIndex1() {
+    public function actionIndex1()
+    {
 
         $semanaNumero   = $_GET['semana_numero'];
-        $semanaNombre   = $_GET['nombre_semana' ];
-        $claseId        = $_GET['clase_id'];          
-        
+        $semanaNombre   = $_GET['nombre_semana'];
+        $claseId        = $_GET['clase_id'];
+
         new RegistraHoras($semanaNumero, $claseId);
-               
+
         $modelClase = ScholarisClase::findOne($claseId);
         $detalle    = $this->get_lms($claseId, $semanaNumero);
 
         $nees = NeeXClase::find()->where([
-                'clase_id' => $claseId                
-            ])->all();
+            'clase_id' => $claseId
+        ])->all();
 
-        return $this->render('index',[
-            'modelClase'    => $modelClase,
-            'detalle'       => $detalle,
-            'semana_numero' => $semanaNumero,
-            'nombre_semana' => $semanaNombre,     
-            'clase_id'      => $claseId,
-            'nees'          => $nees
-        ]);
+        if (count($detalle) == 0) {
+            echo 'El docente responsable no ha planificado todavía!!!';
+        } else {
+
+            return $this->render('index', [
+                'modelClase'    => $modelClase,
+                'detalle'       => $detalle,
+                'semana_numero' => $semanaNumero,
+                'nombre_semana' => $semanaNombre,
+                'clase_id'      => $claseId,
+                'nees'          => $nees
+            ]);
+        }
     }
 
-    private function get_lms($claseId, $semanaNumero){
+    private function get_lms($claseId, $semanaNumero)
+    {
         $con = Yii::$app->db;
         $query = "select 	doc.id as lms_doc_id		
                         ,mat.nombre as materia
@@ -122,12 +132,13 @@ class LmsDocenteController extends Controller {
                 where 	lms.semana_numero = $semanaNumero
                         and clase_id = $claseId
                 order by doc.fecha, hor.numero;";
-                
+
         $res = $con->createCommand($query)->queryAll();
         return $res;
     }
 
-    public function actionUpdate(){
+    public function actionUpdate()
+    {
         $usuarioLog = Yii::$app->user->identity->usuario;
         $hoy        = date('Y-m-d H:i:s');
 
@@ -148,14 +159,16 @@ class LmsDocenteController extends Controller {
         $model->observaciones       = $observaciones;
         $model->save();
 
-        return $this->redirect(['index1',
+        return $this->redirect([
+            'index1',
             'nombre_semana' => $_POST['nombre_semana'],
             'semana_numero' => $_POST['semana_numero'],
             'clase_id' => $_POST['clase_id']
         ]);
     }
 
-    public function actionNee(){
+    public function actionNee()
+    {
         $claseId        = $_GET['clase_id'];
         $semanaNumero   = $_GET['semana_numero'];
         $semanaNombre   = $_GET['nombre_semana'];
@@ -188,7 +201,8 @@ class LmsDocenteController extends Controller {
         ]);
     }
 
-    private function get_nees($lmsId, $claseId){
+    private function get_nees($lmsId, $claseId)
+    {
         $con = Yii::$app->db;
         $query = "select 	lne.id 
                             ,concat(est.last_name, ' ', est.first_name, ' ', est.middle_name) as student
@@ -212,7 +226,8 @@ class LmsDocenteController extends Controller {
     }
 
 
-    public function actionNeeDetalle(){
+    public function actionNeeDetalle()
+    {
         $lmsDocenteId = $_POST['lms_docente_nee_id'];
 
         $lmsDocenteNee = LmsDocenteNee::findOne($lmsDocenteId);
@@ -221,7 +236,8 @@ class LmsDocenteController extends Controller {
     }
 
 
-    public function actionNeeUpdateAdaptacion(){
+    public function actionNeeUpdateAdaptacion()
+    {
         $lmsDocenteId = $_POST['lms_docente_nee_id'];
         $adaptacionCu = $_POST['adaptacion'];
 
@@ -230,5 +246,4 @@ class LmsDocenteController extends Controller {
 
         $model->save();
     }
-    
 }

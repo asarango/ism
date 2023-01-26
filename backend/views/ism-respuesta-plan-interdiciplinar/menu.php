@@ -227,7 +227,9 @@ $iconoColor = 'blue';
             data: params,
             url: url,
             type: 'POST',
-            beforeSend: function() {},
+            beforeSend: function() {                
+                    $("#div-detalle").html("Procesando....");              
+            },
             success: function(response) {
                 //alert(response);
                 $("#div-detalle").html(response);
@@ -340,6 +342,7 @@ $iconoColor = 'blue';
         });  
 
     }
+    //9
     function quitar_agregar_seleccion(bandera,id_Respuesta,pestana)
     {        
         var url = '<?= Url::to(['quitar-agregar-seleccion']) ?>';
@@ -360,6 +363,7 @@ $iconoColor = 'blue';
         }); 
 
     }
+    //9
     function actualizar_pregunta_opciones(id_pregunta)
     {
         var respuesta = $("#respuesta_op"+id_pregunta).val();
@@ -378,6 +382,50 @@ $iconoColor = 'blue';
                 //$("#table-reflexion-selecionadas").html(response);    
             }
         });  
+
+    }
+    //3
+    function quitar_atributo_perfil(id)
+    {
+        var url = '<?= Url::to(['quitar-atributo-perfil']) ?>';
+        var idRespContenido = id;
+        var pestana = '3.1.-';
+        var params = {
+            idRespContenido : idRespContenido,
+        };
+  
+        $.ajax({
+            data: params,
+            url: url,
+            type: 'POST',
+            beforeSend: function() {},
+            success: function(response) {                                   
+                ver_detalle(pestana);  
+            }
+        });
+    }
+    //3
+    function agregar_atributo_perfil(idRespOp, idRespCont)
+    {
+        var url = '<?= Url::to(['agregar-atributo-perfil']) ?>';
+        var idRespContenido = idRespCont;
+        var idRespOpciones = idRespOp;
+        var pestana = '3.1.-';
+       
+        var params = {
+            idRespContenido : idRespContenido,
+            idRespOpciones : idRespOpciones,
+        };         
+  
+        $.ajax({
+            data: params,
+            url: url,
+            type: 'POST',
+            beforeSend: function() {},
+            success: function(response) {                                   
+                //ver_detalle(pestana);  
+            }
+        }); 
 
     }
     function recargar_pagina(){

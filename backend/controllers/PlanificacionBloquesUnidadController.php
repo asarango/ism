@@ -83,7 +83,8 @@ class PlanificacionBloquesUnidadController extends Controller{
         return true;
     }
 
-    public function actionIndex1(){
+    public function actionIndex1()
+    {
         $institutoId        = Yii::$app->user->identity->instituto_defecto;
         $usuarioLogueado    = Yii::$app->user->identity->usuario;
         $usuario = Usuario::findOne($usuarioLogueado);

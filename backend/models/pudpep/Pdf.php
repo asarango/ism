@@ -30,7 +30,7 @@ class Pdf extends \yii\db\ActiveRecord{
             'format' => 'A4-L',
             'margin_left' => 10,
             'margin_right' => 10,
-            'margin_top' => 20,
+            'margin_top' => 30,
             'margin_bottom' => 0,
             'margin_header' => 5,
             'margin_footer' => 5,
@@ -62,7 +62,7 @@ class Pdf extends \yii\db\ActiveRecord{
         $html = ''; 
         $html .= '<table width="100%" cellspacing="0" cellpadding="10">'; 
         $html .= '<tr>'; 
-        $html .= '<td class="border" align="center" width="20%"><img src="imagenes/instituto/logo/logo2.png" width="60px"></td>';
+        $html .= '<td class="border" align="center" width="20%"><img src="imagenes/instituto/logo/logo2.jpeg" width="60px"></td>';
         $html .= '<td class="border" align="center" width=""></td>';
         $html .= '<td class="border" align="right" width="20%">Código: ISMR20-18</td>';
         $html .= '</tr>'; 

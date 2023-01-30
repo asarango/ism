@@ -21,7 +21,7 @@ $this->params['breadcrumbs'][] = $this->title;
         <div class="card shadow col-lg-10 col-md-10">
             <div class=" row align-items-center p-2">
                 <div class="col-lg-1">
-                    <h4><img src="ISM/main/images/submenu/herramientas-para-reparar.png" width="64px" style="" class="img-thumbnail"></h4>
+                    <h4><img src="../ISM/main/images/submenu/files.png" width="64px" style="" class="img-thumbnail"></h4>
                 </div>
                 <div class="col-lg-11">
                     <h4><?= Html::encode($this->title) ?></h4>
@@ -87,7 +87,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                     <h6 class="card-title">
                                         <strong>
                                             <?php 
-                                            echo Html::a('<img src="ISM/main/images/submenu/papeles.png" width="30px" class="img-fluid rounded-start" alt="..."> '.
+                                            echo Html::a('<img src="../ISM/main/images/submenu/papeles.png" width="30px" class="img-fluid rounded-start" alt="..."> '.
                                                 $curso['curso'],
                                                 ['asignaturas',
                                                     'template_id' => $curso['x_template_id']
@@ -103,7 +103,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
                                 </div>
                                 <div class="card-footer">
-                                    <b>Anuales -> </b>
+                                    <b>Anuales (Iniciando) -> </b>
                                         <?php
                                             foreach ($curso['totales'] as $total) {
                                                 if ($total['estado'] == 'EN_COORDINACION') {

@@ -109,8 +109,7 @@ class DocenteClasesController extends Controller
                                     and c.es_activo = true
                                     and b.tipo_bloque  in ('PARCIAL', 'EXAMEN')
                     order  by b.orden ;";
-        
-                
+                   
         $bloques = $con->createCommand($query)->queryAll();                        
         return $bloques;
     }
@@ -148,7 +147,7 @@ class DocenteClasesController extends Controller
                 from 	scholaris_bloque_semanas s 
                         inner join scholaris_bloque_actividad b on b.id = s.bloque_id
                 where 	bloque_id = $bloqueId
-                order by semana_numero asc;";
+                order by semana_numero asc;"; 
         
         $res = $con->createCommand($query)->queryAll();
         return $res;

@@ -66,7 +66,7 @@ $numEstSinAsistir = ScholarisAsistenciaAlumnosNovedades::find()
 
             <div class=" row align-items-center p-2">
                 <div class="col-lg-1">
-                    <h4><img src="ISM/main/images/submenu/retroalimentacion.png" width="64px" class="img-thumbnail"></h4>
+                    <h4><img src="../ISM/main/images/submenu/retroalimentacion.png" width="64px" class="img-thumbnail"></h4>
                 </div>
                 <div class="col-lg-11">
                     <h4><?= Html::encode($this->title) ?></h4>
@@ -164,6 +164,8 @@ $numEstSinAsistir = ScholarisAsistenciaAlumnosNovedades::find()
                                     //******** NUMERO  *****************//
                                     echo '<tr>';
                                     echo '<td>' . $num . '</td>';
+
+                                    echo '<td class="text-center">';  
                                     
                                     if($modelNeeXClase){
                                             //******** COLOR N.E.E  *****************// 
@@ -174,7 +176,8 @@ $numEstSinAsistir = ScholarisAsistenciaAlumnosNovedades::find()
                                             if($nee['grado_nee']==1){$color = 'green';}
                                             if($nee['grado_nee']==2){$color = 'orange';}
                                             if($nee['grado_nee']==3){$color = 'red';} 
-                                            echo '<td class="text-center"><i class="fas fa-circle btn-n" data-bs-toggle="modal" data-bs-target="#exampleModal'.$nee['id'].'" style="font-size:15px;color:' . $color . '; display:none" title="Grado: '.$nee['grado_nee'].'/ Fecha: '.$nee['fecha_inicia'].'/ Det: '.$nee['diagnostico_inicia'].'"></i></td>';  
+                                            // echo '<td class="text-center"><i class="fas fa-circle btn-n" data-bs-toggle="modal" data-bs-target="#exampleModal'.$nee['id'].'" style="font-size:15px;color:' . $color . '; display:none" title="Grado: '.$nee['grado_nee'].'/ Fecha: '.$nee['fecha_inicia'].'/ Det: '.$nee['diagnostico_inicia'].'"></i></td>'; 
+                                            echo '<i class="fas fa-circle btn-n" data-bs-toggle="modal" data-bs-target="#exampleModal'.$nee['id'].'" style="font-size:15px;color:' . $color . '; display:none" title="Grado: '.$nee['grado_nee'].'/ Fecha: '.$nee['fecha_inicia'].'/ Det: '.$nee['diagnostico_inicia'].'"></i>';   
                                            
                                             echo '<div class="modal fade" id="exampleModal'.$nee['id'].'" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" >';
                                             echo '<div class="modal-dialog modal-dialog-centered" >';
@@ -201,12 +204,16 @@ $numEstSinAsistir = ScholarisAsistenciaAlumnosNovedades::find()
                                             echo '</div>';                                          
                                         }
                                         else {
-                                            echo '<td></td>';
+                                            // echo '<td></td>';
+                                            echo '';
                                         }
                                     }
                                     }else{
-                                        echo '<td></td>';
-                                    }                                 
+                                        // echo '<td></td>';
+                                        echo '';
+                                    }      
+                                    
+                                    echo '</td>';
                                     
                                     if($alumno['student_state'] == 'N'){
                                         
@@ -235,7 +242,7 @@ $numEstSinAsistir = ScholarisAsistenciaAlumnosNovedades::find()
                                             echo '</div>';
                                             echo '</div>';   
                                     }else{
-                                        echo '<td>'.$alumno['student_state'].'</td>';
+                                        echo '<td class="text-center">'.$alumno['student_state'].'</td>';
                                     }
                                     
 

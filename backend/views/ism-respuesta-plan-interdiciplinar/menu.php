@@ -24,9 +24,9 @@ if ($modelPudPai) {
 }
 
 $iconoOk = 'fas fa-check';
-$colorOk = 'green';
-$colorNotOk = 'red';
-$iconoColor = 'blue';
+$colorOk = '#ffffff';
+$colorNotOk = '#ffffff';
+$iconoColor = '#ffffff';
 ?>
 <br>
 <ul>
@@ -34,7 +34,7 @@ $iconoColor = 'blue';
         <b>1.- DATOS INFORMATIVOS</b>
         <ul>
             <li class="zoom"><a href="#" onclick="ver_detalle('1.1.-');">1.1.- Ver datos
-                    <i class="<?= $iconoOk; ?>" title="FALTA INGRESAR DATOS" style="color: green;"></i>
+                    <i class="<?= $iconoOk; ?>" title="FALTA INGRESAR DATOS" style="color: #ffffff;"></i>
                 </a></li>
         </ul>
     </li>
@@ -45,12 +45,12 @@ $iconoColor = 'blue';
         <ul>
             <li class="zoom">
                 <a href="#" onclick="ver_detalle('2.1.-');">2.1.- Propósito de la Integración
-                    <i class="<?= $iconoOk; ?>" title="FALTA INGRESAR DATOS" style="color: green;"></i>
+                    <i class="<?= $iconoOk; ?>" title="FALTA INGRESAR DATOS" style="color: #ffffff;"></i>
                 </a>
             </li>
             <li class="zoom">
                 <a href="#" onclick="ver_detalle('2.2.-');">2.2.- Conceptos Clave
-                    <i class="<?= $iconoOk; ?>" title="FALTA INGRESAR DATOS" style="color: green;"></i>
+                    <i class="<?= $iconoOk; ?>" title="FALTA INGRESAR DATOS" style="color: #ffffff;"></i>
                 </a>
             </li>
             <li class="zoom">
@@ -101,6 +101,11 @@ $iconoColor = 'blue';
     <li>
         <b>4.- OBJETIVOS DE DESARROLLO SOSTENIBLE</b>
         <ul>
+            <li class="zoom">
+                <a href="#" onclick="ver_detalle('4.0.-');">4.0.- Todos
+                    <i class="<?= $iconoOk; ?>" title="" style="color: <?= $iconoColor; ?>;"></i>
+                </a>
+            </li>
             <li class="zoom">
                 <a href="#" onclick="ver_detalle('4.1.-');">4.1.-Competencia
                     <i class="<?= $iconoOk; ?>" title="" style="color: <?= $iconoColor; ?>;"></i>
@@ -278,6 +283,7 @@ $iconoColor = 'blue';
             }
         });
     }
+    //9.-
     function guardar_pregunta_reflexion(id_pregunta,tipo_pregunta)
     {      
         var idGrupoInter = $("#id_grupo_inter").val();    
@@ -300,6 +306,7 @@ $iconoColor = 'blue';
             }
         });        
     }
+    //9
     function eliminar_pregunta_reflexion(id_pregunta)
     {
         var idGrupoInter = $("#id_grupo_inter").val();    
@@ -428,6 +435,53 @@ $iconoColor = 'blue';
         }); 
 
     }
+    //4
+    function guardar_competencias(id_pregunta,tipo_pregunta)
+    {      
+        var idGrupoInter = $("#id_grupo_inter").val();    
+        var url = '<?= Url::to(['guardar-competencias']) ?>';
+       
+        var params = {
+            idGrupoInter : idGrupoInter,
+            id_pregunta: id_pregunta,
+            tipo_pregunta:tipo_pregunta,
+        };        
+  
+        $.ajax({
+            data: params,
+            url: url,
+            type: 'POST',
+            beforeSend: function() {},
+            success: function(response) {
+                $("#table-competencia-disponibless").html(response);  
+            }
+        });        
+    }
+    //4
+    function eliminar_competencias(id_pregunta)
+    {
+        var idGrupoInter = $("#id_grupo_inter").val();    
+        var url = '<?= Url::to(['eliminar-competencias']) ?>';      
+
+        
+        var params = {
+            idGrupoInter : idGrupoInter,
+            id_pregunta: id_pregunta,
+        };   
+  
+        $.ajax({
+            data: params,
+            url: url,
+            type: 'POST',
+            beforeSend: function() {},
+            success: function(response) {                                   
+                $("#table-competencia-disponibless").html(response);    
+                ver_detalle('4.0.-');
+            }
+        });  
+
+    }
+
     function recargar_pagina(){
         //location.reload();      
         

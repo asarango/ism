@@ -118,8 +118,8 @@ $modelIsmGrupoMaterias = IsmGrupoMateriaPlanInterdiciplinar::find()
                     |
                     <?=
                     Html::a(
-                        '<span class="badge rounded-pill" style="background-color: #ab0a3d"> Generar Reporte PDF <i class="fas fa-file-pdf"></i></span>',
-                        ['genera-pdf', 'planificacion_unidad_bloque_id' => $planUnidad->id],
+                        '<span class="badge rounded-pill" style="background-color: #ab0a3d"><i class="fas fa-file-pdf"></i>Generar Reporte PDF </span>',
+                        ['pdf', 'idGrupoInter' =>$idGrupoInter,'idPlanUnidad'=>$planUnidad->id],
                         ['class' => 'link', 'target' => '_blank']
                     );
                     ?>

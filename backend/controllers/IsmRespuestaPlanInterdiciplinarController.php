@@ -11,6 +11,7 @@ use backend\models\IsmCriterioDescriptor;
 use backend\models\IsmCriterioDescriptorArea;
 use backend\models\IsmGrupoPlanInterdiciplinar;
 use backend\models\IsmRespuestaPlanInterdiciplinar;
+use backend\models\IsmRespuestaPlanInterdiciplinar2;
 use backend\models\IsmRespuestaPlanInterdiciplinarSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -25,10 +26,12 @@ use backend\models\IsmRespuestaReflexionPaiInterdiciplinar;
 use backend\models\IsmRes;
 use backend\models\IsmRespuestaOpcionesPaiInterdiciplinar;
 use backend\models\IsmRespuestaContenidoPaiInterdiciplinar;
+use backend\models\IsmRespuestaContenidoPaiInterdiciplinar2;
 use backend\models\PlanificacionVerticalPaiDescriptores;
 use yii\filters\AccessControl;
 use backend\models\PlanificacionBloquesUnidadSubtitulo2;
 use backend\models\helpers\Scripts;
+use backend\models\interdiciplinarPai\PdfInterdiciplinarPai;
 use Yii;
 
 /**
@@ -244,6 +247,9 @@ class IsmRespuestaPlanInterdiciplinarController extends Controller
             case '3.4.-':
                 $html = $this->enfoque_actividad($idGrupoInter);
                 break;
+            case '4.0.-':
+                    $html = $this->objetivos_desarrollo_sostenible_todos($idGrupoInter);
+                break;
             case '4.1.-':
                 $html = $this->objetivos_desarrollo_sostenible_competencia($idGrupoInter);
                 break;
@@ -298,6 +304,7 @@ class IsmRespuestaPlanInterdiciplinarController extends Controller
         $modelRespuesta->respuesta = $nuevoDato;
         $modelRespuesta->save();
     }
+    //9
     public function actionGuardarPreguntaReflexion()
     {
         $idGrupoInter = $_POST['idGrupoInter'];
@@ -311,6 +318,7 @@ class IsmRespuestaPlanInterdiciplinarController extends Controller
 
         return $html;
     }
+    //9
     public function actionEliminarPreguntaReflexion()
     {
         $idGrupoInter = $_POST['idGrupoInter'];
@@ -325,6 +333,7 @@ class IsmRespuestaPlanInterdiciplinarController extends Controller
 
         return $html;
     }
+    //9
     public function actionActualizarPreguntaReflexion()
     {
 
@@ -385,10 +394,45 @@ class IsmRespuestaPlanInterdiciplinarController extends Controller
         $model = IsmRespuestaContenidoPaiInterdiciplinar::findOne($id_Respuesta);        
         $model->delete();
     }
+    //PDF Interdiciplinar Pai
+    public function actionPdf()
+    {
+        $idGrupoInter = $_GET['idGrupoInter'];
+        $idPlanUnidad = $_GET['idPlanUnidad'];
 
+        $objPdf = new PdfInterdiciplinarPai($idGrupoInter,$idPlanUnidad);
+    }
+    //4
+    public function actionGuardarCompetencias()
+    {
+        $idGrupoInter = $_POST['idGrupoInter'];
+        $id_pregunta = $_POST['id_pregunta'];
+        $tipo_pregunta = $_POST['tipo_pregunta'];    
+      
+        //insertamos datos de la pregunta
+        $this->guardar_competencias($id_pregunta, $tipo_pregunta, $idGrupoInter);
+
+        $html = $this->mostrar_competencias_disponibles($idGrupoInter, 'COMPETENCIA');
+
+        return $html;
+    }
+     //4
+     public function actionEliminarCompetencias()
+     {
+         $id_pregunta = $_POST['id_pregunta'];  
+         $idGrupoInter = $_POST['idGrupoInter'];    
+       
+         $model = IsmRespuestaContenidoPaiInterdiciplinar2::findOne($id_pregunta);
+         $model->delete();
+
+         $html = $this->mostrar_competencias_disponibles($idGrupoInter, 'COMPETENCIA');
+
+         return $html;
+     }
     /*************************************************************************************************************** */
     /*************************************************************************************************************** */
     /*************************************************************************************************************** */
+
     private function crea_respuestas_en_blanco($idGrupoInter)
     {
         //busca si existe respuestas ya registradas para este grupo, caso contrario crea el catalogo de respuestas
@@ -1055,11 +1099,226 @@ class IsmRespuestaPlanInterdiciplinarController extends Controller
         return $html;
 
     }
-    
-    //4.-
+    //4.0-
+    private function objetivos_desarrollo_sostenible_todos($idGrupoInter)
+    {
+        $html = "";
+        $html .= '<div class="" style="align-items: center; display: flex; justify-content: center;">';
+        $html .= '<div class="card" style="width: 90%; margin-top:20px">';
+
+        $html .= '<div class="card-header" style="background-color:#800834;">';
+            $html .= '<h5 class="" style="color: #ffffff;"><b>4.1.- OBJETIVOS DE DESARROLLO SOSTENIBLE </b></h5>';
+        $html .= '</div>';
+
+        $html .= '<div class="card-body">';
+        $html .= '<div class="ocultar">';
+        $html .= $this->modal_competencias($idGrupoInter);
+        $html .= '</div>';
+        $html .= '<div class="table table-responsive">';
+
+        $html .= '<table class="table table-hover table-condensed table-bordered">';
+        $html .= '<div class="table table-responsive">';
+        $html .= $this->objetivos_desarrollo_sostenible_competencia2($idGrupoInter);
+        // $html .= '<table class="table table-condensed table-bordered">';
+        // $html .= '<thead>';
+        //     $html .= '<tr style="background-color:#CCC">';
+        //             $html .= '<th class="text-center" style="background-color: #0a1f8f; color: white">COMPETENCIA</th>';
+        //             $html .= '<th class="text-center" style="background-color: #9e28b5; color: white">ACTIVIDAD</th>';
+        //             $html .= '<th class="text-center" style="background-color: #ab0a3d; color: white">OBJETIVO</th>';
+        //             $html .= '<th class="text-center" style="background-color: #ab0a3d; color: white">RELACION ODS-IB</th>';
+        //     $html .= '</tr>';
+        // $html .= '</thead>';
+        // $html .= '<tbody id="table-competencias-selecionadas">';
+        //     $html .= '<tr>';
+        //         $html .= '<td>'.$this->objetivos_desarrollo_sostenible_competencia2($idGrupoInter).'</td>';
+        //     $html .= '</tr>';
+        // $html .= '</tbody>';
+        // $html .= '</table>';
+        $html .= '</div>';
+
+        $html .= '</table>';
+        $html .= '</div>';
+
+        $html .= '</div>';
+        $html .= '</div>';
+        $html .= '</div>';
+
+
+        return $html;
+    }
+    //4.0
+    private function modal_competencias($idGrupoInter)
+    {
+        $pestana = '4.0.-';
+        $html = '<a href="#"  data-bs-toggle="modal" data-bs-target="#reflexionModal" onclick="show_reflexion_disponibles()"> 
+                              <span class="badge rounded-pill" 
+                              style="background-color: #ab0a3d; font-size:13px;"><i class="fa fa-briefcase" aria-hidden="true"></i> 
+                              Seleccionar Competencia
+                              </span>';
+        $html .= '</a>';
+
+        $html .= '<div class="modal fade" id="reflexionModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-x">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="exampleModalLabel">SELECCIONAR COMPETENCIAS</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="ver_detalle(\'' . $pestana . '\')"></button>                      
+                    </div>'; //FIN DE MODAL -HEADER
+
+        $html .= '<div class="modal-body">'; //Inicio de modal-body
+
+        $html .= '<div class="table table-responsive">';
+        $html .= '<table class="table table-condensed table-bordered">';
+        $html .= '<thead>';
+        $html .= '<tr>';
+        $html .= '<th class="text-center" style="background-color: #0a1f8f; color: white">COMPETENCIA</th>';
+        $html .= '</tr>';
+        $html .= '</thead>';
+        $html .= '<tbody id="table-competencia-disponibless">';
+        $html .= '<tr>';
+        $html .= '<td>' . $this->mostrar_competencias_disponibles($idGrupoInter, 'COMPETENCIA') . '</td>';
+        $html .= '</tr>';
+        $html .= '</tbody>';
+        $html .= '</table>';
+        $html .= '</div>';
+
+
+        $html .= '</div>'; // fin de modal-body
+
+        $html .= '<div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="ver_detalle(\'' . $pestana . '\');">Cerrar</button>                      
+                      
+                    </div>
+                  </div>
+                </div>
+              </div>';
+        return $html;
+    }
+    //4.0
+    private function mostrar_competencias_disponibles($idGrupoInter, $tipo_pregunta)
+    { 
+        
+        $con = Yii::$app->db;
+        $modelContenido = IsmContenidoPlanInterdiciplinar::find()
+            ->where(['nombre_campo'=>'COMPETENCIA'])
+            ->andWhere(['id_seccion_interdiciplinar'=>4])
+            ->andWhere(['activo'=>true])
+            ->one();
+        
+        $modelRespuesta = IsmRespuestaPlanInterdiciplinar::find()
+            ->where(['id_contenido_plan_inter'=>$modelContenido->id])
+            ->andWhere(['id_grupo_plan_inter'=>$idGrupoInter])
+            ->one();
+        
+        $query = "select id,tipo,contenido_es,contenido_en,contenido_fr,estado from contenido_pai_opciones c
+                    where id not in (
+                        select id_contenido_pai from ism_respuesta_contenido_pai_interdiciplinar2 i
+                        where id_respuesta_pai_interdisciplinar =$modelRespuesta->id and tipo ='competencia_pai_inter'
+                    ) and tipo = 'competencia_pai_inter' ;";    
+                
+
+                    // ECHO '<pre>';
+                    // print_r($query);
+                    // die();
+        
+        $arraylPlanOpciones = $con->createCommand($query)->queryAll();              
+        
+
+        $html = "";
+        $html .= '<table>';
+        foreach ($arraylPlanOpciones as $array) {
+            $html .= '<tr>
+                <td style="font-size:15px"><a href="#" onclick="guardar_competencias(' . $array['id'] . ',\'' . strtoupper($tipo_pregunta) . '\');">' . $array['contenido_es'] . '</a>
+                </td>
+            </tr>';
+
+        }
+        $html .= '</table>';
+        return $html;
+    }
+    //4.0
+    private function guardar_competencias($idPregunta, $tipo_pregunta,$idIsmGrupoInter)
+    {
+        $con = Yii::$app->db;
+        //script para mostar id correspondiente a la ´respuesta en el plan interdiciplinar pai para reflexion
+
+        $query = "select id  from ism_respuesta_plan_interdiciplinar irpi 
+                    where id_contenido_plan_inter in 
+                    (select id from ism_contenido_plan_interdiciplinar icpi where nombre_campo = upper('$tipo_pregunta') )
+                    and id_grupo_plan_inter  = $idIsmGrupoInter;";                    
+
+        $resp = $con->createCommand($query)->queryOne();        
+
+        $modelContenido = ContenidoPaiOpciones::find()
+        ->where(['id'=>$idPregunta])
+        ->one();        
+
+        $modelRespuestaContenido = new IsmRespuestaContenidoPaiInterdiciplinar2();
+
+        $modelRespuestaContenido->id_respuesta_pai_interdisciplinar = $resp['id'];
+        $modelRespuestaContenido->id_contenido_pai = $modelContenido->id;
+        $modelRespuestaContenido->tipo = $modelContenido->tipo;
+        $modelRespuestaContenido->contenido = $modelContenido->contenido_es;
+        $modelRespuestaContenido->mostrar = true;
+        $modelRespuestaContenido->save();
+
+        // echo '<pre>';
+        // print_r($modelRespuestaContenido);
+        // die();
+
+        
+    }
+    //4.0
+    private function mostrar_competencias($idGrupoInter)
+    {
+        $html = "";
+        $html .= '<tr>';
+        $html .= '<td>' . $this->mostrar_competencias_disponibles($idGrupoInter, 'COMPETENCIA') . '</td>';
+        $html .= '</tr>';
+        return $html;
+    }
+    //4.1.- NUEVO
+    private function objetivos_desarrollo_sostenible_competencia2($idIsmGrupoInter)
+    {
+        $con = Yii::$app->db;
+        //script para mostar id correspondiente a la ´respuesta en el plan interdiciplinar pai para reflexion
+
+        $query = "select id  from ism_respuesta_plan_interdiciplinar irpi 
+                    where id_contenido_plan_inter in 
+                    (select id from ism_contenido_plan_interdiciplinar icpi where nombre_campo = upper('COMPETENCIA') )
+                    and id_grupo_plan_inter  = $idIsmGrupoInter;";                    
+
+        $resp = $con->createCommand($query)->queryOne();       
+        $html ="";    
+
+        $modelCompetenciasSelect = IsmRespuestaContenidoPaiInterdiciplinar2::find()
+            ->where(['id_respuesta_pai_interdisciplinar'=>$resp['id']])
+            ->andWhere(['tipo'=>'competencia_pai_inter'])
+            ->all();
+
+        $html .='<table class="table table-condensed table-bordered">
+                     <tr>';
+                     $html .= '<th class="text-center" style="background-color: #0a1f8f; color: white">COMPETENCIA</th>';
+                     $html .= '<th class="text-center" style="background-color: #9e28b5; color: white">ACTIVIDAD</th>';
+                     $html .= '<th class="text-center" style="background-color: #ab0a3d; color: white">OBJETIVO</th>';
+                     $html .= '<th class="text-center" style="background-color: #ab0a3d; color: white">RELACION ODS-IB</th>';
+                     $html .= '</tr>';
+                    foreach( $modelCompetenciasSelect as $model)
+                    {
+                        $html .= '<tr><td style="font-size:14px"><a href="#" onclick="eliminar_competencias(' . $model->id . ');"><i style="color:red;" class="fas fa-trash"></i></a>
+                        <span style="color:blue;">' . $model->contenido . '</span></td>';
+                            $html .='<td>'.$model->actividad.'</td>'; 
+                            $html .='<td>'.$model->objetivo.'</td>'; 
+                            $html .='<td>'.$model->relacion_ods.'</td>'; 
+                        $html .='</tr>';                     
+                    }
+        $html .= '</table>';
+        return $html;
+    }    
+    //4.1-
     private function objetivos_desarrollo_sostenible_competencia($idGrupoInter)
     {
-        $titulo = '4.1.- Competencia: <font size=1px>Se seleccionará la competencia del listado de competencias de ODS</font>';
+        $titulo = '4.1.- Competencia: <font size=3px>Se seleccionará la competencia del listado de competencias de ODS</font>';
         $idIsmGrupoInter = $idGrupoInter;
         $esEditable = true;
         $pestana = '4.1.-';
@@ -1070,9 +1329,10 @@ class IsmRespuestaPlanInterdiciplinarController extends Controller
 
         return $html;
     }
+    //4.2.-
     private function objetivos_desarrollo_sostenible_actividad($idGrupoInter)
     {
-        $titulo = '4.2.- Actividad: <font size=1px>Detallar la actividad que contribuye al desarrollo de la competencia</font>';
+        $titulo = '4.2.- Actividad: <font size=3px>Detallar la actividad que contribuye al desarrollo de la competencia</font>';
         $idIsmGrupoInter = $idGrupoInter;
         $esEditable = true;
         $pestana = '4.2.-';
@@ -1083,9 +1343,10 @@ class IsmRespuestaPlanInterdiciplinarController extends Controller
 
         return $html;
     }
+    //4.3
     private function objetivos_desarrollo_sostenible_objetivo($idGrupoInter)
     {
-        $titulo = '4.3.- Objetivo: <font size=1px>(Se incluirá la imagen del icono del ODS que se desarrolle)</font>';
+        $titulo = '4.3.- Objetivo: <font size=3px>(Se incluirá la imagen del icono del ODS que se desarrolle)</font>';
         $idIsmGrupoInter = $idGrupoInter;
         $esEditable = true;
         $pestana = '4.3.-';
@@ -1096,9 +1357,10 @@ class IsmRespuestaPlanInterdiciplinarController extends Controller
 
         return $html;
     }
+    //4.4
     private function objetivos_desarrollo_sostenible_relacion_ods($idGrupoInter)
     {
-        $titulo = '4.4.- Relación ODS-IB: <font size=1px>(Se realizará una breve descripción entre la actividad ODS con la evaluación sumativa)</font>';
+        $titulo = '4.4.- Relación ODS-IB: <font size=3px>(Se realizará una breve descripción entre la actividad ODS con la evaluación sumativa)</font>';
         $idIsmGrupoInter = $idGrupoInter;
         $esEditable = true;
         $pestana = '4.4.-';
@@ -1655,7 +1917,7 @@ class IsmRespuestaPlanInterdiciplinarController extends Controller
         $html = "";
         $html .= '<table>';
         foreach ($arraylPlanOpciones as $array) {
-            $html .= '<tr><td><a href="#" onclick="guardar_pregunta_reflexion(' . $array['id'] . ',\'' . strtoupper($tipo_pregunta) . '\');">' . $array['opcion'] . '</a></td></tr>';
+            $html .= '<tr><td style="font-size:15px"><a href="#" onclick="guardar_pregunta_reflexion(' . $array['id'] . ',\'' . strtoupper($tipo_pregunta) . '\');">' . $array['opcion'] . '</a></td></tr>';
         }
         $html .= '</table>';
         return $html;

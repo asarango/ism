@@ -6,6 +6,7 @@ use backend\models\helpers\CalendarioSemanal;
 use backend\models\ScholarisBloqueSemanas;
 use backend\models\ScholarisHorariov2Dia;
 use backend\models\ScholarisPeriodo;
+use backend\models\PlanSemanalBitacora;
 use Yii;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -134,6 +135,7 @@ class PlanSemanalDocenteController extends Controller {
             $weekId = $_GET['week_id'];
 
             $week = ScholarisBloqueSemanas::findOne($weekId);
+            $statesBitacora = $this->get_states_bitacora($weekId, $user, $periodId);
 
             $dates = $this->get_dates($week->fecha_inicio, $week->fecha_finaliza, $user, $periodId);
             $hours = $this->get_hours($user, $periodId);
@@ -143,11 +145,69 @@ class PlanSemanalDocenteController extends Controller {
                 'hours' => $hours,
                 'user'  => $user,
                 'bloqueId' => $week->bloque->id,
-                'weekNumber' => $week->semana_numero
+                'weekNumber' => $week->semana_numero,
+                'week'  => $week,
+                'statesBitacora' => $statesBitacora
             ]);
-        }
+        }////fin de detalle de semana
+        else if($action == 'enviar'){            
+            $courses = $this->get_courses_by_teacher($periodId, $user);            
+            $weekId = $_GET['week_id'];            
 
+            foreach($courses as $course){       
+                
+                $coordinator = $this->get_coordinator($course['course_id']);
+
+                if(count($coordinator) != 1){
+                    echo 'Error al asignar coordinadores en la pantalla de clases, por favor comuníque a su administrador!!!';
+                    die();
+                }else{
+                    $model = new PlanSemanalBitacora();
+                    $model->semana_id       = $weekId;
+                    $model->docente_usuario = $user;
+                    $model->curso_id        = $course['course_id'];
+                    $model->estado          = 'COORDINADOR';
+                    $model->fecha_envio     = date('Y-m-d H:i:s');
+                    $model->usuario_envia   = $user;      
+                    $model->usuario_recibe  = $coordinator[0]['usuario'];         
+                    $model->save();
+                }
+            }   
+            
+            return $this->redirect(['index']);
+        }/////FIN DE ENVIAR A COORDINADOR
         
+        
+    }
+
+
+    private function get_states_bitacora($weekId, $user, $periodId){
+        $con    = Yii::$app->db;
+        $query  = "select 	bi.curso_id, bi.estado 
+        from 	plan_semanal_bitacora bi
+                inner join op_course cur on cur.id = bi.curso_id
+                inner join op_section sec on sec.id = cur.section
+                inner join scholaris_op_period_periodo_scholaris sop on sop.op_id = sec.period_id 
+        where 	bi.semana_id = $weekId
+                and sop.scholaris_id = $periodId
+                and bi.id = (select max(id) from plan_semanal_bitacora where semana_id=bi.semana_id and curso_id = bi.curso_id)
+                and bi.docente_usuario = '$user'
+        group by bi.curso_id, bi.estado;";
+        
+        $res    = $con->createCommand($query)->queryAll();
+        return $res;
+    }
+
+    private function get_coordinator($courseId){
+        $con    = Yii::$app->db;
+        $query  = "select 	oia.usuario  
+                    from 	scholaris_clase cla
+                            inner join op_course_paralelo par on par.id = cla.paralelo_id 
+                            inner join op_institute_authorities oia on oia.id = cla.coordinador_academico_id
+                    where 	par.course_id = $courseId
+                    group by oia.usuario;";
+        $res    = $con->createCommand($query)->queryAll();
+        return $res;
     }
 
     private function get_dates($fechaInicio, $fechaFinaliza,  $user, $periodId){                
@@ -196,4 +256,30 @@ class PlanSemanalDocenteController extends Controller {
         return $res;
     }
 
+
+    public function get_courses_by_teacher($periodId, $user){
+        $con = Yii::$app->db;
+        $query = "select 	par.course_id  
+        from 	scholaris_clase cla
+                inner join op_faculty fac on fac.id = cla.idprofesor 
+                inner join res_users rus on rus.partner_id = fac.partner_id 
+                inner join ism_area_materia iam on iam.id = cla.ism_area_materia_id 
+                inner join ism_malla_area ima on ima.id = iam.malla_area_id 
+                inner join ism_periodo_malla ipm on ipm.id = ima.periodo_malla_id 
+                inner join op_course_paralelo par on par.id = cla.paralelo_id 
+        where 	rus.login = '$user'
+                and ipm.scholaris_periodo_id = $periodId
+        group by par.course_id;";
+
+        $res = $con->createCommand($query)->queryAll();
+
+        return $res;
+    }
+
+
+    public function actionDevuelto(){
+        $weekId = $_GET['week_id'];
+        
+        return $this->render('devuelto');
+    }
 }

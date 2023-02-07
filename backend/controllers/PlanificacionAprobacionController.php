@@ -75,13 +75,13 @@ class PlanificacionAprobacionController extends Controller{
 
         $detalle = array();
 
-        $cursos = $this->consulta_detalle_cursos($periodoId, $institutoId, $section);
+        $cursos = $this->consulta_detalle_cursos($periodoId, $institutoId, $section);        
         
         foreach($cursos as $curso){
 
             $curso['totales'] = $this->consulta_totales($curso['x_template_id']);
             array_push($detalle, $curso);            
-        }        
+        }           
 
         return $this->render('index', [
             'detalle' => $detalle
@@ -123,6 +123,9 @@ class PlanificacionAprobacionController extends Controller{
                                     inner join ism_malla im on im.id = ipm.malla_id 
                     where 	im.op_course_template_id = $templateId 
                     group by estado order by estado;";        
+
+        // echo $query;
+        // die();            
         
         $res = $con->createCommand($query)->queryAll();
 
@@ -137,7 +140,8 @@ class PlanificacionAprobacionController extends Controller{
         
         
         return $this->render('asignaturas', [
-            'asignaturas' => $asignaturas
+            'asignaturas' => $asignaturas,
+            'template_id' => $templateId
         ]);
 
     }
@@ -169,7 +173,9 @@ class PlanificacionAprobacionController extends Controller{
 
     public function actionDetalle(){
         $cabeceraId = $_GET['cabecera_id'];
+        $templateId = $_GET['template_id'];
         $cabecera = PlanificacionDesagregacionCabecera::findOne($cabeceraId);
+
         $estado = $cabecera->estado;
         $pca = new Pca($cabeceraId);
         $periodoId = Yii::$app->user->identity->periodo_id;
@@ -233,7 +239,8 @@ class PlanificacionAprobacionController extends Controller{
             'pca'       => $pca,
             'cabecera'  => $cabecera,
             'desagregacion' => $desagregacion,
-            'seccionCode' => $seccionCode
+            'seccionCode' => $seccionCode,
+            'template_id' => $templateId
         ]);
     }
 

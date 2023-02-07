@@ -20,7 +20,10 @@ if (isset($modelSemanas[0]['bloque'])) {
         
             <div class="col">
                 <div class="card">
-                    <div class="card-header" style="background-color: #65b2e8; color: white"><?= $semana['semana_numero'] ?></div>
+                    <div class="card-header" style="background-color: #65b2e8; color: white">
+                        <?= $semana['semana_numero'] ?>
+                        -- ( del <?= $semana['fecha_inicio'].' al '.$semana['fecha_finaliza'] ?> )
+                    </div>
                     <!--<img src="..." class="card-img-top" alt="...">-->
                     <div class="card-body">
                         <h5 class="card-title"><?= $semana['nombre_semana'] ?></h5>

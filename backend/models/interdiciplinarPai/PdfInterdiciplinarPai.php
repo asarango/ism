@@ -6,7 +6,10 @@ use backend\models\IsmGrupoMateriaPlanInterdiciplinar;
 use backend\models\helpers\HelperGeneral;
 use backend\models\IsmContenidoPlanInterdiciplinar;
 use backend\models\IsmRespuestaContenidoPaiInterdiciplinar;
+use backend\models\IsmRespuestaContenidoPaiInterdiciplinar2;
 use backend\models\IsmRespuestaOpcionesPaiInterdiciplinar;
+use backend\models\IsmRespuestaPlanInterdiciplinar;
+use backend\models\IsmRespuestaReflexionPaiInterdiciplinar;
 use backend\models\pudpai\Datos;
 use backend\models\PlanificacionBloquesUnidad;
 use Yii;
@@ -154,6 +157,10 @@ class PdfInterdiciplinarPai extends \yii\db\ActiveRecord
         $html .=$this->datos_informativo();
         $html .= $this->datos_indagacion();
         $html .= $this->enfoque_aprendizaje();
+        $html .= $this->objetivo_desarrollo();
+        $html .= $this->evaluacion_desemplenio();
+        $html .= $this->recursos();
+        $html .= $this->reflexion();
        
         return $html;
     }  
@@ -440,10 +447,10 @@ class PdfInterdiciplinarPai extends \yii\db\ActiveRecord
                             <td colspan="4"><b>3.- ENFOQUES DEL APRENDIZAJE </b></td>               
                         </tr>;
                         <tr >
-                            <td ><b>HABILIDAD</b></td>   
-                            <td ><b>EXPLORACIÓN</b></td>
-                            <td ><b>ACTIVIDAD</b></td>
-                            <td ><b>ATRIBUTO DEL PERFIL</b></td>            
+                            <td width="25%"><b>HABILIDAD</b></td>   
+                            <td width="25%"><b>EXPLORACIÓN</b></td>
+                            <td width="25%"><b>ACTIVIDAD</b></td>
+                            <td width="25%"><b>ATRIBUTO DEL PERFIL</b></td>            
                         </tr>';
                         foreach($modelHabilidades as $model)
                         {
@@ -476,6 +483,211 @@ class PdfInterdiciplinarPai extends \yii\db\ActiveRecord
         return $html;
 
     }
+    //4
+    private function objetivo_desarrollo()
+    {
+        $idGrupoPlanInter= $this->grupoPlanInterdisciplinar;
+        //buscamos el id, que corresponde a COMPETENCIA, de la seccion 4  EN ISM CONTwhENIDO_ PLNA INTERDICIPLINAR
+        $modelContenido = IsmContenidoPlanInterdiciplinar::find()
+        ->where(['nombre_campo'=>'COMPETENCIA'])
+        ->andWhere(['activo'=>true])
+        ->andWhere(['id_seccion_interdiciplinar'=>4])
+        ->one();
+
+        $modelRespuesta = IsmRespuestaPlanInterdiciplinar::find()
+        ->where(['id_grupo_plan_inter'=>$idGrupoPlanInter ])
+        ->andWhere(['id_contenido_plan_inter'=>$modelContenido->id])
+        ->one();
+
+        $modelRespuestaContenido = IsmRespuestaContenidoPaiInterdiciplinar2::find()
+        ->where(['id_respuesta_pai_interdisciplinar'=>$modelRespuesta->id])
+        ->all();        
+       
+        $html ='<br>
+        <table border="1" width="100%" cellspacing="0" cellpadding="5" style="font-size:10">
+                        <tr >
+                            <td colspan="4"><b>4.- OBJETIVO DEL DESARROLLO SOSTENIBLE</b></td>               
+                        </tr>;                       
+                        <tr >
+                            <td width="25%"><b>COMPETENCIA</b></td>   
+                            <td width="25%"><b>ACTIVIDAD</b></td>
+                            <td width="25%"><b>OBJETIVO</b></td>
+                            <td width="25%"><b>RELACION ODS-IB</b></td>            
+                        </tr>';
+                 
+                            foreach($modelRespuestaContenido as $model)
+                            {
+                                $html.='<tr >';
+                                $html.='<td >'.$model->contenido.'</td>   
+                                        <td >'.$model->actividad.'</td>
+                                        <td >'.$model->objetivo.'</td>
+                                        <td >'.$model->relacion_ods.'</td>';
+                                $html.='</tr>';
+                            }
+                
+        $html.='</table>';
+        
+
+
+        return $html;
+
+    }
+    //5.-
+    private function evaluacion_desemplenio()
+    {
+
+        $html ='<br>
+        <table border="1" width="100%" cellspacing="0" cellpadding="5" style="font-size:10">
+                        <tr >
+                            <td colspan="2"><b>5.- EVALUACIÓN: DESEMPEÑO(S) DE COMPRENSIÓN INTERDISCIPLINARIO(S)</b></td>               
+                        </tr>;                      
+                        <tr >
+                            <td width="50%">
+                                <table border="1" width="100%">
+                                    <tr>
+                                        <td>CRITERIOS INTERDISCIPLINARIOS</td>
+                                    </tr>
+                                    <tr>
+                                        <td>TEXTO DE CREITERIOS</td>
+                                    </tr>
+                                </table> 
+                            </td>   
+                            <td width="50%">
+                                <table border="1">
+                                    <tr><td><b>EVALUACIONES FORMATIVAS DISCIPLINARIAS</b></td></tr>
+                                    <tr><td>'.$this->devolver_campo_respuesta('EVALUACIONES FORMATIVAS DISCIPLINARIAS').'</td></tr>
+                                    <tr><td><b>EVALUACIONES FORMATIVAS INTERDISCIPLINARIAS</b></td></tr>
+                                    <tr><td>'.$this->devolver_campo_respuesta('EVALUACIONES FORMATIVAS INTERDISCIPLINARIAS').'</td></tr>
+                                    <tr><td><b>EVALUACION SUMATIVA</b></td></tr>
+                                    <tr><td>'.$this->devolver_campo_respuesta('EVALUACION SUMATIVA').'</td></tr>
+                                    <tr><td></td></tr>
+                                </table> 
+                            </td>      
+                        </tr>';                 
+                
+        $html.='</table>';
+
+        return $html;
+
+    }
+    //5
+    private function devolver_campo_respuesta($nombreCampo)
+    {
+        $con = Yii::$app->db;
+        $query = "select id,id_grupo_plan_inter ,id_contenido_plan_inter ,respuesta  
+                from ism_respuesta_plan_interdiciplinar irpi where id_grupo_plan_inter = 10 and id_contenido_plan_inter in 
+                (
+                select id from ism_contenido_plan_interdiciplinar icpi 
+                where id_seccion_interdiciplinar =5 and nombre_campo ='$nombreCampo' and activo = true
+                );";
+        $resp = $con->createCommand($query)->queryOne();
+
+        return $resp['respuesta'];
+
+    }
+    //8
+    private function recursos()
+    {        
+        $html ='<br>
+        <table border="1" width="100%" cellspacing="0" cellpadding="5" style="font-size:10">
+                        <tr >
+                            <td colspan="2"><b>8.- RECURSOS:</b> En esta sección especificar claramente cada recurso que se utilizará. 
+                                    Podría mejorarse incluyendo recursos que pudieran utilizarse para llevar a cabo la diferenciación, 
+                                    así como también agregando, por ejemplo, oradores y entornos que pudieran generar mayor profundidad 
+                                    en el trabajo reflexivo sobre el enunciado de la unidad.</td>               
+                        </tr>';                      
+                        $html.=$this->muestra_recursos('BIBLIOGRÁFICO'); 
+                        $html.=$this->muestra_recursos('TECNOLÓGICO');
+                        $html.=$this->muestra_recursos('OTROS');   
+        $html.='</table>';
+
+        return $html;
+
+    }
+    //8
+    private function muestra_recursos($recurso)
+    {
+        $idGrupoPlanInter= $this->grupoPlanInterdisciplinar;
+        $modelRecurso1 = IsmContenidoPlanInterdiciplinar::find()
+        ->where(['nombre_campo'=>$recurso])
+        ->andWhere(['activo'=>true])
+        ->andWhere(['id_seccion_interdiciplinar'=>8])
+        ->one();
+
+        $modelRespuesta = IsmRespuestaPlanInterdiciplinar::find()
+        ->where(['id_grupo_plan_inter'=>$idGrupoPlanInter])
+        ->andWhere(['id_contenido_plan_inter'=>$modelRecurso1->id])
+        ->one();
+
+        $html='';
+        $html.='<tr><td width="25%">'.$recurso.'</td><td width="80%">'.$modelRespuesta->respuesta.'</td></tr>';
+
+        return  $html;
+    }
+    //9
+    private function reflexion()
+    {
+        $html ='<br>
+        <table border="1" width="100%" cellspacing="0" cellpadding="5" style="font-size:10">
+                        <tr >
+                            <td colspan="3"><b>9.	REFLEXIÓN: </b>CONSIDERACIÓN DE LA PLANIFICACIÓN, EL PROCESO Y EL IMPACTO DE LA INDAGACIÓN 
+                            INTERDISCIPLINARIA</td>               
+                        </tr>';  
+                $html.='<tr>
+                            <td>ANTES DE ENSEÑAR LA UNIDAD</td>
+                            <td>MIENTRAS SE ENSEÑA LA UNIDAD</td>
+                            <td>DESPUÉS DE ENSEÑAR LA UNIDAD</td>
+                        </tr>';
+                $html.='<tr>';
+                        $html.='<td>'.$this->muestra_reflexion('ANTES').'</td>';
+                        $html.='<td>'.$this->muestra_reflexion('MIENTRAS').'</td>';
+                        $html.='<td>'.$this->muestra_reflexion('DESPUES').'</td>';
+                $html.='</tr>';
+        $html.='</table>';
+
+        return $html;
+    }
+
+    private function muestra_reflexion($reflexion)
+    {        
+
+        $modelContenido = IsmContenidoPlanInterdiciplinar::find()
+        ->where(['nombre_campo'=>$reflexion])
+        ->andWhere(['activo'=>true])
+        ->andWhere(['id_seccion_interdiciplinar'=>9])
+        ->one();
+
+        $idGrupoPlanInter= $this->grupoPlanInterdisciplinar;
+
+        $modelRespPlanInter = IsmRespuestaPlanInterdiciplinar::find()
+        ->where(['id_grupo_plan_inter'=>$idGrupoPlanInter])
+        ->andWhere(['id_contenido_plan_inter'=>$modelContenido->id])
+        ->one();
+
+        $modelReflexion = IsmRespuestaReflexionPaiInterdiciplinar::find()
+        ->where(['id_respuesta_plan_inter_pai'=>$modelRespPlanInter->id])
+        ->all();
+
+        $html='';
+        $html.='<ul>';
+
+        foreach($modelReflexion as $model)
+        {
+            $html.='<li>';
+                $html.='<b>'.$model->planificacionOpciones->opcion.'</b>';
+                $html .='<br>';
+                $html.=$model->respuesta;
+            $html.='</li>' ; 
+        }
+        $html.='</ul>';
+
+        // echo '<pre>';
+        // print_r($modelContenido);
+        //die();
+
+        return $html;
+    }
+
 
 
 }

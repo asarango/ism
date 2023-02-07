@@ -54,20 +54,21 @@ $iconoColor = '#ffffff';
                 </a>
             </li>
             <li class="zoom">
-                <a href="#" onclick="ver_detalle('2.3.-');">2.3.- Enunciado de la Indagación
+                <a href="#" onclick="ver_detalle('2.3.-');">2.3.- Contexto Global
                     <i class="<?= $iconoOk; ?>" title="" style="color: <?= $iconoColor; ?>;"></i>
                 </a>
             </li>
             <li class="zoom">
-                <a href="#" onclick="ver_detalle('2.4.-');">2.4.- Preguntas de Indagación
+                <a href="#" onclick="ver_detalle('2.4.-');">2.4.- Enunciado de la Indagación
                     <i class="<?= $iconoOk; ?>" title="" style="color: <?= $iconoColor; ?>;"></i>
                 </a>
             </li>
             <li class="zoom">
-                <a href="#" onclick="ver_detalle('2.5.-');">2.5.- Contexto Global
+                <a href="#" onclick="ver_detalle('2.5.-');">2.5.- Preguntas de Indagación
                     <i class="<?= $iconoOk; ?>" title="" style="color: <?= $iconoColor; ?>;"></i>
                 </a>
             </li>
+            
         </ul>
     </li>
     <hr>
@@ -79,22 +80,7 @@ $iconoColor = '#ffffff';
                 <a href="#" onclick="ver_detalle('3.1.-');">3.1.- Habilidad y Exploración
                     <i class="<?= $iconoOk; ?>" title="" style="color: <?= $iconoColor; ?>;"></i>
                 </a>
-            </li>
-            <!-- <li class="zoom">
-                <a href="#" onclick="ver_detalle('3.2.-');">3.2.- Exploración
-                    <i class="<?= $iconoOk; ?>" title="" style="color: <?= $iconoColor; ?>;"></i>
-                </a>
-            </li> -->
-            <!-- <li class="zoom">
-                <a href="#" onclick="ver_detalle('3.2.-');">3.2.- Actividad
-                    <i class="<?= $iconoOk; ?>" title="" style="color: <?= $iconoColor; ?>;"></i>
-                </a>
-            </li>
-            <li class="zoom">
-                <a href="#" onclick="ver_detalle('3.4.-');">3.3.- Atributo del Perfil
-                    <i class="<?= $iconoOk; ?>" title="" style="color: <?= $iconoColor; ?>;"></i>
-                </a>
-            </li> -->
+            </li>        
         </ul>
     </li>
     <hr>
@@ -102,30 +88,10 @@ $iconoColor = '#ffffff';
         <b>4.- OBJETIVOS DE DESARROLLO SOSTENIBLE</b>
         <ul>
             <li class="zoom">
-                <a href="#" onclick="ver_detalle('4.0.-');">4.0.- Todos
+                <a href="#" onclick="ver_detalle('4.1.-');">4.1.- Objetivo de Desarrollo
                     <i class="<?= $iconoOk; ?>" title="" style="color: <?= $iconoColor; ?>;"></i>
                 </a>
-            </li>
-            <li class="zoom">
-                <a href="#" onclick="ver_detalle('4.1.-');">4.1.-Competencia
-                    <i class="<?= $iconoOk; ?>" title="" style="color: <?= $iconoColor; ?>;"></i>
-                </a>
-            </li>
-            <li class="zoom">
-                <a href="#" onclick="ver_detalle('4.2.-');">4.2.-Actividad
-                    <i class="<?= $iconoOk; ?>" title="" style="color: <?= $iconoColor; ?>;"></i>
-                </a>
-            </li>
-            <li class="zoom">
-                <a href="#" onclick="ver_detalle('4.3.-');">4.3.-Objetivo
-                    <i class="<?= $iconoOk; ?>" title="" style="color: <?= $iconoColor; ?>;"></i>
-                </a>
-            </li>
-            <li class="zoom">
-                <a href="#" onclick="ver_detalle('4.4.-');">4.4.-Relación ODS-IB
-                    <i class="<?= $iconoOk; ?>" title="" style="color: <?= $iconoColor; ?>;"></i>
-                </a>
-            </li>
+            </li>           
         </ul>
     </li>
     <hr>
@@ -461,8 +427,7 @@ $iconoColor = '#ffffff';
     function eliminar_competencias(id_pregunta)
     {
         var idGrupoInter = $("#id_grupo_inter").val();    
-        var url = '<?= Url::to(['eliminar-competencias']) ?>';      
-
+        var url = '<?= Url::to(['eliminar-competencias']) ?>';  
         
         var params = {
             idGrupoInter : idGrupoInter,
@@ -476,10 +441,40 @@ $iconoColor = '#ffffff';
             beforeSend: function() {},
             success: function(response) {                                   
                 $("#table-competencia-disponibless").html(response);    
-                ver_detalle('4.0.-');
+                ver_detalle('4.1.-');
             }
         });  
 
+    }
+    //4.0
+    function actualizar_competencia(id)
+    {
+        
+        var competencia_actividad = $("#competencia_actividad_"+id).val();
+        var competencia_objetivo = $("#competencia_objetivo_"+id).val();
+        var competencia_relacion_ods = $("#competencia_relacion_ods_"+id).val();
+        var id_competencia = id;
+        var url = '<?= Url::to(['actualizar-competencia']) ?>';    
+
+        // alert('id:'+id);
+        // alert('entro1'+competencia_actividad);
+        // alert('entro2'+competencia_objetivo);
+        // alert('entro3'+competencia_relacion_ods);
+        var params = {
+            competencia_actividad : competencia_actividad,
+            competencia_objetivo :competencia_objetivo,
+            competencia_relacion_ods :competencia_relacion_ods,
+            id_competencia : id_competencia,
+        }
+        $.ajax({
+            data:params,
+            url: url,
+            type:'POST',
+            beforeSend : function(){},
+            success: function(response){
+
+            }
+        })
     }
 
     function recargar_pagina(){

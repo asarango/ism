@@ -183,7 +183,7 @@ class PlanSemanalDocenteController extends Controller {
 
     private function get_states_bitacora($weekId, $user, $periodId){
         $con    = Yii::$app->db;
-        $query  = "select 	bi.curso_id, bi.estado 
+        $query  = "select 	bi.curso_id, bi.estado, cur.name as curso
         from 	plan_semanal_bitacora bi
                 inner join op_course cur on cur.id = bi.curso_id
                 inner join op_section sec on sec.id = cur.section
@@ -192,7 +192,7 @@ class PlanSemanalDocenteController extends Controller {
                 and sop.scholaris_id = $periodId
                 and bi.id = (select max(id) from plan_semanal_bitacora where semana_id=bi.semana_id and curso_id = bi.curso_id)
                 and bi.docente_usuario = '$user'
-        group by bi.curso_id, bi.estado;";
+        group by bi.curso_id, bi.estado, cur.name;";
         
         $res    = $con->createCommand($query)->queryAll();
         return $res;
@@ -269,7 +269,7 @@ class PlanSemanalDocenteController extends Controller {
                 inner join op_course_paralelo par on par.id = cla.paralelo_id 
         where 	rus.login = '$user'
                 and ipm.scholaris_periodo_id = $periodId
-        group by par.course_id;";
+        group by par.course_id;";        
 
         $res = $con->createCommand($query)->queryAll();
 
@@ -278,8 +278,16 @@ class PlanSemanalDocenteController extends Controller {
 
 
     public function actionDevuelto(){
-        $weekId = $_GET['week_id'];
-        
-        return $this->render('devuelto');
+        $weekId     = $_GET['week_id'];
+        $user       = Yii::$app->user->identity->usuario;
+        $periodId   = Yii::$app->user->identity->periodo_id;
+        $week       = ScholarisBloqueSemanas::findOne($weekId);
+
+        $bitacora = $this->get_states_bitacora($weekId, $user, $periodId);
+
+        return $this->render('devuelto',[
+            'week'      => $week,
+            'bitacora'  => $bitacora
+        ]);
     }
 }

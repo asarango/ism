@@ -8,14 +8,43 @@ use backend\models\Lms;
 use backend\models\LmsActividad;
 use backend\models\LmsDocenteNee;
 use backend\models\ScholarisActividad;
+use yii\helpers\Html;
 
 ?>
+
+<style>
+    .btn-whatsapp {
+        position: fixed;
+        /* width: 60px; */
+        /* height: 60px; */
+        bottom: 200px;
+        right: 40px;
+        /* background-color: #898b8d; */
+        /* color: #FFF; */
+        /* border-radius: 50px; */
+        text-align: center;
+        /* font-size: 30px; */
+        /* box-shadow: 2px 2px 3px #999; */
+        z-index: 100;
+    }
+
+    .btn-whatsapp:hover {
+        text-decoration: none;
+        color: #25d366;
+        background-color: #fff;
+    }
+
+    .my-float {
+        margin-top: 16px;
+    }
+</style>
 
 <hr>
 
 <div class="" style="margin-left: 30px; margin-bottom: 30px;">
     <?php
     //inicio de foreach principal de dias y fechas
+    $contadorNoPlanificado = 0;
     foreach ($dates as $date) {
     ?>
 
@@ -31,6 +60,7 @@ use backend\models\ScholarisActividad;
 
         <?php
         //inicio de horas
+
         foreach ($hours as $hour) {
             if ($date['numero'] == $hour['dia_numero']) {
 
@@ -41,13 +71,10 @@ use backend\models\ScholarisActividad;
                 }
 
         ?>
-
-
                 <div class="row" style="margin: 0px 50px 50px 50px; 
-                                                            color: <?= $color ?>; 
-                                                            border: solid 1px <?= $color ?>; 
-                                                            ">
-
+                    color: <?= $color ?>; 
+                    border: solid 1px <?= $color ?>; 
+                    ">
                     <nav aria-label="breadcrumb" style="background-color: <?= $color ?>;">
                         <ol class="breadcrumb">
                             <li class="breadcrumb-item active" aria-current="page" style="color: white;"><?= $hour['hora'] ?></li>
@@ -61,10 +88,10 @@ use backend\models\ScholarisActividad;
                     <?php
                     $detail = get_planification_by_hour($hour['detalle_id'], $hour['clase_id']);
 
-
                     if ($detail) {
                         if ($detail['fecha'] == $date['fecha']) {
                             if ($detail['titulo'] == 'NO CONFIGURADO') {
+                                $contadorNoPlanificado++;
                                 echo '<div class="col">';
                                 echo '<p>';
                                 echo '<img src="../ISM/main/images/actions/trabajando.gif" width="70px" style="" class="">';
@@ -87,10 +114,10 @@ use backend\models\ScholarisActividad;
                                 echo '<b>TAREAS / EVALUACIONES</b><br>';
 
                                 $homeWork = LmsActividad::find()->where(['lms_id' => $detail['lms_id']])->all();
-                                
+
                                 foreach ($homeWork as $hw) {
                                     echo '<span class="badge rounded-pill" style="background-color: #0a1f8f; margin-right:3px;">
-                                        <i class="fas fa-book-reader"> '.$hw->titulo.'</i>' 
+                                        <i class="fas fa-book-reader"> ' . $hw->titulo . '</i>'
                                         . '</span>';
                                 }
                                 echo '</p>';
@@ -111,10 +138,15 @@ use backend\models\ScholarisActividad;
                                 echo '</p>';
                                 echo '</div>';
                             }
+                        } else {
+                            $contadorNoPlanificado++;
+                            echo 'Hora libre';
                         }
                     } else {
-                        echo '<div class="col"><img src="../ISM/main/images/actions/no.gif" 
-                                                        width="50px" style="" class="">Sin planificar</div>';
+                        $contadorNoPlanificado++;
+                        echo '<div class="col">
+                                <img src="../ISM/main/images/actions/no.gif" 
+                                     width="50px" style="" class="">Sin planificar</div>';
                     }
 
                     ?>
@@ -123,13 +155,42 @@ use backend\models\ScholarisActividad;
         <?php
             }
         }
-        //inde horas
+        //fin de horas
         ?>
 
 
     <?php //fin de foreach principal de dias y fechas
     }
+
+    // echo $contadorNoPlanificado;
+    $state = get_validation_to_send($contadorNoPlanificado, $statesBitacora);
+    // print_r($state);
+    //         die();
     ?>
+
+
+    <div class="btn-whatsapp">
+        <?php
+            
+            $state = get_validation_to_send($contadorNoPlanificado, $statesBitacora);
+            if($state == 'enviar'){
+                echo Html::a('<img src="../ISM/main/images/states/enviar.png">', ['acciones', 
+                    'action'    => 'enviar',
+                    'week_id'   => $week->id
+                ]);
+            }elseif($state == 'coordinador'){
+                echo '<img src="../ISM/main/images/states/revisando.gif" 
+                        width="80px"
+                        style="border-radius: 50px 50px 50px 50px">';
+            }elseif($state == 'devuelto'){
+                echo Html::a('<img src="../ISM/main/images/states/devuelto.gif" width="80px"
+                style="border-radius: 50px 50px 50px 50px">', ['devuelto', 
+                    'week_id'   => $week->id
+                ]);
+            }           
+        ?>
+    </div>
+
 </div>
 
 <?php
@@ -142,7 +203,8 @@ function get_planification_by_hour($detalleHorarioId, $claseId)
                     ,lm.titulo 
                     ,lm.descripcion_actividades 
                     ,lm.id as lms_id
-                    ,ld.observaciones
+                    ,ld.clase_id
+                    ,ld.observaciones                    
                 from 	lms_docente ld
                     left join lms lm on lm.id = ld.lms_id 
                 where 	ld.horario_detalle_id = $detalleHorarioId
@@ -152,5 +214,39 @@ function get_planification_by_hour($detalleHorarioId, $claseId)
     return $res;
 }
 
+
+function get_validation_to_send($contadorNoPlanificado, $statesBitacora){
+    if(count($statesBitacora) == 0 && $contadorNoPlanificado == 25){
+        return 'enviar';
+        exit;
+    }
+
+    $countCoordinador = 0;
+    $countDevuelto = 0;
+    $countAprobado = 0;
+    foreach($statesBitacora as $bita){
+        if($bita['estado'] == 'COORDINADOR'){
+            $countCoordinador++;
+        }elseif($bita['estado'] == 'DEVUELTO'){
+            $countDevuelto++;
+        }elseif($bita['estado'] == 'APROBADO'){
+            $countAprobado++;
+        }
+    }
+    
+    // echo $countCoordinador;
+    // echo $countDevuelto;
+    // echo $countAprobado;
+
+    if($countDevuelto > 0){
+        return 'devuelto';
+        exit;
+    }
+
+    if($countCoordinador > 0){
+        return 'coordinador';
+        exit;
+    }
+}
 
 ?>

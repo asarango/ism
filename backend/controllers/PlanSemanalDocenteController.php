@@ -183,7 +183,7 @@ class PlanSemanalDocenteController extends Controller {
 
     private function get_states_bitacora($weekId, $user, $periodId){
         $con    = Yii::$app->db;
-        $query  = "select 	bi.curso_id, bi.estado, cur.name as curso
+        $query  = "select 	bi.curso_id, bi.estado, cur.name as curso, bi.obervaciones
         from 	plan_semanal_bitacora bi
                 inner join op_course cur on cur.id = bi.curso_id
                 inner join op_section sec on sec.id = cur.section
@@ -192,7 +192,7 @@ class PlanSemanalDocenteController extends Controller {
                 and sop.scholaris_id = $periodId
                 and bi.id = (select max(id) from plan_semanal_bitacora where semana_id=bi.semana_id and curso_id = bi.curso_id)
                 and bi.docente_usuario = '$user'
-        group by bi.curso_id, bi.estado, cur.name;";
+        group by bi.curso_id, bi.estado, cur.name, bi.obervaciones;";
         
         $res    = $con->createCommand($query)->queryAll();
         return $res;

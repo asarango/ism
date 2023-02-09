@@ -245,10 +245,10 @@ class IsmRespuestaPlanInterdiciplinarController extends Controller
                 $html = $this->enfoque_actividad($idGrupoInter);
                 break;
             case '4.1.-':
-                    $html = $this->objetivos_desarrollo_sostenible_todos($idGrupoInter);
+                $html = $this->objetivos_desarrollo_sostenible_todos($idGrupoInter);
                 break;        
             case '5.1.-':
-                $html = '';
+                $html = $this->criterios_interdisciplinar($idGrupoInter, $planUnidadId);
                 break;
             case '5.2.-':
                 $html = $this->evaluacion_formativas_disciplinar($idGrupoInter);
@@ -1303,6 +1303,83 @@ class IsmRespuestaPlanInterdiciplinarController extends Controller
         $html .= '</table>';
         return $html;
     }    
+    //5.1
+    private function criterios_interdisciplinar( $idGrupoInter)
+    {
+        $html ='';        
+        $criteriosSeleccionados =$this->consulta_criterios_seleccionados( $idGrupoInter,true);
+        $html .= '<div class="card" style="width: 90%; margin-top:20px">';
+            $html .= '<div class="card-header" style="background-color:#800834;">';
+                $html .= '<h5 class="" style="color: #ffffff;"><b>CRITERIOS INTERDISCIPLINARIOS </b></h5>';
+            $html .='</div>';
+            $html .= '<div class="card-body">';
+                $html .='<table class="table table-condensed table-bordered">';
+                    $html .='<tr>';
+                        $html .= '<th class="text-center" style="background-color: #0a1f8f; color: white">AREA</th>';
+                        $html .= '<th class="text-center" style="background-color: #0a1f8f; color: white">CRITERIO</th>';
+                        $html .= '<th class="text-center" style="background-color: #0a1f8f; color: white">NOMBRE CRITERIO</th>';
+                        $html .= '<th class="text-center" style="background-color: #9e28b5; color: white">DESCRIPCIÒN</th>';
+                    $html .='</tr>';
+                foreach($criteriosSeleccionados as $model)
+                {
+                    $html .='<tr>';
+                            $html .= '<td>'.$model['nombre'].'</td>';
+                            $html .= '<td>'.$model['criterio'].'</td>';
+                            $html .= '<td>'.$model['codigo_idioma_alterno'].'</td>';
+                            $html .= '<td>'.$model['descriptor_detalle'].'</td>';
+                    $html .= '</tr>';
+                }
+                $html .= '</table>';
+            $html .='<div>';
+        $html .='<div>';
+
+        return $html;
+
+    }
+    private function consulta_criterios_seleccionados($idGrupoInter,$esInterdisciplinar)
+    {
+        $con = Yii::$app->db;
+        $query = "select 	pd.id
+                                , ic.nombre as criterio
+                                , icl.nombre_espanol as codigo_idioma_alterno
+                                , id.nombre as codigo
+                                ,ild.descripcion as descriptor_detalle
+                                ,ia.nombre
+                from 	planificacion_vertical_pai_descriptores pd
+                                inner join ism_criterio_descriptor_area maes on maes.id = pd.descriptor_id
+                                inner join ism_criterio ic on ic.id = maes.id_criterio
+                                inner join ism_criterio_literal icl on icl.id = maes.id_literal_criterio
+                                inner join ism_descriptores id on id.id = maes.id_descriptor
+                                inner join ism_literal_descriptores ild on ild.id = maes.id_literal_descriptor
+                                inner join ism_area ia on ia.id = maes.id_area 
+                where 	pd.plan_unidad_id in 
+                (
+                    select i4.id
+                    from ism_grupo_plan_interdiciplinar i1,
+                    ism_grupo_materia_plan_interdiciplinar i2,
+                    planificacion_desagregacion_cabecera i3,
+                    planificacion_bloques_unidad i4,
+                    curriculo_mec_bloque i5,
+                    scholaris_bloque_actividad i6
+                    where i1.id  = i2.id_grupo_plan_inter 
+                    and i2.id_ism_area_materia  = i3.ism_area_materia_id 
+                    and i3.id = i4.plan_cabecera_id 
+                    and i4.curriculo_bloque_id = i5.id 
+                    and i5.shot_name  = i6.abreviatura 
+                    and i1.id_bloque = i6.id 
+                    and i1.id  = $idGrupoInter                  
+                )
+                and icl.es_interdisciplinar = '$esInterdisciplinar' 
+                and ild.es_interdisciplinar = '$esInterdisciplinar'
+                order by ic.nombre;";
+
+        // echo '<pre>';
+        // print_r($query);
+        // die();
+     
+        $res = $con->createCommand($query)->queryAll();
+        return $res;
+    }
    
     //5.2.-
     private function evaluacion_formativas_disciplinar($idGrupoInter)

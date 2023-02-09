@@ -9,12 +9,18 @@ $condicionClass = new backend\models\helpers\Condiciones;
 $estado = $bloqueUnidad->planCabecera->estado;
 $isOpen = $bloqueUnidad->is_open;
 $condicion = $condicionClass->aprobacion_planificacion($estado,$isOpen,$bloqueUnidad->settings_status);
+
+// echo '<pre>';
+// echo 'entreo';
+// print_r($grupoMateria);
+// die();
 ?>
 
 
 <div class="row text-center" style="margin-top:15px; background-color: #eee">
     <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
-        <h4 style="text-align:center">DISPONIBLES</h4>
+        <h4 style="text-align:center">DISPONIBLES<?php if($grupoMateria){ echo '  (Interdisciplinar)';}?></h4>
+        
         <hr>
         <?php
         if ($condicion == false) {
@@ -45,7 +51,7 @@ $condicion = $condicionClass->aprobacion_planificacion($estado,$isOpen,$bloqueUn
                                     <?=
                                     Html::a(
                                             '<strong>' . $criterio['criterio_detalle'] . '</strong><br>' . $criterio['descriptor_detalle'],
-                                            ['asignar', 'plan_unidad_id' => $bloqueUnidad->id, 'descriptor_id' => $criterio['descriptor_id']
+                                            ['asignar', 'plan_unidad_id' => $bloqueUnidad->id, 'descriptor_id' => $criterio['descriptor_id'],'grupoMateria'=>$grupoMateria
                                                 , 'pestana' => 'objetivos_especificos'],
                                             ['class' => 'link']
                                     );
@@ -113,7 +119,7 @@ $condicion = $condicionClass->aprobacion_planificacion($estado,$isOpen,$bloqueUn
                             echo Html::a(
                                     '<i class="far fa-trash-alt" style="color:red"></i>',
                                     ['quitar', 'id' => $seleccionado['id']
-                                        , 'pestana' => 'objetivos_especificos'],
+                                        , 'pestana' => 'objetivos_especificos','grupoMateria'=>$grupoMateria],
                                     ['class' => 'link']
                             );
                             ?>

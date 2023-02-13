@@ -10,24 +10,25 @@ use backend\models\PudPai;
 
 //busqueda en planificacion_vertical_diploma, para evaluar el porcentaje  
 
-$obj2 = new backend\models\helpers\Scripts();
-$pud_dip_porc_avance = $obj2->pud_pai_porcentaje_avance_individual('todos', $planUnidad->id);
+//$obj2 = new backend\models\helpers\Scripts();
+//$pud_dip_porc_avance = $obj2->pud_pai_porcentaje_avance_individual('todos', $planUnidad->id);
 
 $opcion = '1.1.-';
 
-$modelPudPai = PudPai::find()
-    ->where(['planificacion_bloque_unidad_id' => $planUnidad->id])
-    ->andWhere('ultima_seccion IS NOT NULL')
-    ->one();
-if ($modelPudPai) {
-    $opcion = $modelPudPai->ultima_seccion;
-}
+// $modelPudPai = PudPai::find()
+//     ->where(['planificacion_bloque_unidad_id' => $planUnidad->id])
+//     ->andWhere('ultima_seccion IS NOT NULL')
+//     ->one();
+// if ($modelPudPai) {
+//     $opcion = $modelPudPai->ultima_seccion;
+// }
 
 $iconoOk = 'fas fa-check';
 $colorOk = '#ffffff';
 $colorNotOk = '#ffffff';
 $iconoColor = '#ffffff';
 ?>
+
 <br>
 <ul>
     <li>

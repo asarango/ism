@@ -214,9 +214,12 @@ function mostrar_datos_materia($cabecera)
 
 
                                         if ($grupoMateria && $unidad->curriculoBloque->shot_name == $grupoMateria['abreviatura']) {
-                                            $icono = '<i class="fas fa-times"  title="PUD PENDIENTE" ></i>';
-                                            $style = 'color: red';
-                                            echo 'Avance: ' . '10000' . '% | &nbsp';
+                                            //$icono = '<i class="fas fa-times"  title="PUD PENDIENTE" ></i>';
+                                            $icono = '<i class="fas fa-cubes"></i>';
+                                            $style = 'color: blue';
+                                            
+                                            //echo 'Avance: ' . '10000' . '% | &nbsp';
+                                            echo 'Interdisciplinar ';
                                             echo Html::a(
                                                 $icono,
                                                 ['ism-respuesta-plan-interdiciplinar/index1', 'plan_bloque_unidad_id' => $unidad->id,
@@ -352,12 +355,19 @@ function mostrar_datos_materia($cabecera)
                                                 <li>
                                                     <!-- Aqui muestro botones dependiendo de cada sección -->
                                                     <?php
-                                                    if ($seccion == 'PAI') {
+                                                    if ($seccion == 'PAI') {      
+                                                        $arrayGrupoMateria = array();
+                                                        
+                                                        if ($grupoMateria && $unidad->curriculoBloque->shot_name == $grupoMateria['abreviatura']) 
+                                                        {
+                                                            $arrayGrupoMateria = $grupoMateria;
+                                                        }                                                        
                                                         echo Html::a(
                                                             '<i class="far fa-copy my-text-medium" style="color: #ab0a3d"> 4.-PH-PV</i>',
                                                             [
                                                                 'planificacion-vertical-pai-descriptores/index1',
-                                                                'unidad_id' => $unidad->id
+                                                                'unidad_id' => $unidad->id,
+                                                                'grupoMateria'=>$arrayGrupoMateria,
                                                             ]
                                                         );
                                                     } elseif ($seccion == 'DIPL') {

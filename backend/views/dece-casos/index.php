@@ -24,7 +24,7 @@ $this->params['breadcrumbs'][] = $this->title;
         <div class="card shadow col-lg-10 col-md-10">
             <div class=" row align-items-center p-2">
                 <div class="col-lg-1">
-                    <h4><img src="ISM/main/images/submenu/autismo.png" width="64px" class="img-thumbnail"></h4>
+                    <h4><img src="../ISM/main/images/submenu/autismo.png" width="64px" class="img-thumbnail"></h4>
                 </div>
                 <div class="col-lg-11">
                     <h4><?= Html::encode($this->title) ?></h4>
@@ -107,8 +107,8 @@ $this->params['breadcrumbs'][] = $this->title;
                                             <td><?= $nombreEstudiante ?></td>
                                             <td><strong><?=$caso['casos']?></strong></td>
                                             <td><strong>C: <?=$caso['casos_seguimiento']?> <br> A: <?=$caso['seguimiento']?></strong></td>
-                                            <td><strong>C: <?=$caso['casos_derivacion']?> <br> D:<?=$caso['derivacion']?> </strong></td>
-                                            <td><strong>C: <?=$caso['casos_deteccion']?> <br> D:<?=$caso['deteccion']?> </strong></td>
+                                            <td><strong>C: <?=$caso['casos_deteccion']?> <br> D:<?=$caso['derivacion']?> </strong></td>
+                                            <td><strong>C: <?=$caso['casos_derivacion']?> <br> D:<?=$caso['deteccion']?> </strong></td>
                                             <td><strong>C: <?=$caso['casos_intervencion']?> <br> I:<?=$caso['intervencion']?> </strong></td>
                                             <td>
                                                 <?= Html::a(

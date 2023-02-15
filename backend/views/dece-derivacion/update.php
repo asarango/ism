@@ -40,6 +40,7 @@ $this->params['breadcrumbs'][] = 'Update';
 
             <?= $this->render('_form', [
                 'model' => $model,
+                'resUser'=>$resUser,
                 'arrayInstExtUpdate' => $arrayInstExtUpdate
             ]) ?>
 

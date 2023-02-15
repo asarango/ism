@@ -102,6 +102,10 @@ class DeceDerivacionController extends Controller
      */
     public function actionCreate()
     {
+        $userLog = \Yii::$app->user->identity->usuario;
+        $user = \backend\models\Usuario::find()->where(['usuario' => $userLog])->one();
+        $resUser = \backend\models\ResUsers::find()->where(['login' => $user->usuario])->one();
+
         $model = new DeceDerivacion();
         $fechaActual = date('Y-m-d');
         $hora = date('H:i:s');        
@@ -128,27 +132,33 @@ class DeceDerivacionController extends Controller
 
             $model->save();
             
+
            foreach($arrayAuxPost as $aux)
-           {  
-                if (!is_array($aux))
+           {          
+               if (!is_array($aux))//COMO EL $_POST, tiene el array nativo de yii2, lo excluimos
                 {
-                    if(is_numeric(strpos($aux,"IE"))){                       
+                    $idInstExterna = DeceInstitucionExterna::find()
+                    ->where(['code'=>$aux])
+                    ->one();
+
+                    if($idInstExterna)
+                    {                      
                         
                         $modelDerInsExterno = new DeceDerivacionInstitucionExterna();
-                        $idInstExterna = DeceInstitucionExterna::find()
-                        ->where(['code'=>$aux])
-                        ->one();
+                        
                         $modelDerInsExterno->id_dece_derivacion = $model->id;
                         $modelDerInsExterno->id_dece_institucion_externa =  $idInstExterna->id;
                         $modelDerInsExterno->save();
                     }
                 }               
-           }         
+           } 
+                  
            return $this->redirect(['update', 'id' => $model->id]);
         }      
 
         return $this->render('create', [
             'model' => $model,
+            'resUser'=>$resUser,
         ]);
     }
     public function buscaUltimoNumDerivacion($idCaso,$idEstudiante)
@@ -186,6 +196,10 @@ class DeceDerivacionController extends Controller
      */
     public function actionUpdate($id)
     {
+        $userLog = \Yii::$app->user->identity->usuario;
+        $user = \backend\models\Usuario::find()->where(['usuario' => $userLog])->one();
+        $resUser = \backend\models\ResUsers::find()->where(['login' => $user->usuario])->one();
+
         $model = $this->findModel($id);
         $fechaActual = date('Y-m-d');
         $hora = date('H:i:s');         
@@ -198,23 +212,28 @@ class DeceDerivacionController extends Controller
             $model->save();
             $arrayAuxPost = $_POST; 
 
-
             //ELIMINAMOS TODOS LOS REGISTROS DE LOS INST. EXTERNOS PARA VOLVER AGREGAR NUEVAMENTE TODOS LOS SELECCIONADOS
             $x = Yii::$app->db->createCommand("
                 DELETE FROM dece_derivacion_institucion_externa 
                 WHERE id_dece_derivacion = '$model->id'                
             ")->execute();
 
+            // echo '<pre>';
+            // print_r($arrayAuxPost);
+            // die();
+
            foreach($arrayAuxPost as $aux)
            {  
                 if (!is_array($aux))//COMO EL $_POST, tiene el array nativo de yii2, lo excluimos
                 {
-                    if(is_numeric(strpos($aux,"IE")))
+                    $idInstExterna = DeceInstitucionExterna::find()
+                    ->where(['code'=>$aux])
+                    ->one();
+                    
+                    if($idInstExterna)
                     {   
                         $modelDerInsExterno = new DeceDerivacionInstitucionExterna();
-                        $idInstExterna = DeceInstitucionExterna::find()
-                        ->where(['code'=>$aux])
-                        ->one();
+                       
                         $modelDerInsExterno->id_dece_derivacion = $model->id;
                         $modelDerInsExterno->id_dece_institucion_externa =  $idInstExterna->id;
                         $modelDerInsExterno->save();
@@ -231,6 +250,7 @@ class DeceDerivacionController extends Controller
 
         return $this->render('update', [
             'model' => $model,
+            'resUser'=>$resUser,
             'arrayInstExtUpdate' => $arrayInstExtUpdate
         ]);
     }

@@ -136,7 +136,7 @@ class DeceCasosController extends Controller
     {
         $con = Yii::$app->db;
         $query = 
-        "select  c4.id,concat(c4.last_name, ' ',c4.first_name,' ',c4.middle_name) as student,
+        "select  distinct 4.id,concat(c4.last_name, ' ',c4.first_name,' ',c4.middle_name) as student,
         concat( c8.name,' ', c7.name ) curso
         from scholaris_clase c1 , scholaris_grupo_alumno_clase c2 ,
          op_institute_authorities c3 ,op_student c4 ,op_student_inscription c5, 
@@ -151,6 +151,11 @@ class DeceCasosController extends Controller
         and c7.id = c1.paralelo_id 
         and c8.id = c7.course_id 
         order by student;";
+
+        // echo '<pre>';
+        // print_r($query);
+        // die();
+
 
         $res = $con->createCommand($query)->queryAll();
 

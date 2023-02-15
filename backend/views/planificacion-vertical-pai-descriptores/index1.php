@@ -73,7 +73,9 @@ $estado = $bloqueUnidad->planCabecera->estado;
 $isOpen = $bloqueUnidad->is_open;
 $condicion = $condicionClass->aprobacion_planificacion($estado,$isOpen,$bloqueUnidad->settings_status);
 
-
+// echo '<pre>';
+// print_r($grupoMateria);
+// die();
 ?>
 <div class="planificacion-vertical-pai-criterios-index">
     <!-- CABECERA -->
@@ -330,7 +332,8 @@ $condicion = $condicionClass->aprobacion_planificacion($estado,$isOpen,$bloqueUn
                                 [
                                     'bloqueUnidad' => $bloqueUnidad,
                                     'criteriosDisponibles' => $criteriosDisponibles,
-                                    'criteriosSeleccionados' => $criteriosSeleccionados
+                                    'criteriosSeleccionados' => $criteriosSeleccionados,
+                                    'grupoMateria'=>$grupoMateria,
                                 ]
                         );
                         ?>

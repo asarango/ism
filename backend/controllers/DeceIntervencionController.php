@@ -127,17 +127,23 @@ class DeceIntervencionController extends Controller
             $model->numero_caso=  $numeroCaso;
 
             $model->save();
+
+            // echo '<pre>';
+            // print_r($arrayAuxPost);
+            // die();
             
             foreach($arrayAuxPost as $aux)
             {  
                 if (!is_array($aux))
                 {
-                    if(is_numeric(strpos($aux,"Al")))
-                    {                       
-                        $modelIntAreaInter = new DeceIntervencionAreaCompromiso();
-                        $idAreaIntervenir = DeceAreasIntervenir::find()
+                    $idAreaIntervenir = DeceAreasIntervenir::find()
                         ->where(['code'=>$aux])
                         ->one();
+
+                    if($idAreaIntervenir)
+                    {                       
+                        $modelIntAreaInter = new DeceIntervencionAreaCompromiso();
+                        
                         $modelIntAreaInter->id_dece_intervencion = $model->id;
                         $modelIntAreaInter->id_dece_areas_intervenir =  $idAreaIntervenir->id;
                         $modelIntAreaInter->save();
@@ -200,16 +206,22 @@ class DeceIntervencionController extends Controller
               DELETE FROM dece_intervencion_area_compromiso 
               WHERE id_dece_intervencion = '$model->id'                
               ")->execute();
+
+            //   echo '<pre>';
+            //   print_r($arrayAuxPost);
+            //   die();
           foreach($arrayAuxPost as $aux)
            {  
                if (!is_array($aux))//COMO EL $_POST, tiene el array nativo de yii2, lo excluimos
                 {
-                    if(is_numeric(strpos($aux,"Al")))
+                    $idAreaIntervenir = DeceAreasIntervenir::find()
+                    ->where(['code'=>$aux])
+                    ->one();
+
+                    if($idAreaIntervenir)
                     {   
                         $modelInterAreaComp = new DeceIntervencionAreaCompromiso();
-                        $idAreaIntervenir = DeceAreasIntervenir::find()
-                        ->where(['code'=>$aux])
-                        ->one();
+                       
                         $modelInterAreaComp->id_dece_intervencion = $model->id;
                         $modelInterAreaComp->id_dece_areas_intervenir =  $idAreaIntervenir->id;
                         $modelInterAreaComp->save();

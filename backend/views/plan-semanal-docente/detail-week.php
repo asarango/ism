@@ -173,6 +173,7 @@ use yii\helpers\Html;
         <?php
             
             $state = get_validation_to_send($contadorNoPlanificado, $statesBitacora);
+
             if($state == 'enviar'){
                 echo Html::a('<img src="../ISM/main/images/states/enviar.png">', ['acciones', 
                     'action'    => 'enviar',
@@ -187,7 +188,11 @@ use yii\helpers\Html;
                 style="border-radius: 50px 50px 50px 50px">', ['devuelto', 
                     'week_id'   => $week->id
                 ]);
-            }           
+            }elseif($state == 'aprobado'){
+                echo '<img src="../ISM/main/images/states/aprobado.gif" 
+                        width="80px"
+                        style="border-radius: 50px 50px 50px 50px">';  
+            }      
         ?>
     </div>
 
@@ -216,7 +221,7 @@ function get_planification_by_hour($detalleHorarioId, $claseId)
 
 
 function get_validation_to_send($contadorNoPlanificado, $statesBitacora){
-    if(count($statesBitacora) == 0 && $contadorNoPlanificado == 25){
+    if(count($statesBitacora) == 0 && $contadorNoPlanificado == 23){
         return 'enviar';
         exit;
     }
@@ -245,6 +250,11 @@ function get_validation_to_send($contadorNoPlanificado, $statesBitacora){
 
     if($countCoordinador > 0){
         return 'coordinador';
+        exit;
+    }
+
+    if($countAprobado > 0){
+        return 'aprobado';
         exit;
     }
 }

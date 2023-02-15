@@ -231,6 +231,10 @@ $modelIntCompromiso = new DeceIntervencionCompromiso();
                     <h6><u>Áreas a Intervenir</u></h6>
                     <table class="table table-info table-hover">
                         <?php
+
+                        // echo '<pre>';
+                        // print_r($arrayAreaIntervenir);
+                        // die();
                         if ($model->isNewRecord) {
                             $arrayDividido = array_chunk($arrayAreaIntervenir, $numDivisionesAreaIntervenir);
                             foreach ($arrayDividido as $array) {
@@ -312,8 +316,7 @@ $(window).on("load",function(){
 
 function muestraTablaCompromiso()
 {
-    //alert("Ingresoo ****");
-    
+    //alert("Ingresoo ****");    
     var url = '<?= Url::to(['dece-intervencion-compromiso/mostrar-tabla']) ?>';
     var id_intervencion = '<?=$model->id?>';
             var params = {

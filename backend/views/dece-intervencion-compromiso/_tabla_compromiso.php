@@ -272,7 +272,7 @@
                 beforeSend: function () {},
                 success: function (response) {
                     muestraTablaCompromiso();
-                    alert(response);
+                    //alert(response);
 
                 }
             });

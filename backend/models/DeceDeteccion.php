@@ -47,10 +47,11 @@ class DeceDeteccion extends \yii\db\ActiveRecord
             [['numero_deteccion', 'id_estudiante', 'id_caso', 'numero_caso'], 'default', 'value' => null],
             [['numero_deteccion', 'id_estudiante', 'id_caso', 'numero_caso'], 'integer'],
             [['fecha_reporte'], 'safe'],
+            [['lista_evidencias'], 'string'],
             [['nombre_estudiante', 'nombre_quien_reporta', 'path_archivos'], 'string', 'max' => 100],
             [['anio', 'paralelo', 'cargo'], 'string', 'max' => 50],
             [['cedula', 'hora_aproximada'], 'string', 'max' => 20],
-            [['descripcion_del_hecho', 'acciones_realizadas', 'lista_evidencias'], 'string', 'max' => 2000],
+            [['descripcion_del_hecho', 'acciones_realizadas'], 'string', 'max' => 2000],
             [['id_caso'], 'exist', 'skipOnError' => true, 'targetClass' => DeceCasos::className(), 'targetAttribute' => ['id_caso' => 'id']],
         ];
     }
@@ -67,13 +68,13 @@ class DeceDeteccion extends \yii\db\ActiveRecord
             'id_caso' => 'Id Caso',
             'numero_caso' => 'Numero Caso',
             'nombre_estudiante' => 'Nombre Estudiante',
-            'anio' => 'Año',
+            'anio' => 'Anio',
             'paralelo' => 'Paralelo',
-            'nombre_quien_reporta' => 'Nombre',
+            'nombre_quien_reporta' => 'Nombre Quien Reporta',
             'cargo' => 'Cargo',
-            'cedula' => 'Cédula',
-            'fecha_reporte' => 'Fecha',
-            'descripcion_del_hecho' => 'Descripción Del Hecho',
+            'cedula' => 'Cedula',
+            'fecha_reporte' => 'Fecha Reporte',
+            'descripcion_del_hecho' => 'Descripcion Del Hecho',
             'hora_aproximada' => 'Hora Aproximada',
             'acciones_realizadas' => 'Acciones Realizadas',
             'lista_evidencias' => 'Lista Evidencias',
@@ -88,5 +89,4 @@ class DeceDeteccion extends \yii\db\ActiveRecord
     {
         return $this->hasOne(DeceCasos::className(), ['id' => 'id_caso']);
     }
-   
 }

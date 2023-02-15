@@ -199,11 +199,10 @@ class DeceRegistroSeguimientoController extends Controller
 
         if ($model->load(Yii::$app->request->post()))
         {
-            //$imagenSubida = UploadedFile::getInstance($model,'path_archivo');            
-
-            $fecha_fin = $_POST['fecha_fin'];
-            $model->fecha_fin = $fecha_fin.' '. $hora;          
-            if(!empty($model->path_archivo))
+            $imagenSubida = UploadedFile::getInstance($model,'path_archivo');
+                    
+            //if(!empty($model->path_archivo))
+            if($imagenSubida)
             {
                 $imagenSubida = UploadedFile::getInstance($model,'path_archivo');
                 $pathArchivos =$path_archivo_dece_atencion->opcion.$model->id_estudiante.'/'.$model->id.'/';

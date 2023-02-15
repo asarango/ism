@@ -28,6 +28,8 @@ $arrayInstExterna = DeceInstitucionExterna::find()->asArray()->all();
 
 $numDivisionesIntExterna = count($arrayInstExterna)/4;
 $numDivisionesIntExterna = intval($numDivisionesIntExterna)+1;
+
+$user = Yii::$app->user->identity;
 ?>
 <script src="https://cdn.ckeditor.com/4.19.0/standard/ckeditor.js"></script>
 <div class="dece-derivacion-form">
@@ -40,7 +42,7 @@ $numDivisionesIntExterna = intval($numDivisionesIntExterna)+1;
             <h3 style="color:blueviolet"><b>Datos Estudiante</b></h3>
                     <table class="table table-responsive">
                         <tr>
-                            <td><b>No. Caso: </b></td>
+                            <td><b>No. Caso: <?php echo '<pre>'; ?></b></td>
                             <td><?= $model->casos->numero_caso ?></td>
                         </tr>                   
                         <tr>
@@ -186,8 +188,20 @@ $numDivisionesIntExterna = intval($numDivisionesIntExterna)+1;
 
                 <br>
                 <h4><u>Datos Personales de Quien Deriva</u></h4>
-
-                <?= $form->field($model, 'nombre_quien_deriva')->textarea(['rows' => 1]) ?>
+                <?php
+                if($model->isNewRecord)                            
+                {
+                ?>
+                    <?= $form->field($model, 'nombre_quien_deriva')->textInput(['value' => $resUser->partner->name]) ?>
+                <?php
+                }
+                else
+                {
+                ?>
+                    <?= $form->field($model, 'nombre_quien_deriva')->textInput(['value' => $model->nombre_quien_deriva]) ?>
+                 <?php
+                }
+                ?>
 
                
                 <div>
@@ -206,8 +220,8 @@ $numDivisionesIntExterna = intval($numDivisionesIntExterna)+1;
                                         {
                                     ?>
                                         <td>                                        
-                                            <label style='font-size:10px;' for="<?=$inst['id']?>"> <?=$inst['nombre']?></label><br>
-                                            <input style='align-items:center;' type="checkbox" id ="<?=$inst['id']?>" name="<?=$inst['code']?>" value="<?=$inst['code']?>" >
+                                            <label style='font-size:15px;' for="<?=$inst['id']?>"> <?=$inst['nombre']?></label><br>
+                                            <input style='align-items:center;font-size:12px;' type="checkbox" id ="<?=$inst['id']?>" name="<?=$inst['code']?>" value="<?=$inst['code']?>" >
                                         </td>
                                     <?php
                                         }//fin foreach 2
@@ -218,7 +232,12 @@ $numDivisionesIntExterna = intval($numDivisionesIntExterna)+1;
                             }
                             else
                             {
+
                                 $arrayDividido = array_chunk($arrayInstExtUpdate, $numDivisionesIntExterna); 
+                                // echo '<pre>';
+                                // print_r($arrayDividido);
+                                // die();
+
                                 foreach($arrayDividido as $array)
                                 {
                                 ?>
@@ -230,8 +249,8 @@ $numDivisionesIntExterna = intval($numDivisionesIntExterna)+1;
                                             {
                                     ?>
                                             <td>                                        
-                                                <label style='font-size:10px;' for="<?=$inst['id']?>"> <?=$inst['nombre']?></label><br>
-                                                <input style='align-items:center;' type="checkbox" id ="<?=$inst['id']?>" name="<?=$inst['code']?>" value="<?=$inst['code']?>" checked="true">
+                                                <label style='font-size:15px;' for="<?=$inst['id']?>"> <?=$inst['nombre']?></label><br>
+                                                <input style='align-items:center;font-size:18px;' type="checkbox" id ="<?=$inst['id']?>" name="<?=$inst['code']?>" value="<?=$inst['code']?>" checked="true">
                                             </td>
                                     <?php
                                             }
@@ -239,7 +258,7 @@ $numDivisionesIntExterna = intval($numDivisionesIntExterna)+1;
                                             { 
                                     ?>
                                             <td>                                        
-                                                <label style='font-size:10px;' for="<?=$inst['id']?>"> <?=$inst['nombre']?></label><br>
+                                                <label style='font-size:15px;' for="<?=$inst['id']?>"> <?=$inst['nombre']?></label><br>
                                                 <input style='align-items:center;' type="checkbox" id ="<?=$inst['id']?>" name="<?=$inst['code']?>" value="<?=$inst['code']?>" >
                                             </td>
                                     <?php

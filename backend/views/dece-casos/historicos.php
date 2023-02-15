@@ -79,7 +79,7 @@ $modelPathArchivo = PlanificacionOpciones::find()
         <div class="card shadow col-lg-10 col-md-10">
             <div class=" row align-items-center p-2">
                 <div class="col-lg-1">
-                    <h3><img src="ISM/main/images/submenu/autismo.png" width="64px" class="img-thumbnail"></h3>                    
+                    <h3><img src="../ISM/main/images/submenu/autismo.png" width="64px" class="img-thumbnail"></h3>                    
                 </div>
                 
                 <div class="col-lg-11">

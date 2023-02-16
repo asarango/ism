@@ -1,0 +1,367 @@
+.Izq {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  width: 1374px;
+  height: 734px;
+  z-index: 33;
+}
+.Flia {
+  background-image: url("../img/Flia.png");
+  position: absolute;
+  left: -2px;
+  top: -4px;
+  width: 705px;
+  height: 710.80px;
+  z-index: 32;
+}
+
+.pie {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  width: 1374px;
+  height: 734px;
+  z-index: 30;
+}
+.WEB {
+  font-size: 18px;
+  font-family: "Gotham";
+  color: rgb(73, 72, 72);
+  font-weight: bold;
+  line-height: 1.074;
+  text-align: center;
+  -moz-transform: matrix( 0.99994124372971,0,0,1.00060966118472,0,0);
+  -webkit-transform: matrix( 0.99994124372971,0,0,1.00060966118472,0,0);
+  -ms-transform: matrix( 0.99994124372971,0,0,1.00060966118472,0,0);
+  position: absolute;
+  left: 1215.224px;
+  top: 661.84px;
+  z-index: 29;
+}
+.www_ism_edu_ec {
+  font-size: 10px;
+  font-family: "Gotham";
+  color: rgb(144, 145, 145);
+  line-height: 1.934;
+  text-align: center;
+  -moz-transform: matrix( 0.99994124372971,0,0,1.00060966118472,0,0);
+  -webkit-transform: matrix( 0.99994124372971,0,0,1.00060966118472,0,0);
+  -ms-transform: matrix( 0.99994124372971,0,0,1.00060966118472,0,0);
+  position: absolute;
+  left: 1199.817px;
+  top: 675.336px;
+  z-index: 28;
+}
+.CORREO_ELECTRÓNICO {
+  font-size: 16px;
+  font-family: "Gotham";
+  color: rgb(73, 72, 72);
+  font-weight: bold;
+  line-height: 1.209;
+  text-align: center;
+  -moz-transform: matrix( 0.99994124372971,0,0,1.00060966118472,0,0);
+  -webkit-transform: matrix( 0.99994124372971,0,0,1.00060966118472,0,0);
+  -ms-transform: matrix( 0.99994124372971,0,0,1.00060966118472,0,0);
+  position: absolute;
+  left: 906.408px;
+  top: 661.334px;
+  z-index: 27;
+}
+.desarrollo_ism_edu_ec {
+  font-size: 10px;
+  font-family: "Gotham";
+  color: rgb(144, 145, 145);
+  line-height: 1.934;
+  text-align: center;
+  -moz-transform: matrix( 0.99994124372971,0,0,1.00060966118472,0,0);
+  -webkit-transform: matrix( 0.99994124372971,0,0,1.00060966118472,0,0);
+  -ms-transform: matrix( 0.99994124372971,0,0,1.00060966118472,0,0);
+  position: absolute;
+  left: 961.317px;
+  top: 673.81px;
+  z-index: 26;
+}
+.AYUDA {
+  font-size: 18px;
+  font-family: "Gotham";
+  color: rgb(73, 72, 72);
+  font-weight: bold;
+  line-height: 1.074;
+  text-align: center;
+  -moz-transform: matrix( 0.99994124372971,0,0,1.00060966118472,0,0);
+  -webkit-transform: matrix( 0.99994124372971,0,0,1.00060966118472,0,0);
+  -ms-transform: matrix( 0.99994124372971,0,0,1.00060966118472,0,0);
+  position: absolute;
+  left: 758.595px;
+  top: 662.34px;
+  z-index: 25;
+}
+.Crea_un_ticket__de_soporte {
+  font-size: 10px;
+  font-family: "Gotham";
+  color: rgb(144, 145, 145);
+  line-height: 1.2;
+  text-align: center;
+  -moz-transform: matrix( 0.99994124372971,0,0,1.00060966118472,0,0);
+  -webkit-transform: matrix( 0.99994124372971,0,0,1.00060966118472,0,0);
+  -ms-transform: matrix( 0.99994124372971,0,0,1.00060966118472,0,0);
+  position: absolute;
+  left: 758.076px;
+  top: 679.159px;
+  z-index: 24;
+}
+.SOPORTE {
+  font-size: 18px;
+  font-family: "Gotham";
+  color: rgb(73, 72, 72);
+  font-weight: bold;
+  line-height: 1.074;
+  text-align: center;
+  position: absolute;
+  left: 581.352px;
+  top: 662.334px;
+  z-index: 23;
+}
+.Horario_de_atención_lun_a_vier_7h20_a_15h50 {
+  font-size: 10px;
+  font-family: "Gotham";
+  color: rgb(144, 145, 145);
+  line-height: 1.2;
+  text-align: center;
+  position: absolute;
+  left: 573.938px;
+  top: 680.406px;
+  z-index: 22;
+}
+.icons {
+  background-image: url("../img/icons.png");
+  position: absolute;
+  left: 528px;
+  top: 661px;
+  width: 659px;
+  height: 38px;
+  z-index: 21;
+}
+.Rec_Menu {
+  border-style: solid;
+  border-width: 1px;
+  border-color: rgb(230, 230, 243);
+  border-radius: 3px;
+  background-image: -moz-linear-gradient( 90deg, rgb(249,251,255) 10%, rgba(255,255,255,10) 100%);
+  background-image: -webkit-linear-gradient( 90deg, rgb(249,251,255) 10%, rgba(255,255,255,10) 100%);
+  background-image: -ms-linear-gradient( 90deg, rgb(249,251,255) 10%, rgba(255,255,255,10) 100%);
+  box-shadow: 0px 4px 5px 0px rgba(129, 132, 196, 0.14);
+  position: absolute;
+  left: 392px;
+  top: 652px;
+  width: 899px;
+  height: 51px;
+  z-index: 20;
+}
+.Rec_pie {
+  background-color: rgb(157, 39, 181);
+  position: absolute;
+  left: 0px;
+  top: 677px;
+  width: 1376px;
+  height: 57px;
+  z-index: 19;
+}
+
+
+.Der {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  width: 1374px;
+  height: 734px;
+  z-index: 17;
+}
+.ISM_logo_color {
+  background-image: url("../img/ISM-logo-color.png");
+  position: absolute;
+  left: 971.80px;
+  top: 95px;
+  width: 118.90px;
+  height: 52px;
+  z-index: 16;
+}
+.Bienvenidos_al__Sistema_Académico_ {
+  font-size: 36px;
+  font-family: "Gotham";
+  color: rgb(25, 28, 60);
+  font-weight: bold;
+  line-height: 0.933;
+  text-align: center;
+  -moz-transform: matrix( 0.69708737864078,0,0,0.69647286137854,0,0);
+  -webkit-transform: matrix( 0.69708737864078,0,0,0.69647286137854,0,0);
+  -ms-transform: matrix( 0.69708737864078,0,0,0.69647286137854,0,0);
+  position: absolute;
+  left: 873.131px;
+  top: 135.359px;
+  width: 319.579px;
+  height: 56.637px;
+  z-index: 15;
+}
+.icon_email {
+  background-image: url("../img/icon_email.png");
+  position: absolute;
+  left: 879px;
+  top: 292px;
+  width: 24px;
+  height: 24px;
+  z-index: 14;
+}
+.Your_Email {
+  font-size: 24px;
+  font-family: "Gotham";
+  color: rgba(25, 28, 60, 0.502);
+  font-weight: bold;
+  line-height: 1.25;
+  -moz-transform: matrix( 0.69607260619587,0,0,0.69647286137854,0,0);
+  -webkit-transform: matrix( 0.69607260619587,0,0,0.69647286137854,0,0);
+  -ms-transform: matrix( 0.69607260619587,0,0,0.69647286137854,0,0);
+  position: absolute;
+  left: 889.332px;
+  top: 288px;
+  z-index: 13;
+}
+.bg_email {
+  border-style: solid;
+  border-width: 1px;
+  border-color: rgb(230, 230, 243);
+  border-radius: 3px;
+  background-image: -moz-linear-gradient( 90deg, rgb(249,251,255) 0%, rgba(255,255,255,0) 100%);
+  background-image: -webkit-linear-gradient( 90deg, rgb(249,251,255) 0%, rgba(255,255,255,0) 100%);
+  background-image: -ms-linear-gradient( 90deg, rgb(249,251,255) 0%, rgba(255,255,255,0) 100%);
+  box-shadow: 0px 4px 5px 0px rgba(129, 132, 196, 0.14);
+  position: absolute;
+  left: 836px;
+  top: 268px;
+  width: 396px;
+  height: 69px;
+  z-index: 12;
+}
+.icon_pass {
+  background-image: url("../img/icon_pass.png");
+  position: absolute;
+  left: 879px;
+  top: 382px;
+  width: 15px;
+  height: 18px;
+  z-index: 11;
+}
+.Your_Password {
+  font-size: 24px;
+  font-family: "Gotham";
+  color: rgba(25, 28, 60, 0.502);
+  font-weight: bold;
+  line-height: 1.25;
+  -moz-transform: matrix( 0.69607260619587,0,0,0.69647286137854,0,0);
+  -webkit-transform: matrix( 0.69607260619587,0,0,0.69647286137854,0,0);
+  -ms-transform: matrix( 0.69607260619587,0,0,0.69647286137854,0,0);
+  position: absolute;
+  left: 881.172px;
+  top: 379px;
+  z-index: 10;
+}
+.bg_pass {
+  border-style: solid;
+  border-width: 1px;
+  border-color: rgb(230, 230, 243);
+  border-radius: 3px;
+  background-image: -moz-linear-gradient( 90deg, rgb(249,251,255) 0%, rgba(255,255,255,0) 100%);
+  background-image: -webkit-linear-gradient( 90deg, rgb(249,251,255) 0%, rgba(255,255,255,0) 100%);
+  background-image: -ms-linear-gradient( 90deg, rgb(249,251,255) 0%, rgba(255,255,255,0) 100%);
+  box-shadow: 0px 4px 5px 0px rgba(129, 132, 196, 0.14);
+  position: absolute;
+  left: 836px;
+  top: 359px;
+  width: 396px;
+  height: 68px;
+  z-index: 9;
+}
+.icon_login {
+  background-image: url("../img/icon_login.png");
+  position: absolute;
+  left: 987px;
+  top: 473px;
+  width: 16px;
+  height: 17px;
+  z-index: 8;
+}
+.LOGIN {
+  font-size: 24.412px;
+  font-family: "Gotham";
+  color: rgb(254, 254, 255);
+  line-height: 1.229;
+  text-align: center;
+  -moz-transform: matrix( 0.69708737864078,0,0,0.69647286137854,0,0);
+  -webkit-transform: matrix( 0.69708737864078,0,0,0.69647286137854,0,0);
+  -ms-transform: matrix( 0.69708737864078,0,0,0.69647286137854,0,0);
+  position: absolute;
+  left: 1010.125px;
+  top: 469.999px;
+  z-index: 7;
+}
+.bg_vino {
+  border-radius: 3px;
+  background-image: -moz-linear-gradient( 90deg, rgb(157,39,181) 0%, rgb(171,16,62) 100%);
+  background-image: -webkit-linear-gradient( 90deg, rgb(157,39,181) 0%, rgb(171,16,62) 100%);
+  background-image: -ms-linear-gradient( 90deg, rgb(157,39,181) 0%, rgb(171,16,62) 100%);
+  box-shadow: 0px 4px 5px 0px rgba(129, 132, 196, 0.4);
+  position: absolute;
+  left: 836px;
+  top: 449px;
+  width: 398px;
+  height: 71px;
+  z-index: 6;
+}
+.Crear_una_cuenta {
+  font-size: 17.232px;
+  font-family: "Gotham";
+  color: rgb(25, 28, 60);
+  line-height: 1.741;
+  text-align: left;
+  -moz-transform: matrix( 0.69708737864078,0,0,0.69647286137854,0,0);
+  -webkit-transform: matrix( 0.69708737864078,0,0,0.69647286137854,0,0);
+  -ms-transform: matrix( 0.69708737864078,0,0,0.69647286137854,0,0);
+  position: absolute;
+  left: 809.076px;
+  top: 543px;
+  z-index: 5;
+}
+.¿Olvidaste_la_contraseña_ {
+  font-size: 17.232px;
+  font-family: "Gotham";
+  color: rgb(25, 28, 60);
+  line-height: 1.741;
+  text-align: right;
+  -moz-transform: matrix( 0.69708737864078,0,0,0.69647286137854,0,0);
+  -webkit-transform: matrix( 0.69708737864078,0,0,0.69647286137854,0,0);
+  -ms-transform: matrix( 0.69708737864078,0,0,0.69647286137854,0,0);
+  position: absolute;
+  left: 1016.321px;
+  top: 543px;
+  z-index: 4;
+}
+.Rec_Izq {
+  background-color: rgb(249, 251, 255);
+  position: absolute;
+  left: -2px;
+  top: -2px;
+  width: 750px;
+  height: 740px;
+  z-index: 3;
+}
+.Rec_Der {
+  background-color: rgb(249, 251, 255);
+  position: absolute;
+  left: 748px;
+  top: -2px;
+  width: 626px;
+  height: 740px;
+  z-index: 2;
+}
+

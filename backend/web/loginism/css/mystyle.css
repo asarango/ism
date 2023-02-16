@@ -1,0 +1,24 @@
+.Letf {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    width: 1374px;
+    height: 734px;
+    z-index: 31;
+  }
+
+  .WEB {
+    font-size: 18px;
+    font-family: "Gotham";
+    color: rgb(73, 72, 72);
+    font-weight: bold;
+    line-height: 1.074;
+    text-align: center;
+    -moz-transform: matrix( 0.99994124372971,0,0,1.00060966118472,0,0);
+    -webkit-transform: matrix( 0.99994124372971,0,0,1.00060966118472,0,0);
+    -ms-transform: matrix( 0.99994124372971,0,0,1.00060966118472,0,0);
+    position: absolute;
+    left: 1000.224px;
+    top: 661.84px;
+    z-index: 30;
+  }

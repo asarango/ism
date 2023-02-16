@@ -1,0 +1,357 @@
+.Letf {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  width: 1374px;
+  height: 734px;
+  z-index: 31;
+}
+.WEB {
+  font-size: 18px;
+  font-family: "Gotham";
+  color: rgb(73, 72, 72);
+  font-weight: bold;
+  line-height: 1.074;
+  text-align: center;
+  -moz-transform: matrix( 0.99994124372971,0,0,1.00060966118472,0,0);
+  -webkit-transform: matrix( 0.99994124372971,0,0,1.00060966118472,0,0);
+  -ms-transform: matrix( 0.99994124372971,0,0,1.00060966118472,0,0);
+  position: absolute;
+  left: 1000.224px;
+  top: 661.84px;
+  z-index: 30;
+}
+.www_ism_edu_ec {
+  font-size: 10px;
+  font-family: "Gotham";
+  color: rgb(144, 145, 145);
+  line-height: 1.934;
+  text-align: center;
+  -moz-transform: matrix( 0.99994124372971,0,0,1.00060966118472,0,0);
+  -webkit-transform: matrix( 0.99994124372971,0,0,1.00060966118472,0,0);
+  -ms-transform: matrix( 0.99994124372971,0,0,1.00060966118472,0,0);
+  position: absolute;
+  left: 984.817px;
+  top: 675.336px;
+  z-index: 29;
+}
+.CORREO_ELECTRÓNICO {
+  font-size: 16px;
+  font-family: "Gotham";
+  color: rgb(73, 72, 72);
+  font-weight: bold;
+  line-height: 1.209;
+  text-align: center;
+  -moz-transform: matrix( 0.99994124372971,0,0,1.00060966118472,0,0);
+  -webkit-transform: matrix( 0.99994124372971,0,0,1.00060966118472,0,0);
+  -ms-transform: matrix( 0.99994124372971,0,0,1.00060966118472,0,0);
+  position: absolute;
+  left: 691.908px;
+  top: 661.334px;
+  z-index: 28;
+}
+.desarrollo_ism_edu_ec {
+  font-size: 10px;
+  font-family: "Gotham";
+  color: rgb(144, 145, 145);
+  line-height: 1.2;
+  text-align: center;
+  -moz-transform: matrix( 0.99994124372971,0,0,1.00060966118472,0,0);
+  -webkit-transform: matrix( 0.99994124372971,0,0,1.00060966118472,0,0);
+  -ms-transform: matrix( 0.99994124372971,0,0,1.00060966118472,0,0);
+  position: absolute;
+  left: 746.317px;
+  top: 677.81px;
+  z-index: 27;
+}
+.AYUDA {
+  font-size: 18px;
+  font-family: "Gotham";
+  color: rgb(73, 72, 72);
+  font-weight: bold;
+  line-height: 1.074;
+  text-align: center;
+  -moz-transform: matrix( 0.99994124372971,0,0,1.00060966118472,0,0);
+  -webkit-transform: matrix( 0.99994124372971,0,0,1.00060966118472,0,0);
+  -ms-transform: matrix( 0.99994124372971,0,0,1.00060966118472,0,0);
+  position: absolute;
+  left: 544.095px;
+  top: 662.34px;
+  z-index: 26;
+}
+.Crea_un_ticket__de_soporte {
+  font-size: 10px;
+  font-family: "Gotham";
+  color: rgb(144, 145, 145);
+  line-height: 1.2;
+  text-align: center;
+  -moz-transform: matrix( 0.99994124372971,0,0,1.00060966118472,0,0);
+  -webkit-transform: matrix( 0.99994124372971,0,0,1.00060966118472,0,0);
+  -ms-transform: matrix( 0.99994124372971,0,0,1.00060966118472,0,0);
+  position: absolute;
+  left: 544.076px;
+  top: 679.159px;
+  z-index: 25;
+}
+.SOPORTE {
+  font-size: 18px;
+  font-family: "Gotham";
+  color: rgb(73, 72, 72);
+  font-weight: bold;
+  line-height: 1.074;
+  text-align: center;
+  position: absolute;
+  left: 366.352px;
+  top: 662.334px;
+  z-index: 24;
+}
+.Horario_de_atención_lun_a_vier_7h20_a_15h50 {
+  font-size: 10px;
+  font-family: "Gotham";
+  color: rgb(144, 145, 145);
+  line-height: 1.2;
+  text-align: center;
+  position: absolute;
+  left: 359.938px;
+  top: 680px;
+  z-index: 23;
+}
+.icons {
+  background-image: url( "../img/icons.png");
+  position: absolute;
+  left: 313px;
+  top: 661px;
+  width: 659px;
+  height: 38px;
+  z-index: 22;
+}
+.Rec_Menu {
+  border-style: solid;
+  border-width: 1px;
+  border-color: rgb(230, 230, 243);
+  border-radius: 3px;
+  background-image: -moz-linear-gradient( 90deg, rgb(249,251,255) 10%, rgba(255,255,255,10) 100%);
+  background-image: -webkit-linear-gradient( 90deg, rgb(249,251,255) 10%, rgba(255,255,255,10) 100%);
+  background-image: -ms-linear-gradient( 90deg, rgb(249,251,255) 10%, rgba(255,255,255,10) 100%);
+  box-shadow: 0px 4px 5px 0px rgba(129, 132, 196, 0.14 );
+  position: absolute;
+  left: 298px;
+  top: 652px;
+  width: 778px;
+  height: 53px;
+  z-index: 21;
+}
+.Rec_pie {
+  background-color: rgb(171, 10, 61);
+  position: absolute;
+  left: 0px;
+  top: 677px;
+  width: 1376px;
+  height: 57px;
+  z-index: 20;
+}
+.Dib_nena {
+  background-image: url("../img/Dib-nena.png");
+  position: absolute;
+  left: 365px;
+  top: 283px;
+  width: 156px;
+  height: 233px;
+  z-index: 19;
+}
+.ISM_logo_color {
+  background-image: url( "../img/ISM%20Color.png");
+  position: absolute;
+  left: 623px;
+  top: 95px;
+  width: 119px;
+  height: 52px;
+  z-index: 18;
+}
+.Bienvenidos_al__Sistema_Académico_ {
+  font-size: 36px;
+  font-family: "Gotham";
+  color: rgb(25, 28, 60);
+  font-weight: bold;
+  line-height: 0.833;
+  text-align: center;
+  -moz-transform: matrix( 0.69708737864078,0,0,0.69637387611527,0,0);
+  -webkit-transform: matrix( 0.69708737864078,0,0,0.69637387611527,0,0);
+  -ms-transform: matrix( 0.69708737864078,0,0,0.69637387611527,0,0);
+  position: absolute;
+  left: 520px;
+  top: 120px;
+  width: 319.579px;
+  height: 56.637px;
+  z-index: 17;
+}
+.icon_email {
+  background-image: url( "../img/icon_email.png");
+  position: absolute;
+  left: 531px;
+  top: 292px;
+  width: 23px;
+  height: 23px;
+  z-index: 16;
+}
+.Your_Email {
+  font-size: 24px;
+  font-family: "Gotham";
+  color: rgba(25, 28, 60, 0.502);
+  font-weight: bold;
+  line-height: 1.25;
+  -moz-transform: matrix( 0.69607260619587,0,0,0.69637387611527,0,0);
+  -webkit-transform: matrix( 0.69607260619587,0,0,0.69637387611527,0,0);
+  -ms-transform: matrix( 0.69607260619587,0,0,0.69637387611527,0,0);
+  position: absolute;
+  left: 521.332px;
+  top: 288px;
+  z-index: 15;
+}
+.bg_email {
+  border-style: solid;
+  border-width: 1px;
+  border-color: rgb(230, 230, 243);
+  border-radius: 3px;
+  background-image: -moz-linear-gradient( 90deg, rgb(249,251,255) 0%, rgba(255,255,255,0) 100%);
+  background-image: -webkit-linear-gradient( 90deg, rgb(249,251,255) 0%, rgba(255,255,255,0) 100%);
+  background-image: -ms-linear-gradient( 90deg, rgb(249,251,255) 0%, rgba(255,255,255,0) 100%);
+  box-shadow: 0px 4px 5px 0px rgba(129, 132, 196, 0.14);
+  position: absolute;
+  left: 488px;
+  top: 268px;
+  width: 396px;
+  height: 69px;
+  z-index: 14;
+}
+.icon_pass {
+  background-image: url( "../img/icon_pass.png");
+  position: absolute;
+  left: 531px;
+  top: 382px;
+  width: 15px;
+  height: 18px;
+  z-index: 13;
+}
+.Your_Password {
+  font-size: 24px;
+  font-family: "Gotham";
+  color: rgba(25, 28, 60, 0.502);
+  font-weight: bold;
+  line-height: 1.25;
+  -moz-transform: matrix( 0.69607260619587,0,0,0.69637387611527,0,0);
+  -webkit-transform: matrix( 0.69607260619587,0,0,0.69637387611527,0,0);
+  -ms-transform: matrix( 0.69607260619587,0,0,0.69637387611527,0,0);
+  position: absolute;
+  left: 533.172px;
+  top: 379px;
+  z-index: 12;
+}
+.bg_pass {
+  border-style: solid;
+  border-width: 1px;
+  border-color: rgb(230, 230, 243);
+  border-radius: 3px;
+  background-image: -moz-linear-gradient( 90deg, rgb(249,251,255) 0%, rgba(255,255,255,0) 100%);
+  background-image: -webkit-linear-gradient( 90deg, rgb(249,251,255) 0%, rgba(255,255,255,0) 100%);
+  background-image: -ms-linear-gradient( 90deg, rgb(249,251,255) 0%, rgba(255,255,255,0) 100%);
+  box-shadow: 0px 4px 5px 0px rgba(129, 132, 196, 0.14);
+  position: absolute;
+  left: 488px;
+  top: 359px;
+  width: 396px;
+  height: 68px;
+  z-index: 11;
+}
+.icon_login {
+  background-image: url("../img/icon_login.png");
+  position: absolute;
+  left: 639px;
+  top: 473px;
+  width: 16px;
+  height: 17px;
+  z-index: 10;
+}
+.LOGIN {
+  font-size: 24.412px;
+  font-family: "Gotham";
+  color: rgb(254, 254, 255);
+  line-height: 1.229;
+  text-align: center;
+  -moz-transform: matrix( 0.69708737864078,0,0,0.69637387611527,0,0);
+  -webkit-transform: matrix( 0.69708737864078,0,0,0.69637387611527,0,0);
+  -ms-transform: matrix( 0.69708737864078,0,0,0.69637387611527,0,0);
+  position: absolute;
+  left: 662.125px;
+  top: 468.999px;
+  z-index: 9;
+}
+.bg_vino {
+  border-radius: 3px;
+  background-image: -moz-linear-gradient( 90deg, rgb(171,10,61) 0%, rgb(255,75,201) 100%);
+  background-image: -webkit-linear-gradient( 90deg, rgb(171,10,61) 0%, rgb(255,75,201) 100%);
+  background-image: -ms-linear-gradient( 90deg, rgb(171,10,61) 0%, rgb(255,75,201) 100%);
+  box-shadow: 0px 4px 5px 0px rgba(129, 132, 196, 0.4);
+  position: absolute;
+  left: 488px;
+  top: 449px;
+  width: 398px;
+  height: 71px;
+  z-index: 8;
+}
+.Crear_una_cuenta {
+  font-size: 17.232px;
+  font-family: "Gotham";
+  color: rgb(25, 28, 60);
+  line-height: 1.741;
+  text-align: left;
+  -moz-transform: matrix( 0.69708737864078,0,0,0.69637387611527,0,0);
+  -webkit-transform: matrix( 0.69708737864078,0,0,0.69637387611527,0,0);
+  -ms-transform: matrix( 0.69708737864078,0,0,0.69637387611527,0,0);
+  position: absolute;
+  left: 461.076px;
+  top: 543px;
+  z-index: 7;
+}
+.¿Olvidaste_la_contraseña_ {
+  font-size: 17.232px;
+  font-family: "Gotham";
+  color: rgb(25, 28, 60);
+  line-height: 1.741;
+  text-align: right;
+  -moz-transform: matrix( 0.69708737864078,0,0,0.69637387611527,0,0);
+  -webkit-transform: matrix( 0.69708737864078,0,0,0.69637387611527,0,0);
+  -ms-transform: matrix( 0.69708737864078,0,0,0.69637387611527,0,0);
+  position: absolute;
+  left: 668.321px;
+  top: 543px;
+  z-index: 6;
+}
+
+
+.main {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  width: 1374px;
+  height: 734px;
+  z-index: 4;
+}
+.U5 {
+  background-image: url( "../img/U5.png");
+  position: absolute;
+  left: 657px;
+  top: 0px;
+  width: 734px;
+  height: 734px;
+  z-index: 3;
+}
+.Rectángulo_1 {
+  background-color: rgb(249, 251, 255);
+  position: absolute;
+  left: -2px;
+  top: -2px;
+  width: 1378px;
+  height: 740px;
+  z-index: 2;
+}

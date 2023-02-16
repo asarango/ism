@@ -1,0 +1,190 @@
+.Contenedor_login {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  width: 1374px;
+  height: 734px;
+  z-index: 18;
+}
+.ISM_logo_color {
+  background-image: url("../img/ISM-logo-color.png");
+  position: absolute;
+  left: 310px;
+  top: 126px;
+  width: 119px;
+  height: 52px;
+  z-index: 17;
+}
+.Bienvenidos_al__Sistema_Académico_ {
+  font-size: 27px;
+  font-family: "Nunito";
+  color: rgb(25, 28, 60);
+  font-weight: bold;
+  line-height: 1.1;
+  text-align: center;
+  -moz-transform: matrix( 0.69746192893401,0,0,0.69697639414689,0,0);
+  -webkit-transform: matrix( 0.69746192893401,0,0,0.69697639414689,0,0);
+  -ms-transform: matrix( 0.69746192893401,0,0,0.69697639414689,0,0);
+  position: absolute;
+  left: 230px;
+  top: 190px;
+  width: 300px;
+  height: 57px;
+  z-index: 16;
+}
+.icon_email {
+  background-image: url("../img/icon_email.png");
+  position: absolute;
+  left: 199px;
+  top: 323px;
+  width: 17px;
+  height: 17px;
+  z-index: 15;
+}
+.Your_Email {
+  border: none;
+  font-size: 24px;
+  font-family: "Nunito";
+  color: rgba(25, 28, 60, 0.502);
+  font-weight: bold;
+  line-height: 1.25;
+  -moz-transform: matrix( 0.69746192893401,0,0,0.69697639414689,0,0);
+  -webkit-transform: matrix( 0.69746192893401,0,0,0.69697639414689,0,0);
+  -ms-transform: matrix( 0.69746192893401,0,0,0.69697639414689,0,0);
+  position: absolute;
+  left: 211.013px;
+  top: 320px;
+  z-index: 14;
+}
+.bg_email {
+  border-style: solid;
+  border-width: 1px;
+  border-color: rgb(230, 230, 243);
+  border-radius: 3px;
+  background-image: -moz-linear-gradient( 90deg, rgb(249,251,255) 0%, rgba(255,255,255,0) 100%);
+  background-image: -webkit-linear-gradient( 90deg, rgb(249,251,255) 0%, rgba(255,255,255,0) 100%);
+  background-image: -ms-linear-gradient( 90deg, rgb(249,251,255) 0%, rgba(255,255,255,0) 100%);
+  box-shadow: 0px 4px 5px 0px rgba(129, 132, 196, 0.14);
+  position: absolute;
+  left: 172px;
+  top: 299px;
+  width: 397px;
+  height: 69px;
+  z-index: 13;
+}
+.icon_pass {
+  background-image: url("../img/icon_pass.png");
+  position: absolute;
+  left: 199px;
+  top: 413px;
+  width: 15px;
+  height: 18px;
+  z-index: 12;
+}
+.Your_Password {
+  border: none;
+  font-size: 24px;
+  font-family: "Nunito";
+  color: rgba(25, 28, 60, 0.502);
+  font-weight: bold;
+  line-height: 1.25;
+  -moz-transform: matrix( 0.69746192893401,0,0,0.69697639414689,0,0);
+  -webkit-transform: matrix( 0.69746192893401,0,0,0.69697639414689,0,0);
+  -ms-transform: matrix( 0.69746192893401,0,0,0.69697639414689,0,0);
+  position: absolute;
+  left: 221.725px;
+  top: 410px;
+  z-index: 11;
+}
+.bg_pass {
+  border-style: solid;
+  border-width: 1px;
+  border-color: rgb(230, 230, 243);
+  border-radius: 3px;
+  background-image: -moz-linear-gradient( 90deg, rgb(249,251,255) 0%, rgba(255,255,255,0) 100%);
+  background-image: -webkit-linear-gradient( 90deg, rgb(249,251,255) 0%, rgba(255,255,255,0) 100%);
+  background-image: -ms-linear-gradient( 90deg, rgb(249,251,255) 0%, rgba(255,255,255,0) 100%);
+  box-shadow: 0px 4px 5px 0px rgba(129, 132, 196, 0.14);
+  position: absolute;
+  left: 172px;
+  top: 390px;
+  width: 397px;
+  height: 68px;
+  z-index: 10;
+}
+.icon_login {
+  background-image: url("../img/icon_login.png");
+  position: absolute;
+  left: 323px;
+  top: 504px;
+  width: 16px;
+  height: 17px;
+  z-index: 9;
+}
+.LOGIN {
+  font-size: 24px;
+  font-family: "Nunito";
+  color: rgb(254, 254, 255);
+  font-weight: bold;
+  line-height: 1.25;
+  text-align: center;
+  -moz-transform: matrix( 0.69746192893401,0,0,0.69697639414689,0,0);
+  -webkit-transform: matrix( 0.69746192893401,0,0,0.69697639414689,0,0);
+  -ms-transform: matrix( 0.69746192893401,0,0,0.69697639414689,0,0);
+  position: absolute;
+  left: 353.7px;
+  top: 501.5px;
+  z-index: 8;
+}
+.bg_vino {
+  border-radius: 3px;
+  background-image: -moz-linear-gradient( 90deg, rgb(171,10,61) 0%, rgb(255,75,201) 100%);
+  background-image: -webkit-linear-gradient( 90deg, rgb(171,10,61) 0%, rgb(255,75,201) 100%);
+  background-image: -ms-linear-gradient( 90deg, rgb(171,10,61) 0%, rgb(255,75,201) 100%);
+  box-shadow: 0px 4px 5px 0px rgba(129, 132, 196, 0.4);
+  position: absolute;
+  left: 172px;
+  top: 480px;
+  width: 399px;
+  height: 71px;
+  z-index: 7;
+}
+.Crear_una_cuenta {
+  font-size: 16px;
+  font-family: "Nunito";
+  color: rgb(25, 28, 60);
+  font-weight: bold;
+  line-height: 1.875;
+  text-align: left;
+  -moz-transform: matrix( 0.69746192893401,0,0,0.69697639414689,0,0);
+  -webkit-transform: matrix( 0.69746192893401,0,0,0.69697639414689,0,0);
+  -ms-transform: matrix( 0.69746192893401,0,0,0.69697639414689,0,0);
+  position: absolute;
+  left: 188.235px;
+  top: 574.5px;
+  z-index: 6;
+}
+.¿Olvidaste_la_contraseña_ {
+  font-size: 16px;
+  font-family: "Nunito";
+  color: rgb(25, 28, 60);
+  font-weight: bold;
+  line-height: 1.875;
+  text-align: right;
+  -moz-transform: matrix( 0.69746192893401,0,0,0.69697639414689,0,0);
+  -webkit-transform: matrix( 0.69746192893401,0,0,0.69697639414689,0,0);
+  -ms-transform: matrix( 0.69746192893401,0,0,0.69697639414689,0,0);
+  position: absolute;
+  left: 371.3px;
+  top: 575.336px;
+  z-index: 5;
+}
+.bg_valores {
+  background-image: url("../img/bg_valores.png");
+  position: absolute;
+  left: -10px;
+  top: -5px;
+  width: 100%;
+  height: 734px;
+  z-index: 2;
+}

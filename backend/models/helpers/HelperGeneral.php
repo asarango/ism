@@ -174,7 +174,10 @@ class HelperGeneral extends ActiveRecord{
                                 inner join ism_materia m on m.id = iam.materia_id 
                                 left join planificacion_desagregacion_criterios_evaluacion cri on cri.criterio_evaluacion_id = cab.id 
                 where 	im.op_course_template_id = $nivelId
-                group by cab.id ,m.nombre;";               
+                group by cab.id ,m.nombre;";      
+        echo '<pre>';
+        print_r($query);
+        die();         
 
         $res =  $this->consultaBD($query);         
         
@@ -233,6 +236,69 @@ class HelperGeneral extends ActiveRecord{
                             
 
                             $resp = $con->createCommand($query)->queryAll();  
+        return $resp;
+    }
+
+    //muestra, curso/materias/estudiantes asociados a un profesor en un X periodo
+    public function obtener_curso_materias_estudiante($usuario,$id_periodo,$curso/*op_course_paralelo*/ )
+    {
+        $con = Yii::$app->db;
+        $query = "select  im.id as idMateria, im.nombre as materia, ocp.id as idcurso,ocp.name as curso, os.id as idEstudiante,
+                    concat(os.last_name,' ',os.middle_name,' ',os.first_name)  as estudiante ,
+                    nxc.id as idNeeXClase, nxc.clase_id as neeClaseId,nxc.nee_id as idnee,nxc.grado_nee,nxc.fecha_inicia ,nxc.diagnostico_inicia 
+                    from nee_x_clase nxc 
+                    inner join scholaris_clase sc on sc.id = nxc.clase_id 
+                    inner join op_course_paralelo ocp on ocp.id = sc.paralelo_id 
+                    inner join op_course oc on oc.id = ocp.course_id 
+                    inner join ism_area_materia iam on iam.id = sc.ism_area_materia_id 
+                    inner join ism_malla_area ima on ima.id = iam.malla_area_id 
+                    inner join ism_periodo_malla ipm on ipm.id  = ima.periodo_malla_id 
+                    inner join nee n on n.id = nxc.nee_id 
+                    inner join op_student os on os.id = n.student_id  
+                    inner join op_faculty of2 on of2.id = sc.idprofesor 
+                    inner join res_users ru on ru.partner_id = of2.partner_id 
+                    inner join ism_materia im on im.id = iam.materia_id  
+                    where oc.x_template_id ='$curso' and ipm.scholaris_periodo_id = $id_periodo
+                    and ru.login ='$usuario'
+                    order by im.nombre,ocp.name,estudiante;"; 
+                            
+
+        $resp = $con->createCommand($query)->queryAll();  
+        // echo '<pre>';
+        // print_r($$resp);
+        // die();
+        return $resp;
+    }
+    //Muesta los estudiantes con Nee
+    //muestra, curso/materias/estudiantes asociados a un profesor en un X periodo
+    public function obtener_curso_materias_estudiante_nee($usuario,$id_periodo,$curso/*op_course_paralelo*/ )
+    {
+        $con = Yii::$app->db;
+        $query = "select  im.id as idMateria, im.nombre as materia, ocp.id as idcurso,ocp.name as curso, os.id as idEstudiante,
+                    concat(os.last_name,' ',os.middle_name,' ',os.first_name)  as estudiante ,
+                    nxc.id as idNeeXClase, nxc.clase_id as neeClaseId,nxc.nee_id as idnee,nxc.grado_nee,nxc.fecha_inicia ,nxc.diagnostico_inicia 
+                    from nee_x_clase nxc 
+                    inner join scholaris_clase sc on sc.id = nxc.clase_id 
+                    inner join op_course_paralelo ocp on ocp.id = sc.paralelo_id 
+                    inner join op_course oc on oc.id = ocp.course_id 
+                    inner join ism_area_materia iam on iam.id = sc.ism_area_materia_id 
+                    inner join ism_malla_area ima on ima.id = iam.malla_area_id 
+                    inner join ism_periodo_malla ipm on ipm.id  = ima.periodo_malla_id 
+                    inner join nee n on n.id = nxc.nee_id 
+                    inner join op_student os on os.id = n.student_id  
+                    inner join op_faculty of2 on of2.id = sc.idprofesor 
+                    inner join res_users ru on ru.partner_id = of2.partner_id 
+                    inner join ism_materia im on im.id = iam.materia_id  
+                    inner join adaptacion_curricular_x_bloque acxb on acxb.id_nee_x_clase  = nxc.id
+                    where oc.x_template_id ='$curso' and ipm.scholaris_periodo_id = $id_periodo
+                    and ru.login ='$usuario'
+                    order by im.nombre,ocp.name,estudiante;"; 
+                            
+
+        $resp = $con->createCommand($query)->queryAll();  
+        // echo '<pre>';
+        // print_r($$resp);
+        // die();
         return $resp;
     }
     

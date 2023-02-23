@@ -175,6 +175,9 @@ class SiteController extends Controller {
                     where 	use.login ilike '$usuario'
                                     and sop.scholaris_id = $scholarisPeriodoId
                     group by sec.code;";
+        // echo '<pre>';
+        // print_r($query);
+        // die();
         $res = $con->createCommand($query)->queryAll();
         return $res;
         
@@ -191,7 +194,10 @@ class SiteController extends Controller {
                 where 	o.menu_id = $menuId
                                 and ro.rol_id = $rolId
                                 and o.operacion ilike '%-index'
-                order by o.nombre;";        
+                order by o.nombre;";   
+        // echo '<pre>';
+        // print_r($query);
+        // die();     
 
         $res = $con->createCommand($query)->queryAll();
         return $res;

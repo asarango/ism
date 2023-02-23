@@ -10,11 +10,11 @@
 <h6>Estudiantes</h6>
     <table class='table table-striped table-info'>
         <tr>
-            <td><b>Bloque</b></td>
-            <td><b>Compromiso</b></td>
-            <td><b>Fecha Max Compromiso </b></td>
-            <td><b>Se realizó</b></td>
-            <td><b>Revisión Cumplimiento</b></td>
+            <td width="5px"><b>Bloque</b></td>
+            <td width="180px"><b>Compromiso</b></td>
+            <td width="50px"><b>Fecha Max Compromiso </b></td>
+            <td width="10px"><b>Se realizó</b></td>
+            <td width="180px"><b>Revisión Cumplimiento</b></td>
         </tr>
         <?php
           foreach($modelCompromisos as $reg)
@@ -42,8 +42,9 @@
                 </td>
                 <td>
                     <div class="input-group mb-3">
-                        <input id="btn_revision_compromiso1_<?= $reg->id?>" type="text" class="form-control" placeholder="Pendiente Revisión"
-                        aria-label="Recipient's username" aria-describedby="basic-addon2" value="<?= $reg->revision_compromiso?>">
+                        <!-- <input id="btn_revision_compromiso1_<?= $reg->id?>" type="text" class="form-control" placeholder="Pendiente Revisión"
+                        aria-label="Recipient's username" aria-describedby="basic-addon2" value="<?= $reg->revision_compromiso?>"> -->
+                        <textarea autofocus="true" id="btn_revision_compromiso1_<?= $reg->id?>" rows="4" cols="50" class="form-control" placeholder="Pendiente Revisión"><?= $reg->revision_compromiso?></textarea>
                         <div class="input-group-append">
                             <button class="btn btn-outline-secondary" type="button" onclick="guardarCompromiso('estudiante',<?= $reg->id?>)"><i class="fas fa-save"></i></button>
                             <button class="btn btn-outline-secondary" type="button" onclick="eliminarCompromiso(<?= $reg->id?>)"><i class="fas fa-trash-alt"></i></button>
@@ -61,11 +62,11 @@
     
     <table class='table table-striped table-light'>
     <tr>
-            <td><b>Bloque</b></td>
-            <td><b>Compromiso</b></td>
-            <td><b>Fecha Max Compromiso </b></td>
-            <td><b>Se realizó</b></td>
-            <td><b>Revisión Cumplimiento</b></td>
+            <td width="5px"><b>Bloque</b></td>
+            <td width="180px"><b>Compromiso</b></td>
+            <td width="50px"><b>Fecha Max Compromiso </b></td>
+            <td width="10px"><b>Se realizó</b></td>
+            <td width="180px"><b>Revisión Cumplimiento</b></td>
         </tr>
         <?php
           foreach($modelCompromisos as $reg)
@@ -93,8 +94,9 @@
                 </td>
                 <td>
                     <div class="input-group mb-3">
-                        <input id="btn_revision_compromiso2_<?= $reg->id?>" type="text" class="form-control" placeholder="Pendiente Revisión"
-                        aria-label="Recipient's username" aria-describedby="basic-addon2" value="<?= $reg->revision_comp_representante?>">
+                        <!-- <input id="btn_revision_compromiso2_<?= $reg->id?>" type="text" class="form-control" placeholder="Pendiente Revisión"
+                        aria-label="Recipient's username" aria-describedby="basic-addon2" value="<?= $reg->revision_comp_representante?>"> -->
+                        <textarea autofocus="true" id="btn_revision_compromiso2_<?= $reg->id?>" rows="4" cols="50" class="form-control" placeholder="Pendiente Revisión"><?= $reg->revision_comp_representante?></textarea>
                         <div class="input-group-append">
                             <button class="btn btn-outline-secondary" type="button" onclick="guardarCompromiso('representante',<?= $reg->id?>)"><i class="fas fa-save"></i></button>
                             <button class="btn btn-outline-secondary" type="button" onclick="eliminarCompromiso(<?= $reg->id?>)"><i class="fas fa-trash-alt"></i></button>
@@ -111,11 +113,11 @@
     <h6>Docentes</h6>
     <table class='table table-striped table-success'>
     <tr>
-            <td><b>Bloque</b></td>
-            <td><b>Compromiso</b></td>
-            <td><b>Fecha Max Compromiso </b></td>
-            <td><b>Se realizó</b></td>
-            <td><b>Revisión Cumplimiento</b></td>
+            <td width="5px"><b>Bloque</b></td>
+            <td width="180px"><b>Compromiso</b></td>
+            <td width="50px"><b>Fecha Max Compromiso </b></td>
+            <td width="10px"><b>Se realizó</b></td>
+            <td width="180px"><b>Revisión Cumplimiento</b></td>
         </tr>
         <?php
           foreach($modelCompromisos as $reg)
@@ -143,8 +145,9 @@
                 </td>
                 <td>
                     <div class="input-group mb-3">
-                        <input id="btn_revision_compromiso3_<?= $reg->id?>" type="text" class="form-control" placeholder="Pendiente Revisión"
-                        aria-label="Recipient's username" aria-describedby="basic-addon2" value="<?= $reg->revision_comp_docente?>">
+                        <!-- <input id="btn_revision_compromiso3_<?= $reg->id?>" type="text" class="form-control" placeholder="Pendiente Revisión"
+                        aria-label="Recipient's username" aria-describedby="basic-addon2" value="<?= $reg->revision_comp_docente?>"> -->
+                        <textarea autofocus="true" id="btn_revision_compromiso3_<?= $reg->id?>" rows="4" cols="50" class="form-control" placeholder="Pendiente Revisión"><?= $reg->revision_comp_docente?></textarea>
                         <div class="input-group-append">
                             <button class="btn btn-outline-secondary" type="button" onclick="guardarCompromiso('docente',<?= $reg->id?>)"><i class="fas fa-save"></i></button>
                             <button class="btn btn-outline-secondary" type="button" onclick="eliminarCompromiso(<?= $reg->id?>)"><i class="fas fa-trash-alt"></i></button>
@@ -161,11 +164,11 @@
     <h6>Dece</h6>
     <table class='table table-striped table-warning'>
     <tr>
-            <td><b>Bloque</b></td>
-            <td><b>Compromiso</b></td>
-            <td><b>Fecha Max Compromiso </b></td>
-            <td><b>Se realizó</b></td>
-            <td><b>Revisión Cumplimiento</b></td>
+            <td width="5px"><b>Bloque</b></td>
+            <td width="180px"><b>Compromiso</b></td>
+            <td width="50px"><b>Fecha Max Compromiso </b></td>
+            <td width="10px"><b>Se realizó</b></td>
+            <td width="180px"><b>Revisión Cumplimiento</b></td>
         </tr>
         <?php
           foreach($modelCompromisos as $reg)
@@ -193,8 +196,9 @@
                 </td>
                 <td>
                     <div class="input-group mb-3">
-                        <input id="btn_revision_compromiso4_<?= $reg->id?>" type="text" class="form-control" placeholder="Pendiente Revisión"
-                        aria-label="Recipient's username" aria-describedby="basic-addon2" value="<?= $reg->revision_comp_dece?>">
+                        <!-- <input id="btn_revision_compromiso4_<?= $reg->id?>" type="text" class="form-control" placeholder="Pendiente Revisión"
+                        aria-label="Recipient's username" aria-describedby="basic-addon2" value="<?= $reg->revision_comp_dece?>"> -->
+                        <textarea autofocus="true" id="btn_revision_compromiso4_<?= $reg->id?>" rows="4" cols="50" class="form-control" placeholder="Pendiente Revisión"><?= $reg->revision_comp_dece?></textarea>
                         <div class="input-group-append">
                             <button class="btn btn-outline-secondary" type="button" onclick="guardarCompromiso('dece',<?= $reg->id?>)"><i class="fas fa-save"></i></button>
                             <button class="btn btn-outline-secondary" type="button" onclick="eliminarCompromiso(<?= $reg->id?>)"><i class="fas fa-trash-alt"></i></button>
@@ -252,7 +256,7 @@
                 beforeSend: function () {},
                 success: function (response) {
                     muestraTablaCompromiso();
-                    alert(response);
+                    alert("El registro se Guardo: Ok");
 
                 }
             });
@@ -272,7 +276,7 @@
                 beforeSend: function () {},
                 success: function (response) {
                     muestraTablaCompromiso();
-                    //alert(response);
+                    alert("El registro se Elimino:  Ok ");
 
                 }
             });

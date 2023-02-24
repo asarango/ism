@@ -98,6 +98,8 @@ class UsuarioController extends Controller
                             inner join res_users ru on ru.login = u.usuario 
                             inner join res_partner p on p.id = ru.partner_id 
                     order by r.rol, p.name ;";
+        // echo $query;
+        // die();
         $res = $con->createCommand($query)->queryAll();
         return $res;
     }
@@ -167,9 +169,9 @@ class UsuarioController extends Controller
     {
 
         $ruta = '/var/www/html/educandi/backend/web/ISM/firmas/';
-         
-        if(isset($_FILES['Usuario'])){
-            $errors= array();
+
+        if (isset($_FILES['Usuario'])) {
+            $errors = array();
             $file_name = $_FILES['Usuario']['name']['firma'];
             $file_size = $_FILES['Usuario']['size']['firma'];
             $file_tmp = $_FILES['Usuario']['tmp_name']['firma'];
@@ -178,40 +180,36 @@ class UsuarioController extends Controller
             $file_ext = explode('.', $_FILES['Usuario']['name']['firma']);
 
             $extension = end($file_ext);
-            
-            $expensions= array("jpeg","jpg","png", "JPG");
-           
-            if(in_array($extension,$expensions)=== false){
-               $errors[]="extension not allowed, please choose a JPEG or PNG file.";
+
+            $expensions = array("jpeg", "jpg", "png", "JPG");
+
+            if (in_array($extension, $expensions) === false) {
+                $errors[] = "extension not allowed, please choose a JPEG or PNG file.";
             }
-           
-            if($file_size > 2097152) {
-               $errors[]='File size must be excately 2 MB';
+
+            if ($file_size > 2097152) {
+                $errors[] = 'File size must be excately 2 MB';
             }
-           
-            if(empty($errors)==true) {
-               
-               $userPost = $_POST['Usuario']['usuario'].'.'.$extension;
-               $model = Usuario::find()->where(['usuario' => $_POST['Usuario']['usuario']])->one();
-               $newName = $ruta.$userPost;
-               
+
+            if (empty($errors) == true) {
+
+                $userPost = $_POST['Usuario']['usuario'] . '.' . $extension;
+                $model = Usuario::find()->where(['usuario' => $_POST['Usuario']['usuario']])->one();
+                $newName = $ruta . $userPost;
+
                 // echo $userPost.'<br>';
                 // echo $newName.'<br>';
                 // die();
 
-               move_uploaded_file($file_tmp, $newName); 
-               $model->firma = $userPost;
-               $model->save();
+                move_uploaded_file($file_tmp, $newName);
+                $model->firma = $userPost;
+                $model->save();
 
-               return $this->redirect(['update', 'id' => $_POST['Usuario']['usuario']]);
-               
-            }else{
-               print_r($errors);
+                return $this->redirect(['update', 'id' => $_POST['Usuario']['usuario']]);
+            } else {
+                print_r($errors);
             }
-         }
-        
-
-
+        }
     }
 
     /**
@@ -299,35 +297,19 @@ class UsuarioController extends Controller
 
 
             $con = Yii::$app->db;
-            $query = "insert into usuario(usuario, clave, email, rol_id, activo, instituto_defecto, periodo_id)
-                       select 	u.login, '827ccb0eea8a706c4c34a16891f84e7b'
-                                        ,pa.email
-                                        ,$perfil
-                                        ,true
-                                        ,(
-                                                select 	std.x_institute 
-                                                        from 	op_parent opp 
-                                                                        inner join op_parent_op_student_rel rel on rel.op_parent_id = opp.id 
-                                                                        inner join op_student std on std.id = rel.op_student_id
-                                                                        inner join op_parent pare on pare.id = rel.op_parent_id 
-                                                                        inner join res_users use on use.partner_id = pare.name
-                                                        where	use.login = u.login 
-                                                        limit 1
-                                        )
-                                        ,$periodoId
-                        from 	op_student_inscription i
-                                        inner join scholaris_op_period_periodo_scholaris sop on sop.op_id = i.period_id
-                                        inner join op_parent_op_student_rel r on r.op_student_id = i.student_id
-                                        inner join op_parent p on p.id = r.op_parent_id 
-                                        inner join res_partner pa on pa.id = p.name
-                                        inner join res_users u on u.partner_id = pa.id
-                                        inner join op_course_paralelo par on par.id = i.parallel_id 
-                                        inner join op_course c on c.id = par.course_id 
-                        where 	sop.scholaris_id = $periodoId
-                                        and i.inscription_state = 'M'
-                                        and u.login not in (select usuario from usuario where usuario = u.login)
-                        group by u.login, pa.email
-                        order by u.login;";
+            $query = "insert into usuario(usuario, clave, email, rol_id, activo, instituto_defecto, periodo_id) 
+                    select 	concat('f',par.numero_identificacion,'@ism.edu.ec'), '$clave'
+                            ,concat('f',par.numero_identificacion,'@ism.edu.ec')
+                            ,$perfil
+                            ,true
+                            ,$institutoId
+                            ,$periodoId
+                    from 	esquema_odoo.res_partner par
+                            inner join esquema_odoo.op_family fam on fam.id = par.x_family_id 
+                    where 	par.x_family_id is not null
+                            and par.numero_identificacion not in (select usuario from usuario)
+                    group by par.numero_identificacion
+                    order by par.numero_identificacion asc;";
             $con->createCommand($query)->execute();
 
             return $this->redirect(['index']);

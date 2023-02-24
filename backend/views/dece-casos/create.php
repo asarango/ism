@@ -13,6 +13,11 @@ $this->params['breadcrumbs'][] = ['label' => 'Dece Casos', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 $ahora = date('Y-m-d H:i:s');
 
+// echo '<pre>';
+// print_r($model);
+// print_r($model->estudiante);
+// die();
+
 ?>
 <!--Scripts para que funcionen AJAX de select 2 -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
@@ -44,6 +49,7 @@ $ahora = date('Y-m-d H:i:s');
                             );
                             ?>
                 <hr>
+                
                 <?= $this->render('_form', [
                     'model' => $model,
                 ]) ?>

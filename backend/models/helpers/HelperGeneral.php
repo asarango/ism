@@ -175,9 +175,9 @@ class HelperGeneral extends ActiveRecord{
                                 left join planificacion_desagregacion_criterios_evaluacion cri on cri.criterio_evaluacion_id = cab.id 
                 where 	im.op_course_template_id = $nivelId
                 group by cab.id ,m.nombre;";      
-        echo '<pre>';
-        print_r($query);
-        die();         
+        // echo '<pre>';
+        // print_r($query);
+        // die();         
 
         $res =  $this->consultaBD($query);         
         

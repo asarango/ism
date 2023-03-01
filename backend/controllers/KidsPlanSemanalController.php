@@ -122,13 +122,15 @@ class KidsPlanSemanalController extends Controller
      */
     public function actionDetalle()
     {
+
         $periodoId = Yii::$app->user->identity->periodo_id;
         $usuario = Yii::$app->user->identity->usuario;
 
         $kidsPlanSemanalId = $_GET['kids_plan_semanal_id'];
-        $kidsPlanSemanal = KidsPlanSemanal::findOne($kidsPlanSemanalId);
+        $kidsPlanSemanal = KidsPlanSemanal::findOne($kidsPlanSemanalId);        
 
         $courseId = $kidsPlanSemanal->kidsUnidadMicro->pca->op_course_id; //toma el surso asignado al plan
+        
         $horarioAsignado = $this->get_horario_asignado($courseId); //Consulta el horario asignado a la planificacion
         $horario = $this->get_horario($horarioAsignado, $periodoId, $courseId, $usuario); //Trae el horario del docente del curso
         $dias = ScholarisHorariov2Dia::find()->orderBy('numero')->asArray()->all();        
@@ -256,6 +258,7 @@ class KidsPlanSemanalController extends Controller
                                 inner join op_course cur on cur.id = p.course_id 
                         where 	cur.id = $courseId
                         limit 1;";
+
         $res = $con->createCommand($query)->queryOne();
 
         return $res['asignado_horario'];

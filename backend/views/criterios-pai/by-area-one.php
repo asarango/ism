@@ -9,6 +9,7 @@ use yii\helpers\Url;
         <table class="table table-hover table-striped table-condensed table-bordered" style="font-size: 11px;">
             <thead>
                 <tr>
+                    <th class="text-center">ID</th>
                     <th class="text-center">CURSO</th>
                     <th class="text-center">AREA</th>
                     <th class="text-center">CRITERIO</th>
@@ -23,6 +24,7 @@ use yii\helpers\Url;
                     foreach($criteria as $cri){
                         ?>
                         <tr>
+                            <td><?= $cri['id'] ?></td>
                             <td><?= $cri['curso'] ?></td>
                             <td><?= $cri['area'] ?></td>
                             <td class="text-center"><?= $cri['criterio'] ?></td>

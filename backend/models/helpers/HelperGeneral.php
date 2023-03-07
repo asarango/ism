@@ -295,10 +295,7 @@ class HelperGeneral extends ActiveRecord{
                     order by im.nombre,ocp.name,estudiante;"; 
                             
 
-        $resp = $con->createCommand($query)->queryAll();  
-        // echo '<pre>';
-        // print_r($$resp);
-        // die();
+        $resp = $con->createCommand($query)->queryAll();      
         return $resp;
     }
     

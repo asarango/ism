@@ -683,7 +683,7 @@ class IsmRespuestaPlanInterdiciplinarController extends Controller
     //2.4.-
     private function preguntas_indagacion($idGrupoInter)
     {
-        $titulo = '2.4.- Preguntas de Indagación';
+        $titulo = '2.5.- Preguntas de Indagación';
         $idIsmGrupoInter = $idGrupoInter;
         $esEditable = true;
         $pestana = '2.5.-';
@@ -701,21 +701,21 @@ class IsmRespuestaPlanInterdiciplinarController extends Controller
                     facilitan la comprensión, se pueden buscar)</font>';
         $idIsmGrupoInter = $idGrupoInter;
         $esEditable = true;
-        $pestana = '2.4.-';
+        $pestana = '2.5.-';
         $campo = 'Fácticas';
         $seccion = 2;
         $htmlFacticas = $this->generico_consulta_base_campo_texto($seccion, $campo, $esEditable, $titulo, $pestana, $idIsmGrupoInter);
         $titulo = 'Conceptuales: <font size=3px>(conectar los datos, comparar y contrastar, explorar contradicciones, comprensión más profunda, 
                     transferir a otras situaciones, contextos e ideas, analizar y aplicar)</font>';
         $esEditable = true;
-        $pestana = '2.4.-';
+        $pestana = '2.5.-';
         $campo = 'Conceptuales';
         $seccion = 2;
         $htmlConceptuales = $this->generico_consulta_base_campo_texto($seccion, $campo, $esEditable, $titulo, $pestana, $idIsmGrupoInter);;
         $titulo = 'Debatibles: <font size=3px>(promover la discusión, debatir una posición, explorar cuestiones importantes desde múltiples perspectivas, 
         deliberadamente polémicas, presentar tensión, evaluar)</font>';
         $esEditable = true;
-        $pestana = '2.4.-';
+        $pestana = '2.5.-';
         $campo = 'Debatibles';
         $seccion = 2;
         $htmlDebatibles = $this->generico_consulta_base_campo_texto($seccion, $campo, $esEditable, $titulo, $pestana, $idIsmGrupoInter);;

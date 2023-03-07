@@ -36,16 +36,13 @@ $arrayBloque = ArrayHelper::map($bloque,'id','last_name');
                 <div class="col-lg-1">
                     <h4><img src="../ISM/main/images/submenu/herramientas-para-reparar.png" width="64px" style="" class="img-thumbnail"></h4>
                 </div>
+                <div class="col-lg-8">
+                    <h1><?= Html::encode($this->title) ?></h1>    
+                </div>               
 
-                <h1><?= Html::encode($this->title) ?></h1>
-                <?php // echo $this->render('_search', ['model' => $searchModel]); 
-                ?>
-
-                <p>
-                    <?= Html::a('Create Adaptacion Curricular X Bloque', ['create'], ['class' => 'btn btn-success']) ?>
-                </p>
+                <hr>
                 <div>
-                    <select id="id_select" class="form-select" aria-label="Default select example">
+                    <select id="id_select" onchange="showAsignaturas()" class="form-select" aria-label="Default select example">
                         <option selected>Seleccione Bloque</option>
                         <?php
                             foreach ($bloque as $b) 
@@ -83,9 +80,11 @@ $arrayBloque = ArrayHelper::map($bloque,'id','last_name');
     
     function showAsignaturas() {
         var nivel = $('#nivel').val();
+        var id_bloque = $('#id_select').val();   
         var url = '<?= Url::to(['list-materias']) ?>';
         var params = {
-            curso_id: nivel
+            curso_id: nivel,
+            id_bloque:id_bloque,
         };
 
         $.ajax({
@@ -104,11 +103,8 @@ $arrayBloque = ArrayHelper::map($bloque,'id','last_name');
         var url = '<?= Url::to(['guardar-adaptacion']) ?>';
         var idNeeXClase = idNeeXClass;
         var id_adaptacion = $('#adaptacion_clase_'+idNeeXClase).val();
-        var id_bloque = $('#id_select').val();
+        var id_bloque = $('#id_select').val();        
         
-        // alert(idNeeXClase);
-        // alert(id_adaptacion);
-        // alert(id_bloque);
         
         var params = {
             idNeeXClase: idNeeXClase,

@@ -862,7 +862,8 @@ class ScholarisActividadController extends Controller
         $con->createCommand($query)->execute();     
         $query = "select insert_lib_bloques_grupo_clase ($modelGrupoAlumnoClase->id,$idBloque,$idPeriodo,'$user','$tipo_uso');";
         $con->createCommand($query)->execute();   
-        $query = "select insert_promedios_lib_bloques_grupo_clase ($modelGrupoAlumnoClase->id,$idPeriodo,'$user');";
+        //$query = "select insert_promedios_lib_bloques_grupo_clase ($modelGrupoAlumnoClase->id,$idPeriodo,'$user');"; se reemplaza por la de abajo solicita esos parametros el SP
+        $query = "select insert_promedios_lib_bloques_grupo_clase ($modelGrupoAlumnoClase->id,$idPeriodo,'$user', '$tipo_uso');";
         $con->createCommand($query)->execute(); 
 
 

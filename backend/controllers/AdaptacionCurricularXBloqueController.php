@@ -183,6 +183,7 @@ class AdaptacionCurricularXBloqueController extends Controller
         $periodoId = Yii::$app->user->identity->periodo_id;
         $objHelper = new HelperGeneral();  
         $cursoId = $_POST['curso_id'];
+        $id_bloque = $_POST['id_bloque'];
         
         $dato_profesor = $objHelper->obtener_curso_materias_estudiante($user,$periodoId,$cursoId);
 
@@ -210,94 +211,51 @@ class AdaptacionCurricularXBloqueController extends Controller
 
                                     $html .= '<td class="text-center">';
                                         $html .= '<div class="btn-group" role="group">';                                    
-                                        $html .= '<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modelNee_'.$datos['idneexclase'].'">
-                                                        Launch demo modal
+                                        $html .= '<button id="btn_nee_'.$datos['idneexclase'].'" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modelNee_'.$datos['idneexclase'].'">
+                                                            <i class="fas fa-sitemap"></i>
                                                     </button>';
-                                            $html .= '<ul class="dropdown-menu" aria-labelledby="btnGroupDrop1">';
-                                            $html .= '<li>';
-                                            //$html .= Html::a('Desagregación', ['desagregacion', 'id' => $asignatura['id']], ['class' => 'dropdown-item', 'style' => 'font-size:10px']);
-                                            //$html .= Html::a('Planificar', ['planificacion-bloques-unidad/index1', 'id' => $asignatura['id']], ['class' => 'dropdown-item', 'style' => 'font-size:10px']);
-                                            $html .= '</li>';
-                                            $html .= '</ul>';
+                                            // $html .= '<ul class="dropdown-menu" aria-labelledby="btnGroupDrop1">';
+                                            // $html .= '<li>';
+                                            // //$html .= Html::a('Desagregación', ['desagregacion', 'id' => $asignatura['id']], ['class' => 'dropdown-item', 'style' => 'font-size:10px']);
+                                            // //$html .= Html::a('Planificar', ['planificacion-bloques-unidad/index1', 'id' => $asignatura['id']], ['class' => 'dropdown-item', 'style' => 'font-size:10px']);
+                                            // $html .= '</li>';
+                                            // $html .= '</ul>';
                                         $html .= '</div>';
                                     $html .= '</td>';
                                 $html .= '</tr>';
                                 $html .= '</tr>';                    
                 }
                 $html .='</tbody>';
-        $html .= '</table>';       
+        $html .= '</table>';     
+        $html1 = $this->mostrarEstudiantesAdaptacionNee($dato_profesor,$id_bloque);
 
-
-        foreach ($dato_profesor as $datos) 
-        {
-            $html .= '<div class="modal face" id="modelNee_'.$datos['idneexclase'].'" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <table>
-                                        <tr>    
-                                            <td><h2>Adaptación Curricular</h2></td>
-                                        </tr>
-                                        <tr>    
-                                            <td><h6><b>'.$datos['estudiante'].'</b></h6></td>
-                                        </tr>
-                                    </table>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                </div>
-                                <div class="modal-body">
-                                    <table>
-                                        <tr>
-                                            <td>Grado: </td>
-                                            <td>'.$datos['grado_nee'].'</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Fecha: </td>
-                                            <td>'.$datos['fecha_inicia'].'</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Diagnóstico: </td>
-                                            <td>'.$datos['diagnostico_inicia'].'</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Adaptación: </td>
-                                            <td>
-                                                <textarea class="form-control" id="adaptacion_clase_'.$datos['idneexclase'].'" rows="3"></textarea>
-                                            </td>
-                                        </tr>
-                                    </table>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                                    <button type="button" class="btn btn-primary" onclick="guardar_nee_x_clase('.$datos['idneexclase'].')">Guardar</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>';
-        }
-        $html .= '<hr>';
-        $html .= $this->mostrarEstudiantesAdaptacionNee($user,$periodoId,$cursoId);
-
-        return $html;
+        return $html.' '.$html1;
     }
 
-    public function mostrarEstudiantesAdaptacionNee($user,$periodoId,$cursoId)
+    public function mostrarEstudiantesAdaptacionNee($dato_profesor,$id_bloque)
     {
-        $objHelper = new HelperGeneral();  
-        $dato_profesor = $objHelper->obtener_curso_materias_estudiante_nee($user,$periodoId,$cursoId);
-        $html ='';
-
-        echo '<pre>';
-        print_r($dato_profesor);
-
+        $html =' ';
+        // echo '<pre>';
+        // print_r($dato_profesor);
+        // die();
         foreach ($dato_profesor as $datos) 
         {
-            print_r("entreo");
-            $html .= '<div class="modal face" id="modelNee_'.$datos['idneexclase'].'" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            $detalleAdaptacion = '';
+            $modelNeeXClase = AdaptacionCurricularXBloque::find()
+            ->where(['id_nee_x_clase'=>$datos['idneexclase']])
+            ->andWhere(['id_curriculum_mec_bloque'=>$id_bloque])
+            ->one();
+            if($modelNeeXClase)
+            {
+                $detalleAdaptacion =$modelNeeXClase->adaptacion_curricular;
+            }
+
+              $html .= '<div  class="modal face" id="modelNee_'.$datos['idneexclase'].'" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                             <div class="modal-dialog">
-                                <div class="modal-content">
+                                <div  style="background-color:white" class="modal-content">
                                     <div class="modal-header">
-                                        <table>
-                                            <tr>    
+                                        <table class="">
+                                        <tr>    
                                                 <td><h2>Adaptación Curricular</h2></td>
                                             </tr>
                                             <tr>    
@@ -307,13 +265,12 @@ class AdaptacionCurricularXBloqueController extends Controller
                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                     </div>
                                     <div class="modal-body">
-                                        <table>
+                                        <table class="table table-striped">
                                             <tr>
                                                 <td>Grado: </td>
                                                 <td>'.$datos['grado_nee'].'</td>
-                                            </tr>';
-                                            print_r($html);
-                                            $html.='<tr>
+                                            </tr>
+                                            <tr>
                                                 <td>Fecha: </td>
                                                 <td>'.$datos['fecha_inicia'].'</td>
                                             </tr>
@@ -324,7 +281,7 @@ class AdaptacionCurricularXBloqueController extends Controller
                                             <tr>
                                                 <td>Adaptación: </td>
                                                 <td>
-                                                    <textarea class="form-control" id="adaptacion_clase_'.$datos['idneexclase'].'" rows="3"></textarea>
+                                                    <textarea class="form-control" id="adaptacion_clase_'.$datos['idneexclase'].'" rows="3">'.$detalleAdaptacion.'</textarea>
                                                 </td>
                                             </tr>
                                         </table>
@@ -336,13 +293,9 @@ class AdaptacionCurricularXBloqueController extends Controller
                                 </div>
                             </div>
                         </div>';
-                        print_r($html);
-                        print_r("salio");
+               
         }
-        echo '<pre>';
-        print_r("fin de datos");
-        //print_r($html);
-        die();
+      
         return $html;        
     }
 

@@ -8,7 +8,7 @@ use yii\helpers\Url;
 /* @var $searchModel backend\models\IsmGrupoPlanInterdiciplinarSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Grupos Plan Interdiciplinar';
+$this->title = 'Grupos Plan Interdisciplinar';
 $this->params['breadcrumbs'][] = $this->title;
 
 

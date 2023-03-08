@@ -2,6 +2,7 @@
 
 namespace backend\controllers;
 
+use backend\models\AdaptacionCurricularXBloque;
 use backend\models\ContenidoPaiOpciones;
 use backend\models\CurriculoMecBloque;
 use backend\models\helpers\HelperGeneral;
@@ -266,7 +267,7 @@ class IsmRespuestaPlanInterdiciplinarController extends Controller
                 $html = $this->proceso_experiencia_aprendizaje($idGrupoInter);
                 break;
             case '7.2.-':
-                $html = $this->proceso_necesidades_especiales($idGrupoInter);
+                $html = $this->proceso_necesidades_especiales($idGrupoInter,$planUnidadId);
                 break;
             case '8.1.-':
                 $html = $this->recursos($idGrupoInter);
@@ -1685,68 +1686,172 @@ class IsmRespuestaPlanInterdiciplinarController extends Controller
 
         return $html;
     }
-    private function proceso_necesidades_especiales($idGrupoInter)
+    //7
+    private function proceso_necesidades_especiales($idGrupoInter,$planUnidadId)
     {
-        $titulo = '7.2.- Atención a las Necesidades Especiales';
+        //$titulo = '7.2.- Atención a las Necesidades Especiales';
         $idIsmGrupoInter = $idGrupoInter;
-        $esEditable = true;
-        $pestana = '7.2.-';
-        $campo = 'ATENCIÓN A LAS NECESIDADES EDUCATIVAS ESPECIALES';
-        $seccion = 7;
+        // $esEditable = true;
+        // $pestana = '7.2.-';
+        // $campo = 'ATENCIÓN A LAS NECESIDADES EDUCATIVAS ESPECIALES';
+        // $seccion = 7;
 
-        $html = $this->html_necesidades_especiales($idGrupoInter);
+        $html = $this->html_necesidades_especiales($idGrupoInter,$planUnidadId);
 
         return $html;
     }
-    private function html_necesidades_especiales($idGrupoInter)
+    //7
+    private function html_necesidades_especiales($idGrupoInter,$planUnidadId)
     {
+        $html ='';
         $titulo = 'Grado 1';
         $idIsmGrupoInter = $idGrupoInter;
-        $esEditable = true;
-        $pestana = '7.2.-';
-        $campo = 'GRADO 1';
-        $seccion = 7;
-        $htmlGrado1 = $this->generico_consulta_base_campo_texto($seccion, $campo, $esEditable, $titulo, $pestana, $idIsmGrupoInter);
-        $titulo = 'Grado 2';
-        $esEditable = true;
-        $pestana = '7.2.-';
-        $campo = 'GRADO 2';
-        $seccion = 7;
-        $htmlGrado2 = $this->generico_consulta_base_campo_texto($seccion, $campo, $esEditable, $titulo, $pestana, $idIsmGrupoInter);;
-        $titulo = 'Grado 3';
-        $esEditable = true;
-        $pestana = '7.2.-';
-        $campo = 'GRADO 3';
-        $seccion = 7;
-        $htmlGrado3 = $this->generico_consulta_base_campo_texto($seccion, $campo, $esEditable, $titulo, $pestana, $idIsmGrupoInter);;
-        $html = "";
+        $planUnidad   = PlanificacionBloquesUnidad::findOne($planUnidadId);
+        $curso =$planUnidad ->planCabecera->ismAreaMateria->mallaArea->periodoMalla->malla->opCourseTemplate->id;
+        $id_periodo = Yii::$app->user->identity->periodo_id;
+        $usuario= Yii::$app->user->identity->usuario;
+        $bloqueid = $planUnidad->curriculoBloque->id;
+        $modelGrupoInte = IsmGrupoMateriaPlanInterdiciplinar::find()
+        ->where(['id_grupo_plan_inter'=>$idGrupoInter])
+        ->all();
 
-        $html .= '<div class="content">
-                    <h4 style="text-align:center;">ATENCIÓN A LAS NECESIDADES EDUCATIVAS ESPECIALES</h4>
-                        <p style="text-align:center;">
-                            (Detalle las estrategias de trabajo a realizar para cada caso, las especificadas 
-                            por el Tutor Psicólogo y las propias de su asignatura o enseñanza)
-                        </p>
-                    <div class="row"> 
-                        <div class="col">';
-        $html .= $htmlGrado1;
-        $html .= '</div>
-                    </div>
-                    <div class="row"> 
-                        <div class="col">';
-        $html .= $htmlGrado2;
-        $html .= '</div>                        
-                    </div>
-                    <div class="row"> 
-                        <div class="col">';
-        $html .= $htmlGrado3;
-        $html .= '</div>
-                    </div>
-                </div>';
+        $idsMaterias ='-1';
+        foreach($modelGrupoInte as $model)
+        {
+            $idsMaterias = $idsMaterias.','.$model->ismAreaMateria->materia_id;             
+        }
+        //Grado 1
+        $resp = $this->obtener_curso_materias_estudiante_nee($usuario,$id_periodo,$curso,'1',$idsMaterias);
+        $html .= $this->html_estudiantes_nee($resp,$bloqueid,'1');
+        //Grado 2
+        $resp = $this->obtener_curso_materias_estudiante_nee($usuario,$id_periodo,$curso,'2',$idsMaterias);
+        $html .= $this->html_estudiantes_nee($resp,$bloqueid,'2');
+        //Grado 3
+        $resp = $this->obtener_curso_materias_estudiante_nee($usuario,$id_periodo,$curso,'3',$idsMaterias);
+        $html .= $this->html_estudiantes_nee($resp,$bloqueid,'3');
+
+
+
+        // $esEditable = true;
+        // $pestana = '7.2.-';
+        // $campo = 'GRADO 1';
+        // $seccion = 7;
+        // $htmlGrado1 = $this->generico_consulta_base_campo_texto($seccion, $campo, $esEditable, $titulo, $pestana, $idIsmGrupoInter);
+        // $titulo = 'Grado 2';
+        // $esEditable = true;
+        // $pestana = '7.2.-';
+        // $campo = 'GRADO 2';
+        // $seccion = 7;
+        // $htmlGrado2 = $this->generico_consulta_base_campo_texto($seccion, $campo, $esEditable, $titulo, $pestana, $idIsmGrupoInter);;
+        // $titulo = 'Grado 3';
+        // $esEditable = true;
+        // $pestana = '7.2.-';
+        // $campo = 'GRADO 3';
+        // $seccion = 7;
+        // $htmlGrado3 = $this->generico_consulta_base_campo_texto($seccion, $campo, $esEditable, $titulo, $pestana, $idIsmGrupoInter);;
+        // $html = "";
+
+        // $html .= '<div class="content">
+        //             <h4 style="text-align:center;">ATENCIÓN A LAS NECESIDADES EDUCATIVAS ESPECIALES</h4>
+        //                 <p style="text-align:center;">
+        //                     (Detalle las estrategias de trabajo a realizar para cada caso, las especificadas 
+        //                     por el Tutor Psicólogo y las propias de su asignatura o enseñanza)
+        //                 </p>
+        //             <div class="row"> 
+        //                 <div class="col">';
+        // $html .= $htmlGrado1;
+        // $html .= '</div>
+        //             </div>
+        //             <div class="row"> 
+        //                 <div class="col">';
+        // $html .= $htmlGrado2;
+        // $html .= '</div>                        
+        //             </div>
+        //             <div class="row"> 
+        //                 <div class="col">';
+        // $html .= $htmlGrado3;
+        // $html .= '</div>
+        //             </div>
+        //         </div>';
 
 
         return $html;
     }
+    //7
+    private function html_estudiantes_nee($arrayAlumnos,$bloqueid,$grado)
+    {
+        $html='';
+        foreach($arrayAlumnos as $array)
+        { 
+            $model = AdaptacionCurricularXBloque::find()
+            ->where(['id_nee_x_clase'=>$array['idneexclase']])
+            ->andWhere(['id_curriculum_mec_bloque'=>$bloqueid])
+            ->one();
+
+            $adaptacion ='';
+            if($model){ $adaptacion =  $model->adaptacion_curricular;}      
+
+            $html .= '<div class="content">';
+                $html .= '<div class="card" style="width: 100%; margin-top:20px">';
+                    $html .= '<h5>GRADO '.$grado.'</h5>';
+                    $html .= '<table class="table table-condensed table-bordered">';
+                        $html .= '<thead>';
+                            $html .= '<tr >';
+                                $html .= '<th class="text-center" style="background-color: #0a1f8f; color: white;width: 10%;">Materia</th>';
+                                $html .= '<th class="text-center" style="background-color: #9e28b5; color: white;width: 40%;">Estudiante</th>';
+                                $html .= '<th class="text-center" style="background-color: #ab0a3d; color: white;width: 10%;">Diagnostico</th>';
+                                $html .= '<th class="text-center" style="background-color: #ab0a3d; color: white;width: 40%;">Adaptación</th>';
+                            $html .= '</tr>';
+                        $html .= '</thead>';
+                        $html .= '<tbody id="table-reflexion-selecionadas">';
+                            $html .= '<tr>';
+                                $html .= '<td>'.$array['materia'].'</td>';
+                                $html .= '<td>'.ltrim(rtrim($array['estudiante'])).'</td>';
+                                $html .= '<td>'.$array['diagnostico_inicia'].'</td>';
+                                $html .= '<td>'.$adaptacion.'</td>';
+                            $html .= '</tr>';
+                        $html .= '</tbody>';
+                    $html .= '</table>';
+                $html .= '</div>';
+            $html .= '</div>';
+        }
+
+        return $html;
+    }
+    //7
+    public function obtener_curso_materias_estudiante_nee($usuario,$id_periodo,$curso/*op_course_paralelo*/,$grado,$ids_materias )
+    {
+        $con = Yii::$app->db;
+        $query = "select  im.id as idMateria, im.nombre as materia, ocp.id as idcurso,ocp.name as curso, os.id as idEstudiante,
+                    concat(os.last_name,' ',os.middle_name,' ',os.first_name)  as estudiante ,
+                    nxc.id as idNeeXClase, nxc.clase_id as neeClaseId,nxc.nee_id as idnee,nxc.grado_nee,nxc.fecha_inicia ,
+                    nxc.fecha_finaliza ,nxc.diagnostico_inicia 
+                    from nee_x_clase nxc 
+                    inner join scholaris_clase sc on sc.id = nxc.clase_id 
+                    inner join op_course_paralelo ocp on ocp.id = sc.paralelo_id 
+                    inner join op_course oc on oc.id = ocp.course_id 
+                    inner join ism_area_materia iam on iam.id = sc.ism_area_materia_id 
+                    inner join ism_malla_area ima on ima.id = iam.malla_area_id 
+                    inner join ism_periodo_malla ipm on ipm.id  = ima.periodo_malla_id 
+                    inner join nee n on n.id = nxc.nee_id 
+                    inner join op_student os on os.id = n.student_id  
+                    inner join op_faculty of2 on of2.id = sc.idprofesor 
+                    inner join res_users ru on ru.partner_id = of2.partner_id 
+                    inner join ism_materia im on im.id = iam.materia_id  
+                    where oc.x_template_id ='$curso' and ipm.scholaris_periodo_id = $id_periodo                    
+                    and im.id in ($ids_materias) and grado_nee = $grado
+                    order by im.nombre,ocp.name,estudiante;"; 
+
+        
+                            
+
+        $resp = $con->createCommand($query)->queryAll();  
+        // echo '<pre>';
+        // print_r($query);
+        // die();
+        return $resp;
+    }
+    
     //8.-
     private function recursos($idGrupoInter)
     {

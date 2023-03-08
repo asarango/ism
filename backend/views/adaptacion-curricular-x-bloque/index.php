@@ -10,7 +10,7 @@ use yii\helpers\ArrayHelper;
 /* @var $searchModel backend\models\AdaptacionCurricularXBloqueSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Adaptacion Curricular X Bloques';
+$this->title = 'Adaptación Curricular por Bloques';
 $this->params['breadcrumbs'][] = $this->title;
 
 //llamamos la bloque

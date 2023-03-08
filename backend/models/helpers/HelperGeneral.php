@@ -245,7 +245,8 @@ class HelperGeneral extends ActiveRecord{
         $con = Yii::$app->db;
         $query = "select  im.id as idMateria, im.nombre as materia, ocp.id as idcurso,ocp.name as curso, os.id as idEstudiante,
                     concat(os.last_name,' ',os.middle_name,' ',os.first_name)  as estudiante ,
-                    nxc.id as idNeeXClase, nxc.clase_id as neeClaseId,nxc.nee_id as idnee,nxc.grado_nee,nxc.fecha_inicia ,nxc.diagnostico_inicia 
+                    nxc.id as idNeeXClase, nxc.clase_id as neeClaseId,nxc.nee_id as idnee,nxc.grado_nee,nxc.fecha_inicia ,
+                    nxc.fecha_finaliza ,nxc.diagnostico_inicia 
                     from nee_x_clase nxc 
                     inner join scholaris_clase sc on sc.id = nxc.clase_id 
                     inner join op_course_paralelo ocp on ocp.id = sc.paralelo_id 
@@ -261,11 +262,13 @@ class HelperGeneral extends ActiveRecord{
                     where oc.x_template_id ='$curso' and ipm.scholaris_periodo_id = $id_periodo
                     and ru.login ='$usuario'
                     order by im.nombre,ocp.name,estudiante;"; 
+
+        
                             
 
         $resp = $con->createCommand($query)->queryAll();  
         // echo '<pre>';
-        // print_r($$resp);
+        // print_r($query);
         // die();
         return $resp;
     }

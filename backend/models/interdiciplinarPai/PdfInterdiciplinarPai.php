@@ -20,6 +20,7 @@ use backend\models\PlanificacionVerticalPaiDescriptores;
 use backend\models\PlanificacionVerticalPaiOpciones;
 use backend\models\PlanificacionBloquesUnidadSubtitulo2;
 use backend\models\helpers\Scripts;
+use backend\models\AdaptacionCurricularXBloque;
 use Yii;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -168,6 +169,7 @@ class PdfInterdiciplinarPai extends \yii\db\ActiveRecord
         $html .= $this->objetivo_desarrollo();        
         $html .= $this->evaluacion_desemplenio();
         $html .= $this->accion_ensenianza_aprendizaje();
+        $html .= $this->proceso_aprendizaje_interdisciplinar();
         $html .= $this->recursos();
         $html .= $this->reflexion();
        
@@ -900,6 +902,185 @@ class PdfInterdiciplinarPai extends \yii\db\ActiveRecord
         $html = $this->devolver_campo_respuesta('ACCIÓN',6);
         
         return $html;
+    }
+    //7
+    private function proceso_aprendizaje_interdisciplinar()
+    {
+         /*
+            Creado Por: Santiago / Fecha Creacion: 2023-03-08 
+            Modificado Por: 	/ Fecha Modificación:
+            Detalle: Muestra la tabla principal, que se imprime en el PDF, Llamando a los diferentes metodos para completar el proceso 7
+        */
+        $idGrupoInter= $this->grupoPlanInterdisciplinar;
+        $seccion = '7';
+        $respusta = '';
+        $campo = 'EXPERIENCIAS DE APRENDIZAJE Y ESTRATEGIAS DE ENSEÑANZA INTERDISCIPLINARIOS';
+         //extraemos el Id de la pregunta
+         $modelPreguntaContenido = IsmContenidoPlanInterdiciplinar::find()
+         ->where(['id_seccion_interdiciplinar' => $seccion])
+         ->andWhere(['nombre_campo' => $campo])
+         ->andWhere(['activo' => true])
+         ->andWhere(['heredado' => false])
+         ->one();
+
+        //Extraemos la respuesta
+        $modelRespuesta = IsmRespuestaPlanInterdiciplinar::find()
+            ->where(['id_grupo_plan_inter' => $idGrupoInter])
+            ->andwhere(['id_contenido_plan_inter' => $modelPreguntaContenido->id])
+            ->one();
+        if($modelRespuesta)
+        {
+            $respusta=$modelRespuesta->respuesta;
+        }
+
+     $html = "";
+        $html ='<br>
+                <table border="1" width="800px" cellspacing="0" cellpadding="5" style="font-size:10">
+                        <tr >
+                            <td colspan="2">
+                                <b>7.- PROCESO DE APRENDIZAJE INTERDISCIPLINARIO:</b> 
+                            </td>               
+                        </tr>
+                        <tr >
+                            <td width="400px">
+                                <b>EXPERIENCIAS DE APRENDIZAJE Y ESTRATEGIAS DE ENSEÑANZA INTERDISCIPLINAR</b> 
+                            </td> 
+                            <td width="400px">
+                                <b>ATENCIÓN A LAS NECESIDADES EDUCATIVAS ESPECIALES:</b> (Detalle las estrategias de trabajo a realizar para cada caso, 
+                                las especificadas por el Tutor Psicólogo y las propias de su asignatura o enseñanza )
+                            </td>               
+                        </tr>   
+                        <tr >
+                            <td width="400px">'.
+                                $respusta
+                            .'</td> 
+                            <td width="400px">'.
+                                $this->html_necesidades_especiales()                                
+                            .'</td>               
+                        </tr> ';  
+        $html.='</table>';
+
+        return $html;
+
+    }
+    
+    //7
+    private function html_necesidades_especiales()
+    {
+        /*
+            Creado Por: Santiago / Fecha Creacion: 2023-03-08 
+            Modificado Por: 	/ Fecha Modificación:
+            Detalle: Recopila la información de cada Grado nee, y lo une en una sola variable, para presentar en el PDF
+        */
+        $idIsmGrupoInter= $this->grupoPlanInterdisciplinar;
+        $planUnidadId = $this->idPlanUndiad;
+        $html ='';      
+       
+        $planUnidad   = PlanificacionBloquesUnidad::findOne($planUnidadId);
+        $curso =$planUnidad ->planCabecera->ismAreaMateria->mallaArea->periodoMalla->malla->opCourseTemplate->id;
+        $id_periodo = Yii::$app->user->identity->periodo_id;
+        $usuario= Yii::$app->user->identity->usuario;
+        $bloqueid = $planUnidad->curriculoBloque->id;
+        $modelGrupoInte = IsmGrupoMateriaPlanInterdiciplinar::find()
+        ->where(['id_grupo_plan_inter'=>$idIsmGrupoInter])
+        ->all();
+
+        $idsMaterias ='-1';
+        foreach($modelGrupoInte as $model)
+        {
+            $idsMaterias = $idsMaterias.','.$model->ismAreaMateria->materia_id;             
+        }
+        //Grado 1
+        $resp = $this->obtener_curso_materias_estudiante_nee($usuario,$id_periodo,$curso,'1',$idsMaterias);
+        $html .= $this->html_estudiantes_nee($resp,$bloqueid,'1');
+        //Grado 2
+        $resp = $this->obtener_curso_materias_estudiante_nee($usuario,$id_periodo,$curso,'2',$idsMaterias);
+        $html .= $this->html_estudiantes_nee($resp,$bloqueid,'2');
+        //Grado 3
+        $resp = $this->obtener_curso_materias_estudiante_nee($usuario,$id_periodo,$curso,'3',$idsMaterias);
+        $html .= $this->html_estudiantes_nee($resp,$bloqueid,'3');
+
+        return $html;
+    }
+    //7
+    private function html_estudiantes_nee($arrayAlumnos,$bloqueid,$grado)
+    {
+        /*
+            Creado Por: Santiago / Fecha Creacion: 2023-03-08 
+            Modificado Por: 	/ Fecha Modificación:
+            Detalle: Genera la estructura de la tabla, para presentar los Estudiantes NEE, y sus adaptaciones, extrae directo de la información 
+            ingresada en módulo ADAPTACION CURRICULAR
+        */
+        $html='';
+        foreach($arrayAlumnos as $array)
+        { 
+            $model = AdaptacionCurricularXBloque::find()
+            ->where(['id_nee_x_clase'=>$array['idneexclase']])
+            ->andWhere(['id_curriculum_mec_bloque'=>$bloqueid])
+            ->one();
+
+            $adaptacion ='';
+            if($model){ $adaptacion =  $model->adaptacion_curricular;}      
+
+            $html .= '<div class="content">';
+                $html .= '<div class="card" style="width: 100%; margin-top:20px">';
+                    $html .= '<h5>GRADO '.$grado.'</h5>';
+                    $html .= '<table class="table table-condensed table-bordered">';
+                        $html .= '<thead>';
+                            $html .= '<tr >';
+                                $html .= '<th class="text-center" style="background-color: grey; color: white;width: 10%;">Materia</th>';
+                                $html .= '<th class="text-center" style="background-color: grey; color: white;width: 40%;">Estudiante</th>';
+                                $html .= '<th class="text-center" style="background-color: grey; color: white;width: 10%;">Diagnostico</th>';
+                                $html .= '<th class="text-center" style="background-color: grey; color: white;width: 40%;">Adaptación</th>';
+                            $html .= '</tr>';
+                        $html .= '</thead>';
+                        $html .= '<tbody id="table-reflexion-selecionadas">';
+                            $html .= '<tr>';
+                                $html .= '<td>'.$array['materia'].'</td>';
+                                $html .= '<td>'.ltrim(rtrim($array['estudiante'])).'</td>';
+                                $html .= '<td>'.$array['diagnostico_inicia'].'</td>';
+                                $html .= '<td>'.$adaptacion.'</td>';
+                            $html .= '</tr>';
+                        $html .= '</tbody>';
+                    $html .= '</table>';
+                $html .= '</div>';
+            $html .= '</div>';
+        }
+
+        return $html;
+    }
+    //7
+    public function obtener_curso_materias_estudiante_nee($usuario,$id_periodo,$curso/*op_course_paralelo*/,$grado,$ids_materias )
+    {
+        $con = Yii::$app->db;
+        $query = "select  im.id as idMateria, im.nombre as materia, ocp.id as idcurso,ocp.name as curso, os.id as idEstudiante,
+                    concat(os.last_name,' ',os.middle_name,' ',os.first_name)  as estudiante ,
+                    nxc.id as idNeeXClase, nxc.clase_id as neeClaseId,nxc.nee_id as idnee,nxc.grado_nee,nxc.fecha_inicia ,
+                    nxc.fecha_finaliza ,nxc.diagnostico_inicia 
+                    from nee_x_clase nxc 
+                    inner join scholaris_clase sc on sc.id = nxc.clase_id 
+                    inner join op_course_paralelo ocp on ocp.id = sc.paralelo_id 
+                    inner join op_course oc on oc.id = ocp.course_id 
+                    inner join ism_area_materia iam on iam.id = sc.ism_area_materia_id 
+                    inner join ism_malla_area ima on ima.id = iam.malla_area_id 
+                    inner join ism_periodo_malla ipm on ipm.id  = ima.periodo_malla_id 
+                    inner join nee n on n.id = nxc.nee_id 
+                    inner join op_student os on os.id = n.student_id  
+                    inner join op_faculty of2 on of2.id = sc.idprofesor 
+                    inner join res_users ru on ru.partner_id = of2.partner_id 
+                    inner join ism_materia im on im.id = iam.materia_id  
+                    where oc.x_template_id ='$curso' and ipm.scholaris_periodo_id = $id_periodo                    
+                    and im.id in ($ids_materias) and grado_nee = $grado
+                    order by im.nombre,ocp.name,estudiante;"; 
+
+        
+                            
+
+        $resp = $con->createCommand($query)->queryAll();  
+        // echo '<pre>';
+        // print_r($query);
+        // die();
+        return $resp;
     }
 
 

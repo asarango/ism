@@ -18,7 +18,7 @@ use yii\helpers\ArrayHelper;
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 
-$this->title = 'PUD INTERDISCIPLINAR - ' . $planUnidad->curriculoBloque->last_name . ' - ' . $planUnidad->unit_title;
+$this->title = 'PUD INTERDISCIPLINAR - ' . $planUnidad->curriculoBloque->last_name ;
 $this->params['breadcrumbs'][] = $this->title;
 
 //extraemos las materias que pértenecen al grupo para la planificacion
@@ -44,6 +44,7 @@ $modelIsmGrupoMaterias = IsmGrupoMateriaPlanInterdiciplinar::find()
                 </div>
                 <div class="col-lg-6">
                     <h4><?= Html::encode($this->title) ?></h4>
+                    <h4><?= 'Tema:  ' . $planUnidad->unit_title; ?></h4>
                 </div>
                 <div class="col-lg-3">
                     <!-- <small>

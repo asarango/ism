@@ -221,7 +221,7 @@ function get_planification_by_hour($detalleHorarioId, $claseId)
 
 
 function get_validation_to_send($contadorNoPlanificado, $statesBitacora){
-    if(count($statesBitacora) == 0 && $contadorNoPlanificado == 23){
+    if(count($statesBitacora) == 0 && $contadorNoPlanificado == 0){
         return 'enviar';
         exit;
     }

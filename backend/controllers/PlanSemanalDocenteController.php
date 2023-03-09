@@ -193,6 +193,9 @@ class PlanSemanalDocenteController extends Controller {
                 and bi.id = (select max(id) from plan_semanal_bitacora where semana_id=bi.semana_id and curso_id = bi.curso_id)
                 and bi.docente_usuario = '$user'
         group by bi.curso_id, bi.estado, cur.name, bi.obervaciones;";
+
+        // echo $query;
+        // die();
         
         $res    = $con->createCommand($query)->queryAll();
         return $res;

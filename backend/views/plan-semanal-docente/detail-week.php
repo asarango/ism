@@ -81,15 +81,22 @@ use yii\helpers\Html;
                             <li class="breadcrumb-item active" aria-current="page" style="color: white;"><?= $hour['curso'] ?></li>
                             <li class="breadcrumb-item active" aria-current="page" style="color: white;"><?= $hour['materia'] ?></li>
                             <li class="breadcrumb-item active" aria-current="page" style="color: white;"><?= $hour['responsable_planificacion'] ?></li>
+
+                            <li class="breadcrumb-item active" aria-current="page" style="color: white;">
+                                <?= $hour['detalle_id']. ' '.$hour['clase_id'] ?>
+                                </li>
                         </ol>
                     </nav>
 
 
                     <?php
-                    $detail = get_planification_by_hour($hour['detalle_id'], $hour['clase_id']);
+                    $detail = get_planification_by_hour($hour['detalle_id'], $hour['clase_id'], $date['fecha']);
+                    
 
-                    if ($detail) {
+                    if ($detail) {                                            
+
                         if ($detail['fecha'] == $date['fecha']) {
+                            
                             if ($detail['titulo'] == 'NO CONFIGURADO') {
                                 $contadorNoPlanificado++;
                                 echo '<div class="col">';
@@ -138,11 +145,15 @@ use yii\helpers\Html;
                                 echo '</p>';
                                 echo '</div>';
                             }
+
+
                         } else {
                             $contadorNoPlanificado++;
                             echo 'Hora libre';
                         }
-                    } else {
+                    
+                    } else{
+                        if($hour['materia'] != 'Desarrollo Humano Integral' && $hour['materia'] != 'Talleres Optativos')
                         $contadorNoPlanificado++;
                         echo '<div class="col">
                                 <img src="../ISM/main/images/actions/no.gif" 
@@ -162,7 +173,7 @@ use yii\helpers\Html;
     <?php //fin de foreach principal de dias y fechas
     }
 
-    // echo $contadorNoPlanificado;
+    echo $contadorNoPlanificado;
     $state = get_validation_to_send($contadorNoPlanificado, $statesBitacora);
     // print_r($state);
     //         die();
@@ -200,7 +211,7 @@ use yii\helpers\Html;
 
 <?php
 
-function get_planification_by_hour($detalleHorarioId, $claseId)
+function get_planification_by_hour($detalleHorarioId, $claseId, $fecha)
 {
     $con = Yii::$app->db;
     $query = "select 	ld.id 
@@ -213,7 +224,14 @@ function get_planification_by_hour($detalleHorarioId, $claseId)
                 from 	lms_docente ld
                     left join lms lm on lm.id = ld.lms_id 
                 where 	ld.horario_detalle_id = $detalleHorarioId
-                    and ld.clase_id = $claseId;";
+                    and ld.clase_id = $claseId
+                    and ld.fecha = '$fecha'; ";
+
+    // if($claseId == 862){
+    //     echo $query;
+    // die();    
+    // }
+    
 
     $res = $con->createCommand($query)->queryOne();
     return $res;

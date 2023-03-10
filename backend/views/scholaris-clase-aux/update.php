@@ -178,7 +178,11 @@ function horarios($modelDias, $modelHoras, $paralelo, $clase, $cabecera) {
                                                     ['quitar', 'detalle' => $materia['detalle_id'], 
                                                     'clase' => $clase]) . '</td>';
             } else {
-                echo '<td style="color: white">' . $materia['materia'] . '</td>';
+                echo '<td style="color: white">' . 
+                $materia['materia'] . 
+                '<br><b>('.
+                $materia['docente'] . 
+                ')</b></td>';
             }
         }
         echo '</tr>';

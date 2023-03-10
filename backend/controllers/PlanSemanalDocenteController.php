@@ -137,8 +137,12 @@ class PlanSemanalDocenteController extends Controller {
             $week = ScholarisBloqueSemanas::findOne($weekId);
             $statesBitacora = $this->get_states_bitacora($weekId, $user, $periodId);
 
-            $dates = $this->get_dates($week->fecha_inicio, $week->fecha_finaliza, $user, $periodId);
+            $dates = $this->get_dates($week->fecha_inicio, $week->fecha_finaliza, $user, $periodId);            
             $hours = $this->get_hours($user, $periodId);
+
+            // echo '<pre>';
+            // print_r($hours);
+            // die();
 
             return $this->renderPartial('detail-week', [
                 'dates' => $dates,

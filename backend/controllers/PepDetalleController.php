@@ -389,10 +389,19 @@ class PepDetalleController extends Controller {
         return $resp;
     }
     
+
+/**
+*ACCIÓN PARA PRESENTAR LOS DESCRIPTORES DEL MEC
+* Realizado por Arturo Sarango 2022-12-30
+* Ultima actaulización: 2023-03-10
+*/
+
     public function actionDesagregacion(){        
                
         $temaId = $_GET['tema_id'];
         $tema = \backend\models\PepPlanificacionXUnidad::findOne($temaId);       
+
+        echo $tema->op_course_template_id;
         
         $searchModel = new \backend\models\ViewDestrezaMecBiSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams, $tema->op_course_template_id);
@@ -455,8 +464,7 @@ class PepDetalleController extends Controller {
     public function actionAgregar(){
         $destrezaId = $_GET['destreza_id'];
         $temaId = $_GET['tema_id'];
-        
-//        pep_planificacion_unidad_id, tipo, referencia, campo_de, contenido_texto, contenido_opcion
+
         $model = new \backend\models\PepUnidadDetalle();
         $model->pep_planificacion_unidad_id = $temaId;
         $model->tipo = 'destreza';

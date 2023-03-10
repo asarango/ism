@@ -124,11 +124,13 @@ class SentenciasClase extends \yii\db\ActiveRecord {
         $query = "select h.clase_id
                                 ,h.detalle_id
                                 ,m.nombre as materia
+                                ,concat(last_name, ' ', x_first_name) as docente
                 from 	scholaris_horariov2_horario h
                                 inner join scholaris_clase c on c.id = h.clase_id
                                 inner join scholaris_horariov2_detalle det on det.id = h.detalle_id
                                 inner join ism_area_materia am on am.id = c.ism_area_materia_id  
                                 inner join ism_materia m on m.id = am.materia_id
+                                inner join op_faculty fac on fac.id = c.idprofesor
                 where	c.paralelo_id = $paralelo
                                 and det.dia_id = $dia
                                 and det.hora_id = $hora "

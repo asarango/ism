@@ -20,7 +20,7 @@ $this->params['breadcrumbs'][] = $this->title;
         <div class="card shadow col-lg-8 col-md-8">
             <div class=" row align-items-center p-2">
                 <div class="col-lg-1">
-                    <h4><img src="ISM/main/images/submenu/herramientas-para-reparar.png" width="64px" style="" class="img-thumbnail"></h4>
+                    <h4><img src="../ISM/main/images/submenu/herramientas-para-reparar.png" width="64px" style="" class="img-thumbnail"></h4>
                 </div>
                 <div class="col-lg-11">
                     <h4><?= Html::encode($this->title) ?></h4>
@@ -84,7 +84,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <div class="collapse" id="collapseExample">
                     <div class="card card-body">
                         <!-- Para el tema de la unidad -->            
-                        <?= $this->render('_info-general', ['tema' => $tema]); ?> 
+                        <?= $this->render('_info-general', ['tema' => $tema, 'registros' => $registros ]); ?> 
                         <hr>
 
                         <!--inicio para idea central-->

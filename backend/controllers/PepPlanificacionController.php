@@ -71,7 +71,7 @@ class PepPlanificacionController extends Controller {
         $temas = \backend\models\PepPlanificacionXUnidad::find()->where([
                     'op_course_template_id' => $opCourseTemplateId,
                     'scholaris_periodo_id' => $periodoId
-                ])->all();
+                ])->orderBy('id')->all();
 
 
         return $this->render('index', [
@@ -125,10 +125,12 @@ class PepPlanificacionController extends Controller {
         $opCourseTemplateId = $get['op_course_id'];
         $periodoId = Yii::$app->user->identity->periodo_id;
 
-        $temas = \backend\models\PepPlanificacionXUnidad::find()->where([
+        $temas = \backend\models\PepPlanificacionXUnidad::find()
+                ->where([
                     'op_course_template_id' => $opCourseTemplateId,
                     'scholaris_periodo_id' => $periodoId
-                ])->all();     
+                ])
+                ->all();     
         return $temas;
     }
     

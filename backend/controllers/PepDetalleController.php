@@ -4,6 +4,7 @@ namespace backend\controllers;
 
 use backend\models\PepOpciones;
 use backend\models\PepUnidadDetalle;
+use backend\models\PepPlanificacionXUnidad;
 use Yii;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -83,7 +84,6 @@ class PepDetalleController extends Controller {
         return $this->render('index', [        
            'tema'               => $tema,
            'registros'          => $registros,
-           'registros'          => $registros,
            'semanas'            => $semanas,
            'planesSemanales'    => $planesSemanales
         ]);
@@ -123,10 +123,21 @@ class PepDetalleController extends Controller {
         $res = $con->createCommand($query)->queryAll();
         return $res;
     }
+
+
+    /**
+    * MÉTODO QUE REGISTRA EL INGRESO DE LAS OPCIONES A LA TABLA  pep_unidad_detalle
+    * CREADO POR: Arturo Sarango - 2022-01-01
+    * ACTUALIZADO: Arturo Sarango - 2023-03-11 
+    */
     
     private function ingresa_todas_opciones($temaId){
         
         $modelRegistros = \backend\models\PepUnidadDetalle::find()->where(['pep_planificacion_unidad_id' => $temaId])->orderBy('id')->all();
+
+         /* verifica si existe las destrezas a usar en la unidad */
+        $this->ingresa_opciones_generico_texto($temaId, $modelRegistros, 'destrezas', 'destrezas','texto');
+
         
         /* verifica si existe la idea principal */
         $this->ingresa_opciones_generico_texto($temaId, $modelRegistros, 'idea_central', 'info_general','texto');        
@@ -275,20 +286,29 @@ class PepDetalleController extends Controller {
     
     
     
-    
-    private function ingresa_opciones_generico_texto($temaId, $modelRegistros, $tipo, $referencia, $campoDe){        
-                      
+    /**
+    * MÉTODO QUE VALIDA SI EXISTEN LAS OPCIONES, SINO INGRESA A LA TABLA  pep_unidad_detalle
+    * CREADO POR: Arturo Sarango - 2022-01-01
+    * ACTUALIZADO: Arturo Sarango - 2023-03-11 
+    */
+    private function ingresa_opciones_generico_texto($temaId, $modelRegistros, $tipo, $referencia, $campoDe){                      
+
         $palabra = array_search($tipo, array_column($modelRegistros, 'tipo')); //busca si esta configurado
 
         if($palabra > 0 || $palabra === 0){
             //no se hace nada
-        }else{
+        }else{            
             $model = new \backend\models\PepUnidadDetalle();
             $model->pep_planificacion_unidad_id = $temaId;
             $model->tipo = $tipo;
             $model->referencia = $referencia;
             $model->campo_de = $campoDe;
-            $model->contenido_texto = 'No conf';
+            if($tipo == 'destrezas'){
+                $tema = PepPlanificacionXUnidad::findOne($temaId);                
+                $model->contenido_texto = $tema->temaTransdisciplinar->contenido_es;
+            }else{
+                $model->contenido_texto = 'No conf';
+            }            
             $model->save();
         }        
         

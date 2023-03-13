@@ -35,8 +35,8 @@ class Necesidades extends ActiveRecord
         $this->scholarisPeriodoId = Yii::$app->user->identity->periodo_id;
         $this->institutoId = Yii::$app->user->identity->instituto_defecto;      
            
-        $this->seccion_numero = 7;      
-        $this->actualizaCampoUltimaSeccion('7.1.-',$planUnidadId);     
+        $this->seccion_numero = 8;      
+        $this->actualizaCampoUltimaSeccion('8.1.-',$planUnidadId);     
 
         $this->get_formato_html();        
     }
@@ -109,7 +109,7 @@ class Necesidades extends ActiveRecord
         $estudiantesNee = $this->buscar_nee_x_materia();
        
 
-        $this->html .= '<h5 class=""><b>7.- ATENCIÓN A LAS NECESIDADES EDUCATIVAS ESPECIALES </b></h5>';  
+        $this->html .= '<h5 class=""><b>8.- ATENCIÓN A LAS NECESIDADES EDUCATIVAS ESPECIALES </b></h5>';  
         $this->html .= '<div class="" style="align-items: center; display: flex; justify-content: center;">';
               $this->html .= '<div class="card" style="width: 95%; margin-top:20px">';
   

@@ -2,6 +2,7 @@
 
 namespace backend\models\pudpai;
 
+use backend\models\IsmContenidoPaiPlanificacion;
 use backend\models\pudpai\Evaluacion;
 use backend\models\IsmCriterio;
 use backend\models\IsmCriterioLiteral;
@@ -144,11 +145,12 @@ class Pdf extends \yii\db\ActiveRecord {
         $html .= $this->tres();
         $html .= $this->cuatro();
         $html .= $this->cinco();
-        $html .= $this->seis(); 
-        $html .= $this->siete();
+        $html .= $this->seis();
+        $html .= $this->siete(); 
         $html .= $this->ocho();
         $html .= $this->nueve();
-        $html .= $this->diez();      
+        $html .= $this->diez();
+        $html .= $this->once();      
         return $html;
     }
 
@@ -327,8 +329,44 @@ class Pdf extends \yii\db\ActiveRecord {
 
         return $html;
     }
+      //4
+      private function cuatro()
+      {
+          $idPlanUnidad=  $this->planUnidad->id;
+          //buscamos el id, que corresponde a COMPETENCIA, de la seccion 4  EN ISM CONTwhENIDO_ PLNA INTERDICIPLINAR          
+  
+          $modelIsmContenidoPaiPlan = IsmContenidoPaiPlanificacion::find()
+          ->where(['planificacion_bloque_unidad_id'=>$idPlanUnidad])
+          ->all();        
+         
+          $html ='<table class="tamano10" width="100%" cellspacing="0" cellpadding="2">
+                          <tr >
+                              <td class="border" colspan="4"><b>4.- OBJETIVO DEL DESARROLLO SOSTENIBLE</b></td>               
+                          </tr>;                       
+                          <tr >
+                              <td class="border" width="25%"><b>COMPETENCIA</b></td>   
+                              <td class="border" width="25%"><b>ACTIVIDAD</b></td>
+                              <td class="border" width="25%"><b>OBJETIVO</b></td>
+                              <td class="border" width="25%"><b>RELACION ODS-IB</b></td>            
+                          </tr>';
+                   
+                              foreach($modelIsmContenidoPaiPlan as $model)
+                              {
+                                  $html.='<tr >';
+                                  $html.='<td class="border">'.$model->contenido.'</td>   
+                                          <td class="border">'.$model->actividad.'</td>
+                                          <td class="border">'.$model->objetivo.'</td>
+                                          <td class="border">'.$model->relacion_ods.'</td>';
+                                  $html.='</tr>';
+                              }
+                  
+          $html.='</table>';
+  
+          return $html;
+  
+      }
 
-    public function cuatro() 
+    public function cinco() 
     {
         
         $planUnidadBloq = $this->planUnidad->id;
@@ -342,7 +380,7 @@ class Pdf extends \yii\db\ActiveRecord {
 
         $html .= '<table class="tamano10" width="100%" cellspacing="0" cellpadding="2">';
         $html .= '<tr>';
-            $html .= '<td class="border text-center" colspan="3"><b>4. EVALUACIÓN</b></td>';
+            $html .= '<td class="border text-center" colspan="3"><b>5. EVALUACIÓN</b></td>';
         $html .= '</tr>';
         
 
@@ -672,7 +710,7 @@ class Pdf extends \yii\db\ActiveRecord {
         return $res;
     }
 
-    private function cinco() {
+    private function seis() {
 
         $contenidos = PlanificacionBloquesUnidadSubtitulo::find()
                 ->where(['plan_unidad_id' => $this->planUnidad->id])
@@ -683,7 +721,7 @@ class Pdf extends \yii\db\ActiveRecord {
 
         $html .= '<table class="tamano10" width="100%" cellspacing="0" cellpadding="3">';
         $html .= '<tr>';
-        $html .= '<td class="border" colspan="4"><b>5. ACCIÓN: ENSEÑANZA Y APRENDIZAJE A TRAVÉS DE LA INDAGACIÓN</b></td>';
+        $html .= '<td class="border" colspan="4"><b>6. ACCIÓN: ENSEÑANZA Y APRENDIZAJE A TRAVÉS DE LA INDAGACIÓN</b></td>';
         $html .= '</tr>';
         $html .= '<tr>';
             $html .= '<td rowspan="2" class="border" align="center"><b> CONTENIDOS </b></td>';
@@ -711,7 +749,7 @@ class Pdf extends \yii\db\ActiveRecord {
         return $html;
     }
 
-    public function seis() 
+    public function siete() 
     {
 
         $categorias = $this->get_categoria($this->planUnidad->id);
@@ -724,7 +762,7 @@ class Pdf extends \yii\db\ActiveRecord {
         $html .= '<table class="tamano10 border" width="100%" cellspacing="0" cellpadding="5">';
             $html .= '<tr>';
                 $html .= '<td class="border" colspan="6"><b style="color: #000">
-                                6.	SERVICIO COMO ACCIÓN: </b>(Los tipos de acción son Servicio Directo, Servicio Indirecto, 
+                                7.	SERVICIO COMO ACCIÓN: </b>(Los tipos de acción son Servicio Directo, Servicio Indirecto, 
                                 Promoción de una causa, Investigación, etc.)</td>';
             $html .= '</tr>';
 
@@ -893,14 +931,14 @@ class Pdf extends \yii\db\ActiveRecord {
         $html .='</ul>';
         return $html;
     }
-    public function siete() 
+    public function ocho() 
     {
         $estudiantesNee = $this->buscar_nee_x_materia();
         $html = '';
 
         $html .= '<table class="tamano10" width="100%" cellspacing="0" cellpadding="10">';
         $html .= '<tr>';
-        $html .= '<td class="border" colspan="2"><b style="color: #000">7. ATENCIÓN A LAS NECESIDADES EDUCATIVAS ESPECIALES: </b>(Detalle  las estrategias de trabajo a realizar para cada caso, las especificadas por el Tutor Psicólogo  y las propias de su asignatura o enseñanza)</td>';
+        $html .= '<td class="border" colspan="2"><b style="color: #000">8. ATENCIÓN A LAS NECESIDADES EDUCATIVAS ESPECIALES: </b>(Detalle  las estrategias de trabajo a realizar para cada caso, las especificadas por el Tutor Psicólogo  y las propias de su asignatura o enseñanza)</td>';
         $html .= '</tr>';
 
         $html .= '<tr>';
@@ -924,12 +962,12 @@ class Pdf extends \yii\db\ActiveRecord {
     }
     //** fin siete */
 
-    public function ocho() {
+    public function nueve() {
         $html = '';
 
         $html .= '<table class="tamano10" width="100%" cellspacing="0" cellpadding="5">';
         $html .= '<tr>';
-        $html .= '<td class="border" colspan="2"><b style="color: #000">8. RECURSOS: </b>
+        $html .= '<td class="border" colspan="2"><b style="color: #000">9. RECURSOS: </b>
         <i>En esta sección especificar claramente cada recurso que se utilizará. Podría mejorarse incluyendo 
         recursos que pudieran utilizarse para llevar a cabo la diferenciación, así como también agregando, por ejemplo, oradores y 
         entornos que pudieran generar mayor profundidad en el trabajo reflexivo sobre el enunciado de la unidad</i>.</td>';
@@ -955,12 +993,12 @@ class Pdf extends \yii\db\ActiveRecord {
         return $html;
     }
 
-    public function nueve() {
+    public function diez() {
         $html = '';
 
         $html .= '<table class="tamano10" width="100%" cellspacing="0" cellpadding="5">';
         $html .= '<tr>';
-        $html .= '<td class="border" colspan="3"><b style="color: #000">9. REFLEXIÓN: </b>
+        $html .= '<td class="border" colspan="3"><b style="color: #000">10. REFLEXIÓN: </b>
         <i>(Consideración de la planificación, el proceso y el impacto de la indagación. En el proceso de reflexión, 
         garantizar dar respuesta a varias de la preguntas planteadas en cada momento.)</i></td>';
         $html .= '</tr>';
@@ -996,12 +1034,12 @@ class Pdf extends \yii\db\ActiveRecord {
         return $html;
     }
 
-    public function diez() {
+    public function once() {
         $html = '';
 
         $html .= '<table class="tamano10" width="100%" cellspacing="0" cellpadding="5">';
         $html .= '<tr>';
-        $html .= '<td class="border colorAyudas" colspan="3"><b style="color: #000">10. FIRMAS DE RESPONSABILIDAD</td>';
+        $html .= '<td class="border colorAyudas" colspan="3"><b style="color: #000">11. FIRMAS DE RESPONSABILIDAD</td>';
         $html .= '</tr>';
 
         $html .= '<tr>';

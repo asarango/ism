@@ -224,8 +224,7 @@ class PlanificacionBloquesUnidadController extends Controller{
     }
 
     public function actionUpdateSubtitle()
-    {
-       
+    {     
         
         $id = $_POST['PlanificacionBloquesUnidadSubtitulo']['id'];
         $subtitulo = $_POST['PlanificacionBloquesUnidadSubtitulo']['subtitulo'];

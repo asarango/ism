@@ -192,10 +192,9 @@ class HelperPudPaiController extends Controller{
      * @return void
      */
         
-    //metodo para la seccion 4.1.-
+    //metodo para la seccion 5.1.-
     public function actionUpdateEvaluacion()
     {
-    
         $id = $_POST['id'];
         $titulo = $_POST['titulo'];
         $contenido = $_POST['contenido'];
@@ -219,10 +218,10 @@ class HelperPudPaiController extends Controller{
         $model->save();       
        
     } 
-    //metodo para la seccion 4.1.-    
+    //metodo para la seccion 5.1.-    
     public function actionMuestraEvaluacion()
     {        
-        $ultima_seccion = '4.1.-';
+        $ultima_seccion = '5.1.-';
         $planUnidadId = $_GET['planificacion_bloque_unidad_id'];
         $tipo = $_GET['tipo'];
         $titulo = '';
@@ -317,14 +316,14 @@ class HelperPudPaiController extends Controller{
     }
       
 
-    //metodo usado en la seccion 4.4.-
+    //metodo usado en la seccion 5.4.-
     public function actionMuestraEnsenara()
     {
-        $ultima_seccion = '4.4.-';
+        $ultima_seccion = '5.4.-';
         $planUnidadId = $_GET['planUnidadId'];
         $ensenara = PudPai::find()->where([
             'planificacion_bloque_unidad_id' => $planUnidadId,
-            'seccion_numero' => 44
+            'seccion_numero' => 54
         ])->all();
 
         $html = '<tr>';
@@ -354,7 +353,7 @@ class HelperPudPaiController extends Controller{
     }
     //metodo usado en la seccion 4.4.-
     public function actionUpdateEnsenara(){
-        $ultima_seccion = '4.4.-';
+        $ultima_seccion = '5.4.-';
         $planUnidadId = $_POST['planUnidadId'];
         $comunicacion = $_POST['comunicacion'];
         $sociales = $_POST['sociales'];
@@ -395,7 +394,7 @@ class HelperPudPaiController extends Controller{
         $planUnidadId = $_GET['plan_unidad_id'];
         $pudPai = PudPai::find()->where([
             'planificacion_bloque_unidad_id' => $planUnidadId,
-            'seccion_numero' => 8
+            'seccion_numero' => 9
         ])->all();
 
         $html = '';
@@ -444,16 +443,16 @@ class HelperPudPaiController extends Controller{
         $otros = $_GET['otros'];        
 
         $obj = PudPai::find()
-        ->where(['planificacion_bloque_unidad_id' => $planUnidadId, 'tipo' => 'bibliografico','seccion_numero'=>'8'])->one(); 
+        ->where(['planificacion_bloque_unidad_id' => $planUnidadId, 'tipo' => 'bibliografico','seccion_numero'=>'9'])->one(); 
         $obj->contenido = $bibliografico;
         $obj->save();     
       
         $obj = PudPai::find()
-        ->where(['planificacion_bloque_unidad_id' => $planUnidadId, 'tipo' => 'tecnologico','seccion_numero'=>'8'])->one();
+        ->where(['planificacion_bloque_unidad_id' => $planUnidadId, 'tipo' => 'tecnologico','seccion_numero'=>'9'])->one();
         $obj->contenido = $tecnologico;
         $obj->save();
 
-        $obj = PudPai::find()->where(['planificacion_bloque_unidad_id' => $planUnidadId, 'tipo' => 'otros','seccion_numero'=>'8'])->one();
+        $obj = PudPai::find()->where(['planificacion_bloque_unidad_id' => $planUnidadId, 'tipo' => 'otros','seccion_numero'=>'9'])->one();
         $obj->contenido = $otros;
         $obj->save();
     }   
@@ -534,7 +533,7 @@ class HelperPudPaiController extends Controller{
 
         $model = new PudPai();
         $model->planificacion_bloque_unidad_id = $planUnidadId;
-        $model->seccion_numero = 9;
+        $model->seccion_numero = 10;
         $model->tipo = $tipo;
         $model->contenido = $opcion->opcion;
         $model->created_at = $fechaHoy;
@@ -551,7 +550,7 @@ class HelperPudPaiController extends Controller{
         $planUnidadId = $_GET['plan_unidad_id'];
         $reflexiones = PudPai::find()->where([
             'planificacion_bloque_unidad_id' => $planUnidadId,
-            'seccion_numero' => 9,
+            'seccion_numero' => 10,
         ])
         ->orderBy('tipo')
         ->all();
@@ -707,7 +706,7 @@ class HelperPudPaiController extends Controller{
                     from planificacion_opciones op 
                     where op.tipo = 'PERFIL' 
                     and op.categoria not in (select contenido from pud_pai 
-                    where seccion_numero = 4
+                    where seccion_numero = 5
                     and planificacion_bloque_unidad_id = $planUnidadId
                     and contenido = op.categoria 
                     and tipo = '$tipo') order by op.id asc";
@@ -727,7 +726,7 @@ class HelperPudPaiController extends Controller{
 
         $model = new PudPai();
         $model->planificacion_bloque_unidad_id = $planUnidadId;
-        $model->seccion_numero = 45;
+        $model->seccion_numero = 55;
         $model->tipo = $tipo;
         $model->contenido = $perfil;
         $model->created_at = $fechaHoy;
@@ -748,14 +747,14 @@ class HelperPudPaiController extends Controller{
         $model->id_pudpai_perfil = $idPerfil;
         $model->save();
     }
-    //metodo usado para 4.5.-
+    //metodo usado para 5.5.-
     public function actionShowPerfilesSeleccionados()
     {
         $planUnidadId = $_GET['plan_unidad_id'];
 
         $reflexiones = PudPai::find()->where([
             'planificacion_bloque_unidad_id' => $planUnidadId,
-            'seccion_numero' => 45,
+            'seccion_numero' => 55,
         ])
         ->orderBy('tipo')
         ->all();
@@ -772,7 +771,7 @@ class HelperPudPaiController extends Controller{
         return $html;
 
     }
-    //metodo usado para 4.5.-
+    //metodo usado para 5.5.-
     private function devuelve_perfiles_seleccionados($reflexiones, $tipo){
 
         if($tipo == 'comunicacion'){
@@ -807,7 +806,7 @@ class HelperPudPaiController extends Controller{
 
         return $html;
     }
-    //metodo usado para 4.5.-
+    //metodo usado para 5.5.-
     private function modal_perfiles_seleccionado($id, $pregunta, $respuesta){
         $html = '<a href="#"  data-bs-toggle="modal" data-bs-target="#reflexionModalR'.$id.'" onclick="show_reflexion_disponibles()"> 
                         <i class="fas fa-reply ocultar"> </i>';
@@ -1015,7 +1014,7 @@ class HelperPudPaiController extends Controller{
         
         $model = new PudPai();
         $model->planificacion_bloque_unidad_id = $planUnidadId;
-        $model->seccion_numero = 6;
+        $model->seccion_numero = 7;
         $model->tipo = $categoria;
         $model->contenido = $opcion;
         $model->created = $userLog;

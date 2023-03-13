@@ -102,13 +102,22 @@ class Datos extends ActiveRecord{
         $con = Yii::$app->db;
         $query = "select 	concat(f.x_first_name,' ', f.last_name) as docente
         from 	scholaris_clase c 
-                 inner join scholaris_periodo p on p.codigo = c.periodo_scholaris 
-                 inner join op_course oc on oc.id = c.idcurso 
+                 --inner join scholaris_periodo p on p.codigo = c.periodo_scholaris 
+                 inner join op_course_paralelo par on par.id = c.paralelo_id 
+                 inner join op_course oc on oc.id = par.course_id 
                 inner join op_faculty f on f.id = c.idprofesor 
-         where 	c.idmateria  = $areaMateriaId
+                inner join ism_area_materia iam on iam.id = c.ism_area_materia_id 
+                inner join ism_malla_area ima on ima.id = iam.malla_area_id 
+                inner join ism_periodo_malla ipm on ipm.id = ima.periodo_malla_id   
+                inner join scholaris_periodo p on p.id = ipm.scholaris_periodo_id  
+         where 	c.ism_area_materia_id  =  $areaMateriaId
                  and p.id = $this->scholarisPeriodoId
                  and oc.x_template_id = $templateId
          group by f.x_first_name, f.last_name;";
+
+        //  echo '<pre>';
+        //  print_r($query);
+        //  die();
 
         $res = $con->createCommand($query)->queryAll();
 

@@ -96,10 +96,11 @@ $this->title = 'Mis actividades de hoy';
 
             
             <div class="table table-responsive">
+                <!-- <table class="table table-striped table-condensed table-hover" id="table-asistencias"> -->
                 <table class="table table-striped table-condensed table-hover" id="table-asistencias">
                     <thead>
                         <tr bgcolor="ff9e18" class="text-center">
-                            <th>CLASE</th>
+                            
                             <th>ASIGNATURA</th>
                             <th>CURSO</th>
                             <th>PARALELO</th>
@@ -108,61 +109,60 @@ $this->title = 'Mis actividades de hoy';
                             <th>HASTA</th>
                             <th>INGRESA</th>
                             <th>ACCIONES</th>
+                            <th>CLASE</th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php
+                        // echo '<pre>';
+                        // print_r($model);
+                        // die();
 
-                        foreach ($model as $data) {
+                        foreach ($model as $data) 
+                        {                            
                             echo '<tr>';
-                            echo '<td class="text-center">' . $data['clase_id'] . '</td>';
-                            echo '<td>' . $data['materia'] . '</td>';
-                            echo '<td>' . $data['curso'] . '</td>';
-                            echo '<td class="text-center">' . $data['paralelo'] . '</td>';
-                            echo '<td>' . $data['hora'] . '</td>';
-                            echo '<td class="text-center">' . $data['desde'] . '</td>';
-                            echo '<td class="text-center">' . $data['hasta'] . '</td>';
-                            echo '<td class="text-center">' . $data['hora_ingresa'] . '</td>';
-
-                            if ($data['hora_ingresa']) {
-                                echo '<td class="text-center">' . Html::a('<i class="fas fa-person-booth"></i> Ingresar', [
-                                    '/comportamiento/index',
-                                    "id" => $data['asistencia_id']
-                                ], ['class' => 'link', 'style' => 'color: #898b8d']) .
-                                    '</td>';
-                            } else {
-                                echo '<td class="text-center">' . Html::a('<i class="fas fa-user-clock btn_registrar"> Registrar</i>', [
-                                    'registrar',
-                                    "clase" => $data['clase_id'],
-                                    'hora' => $data['hora_id']
-                                ], [
-                                    'class' => 'link',
-                                    'style' => 'color: #0a1f8f',
-                                    //'id' => 'btn-registrar'.$data['detalle_id'],
-                                    'onclick' => 'bloque_btn_registrar()'
-                                ]);
-                                echo '<i class="fas fa-spinner fa-spin btn-sppiner" style="display: none"></i>';
+                                
+                                echo '<td>' . $data['materia']. '</td>';
+                                echo '<td>' . $data['curso'] . '</td>';
+                                echo '<td class="text-center">' . $data['paralelo'] . '</td>';
+                                echo '<td>' . $data['hora'] . '</td>';
+                                echo '<td class="text-center">' . $data['desde'] . '</td>';
+                                echo '<td class="text-center">' . $data['hasta'] . '</td>';
+                                echo '<td class="text-center">' . $data['hora_ingresa'] . '</td>';
+                                echo '<td class="text-center">'; 
+                                    if ($data['hora_ingresa']) 
+                                    {
+                                        echo Html::a('<i class="fas fa-person-booth"></i> Ingresar', 
+                                        [
+                                            '/comportamiento/index',
+                                            "id" => $data['asistencia_id']
+                                        ], ['class' => 'link', 'style' => 'color: #898b8d']);
+                                    } 
+                                    else {
+                                        echo Html::a('<i class="fas fa-user-clock btn_registrar"> Registrar</i>', 
+                                                [
+                                                    'registrar',
+                                                    'clase' => $data['clase_id'],
+                                                    'hora' => $data['hora_id']
+                                                ], 
+                                                [
+                                                    'class' => 'link',
+                                                    'style' => 'color: #0a1f8f',
+                                                    //'id' => 'btn-registrar'.$data['detalle_id'],
+                                                    'onclick' => 'bloque_btn_registrar()'
+                                                ]);
+                                        echo '<i class="fas fa-spinner fa-spin btn-sppiner" style="display: none"></i>';
+                                    }
+                                echo '<td class="text-center">' . $data['clase_id'] . '</td>';
                                 echo '</td>';
-                            }
-
-                            echo '</tr>';
+                            echo '</tr>';                            
                         }
+                        
+                        
                         ?>
-                    </tbody>
-                    <!--                    <tfoot>
-                        <tr bgcolor="ff9e18" class="text-center">
-                            <th>CLASE</th>
-                            <th>ASIGNATURA</th>
-                            <th>CURSO</th>
-                            <th>PARALELO</th>
-                            <th>HORA</th>
-                            <th>DESDE</th>
-                            <th>HASTA</th>
-                            <th>INGRESA</th>
-                            <th>ACCIONES</th>
-                        </tr>
-                    </tfoot>-->
+                    </tbody>                   
                 </table>
+               
             </div>
 
             <!--finaliza cuerpo de documento-->
@@ -202,9 +202,9 @@ $this->title = 'Mis actividades de hoy';
 
     });
 
-    //    function alerta() {
-    //        alert('Registrado exitosamente!!!');
-    //    }
+       function alerta() {
+           alert('Registrado exitosamente!!!');
+       }
 
     function bloque_btn_registrar() {
 

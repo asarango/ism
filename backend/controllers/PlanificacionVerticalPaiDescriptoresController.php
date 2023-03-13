@@ -203,6 +203,10 @@ class PlanificacionVerticalPaiDescriptoresController extends Controller{
                 and icl.es_interdisciplinar = '$esInterdisciplinar'
                 and ild.es_interdisciplinar = '$esInterdisciplinar'
         order by ic.nombre, id.nombre;";
+
+        // echo '<pre>';
+        // print_r($query);
+        // die();
        
         $res = $con->createCommand($query)->queryAll();
         return $res;

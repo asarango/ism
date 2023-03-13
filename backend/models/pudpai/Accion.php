@@ -30,7 +30,7 @@ class Accion extends ActiveRecord{
         $this->institutoId = Yii::$app->user->identity->instituto_defecto;
 
         $this->html = '';
-        $this->actualizaCampoUltimaSeccion('5.1.-',$planUnidadId);
+        $this->actualizaCampoUltimaSeccion('6.1.-',$planUnidadId);
 
         $this->get_accion();
     }
@@ -54,7 +54,7 @@ class Accion extends ActiveRecord{
                 $this->html .= '<div class="card" style="width: 90%; margin-top:20px">';
 
                     $this->html .= '<div class="card-header">';
-                        $this->html .= '<h5 class=""><b>5.- ACCIÓN: ENSEÑANZA Y APRENDIZAJE A TRAVÈS DE LA INDAGACIÒN</b></h5>';                        
+                        $this->html .= '<h5 class=""><b>6.- ACCIÓN: ENSEÑANZA Y APRENDIZAJE A TRAVÈS DE LA INDAGACIÒN</b></h5>';                        
                     $this->html .= '</div>';
                         
                     $this->html .= '<div class="card-body">';

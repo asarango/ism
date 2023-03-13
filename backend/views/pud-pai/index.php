@@ -324,7 +324,7 @@ if($modelPudBitacora){$estadoAprobacion = $modelPudBitacora->estado_jefe_coordin
     }  
 
     //*********************    ACTUALIZA CAMPOS EVALUACION 4.1    ************ */       
-    //metodo para 4.1.-
+    //metodo para 5.1.-
     function update_evaluacion_relacion(id,titulo)
     {
         var contenido   = CKEDITOR.instances['editor-sumativa2'+id].getData();        
@@ -346,7 +346,7 @@ if($modelPudBitacora){$estadoAprobacion = $modelPudBitacora->estado_jefe_coordin
             }
         });
     }
-    //metodo para 4.1.-
+    //metodo para 5.1.-
     function update_evaluacion_formativa(id)
     {
         var titulo      = 'no aplica';
@@ -368,7 +368,7 @@ if($modelPudBitacora){$estadoAprobacion = $modelPudBitacora->estado_jefe_coordin
             }
         });
     }
-     //metodo para 4.1.-
+     //metodo para 5.1.-
     function update_evaluacion_sumativa(id)
     {
         var titulo      = 'no aplica';
@@ -394,7 +394,7 @@ if($modelPudBitacora){$estadoAprobacion = $modelPudBitacora->estado_jefe_coordin
 
 
     //*********************    MUESTRA CAMPOS EVALUACION 4.1    ************ */
-    //metodo para 4.1.-
+    //metodo para 5.1.-
     function muestra_evaluacion_relacion()
     {
         var planUnidadId = '<?= $planUnidad->id ?>';
@@ -414,7 +414,7 @@ if($modelPudBitacora){$estadoAprobacion = $modelPudBitacora->estado_jefe_coordin
             }
         });
     }
-    //metodo para 4.1.-
+    //metodo para 5.1.-
     function muestra_evaluacion_sumativa()
     {
         var planUnidadId = '<?= $planUnidad->id ?>';
@@ -433,7 +433,7 @@ if($modelPudBitacora){$estadoAprobacion = $modelPudBitacora->estado_jefe_coordin
             }
         });
     }
-    //metodo para 4.1.-
+    //metodo para 5.1.-
     function muestra_evaluacion_formativa()
     {
         var planUnidadId = '<?= $planUnidad->id ?>';
@@ -592,7 +592,7 @@ if($modelPudBitacora){$estadoAprobacion = $modelPudBitacora->estado_jefe_coordin
         });
 
     }
-    ///7.1.-
+    ///8.1.-
     function show_recursos(){
         var planUnidadId = '<?= $planUnidad->id ?>';
         var url = '<?= Url::to(['helper-pud-pai/muestra-recursos']) ?>';
@@ -610,7 +610,7 @@ if($modelPudBitacora){$estadoAprobacion = $modelPudBitacora->estado_jefe_coordin
             }
         });
     }
-     /// tambien del 7.1.-
+     /// tambien del 8.1.-
     function update_recurso()
     {
         var planUnidadId = '<?= $planUnidad->id ?>';
@@ -645,7 +645,7 @@ if($modelPudBitacora){$estadoAprobacion = $modelPudBitacora->estado_jefe_coordin
     }
 
 
-    ////para reflexion: 8.1.-
+    ////para reflexion: 9.1.-
     function show_reflexion_seleccionados(){
         var planUnidadId = '<?= $planUnidad->id ?>';
         var url = '<?= Url::to(['helper-pud-pai/show-reflexion-seleccionados']) ?>';
@@ -665,7 +665,7 @@ if($modelPudBitacora){$estadoAprobacion = $modelPudBitacora->estado_jefe_coordin
         });
     }
 
-    //para reflexion: 8.1.-
+    //para reflexion: 9.1.-
     function show_reflexion_disponibles()
     {
         var planUnidadId = '<?= $planUnidad->id ?>';
@@ -686,7 +686,7 @@ if($modelPudBitacora){$estadoAprobacion = $modelPudBitacora->estado_jefe_coordin
         });
     }
 
-    ////para reflexion: 8.1.-
+    ////para reflexion: 9.1.-
     function inster_reflexion(id, categoria){
         var planUnidadId = '<?= $planUnidad->id ?>';
         var url = '<?= Url::to(['helper-pud-pai/insert-reflexion']) ?>';
@@ -709,7 +709,7 @@ if($modelPudBitacora){$estadoAprobacion = $modelPudBitacora->estado_jefe_coordin
             }
         });
     }
-     ////para reflexion: 8.1.-
+     ////para reflexion: 9.1.-
     function update_reflexion(id){
         var respuesta = $('#textarea-respuesta-'+id).val();
         var url = '<?= Url::to(['helper-pud-pai/update-reflexion']) ?>';
@@ -730,7 +730,7 @@ if($modelPudBitacora){$estadoAprobacion = $modelPudBitacora->estado_jefe_coordin
 
         });
     }
-    ////para reflexion: 8.1.-
+    ////para reflexion: 9.1.-
     function eliminar_reflexion(id){
         var url = '<?= Url::to(['helper-pud-pai/delete-reflexion']) ?>';
         params = {
@@ -794,7 +794,7 @@ if($modelPudBitacora){$estadoAprobacion = $modelPudBitacora->estado_jefe_coordin
             });
 
         }
-        // metodo 4.5.-
+        // metodo 5.5.-
         function show_perfiles_seleccionados(){
             var planUnidadId = '<?= $planUnidad->id ?>';
             var url = '<?= Url::to(['helper-pud-pai/show-perfiles-seleccionados']) ?>';
@@ -835,7 +835,7 @@ if($modelPudBitacora){$estadoAprobacion = $modelPudBitacora->estado_jefe_coordin
     //// FIN PARA PERFILES BI
 
     ////INICIO PARA SERVICIOS DE ACCION
-    //6.1.-
+    //7.1.-
     function show_servicios_accion_seleccionadas(){
         var planUnidadId = '<?= $planUnidad->id ?>';
             var url = '<?= Url::to(['helper-pud-pai/show-servicio-accion-seleccionadas']) ?>';
@@ -854,7 +854,7 @@ if($modelPudBitacora){$estadoAprobacion = $modelPudBitacora->estado_jefe_coordin
                 }
             });
     }
-    //6.1.-
+    //7.1.-
     function show_servicios_accion_disponibles(){
             var planUnidadId = '<?= $planUnidad->id ?>';
             var url = '<?= Url::to(['helper-pud-pai/show-servicio-accion-disponibles']) ?>';
@@ -894,7 +894,7 @@ if($modelPudBitacora){$estadoAprobacion = $modelPudBitacora->estado_jefe_coordin
                     }
         });
     }
-    //6.1.-
+    //7.1.-
     function inserta_situacion(planUnidadId, categoria, opcion){
         var url = '<?= Url::to(['helper-pud-pai/inserta-situacion']) ?>';
         
@@ -915,7 +915,7 @@ if($modelPudBitacora){$estadoAprobacion = $modelPudBitacora->estado_jefe_coordin
                     }
         });
     }
-    //6.1.-
+    //7.1.-
     function elimina_situacion(id){
         var url = '<?= Url::to(['helper-pud-pai/elimina-situacion']) ?>';
         

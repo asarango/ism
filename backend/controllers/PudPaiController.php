@@ -19,7 +19,10 @@ use backend\models\pudpai\PerfilesBi;
 use backend\models\pudpai\Preguntas;
 use backend\models\pudpai\Recursos;
 use backend\models\pudpai\Reflexion;
+use backend\models\pudpai\ObjetivosDesarrollo;
 use backend\models\pudpai\ServicioAccion;
+use backend\models\ContenidoPaiOpciones;
+use backend\models\IsmContenidoPaiPlanificacion;
 use Yii;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -102,15 +105,15 @@ class PudPaiController extends Controller{
         }elseif($pestana == '2.3.-'){
             $preguntas = new Preguntas($planUnidadId);
             return $preguntas->html;
-        }elseif($pestana == '4.1.-'){
+        }elseif($pestana == '5.1.-'){
             $evaluacion = new Evaluacion($planUnidadId);
             $this->ingresa_evaluacion($planUnidadId);
             return $evaluacion->html;
         }
-//        elseif($pestana == '3.1.-'){
-//            $habilidades = new Habilidades($planUnidadId);
-//            return $habilidades->html;
-//        }
+       elseif($pestana == '3.1.-'){
+           $habilidades = new Habilidades($planUnidadId);
+           return $habilidades->html;
+       }
         // elseif($pestana == '3.1.-'){
         //     $grupos = new GrupoHabilidades($planUnidadId);
         //     return $grupos->html;
@@ -127,20 +130,23 @@ class PudPaiController extends Controller{
         //     $perfiles = new PerfilesBi($planUnidadId);
         //     return $perfiles->html;
         // }
-        elseif($pestana == '5.1.-'){
+        elseif($pestana == '6.1.-'){
             $accion = new Accion($planUnidadId);
             return $accion->html; 
-        }elseif($pestana == '6.1.-'){
+        }elseif($pestana == '7.1.-'){
             $servicio = new ServicioAccion($planUnidadId);
             return $servicio->html; 
-        }elseif($pestana == '7.1.-'){
+        }elseif($pestana == '8.1.-'){
             $accion = new Necesidades($planUnidadId);
             return $accion->html; 
-        }elseif($pestana == '8.1.-'){
+        }elseif($pestana == '9.1.-'){
             $recursos = new Recursos($planUnidadId);
             return $recursos->html; 
-        }elseif($pestana == '9.1.-'){
+        }elseif($pestana == '10.1.-'){
             $reflexion = new Reflexion($planUnidadId);
+            return $reflexion->html;
+        }elseif($pestana == '4.1.-'){
+            $reflexion = new ObjetivosDesarrollo($planUnidadId);
             return $reflexion->html;
         }
     }
@@ -183,6 +189,85 @@ class PudPaiController extends Controller{
         $pdf = new Pdf($planUnidadId);
         
     }
+    //10.1
+    public function actionGuardarCompetencias()
+    {
+        $planUnidadId = $_POST['planUnidadId'];
+        $id_pregunta = $_POST['id_pregunta'];             
+     
+        $this->guardar_competencias($id_pregunta, $planUnidadId);
+        $html = $this->mostrar_competencias_disponibles($planUnidadId);
+
+        return $html;
+    }
+    private function guardar_competencias($idPregunta, $planUnidadId)
+    {
+       $modelContenido = ContenidoPaiOpciones::find()
+        ->where(['id'=>$idPregunta])
+        ->one(); 
+
+        $modelIsmContenidoPaiPlan = new IsmContenidoPaiPlanificacion();
+
+        $modelIsmContenidoPaiPlan->planificacion_bloque_unidad_id = $planUnidadId;
+        $modelIsmContenidoPaiPlan->id_contenido_pai = $modelContenido->id;
+        $modelIsmContenidoPaiPlan->tipo = $modelContenido->tipo;
+        $modelIsmContenidoPaiPlan->contenido = $modelContenido->contenido_es;
+        $modelIsmContenidoPaiPlan->mostrar = true;
+        $modelIsmContenidoPaiPlan->save();  
+     
+    }
+    private function mostrar_competencias_disponibles($planUnidadId)
+    {         
+        $con = Yii::$app->db;     
+        $query = "select id,tipo,contenido_es,contenido_en,contenido_fr,estado from contenido_pai_opciones c
+                    where id not in (
+                        select id_contenido_pai from ism_contenido_pai_planificacion i
+                        where planificacion_bloque_unidad_id =$planUnidadId and tipo ='competencia_pai_inter'
+                    ) and tipo = 'competencia_pai_inter' ;";  
+        
+        $arraylPlanOpciones = $con->createCommand($query)->queryAll();              
+        
+
+        $html = "";
+        $html .= '<table>';
+        foreach ($arraylPlanOpciones as $array) {
+            $html .= '<tr>
+                <td style="font-size:15px"><a href="#" onclick="guardar_competencias(' . $array['id'] . ',\'' . strtoupper('') . '\');">' . $array['contenido_es'] . '</a>
+                </td>
+            </tr>';
+
+        }
+        $html .= '</table>';
+        return $html;
+    }
+       //4
+       public function actionEliminarCompetencias()
+       {
+           $id_pregunta = $_POST['id_pregunta'];  
+           $planUnidadId = $_POST['planUnidadId'];    
+         
+           $model = IsmContenidoPaiPlanificacion::findOne($id_pregunta);
+           $model->delete();
+  
+           $html = $this->mostrar_competencias_disponibles($planUnidadId, 'COMPETENCIA');
+  
+           return $html;
+       }
+       //4
+       public function actionActualizarCompetencia()
+      {
+           $id_competencia = $_POST['id_competencia'];
+          $competencia_actividad = $_POST['competencia_actividad'];
+          $competencia_objetivo = $_POST['competencia_objetivo'];
+          $competencia_relacion_ods = $_POST['competencia_relacion_ods'];       
+  
+  
+          $model = IsmContenidoPaiPlanificacion::findOne($id_competencia);
+          $model->actividad = $competencia_actividad;
+          $model->objetivo = $competencia_objetivo;
+          $model->relacion_ods = $competencia_relacion_ods;
+          $model->save();
+      }
     
 
 }

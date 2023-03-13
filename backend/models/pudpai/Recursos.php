@@ -33,8 +33,8 @@ class Recursos extends ActiveRecord{
         $this->institutoId = Yii::$app->user->identity->instituto_defecto;
 
         $this->html = '';
-        $this->seccion_numero = 8;
-        $this->actualizaCampoUltimaSeccion('8.1.-',$planUnidadId);
+        $this->seccion_numero = 9;
+        $this->actualizaCampoUltimaSeccion('9.1.-',$planUnidadId);
 
         $this->ingresa_recursos();
         $this->consulta_recursos();
@@ -100,7 +100,7 @@ class Recursos extends ActiveRecord{
                 $this->html .= '<div class="card" style="width: 90%; margin-top:20px">';
                 
                     $this->html .= '<div class="card-header">';                    
-                        $this->html .= '<h5 class=""><b>8.1.- RECURSOS: </b></h5>';                        
+                        $this->html .= '<h5 class=""><b>9.1.- RECURSOS: </b></h5>';                        
                         $this->html .= '<small style="color: #65b2e8">En esta sección especificar claramente cada recurso que se utilizará. Podría mejorarse incluyendo recursos que pudieran utilizarse para llevar a cabo la diferenciación, así como también agregando, por ejemplo, oradores y entornos que pudieran generar mayor profundidad en el trabajo reflexivo sobre el enunciado de la unidad.</small>';
                     $this->html .= '</div>';
                         

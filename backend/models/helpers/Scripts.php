@@ -76,7 +76,7 @@ where hor.clase_id in
                 and c.es_activo = true
                 ) 
         and dia.numero = date_part('dow',current_date) 
-order by hora.numero asc;";
+order by to_timestamp(hora.desde, 'HH24:MI:SS')  asc;";
 
         // echo '<pre>';
         // echo $query;
@@ -314,7 +314,7 @@ where hor.clase_id in
                 ->one();
         $minimoCaracteres = $modelOpciones->categoria;
 
-        $query = "select (( 3 /* se agraga 3 porque es el numero de item que el usuario no tiene que llenar*/ +
+        $query = "select (( 4 /* se agraga 3 porque es el numero de item que el usuario no tiene que llenar*/ +
         /*2.3.-*/(
         select case when (  
         (select case when count(*)>0 then 1 else 0 end from pud_pai pp where planificacion_bloque_unidad_id  = $planBloqueUniId and seccion_numero  = '2'
@@ -336,45 +336,47 @@ where hor.clase_id in
                                             and (actividad is null or id_pudpai_perfil is null)
                 )) = 2 then 1 else 0 end
         ) +
-        /*6.1.-*/
-        (select case when count(*)>0 then 1 else 0 end from pud_pai pp where planificacion_bloque_unidad_id  = $planBloqueUniId and seccion_numero  = '6')+
-        /*8.1.-*/
+        /*7.1.-*/
+        (select case when count(*)>0 then 1 else 0 end from pud_pai pp where planificacion_bloque_unidad_id  = $planBloqueUniId and seccion_numero  = '7')+
+        /*9.1.-*/
         (
             select case when ( 
                 (select case when length(contenido)>($minimoCaracteres) then 1 else 0 end from pud_pai pp 
-                where planificacion_bloque_unidad_id  = $planBloqueUniId and seccion_numero = '8' and tipo = 'tecnologico')+
+                where planificacion_bloque_unidad_id  = $planBloqueUniId and seccion_numero = '9' and tipo = 'tecnologico')+
                 (select case when length(contenido)>($minimoCaracteres) then 1 else 0 end from pud_pai pp 
-                where planificacion_bloque_unidad_id  = $planBloqueUniId and seccion_numero = '8' and tipo = 'otros')+
+                where planificacion_bloque_unidad_id  = $planBloqueUniId and seccion_numero = '9' and tipo = 'otros')+
                 (select case when length(contenido)>($minimoCaracteres) then 1 else 0 end from pud_pai pp 
-                where planificacion_bloque_unidad_id  = $planBloqueUniId and seccion_numero = '8' and tipo = 'bibliografico')
+                where planificacion_bloque_unidad_id  = $planBloqueUniId and seccion_numero = '9' and tipo = 'bibliografico')
             )>0 then 1 else 0 end
 
         )+
-        /*9.1.-*/
-        (select case when count(*)>0 then 1 else 0 end from pud_pai pp where planificacion_bloque_unidad_id  = $planBloqueUniId and seccion_numero  ='9' 
+        /*10.1.-*/
+        (select case when count(*)>0 then 1 else 0 end from pud_pai pp where planificacion_bloque_unidad_id  = $planBloqueUniId and seccion_numero  ='10' 
         and tipo='antes' ) +
-        /*4.1.-*/
+        /*5.1.-*/
         (
             select ( case when (
                 (select 
                 case when (length(contenido)>($minimoCaracteres))
                 then 1 else 0 end
                 from pud_pai pp 
-                where planificacion_bloque_unidad_id  = $planBloqueUniId and seccion_numero  ='4' and tipo = 'relacion-suma-eval') 
+                where planificacion_bloque_unidad_id  = $planBloqueUniId and seccion_numero  ='5' and tipo = 'relacion-suma-eval') 
                 +
                 (select 
                 case when (length(contenido)>($minimoCaracteres))
                 then 1 else 0 end
                 from pud_pai pp 
-                where planificacion_bloque_unidad_id  = $planBloqueUniId and seccion_numero  ='4' and tipo = 'eval_sumativa')
+                where planificacion_bloque_unidad_id  = $planBloqueUniId and seccion_numero  ='5' and tipo = 'eval_sumativa')
                 +
                 (select 
                 case when (length(contenido)>($minimoCaracteres))
                 then 1 else 0 end
                 from pud_pai pp 
-                where planificacion_bloque_unidad_id  = $planBloqueUniId and seccion_numero  ='4' and tipo = 'eval_formativa')
+                where planificacion_bloque_unidad_id  = $planBloqueUniId and seccion_numero  ='5' and tipo = 'eval_formativa')
                 ) = 3 then 1 else 0 end  )
-        ) 
+        )+
+        /*4.1*/
+        (select case when count(*)>0 then 1 else 0 end from ism_contenido_pai_planificacion where planificacion_bloque_unidad_id = $planBloqueUniId) 
         )*100/(select cast(categoria as integer) from planificacion_opciones po where tipo = 'PUD_CONTEO_PORCENTAJE' and seccion='PAI')) 
         AS porcentaje;";
 
@@ -418,41 +420,45 @@ where hor.clase_id in
                     )) = 2 then 1 else 0 end";
                 break;
             case '4.1.-':
+                    $query = "select case when count(*)>0 then 1 else 0 end from ism_contenido_pai_planificacion where planificacion_bloque_unidad_id = $planBloqueUniId 
+                    and length(actividad)>0 and length(objetivo)>0 and length(relacion_ods)>0";
+                break;
+            case '5.1.-':
                 $query = "select ( case when (
                     (select 
                     case when (length(contenido)>($minimoCaracteres))
                     then 1 else 0 end
                     from pud_pai pp 
-                    where planificacion_bloque_unidad_id  = $planBloqueUniId and seccion_numero  ='4' and tipo = 'relacion-suma-eval') 
+                    where planificacion_bloque_unidad_id  = $planBloqueUniId and seccion_numero  ='5' and tipo = 'relacion-suma-eval') 
                     +
                     (select 
                     case when (length(contenido)>($minimoCaracteres))
                     then 1 else 0 end
                     from pud_pai pp 
-                    where planificacion_bloque_unidad_id  = $planBloqueUniId and seccion_numero  ='4' and tipo = 'eval_sumativa')
+                    where planificacion_bloque_unidad_id  = $planBloqueUniId and seccion_numero  ='5' and tipo = 'eval_sumativa')
                     +
                     (select 
                     case when (length(contenido)>($minimoCaracteres))
                     then 1 else 0 end
                     from pud_pai pp 
-                    where planificacion_bloque_unidad_id  = $planBloqueUniId and seccion_numero  ='4' and tipo = 'eval_formativa')
+                    where planificacion_bloque_unidad_id  = $planBloqueUniId and seccion_numero  ='5' and tipo = 'eval_formativa')
                     ) = 3 then 1 else 0 end  )";
                 break;
-            case '6.1.-':
-                $query = "select case when count(*)>0 then 1 else 0 end from pud_pai pp where planificacion_bloque_unidad_id  = $planBloqueUniId and seccion_numero  = '6'";
-                break;
-            case '8.1.-':
-                $query = "select case when (
-                        (select case when (length(contenido)>($minimoCaracteres))
-                        then 1 else 0 end from pud_pai where planificacion_bloque_unidad_id =$planBloqueUniId and seccion_numero  ='8' and tipo='bibliografico')+
-                        (select case when (length(contenido)>($minimoCaracteres))
-                        then 1 else 0 end from pud_pai where planificacion_bloque_unidad_id =$planBloqueUniId and seccion_numero  ='8' and tipo='tecnologico')+
-                        (select case when (length(contenido)>($minimoCaracteres))
-                        then 1 else 0 end from pud_pai where planificacion_bloque_unidad_id =$planBloqueUniId and seccion_numero  ='8' and tipo='otros')
-                        )>0 then 1 else 0 end as siete;";
+            case '7.1.-':
+                $query = "select case when count(*)>0 then 1 else 0 end from pud_pai pp where planificacion_bloque_unidad_id  = $planBloqueUniId and seccion_numero  = '7'";
                 break;
             case '9.1.-':
-                $query = "select case when count(*)>0 then 1 else 0 end from pud_pai pp where planificacion_bloque_unidad_id  = $planBloqueUniId and seccion_numero  ='9' and tipo='antes'";
+                $query = "select case when (
+                        (select case when (length(contenido)>($minimoCaracteres))
+                        then 1 else 0 end from pud_pai where planificacion_bloque_unidad_id =$planBloqueUniId and seccion_numero  ='9' and tipo='bibliografico')+
+                        (select case when (length(contenido)>($minimoCaracteres))
+                        then 1 else 0 end from pud_pai where planificacion_bloque_unidad_id =$planBloqueUniId and seccion_numero  ='9' and tipo='tecnologico')+
+                        (select case when (length(contenido)>($minimoCaracteres))
+                        then 1 else 0 end from pud_pai where planificacion_bloque_unidad_id =$planBloqueUniId and seccion_numero  ='9' and tipo='otros')
+                        )>0 then 1 else 0 end as siete;";
+                break;
+            case '10.1.-':
+                $query = "select case when count(*)>0 then 1 else 0 end from pud_pai pp where planificacion_bloque_unidad_id  = $planBloqueUniId and seccion_numero  ='10' and tipo='antes'";
                 break;
             case 'todos':
                 $query = "select /*2.3.-*/(
@@ -464,20 +470,20 @@ where hor.clase_id in
                         (select case when count(*)>0 then 1 else 0 end  from pud_pai pp where planificacion_bloque_unidad_id  = $planBloqueUniId and seccion_numero  = '2'
                         and tipo = 'debatibles') 
                         ) = 3 then 1 else 0 end ) as dos,
-                        /*6.1.-*/
-                        (select case when count(*)>0 then 1 else 0 end from pud_pai pp where planificacion_bloque_unidad_id  = $planBloqueUniId and seccion_numero  = '6') as seis,
-                        /*8.1.-*/
+                        /*7.1.-*/
+                        (select case when count(*)>0 then 1 else 0 end from pud_pai pp where planificacion_bloque_unidad_id  = $planBloqueUniId and seccion_numero  = '7') as siete,
+                        /*9.1.-*/
                         (select case when (
                             (select case when (length(contenido)>($minimoCaracteres))
-                            then 1 else 0 end from pud_pai where planificacion_bloque_unidad_id =$planBloqueUniId and seccion_numero  ='8' and tipo='bibliografico')+
+                            then 1 else 0 end from pud_pai where planificacion_bloque_unidad_id =$planBloqueUniId and seccion_numero  ='9' and tipo='bibliografico')+
                             (select case when (length(contenido)>($minimoCaracteres))
-                            then 1 else 0 end from pud_pai where planificacion_bloque_unidad_id =$planBloqueUniId and seccion_numero  ='8' and tipo='tecnologico')+
+                            then 1 else 0 end from pud_pai where planificacion_bloque_unidad_id =$planBloqueUniId and seccion_numero  ='9' and tipo='tecnologico')+
                             (select case when (length(contenido)>($minimoCaracteres))
-                            then 1 else 0 end from pud_pai where planificacion_bloque_unidad_id =$planBloqueUniId and seccion_numero  ='8' and tipo='otros')
-                            )>0 then 1 else 0 end )as ocho,
-                        /*9.1.-*/
-                        (select case when count(*)>0 then 1 else 0 end from pud_pai pp where planificacion_bloque_unidad_id  = $planBloqueUniId and seccion_numero  ='9' 
-                        and tipo='antes' ) as nueve,
+                            then 1 else 0 end from pud_pai where planificacion_bloque_unidad_id =$planBloqueUniId and seccion_numero  ='9' and tipo='otros')
+                            )>0 then 1 else 0 end )as nueve,
+                        /*10.1.-*/
+                        (select case when count(*)>0 then 1 else 0 end from pud_pai pp where planificacion_bloque_unidad_id  = $planBloqueUniId and seccion_numero  ='10' 
+                        and tipo='antes' ) as diez,
                         /*3.1.-*/
                         (
                             select case when ((
@@ -490,33 +496,37 @@ where hor.clase_id in
                                                             and (actividad is null or id_pudpai_perfil is null)
                                 )) = 2 then 1 else 0 end
                         ) as tres,
-                        /*4.1.-*/
+                        /*5.1.-*/
                         (
                             select ( case when (
                                 (select 
                                 case when (length(contenido)>($minimoCaracteres))
                                 then 1 else 0 end
                                 from pud_pai pp 
-                                where planificacion_bloque_unidad_id  = $planBloqueUniId and seccion_numero  ='4' and tipo = 'relacion-suma-eval') 
+                                where planificacion_bloque_unidad_id  = $planBloqueUniId and seccion_numero  ='5' and tipo = 'relacion-suma-eval') 
                                 +
                                 (select 
                                 case when (length(contenido)>($minimoCaracteres))
                                 then 1 else 0 end
                                 from pud_pai pp 
-                                where planificacion_bloque_unidad_id  = $planBloqueUniId and seccion_numero  ='4' and tipo = 'eval_sumativa')
+                                where planificacion_bloque_unidad_id  = $planBloqueUniId and seccion_numero  ='5' and tipo = 'eval_sumativa')
                                 +
                                 (select 
                                 case when (length(contenido)>($minimoCaracteres))
                                 then 1 else 0 end
                                 from pud_pai pp 
-                                where planificacion_bloque_unidad_id  = $planBloqueUniId and seccion_numero  ='4' and tipo = 'eval_formativa')
+                                where planificacion_bloque_unidad_id  = $planBloqueUniId and seccion_numero  ='5' and tipo = 'eval_formativa')
                                 ) = 3 then 1 else 0 end  )
-                        ) as cuatro;";
+                        ) as cinco,
+                        /*4.1*/
+                        (select case when count(*)>0 then 1 else 0 end from ism_contenido_pai_planificacion where planificacion_bloque_unidad_id = $planBloqueUniId
+                        and length(actividad)>0 and length(objetivo)>0 and length(relacion_ods)>0) as cuatro;";
                 break;
+
         }
 
-//        echo $query;
-//                die();
+    //    echo $query;
+    //            die();
         $resultado = $con->createCommand($query)->queryOne();
         return $resultado;
     }

@@ -1,8 +1,10 @@
 <?php
 
+use backend\models\PlanificacionOpciones;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\ActiveForm;
+use yii\helpers\ArrayHelper;
 
 /* @var $this yii\web\View */
 /* @var $searchModel backend\models\PlanificacionDesagregacionCabeceraSearch */
@@ -23,7 +25,12 @@ $condicion = $condicionClass->aprobacion_planificacion($estado,$isOpen,$planUnid
 //echo $condicion;
 //die();
 
-$arrayTrazabilidad = array("E.P"=>"E.P","P.P.C"=>"P.P.C","D.I.M.E"=>"D.I.M.E");
+$modelTrazabilidad = PlanificacionOpciones::find()
+                    ->where(['tipo'=>'TRAZABILIDAD_PAI'])
+                    ->andWhere(['seccion'=>'PAI'])
+                    ->all();
+$arrayTrazabilidad = ArrayHelper::map($modelTrazabilidad,'opcion','opcion');
+
 $arrayVerificacion = array("SI"=>"SI","NO"=>"NO","REPLANIFICADO"=>"REPLANIFICADO");
 
 

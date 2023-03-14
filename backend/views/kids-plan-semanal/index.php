@@ -45,7 +45,7 @@ $this->title = 'Plan Semanal';
                         </p>
                     </div>
                     <div class="col-md-12 col-sm-12">
-                            <h5 style="color:white">Kids Plan Semanal</h5>
+                            <h5 style="color:white">Prebásica Plan Semanal</h5>
                     </div>
                     <hr>
                     <div class="col-md-12 col-sm-12">
@@ -112,7 +112,7 @@ $(function(){
 function cambia_select(){
     var text = $('select[id="select-exp"] option:selected').text();
     var idExp = $('select[id="select-exp"] option:selected').val();
-    // alert(idExp);
+    //alert(idExp);
     $("#title-exp").html('Estás trabajando con : "'+text+'"');
     // $("#div-exp").show();
     semanas(idExp);
@@ -120,10 +120,13 @@ function cambia_select(){
 
 function semanas(idExp){
     var cursoId = '<?= $pca->opCourse->id ?>';
-    // alert(cursoId);
+    var pcaId = '<?= $pca->id ?>';
+    //alert(pcaId);
+    // alert(idExp);
     var url = "<?=Url::to(['ajax-semanas']) ?>";
     var params = {
         op_course_id : cursoId,
+        pca_id : pcaId,
         experiencia_id: idExp
     }
 

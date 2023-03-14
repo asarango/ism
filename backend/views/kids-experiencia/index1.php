@@ -120,7 +120,7 @@ if (!isset($pestana)) {
                         <b>Fecha: </b>28/09/021<br>
                     </div>
                     <div class="col-lg-1 col-md-1">
-                        <img src="imagenes/iso/iso.png" class="img-thumbnail">
+                        <img src="../imagenes/iso/iso.png" class="img-thumbnail">
                     </div>
                 </div>                                
                 <!-- Fin de encabezado -->

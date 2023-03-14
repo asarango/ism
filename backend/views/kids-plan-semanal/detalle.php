@@ -115,7 +115,7 @@ $termina = $kidsPlanSemanal->kidsUnidadMicro->fecha_termina;
                    </div>
                    
                    <div class="col-md-1 col-sm-1">
-                       <img src="imagenes/iso/iso.png" class="img-thumbnail">
+                       <img src="../imagenes/iso/iso.png" class="img-thumbnail">
                    </div>
                </div>
 

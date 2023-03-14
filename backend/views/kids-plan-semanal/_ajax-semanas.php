@@ -20,10 +20,10 @@ use yii\helpers\Html;
                         
     <?php 
         foreach($planSemanal as $i => $plan){
-        ?>
+            ?>
             <tr>
-                <td style="width:40px;text-align:center">        
-                <?php
+                <td>
+                    <?php
                     $semanaId = $plan['id'];
                     if($experienciaId == 0 && $plan['kids_unidad_micro_id'] != 0){
                         echo Html::a(
@@ -49,13 +49,12 @@ use yii\helpers\Html;
                               </a>';
                     }
                 ?>
-                        
                 </td>
-                <td><?=$plan['nombre_semana']?></td>
-                <td><?=$plan['estado']?></td>
-                <td><?=$plan['experiencia']?></td>
-            </tr>   
-    <?php
+                <td><?= $plan['nombre_semana'] ?></td>
+                <td><?= $plan['estado'] ?></td>
+                <td><?= $plan['experiencia'] ?></td>
+            </tr>
+            <?php
         }
     ?>
         </tbody>

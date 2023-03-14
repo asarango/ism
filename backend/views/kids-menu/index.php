@@ -40,7 +40,7 @@ $this->title = 'Menu Kids';
                     <div class="zoom" style="text-align:center; margin:15px">
                         <?=
                         Html::a(
-                                '<img src="ISM/main/images/kids/planificador.png" width="20%" title="Planificaciones">  
+                                '<img src="../ISM/main/images/kids/planificador.png" width="20%" title="Planificaciones">  
                                     <br>Planificaciones',
                                 [
                                     'kids-menu/index1'
@@ -57,7 +57,7 @@ $this->title = 'Menu Kids';
                     <div class="zoom" style="text-align:center; margin:15px">
                         <?=
                         Html::a(
-                                '<img src="ISM/main/images/kids/satisfaccion.png" width="20%" title="Planificaciones">  
+                                '<img src="../ISM/main/images/kids/satisfaccion.png" width="20%" title="Planificaciones">  
                                     <br>Calificaciones',
                                 [
                                     'kids-calificaciones/index1'
@@ -74,7 +74,7 @@ $this->title = 'Menu Kids';
                 <div class="zoom" style="text-align:center; margin:15px">
                         <?=
                         Html::a(
-                                '<img src="ISM/main/images/kids/calificar.png" width="20%" title="Reporte">  
+                                '<img src="../ISM/main/images/kids/calificar.png" width="20%" title="Reporte">  
                                     <br>Reportes',
                                 [
                                     'kids-reportes/index1'

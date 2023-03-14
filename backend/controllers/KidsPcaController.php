@@ -37,7 +37,8 @@ class KidsPcaController extends Controller
      * @return mixed
      */
     public function actionIndex1()
-    {
+    {        
+
         $userLog = Yii::$app->user->identity->usuario;
         $today = date('Y-m-d H:i:s');        
         
@@ -48,14 +49,23 @@ class KidsPcaController extends Controller
         
         $modelMicro = new KidsUnidadMicro();
 
-        if ($modelPca->load(Yii::$app->request->post())) {            
+        if ($modelPca->load(Yii::$app->request->post())) {                     
             $modelPca->save();
             return $this->redirect(['index1', 'pca_id' => $pcaId]);
         }
 
-        if ($modelMicro->load(Yii::$app->request->post())) {            
-            $modelMicro->save();
-            return $this->redirect(['index1', 'pca_id' => $pcaId]);
+        if ($modelMicro->load(Yii::$app->request->post())) {      
+               
+               echo '<pre>';
+            print_r($modelMicro->id);   
+            try {
+                $modelMicro->save();    
+            } catch (Exception $e) {
+                echo $e.getMessage();
+            }
+            
+            die();
+            //return $this->redirect(['index1', 'pca_id' => $pcaId]);
         }
 
 
@@ -160,5 +170,23 @@ class KidsPcaController extends Controller
         $id = $_GET['id'];
         $pdf = new \backend\models\kids\PcaPdf($id);
         
+    }
+
+
+    public function actionUpdateMicro(){
+
+        $model = KidsUnidadMicro::findOne($_POST['micro_id']);
+
+        $model->fecha_inicia    = $_POST['fecha_inicia'];
+        $model->fecha_termina   = $_POST['fecha_termina'];
+        $model->orden           = $_POST['orden'];
+        $model->experiencia     = $_POST['experiencia'];
+        $model->observaciones   = $_POST['observaciones'];
+        $model->estado          = $_POST['estado'];
+        $model->updated         = $_POST['updated'];
+        $model->updated_at      = $_POST['updated_at'];
+        $model->save();
+
+        return $this->redirect(['index1', 'pca_id' => $_POST['pca_id']]);
     }
 }

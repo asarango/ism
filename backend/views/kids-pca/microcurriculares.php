@@ -57,45 +57,74 @@ $orden = $numMicro + 1;
                                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                 </div>
                                                 <div class="modal-body">
-                                                    <?php $form = ActiveForm::begin(['id' => 'updateMicro', 'options' => ['method' => 'post']]); ?>
-                                                <!-- <ph $form = ActiveForm::begin(['id' => 'builder/saveform','options' => ['method' => 'post']]) ?> -->
 
-                                                    <?= $form->field($micro, 'pca_id')->hiddenInput(['value' => $pcaId])->label(false) ?>
 
-                                                    <div class="row">
-                                                        <div class="col-md-6 col-sm-6">
-                                                            <?=
-                                                            $form->field($micro, 'fecha_inicia')->textInput([
-                                                                'type' => 'date'
-                                                            ])->label('Fecha inicio')
-                                                            ?>
+                                                    <?= Html::beginForm(['update-micro'], 'post', ['enctype' => 'multipart/form-data']) ?>
+
+                                                        <div class="row">
+                                                            <div class="col-md-6 col-sm-6">
+                                                                <label for="Orden" class="form-label">Fecha inicio:</label>
+                                                                <?= Html::input('date', 'fecha_inicia', $micro->fecha_inicia, ['class' => 'form-control']) ?>
+                                                            </div>
+
+                                                            <div class="col-md-6 col-sm-6">
+                                                                <label for="Orden" class="form-label">Fecha finaliza:</label>
+                                                                <?= Html::input('date', 'fecha_termina', $micro->fecha_termina, ['class' => 'form-control']) ?>
+                                                            </div>                                                            
                                                         </div>
-                                                        <div class="col-md-6 col-sm-6">
-                                                            <?=
-                                                            $form->field($micro, 'fecha_termina')->textInput([
-                                                                'type' => 'date'
-                                                            ])->label('Fecha finaliza')
-                                                            ?>
+
+                                                        <div class="row">
+                                                            <div class="col-lg-12 col-md-12">
+                                                                <label for="Orden" class="form-label">Orden:</label>
+                                                                <?= Html::input('numeric', 'orden', $micro->orden, ['class' => 'form-control']) ?>
+                                                            </div>
                                                         </div>
-                                                    </div>
 
-                                                    <?= $form->field($micro, 'orden')->textInput(['type' => 'number', 'value' => $micro['orden']]) ?>
+                                                        <div class="row">
+                                                            <div class="col-lg-12 col-md-12">
+                                                                <label for="Orden" class="form-label">Experiencia:</label>
+                                                                <textarea name="experiencia" class="form-control"><?= $micro->experiencia ?></textarea>
+                                                            </div>
+                                                        </div>
 
-                                                    <?= $form->field($micro, 'experiencia')->textarea(['rows' => '3']) ?>
+                                                        <div class="row">
+                                                            <div class="col-lg-12 col-md-12">
+                                                                <label for="Orden" class="form-label">Observación:</label>
+                                                                <textarea name="observaciones" class="form-control"><?= $micro->observaciones ?></textarea>
+                                                            </div>
+                                                        </div>
+                                                        
+                                                        <div class="row">
+                                                            <div class="col-lg-12 col-md-12">                                                            
+                                                                <input type="hidden" name="estado" value="<?= $micro->estado ?>">
+                                                            </div>
+                                                        </div>
 
-                                                    <?= $form->field($micro, 'observaciones')->textarea(['rows' => '3']) ?>
+                                                        <div class="row">
+                                                            <div class="col-lg-12 col-md-12">                                                            
+                                                                <input type="hidden" name="updated" value="<?= $micro->updated ?>">
+                                                            </div>
+                                                        </div>
 
-                                                    <?= $form->field($micro, 'estado')->hiddenInput(['value' => 'INICIANDO'])->label(false) ?>
+                                                        <div class="row" style="margin-bottom: 10px;">
+                                                            <div class="col-lg-12 col-md-12">                                                            
+                                                                <input type="hidden" name="updated_at" value="<?= $micro->updated_at ?>">
+                                                                <input type="hidden" name="micro_id" value="<?= $micro->id ?>">
+                                                                <input type="hidden" name="pca_id" value="<?= $micro->pca_id ?>">
+                                                            </div>
+                                                        </div>
 
-                                                    <?= $form->field($micro, 'updated')->hiddenInput(['value' => $userLog])->label(false) ?>
 
-                                                    <?= $form->field($micro, 'updated_at')->hiddenInput(['value' => $today])->label(false) ?>
 
-                                                    <div class="form-group" style="margin-top:10px">
-                                                        <?= Html::submitButton('Actualizar', ['class' => 'btn btn-secondary']) ?>
-                                                    </div>
+                                                 
+                                                        <?= Html::submitButton('Grabar', ['class' => 'btn btn-outline-primary']) ?>
 
-                                                    <?php ActiveForm::end(); ?>
+
+                                                    <?= Html::endForm() ?>
+
+
+
+                                                    
                                                 </div>
                                                 <div class="modal-footer">
 

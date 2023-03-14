@@ -20,7 +20,7 @@ use yii\helpers\Url;
     ?>
 
     <?=  
-        $inputBandera = $observacionCoordinador ? '<input type="hidden" name="bandera" value="actualizar" >' : '<input type="text" name="bandera" value="crear" >'; 
+        $inputBandera = $observacionCoordinador ? '<input type="hidden" name="bandera" value="actualizar" >' : '<input type="hidden" name="bandera" value="crear" >'; 
     ?>
 
     <textarea name="contenido" class="form-control" >

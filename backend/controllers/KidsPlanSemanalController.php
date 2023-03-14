@@ -61,9 +61,10 @@ class KidsPlanSemanalController extends Controller
     {
 
         $experienciaId  = $_GET['experiencia_id'];
-        $opCourseId     = $_GET['op_course_id'];
+        $courseId     = $_GET['op_course_id'];
+        $pcaId     = $_GET['pca_id'];
 
-        $planSemanal = $this->get_plan_semanal_cab($opCourseId);
+        $planSemanal = $this->get_plan_semanal_cab($pcaId, $courseId);
 
         return $this->renderPartial('_ajax-semanas', [
             'planSemanal' => $planSemanal,
@@ -71,25 +72,58 @@ class KidsPlanSemanalController extends Controller
         ]);
     }
 
-    private function get_plan_semanal_cab($courseId)
+    private function get_plan_semanal_cab($pcaId, $courseId)
     {
+
+        $uso = $this->get_uso($courseId);
+        $user = Yii::$app->user->identity->usuario;
         $con = Yii::$app->db;
-        $query = "select 	s.id 
-                            ,s.nombre_semana 
-                            ,ex.experiencia
-                            ,ks.id as plan_semanal_id, ks.kids_unidad_micro_id, ks.semana_id, ks.created_at
-                            ,ks.created, ks.estado, ks.sent_at, ks.sent_by, ks.approved_at, ks.approved_by  
-                    from	scholaris_clase c
-                            inner join op_course_paralelo p on p.id = c.paralelo_id
-                            inner join scholaris_bloque_actividad b on b.tipo_uso = c.tipo_usu_bloque 
-                            inner join scholaris_bloque_semanas s on s.bloque_id = b.id 
-                            left join kids_plan_semanal ks on ks.semana_id = s.id 
-                            left join kids_unidad_micro ex on ex.id = ks.kids_unidad_micro_id 
-                    where 	p.course_id = $courseId
-                    group by s.id, s.nombre_semana, ks.id, ex.experiencia
-                    order by s.semana_numero;";
+        // $query = "select 	s.id 
+        //                     ,s.nombre_semana 
+        //                     ,ex.experiencia
+        //                     ,ks.id as plan_semanal_id, ks.kids_unidad_micro_id, ks.semana_id, ks.created_at
+        //                     ,ks.created, ks.estado, ks.sent_at, ks.sent_by, ks.approved_at, ks.approved_by  
+        //             from	scholaris_clase c
+        //                     inner join op_course_paralelo p on p.id = c.paralelo_id
+        //                     inner join scholaris_bloque_actividad b on b.tipo_uso = c.tipo_usu_bloque 
+        //                     inner join scholaris_bloque_semanas s on s.bloque_id = b.id 
+        //                     left join kids_plan_semanal ks on ks.semana_id = s.id 
+        //                     left join kids_unidad_micro ex on ex.id = ks.kids_unidad_micro_id 
+        //             where 	p.course_id = $courseId
+        //             group by s.id, s.nombre_semana, ks.id, ex.experiencia
+        //             order by s.semana_numero;";
+
+        $query = "select  sem.id 
+                            ,sem.nombre_semana  
+                            ,mic.id as kids_unidad_micro_id
+                            ,mic.experiencia 
+                            ,kps.id as plan_semanal_id
+                            ,kps.estado
+                    from    scholaris_bloque_actividad blo
+                            inner join scholaris_bloque_semanas sem on sem.bloque_id = blo.id
+                            left join kids_plan_semanal kps on kps.semana_id = sem.id 
+                                    and kps.created = '$user'
+                            left join kids_unidad_micro mic on mic.id = kps.kids_unidad_micro_id 
+                                and mic.pca_id = $pcaId
+                    where   blo.tipo_uso = '$uso';";
+
+        // echo $query;
+        // die();
+
         $res = $con->createCommand($query)->queryAll();
         return $res;
+    }
+
+
+    private function get_uso($courseId){
+        $con = Yii::$app->db;
+        $query = "select    tipo_usu_bloque 
+                    from    scholaris_clase cla
+                            inner join op_course_paralelo par on par.id = cla.paralelo_id  
+                    where   par.course_id = $courseId
+                    limit 1;";
+        $res = $con->createCommand($query)->queryOne();
+        return $res['tipo_usu_bloque'];
     }
 
 

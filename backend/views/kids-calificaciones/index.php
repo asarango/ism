@@ -66,7 +66,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             'template' => '{calificar}',
                             'buttons' => [
                                 'calificar' => function ($url, $model) {
-                                    return Html::a('<img src="ISM/main/images/kids/calificaciones.png">', $url, [
+                                    return Html::a('<img src="../ISM/main/images/kids/calificaciones.png">', $url, [
                                         'title' => 'Calificar', 'data-toggle' => 'tooltip', 'role' => 'modal-remote', 'data-pjax' => "0", 'class' => 'hand'
                                     ]);
                                 }

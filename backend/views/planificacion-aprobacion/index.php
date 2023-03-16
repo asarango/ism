@@ -132,7 +132,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                         <hr>
                                         <div class="row">
                                             <?=
-                                                Html::a('<b style="color: #0a1f8f">Aprobaciones Planes de Unidades</b>',['pud-aprobacion/index1',
+                                                Html::a('<b style="color: #0a1f8f">* Aprobaciones Planes de Unidades</b>',['pud-aprobacion/index1',
                                                         'template_id' => $curso['x_template_id']
                                                     ]);
                                             ?>
@@ -144,10 +144,10 @@ $this->params['breadcrumbs'][] = $this->title;
                                                 if($curso['code'] == 'PAI'){
                                                     ?>
                                                     <?=
-                                                        Html::a('<b style="color: #0a1f8f">Aprobar mapa de enfoques</b>',['mapa-enfoques-aprobacion/aprobar',
-                                                                'template_id' => $curso['x_template_id']
-                                                            ]);
-                                                    ?>
+                                                Html::a('<b style="color: #9e28b5">* Aprobaciones mapa de enfoques</b>',
+                                                    ['materias-pai/lista-asignaturas']);
+                                            ?>
+
                                                     <?php
                                                 }
                                             ?>

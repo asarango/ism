@@ -12,8 +12,10 @@ use Yii;
  * @property int $course_template_id
  * @property int $pai_habilidad_id
  * @property bool $estado
+ * @property int $materia_id
  *
  * @property ContenidoPaiHabilidades $paiHabilidad
+ * @property IsmMateria $materia
  * @property OpCourseTemplate $courseTemplate
  * @property ScholarisPeriodo $periodo
  */
@@ -33,11 +35,12 @@ class MapaEnfoquesPai extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['periodo_id', 'course_template_id', 'pai_habilidad_id'], 'required'],
-            [['periodo_id', 'course_template_id', 'pai_habilidad_id'], 'default', 'value' => null],
-            [['periodo_id', 'course_template_id', 'pai_habilidad_id'], 'integer'],
+            [['periodo_id', 'course_template_id', 'pai_habilidad_id', 'materia_id'], 'required'],
+            [['periodo_id', 'course_template_id', 'pai_habilidad_id', 'materia_id'], 'default', 'value' => null],
+            [['periodo_id', 'course_template_id', 'pai_habilidad_id', 'materia_id'], 'integer'],
             [['estado'], 'boolean'],
             [['pai_habilidad_id'], 'exist', 'skipOnError' => true, 'targetClass' => ContenidoPaiHabilidades::className(), 'targetAttribute' => ['pai_habilidad_id' => 'id']],
+            [['materia_id'], 'exist', 'skipOnError' => true, 'targetClass' => IsmMateria::className(), 'targetAttribute' => ['materia_id' => 'id']],
             [['course_template_id'], 'exist', 'skipOnError' => true, 'targetClass' => OpCourseTemplate::className(), 'targetAttribute' => ['course_template_id' => 'id']],
             [['periodo_id'], 'exist', 'skipOnError' => true, 'targetClass' => ScholarisPeriodo::className(), 'targetAttribute' => ['periodo_id' => 'id']],
         ];
@@ -54,6 +57,7 @@ class MapaEnfoquesPai extends \yii\db\ActiveRecord
             'course_template_id' => 'Course Template ID',
             'pai_habilidad_id' => 'Pai Habilidad ID',
             'estado' => 'Estado',
+            'materia_id' => 'Materia ID',
         ];
     }
 
@@ -63,6 +67,14 @@ class MapaEnfoquesPai extends \yii\db\ActiveRecord
     public function getPaiHabilidad()
     {
         return $this->hasOne(ContenidoPaiHabilidades::className(), ['id' => 'pai_habilidad_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getMateria()
+    {
+        return $this->hasOne(IsmMateria::className(), ['id' => 'materia_id']);
     }
 
     /**

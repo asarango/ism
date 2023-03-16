@@ -99,13 +99,14 @@ class PlanificacionAprobacionController extends Controller{
                                     inner join ism_malla_area malima on malima.periodo_malla_id = malipm.id  
                                     inner join ism_area_materia maliam on maliam.malla_area_id = malima.id 
                     where 	mal.op_course_template_id = c.x_template_id) as total_materias
+                    ,s.code
                     from op_course c                     
                     inner join op_section s on s.id = c.section 
                     inner join scholaris_op_period_periodo_scholaris sop on sop.op_id = s.period_id 
                     where sop.scholaris_id = $periodoId
                     --and s.code = '$section' 
                     and c.x_institute = $institutoId
-                    group by c.id ,c.name ,c.x_template_id 
+                    group by c.id ,c.name ,c.x_template_id, s.code
                     order by c.x_template_id desc;";
        
         $res = $con->createCommand($query)->queryAll();

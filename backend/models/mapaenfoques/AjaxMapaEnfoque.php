@@ -102,9 +102,10 @@ class AjaxMapaEnfoque extends \yii\db\ActiveRecord {
     */
     private function consulta_mapa_enfoques_pai($periodoId,$cursoId,$paiHabilId){
          $enfoqueActivo = MapaEnfoquesPai::find()->where([
-             'periodo_id' => $this->scholarisPeriodoId,
-             'course_template_id' => $cursoId,
-             'pai_habilidad_id' => $paiHabilId
+             'periodo_id'           => $this->scholarisPeriodoId,
+             'course_template_id'   => $cursoId,
+             'pai_habilidad_id'     => $paiHabilId,
+             'materia_id'           => $this->materiaId
          ])->one();
         
         return $enfoqueActivo;

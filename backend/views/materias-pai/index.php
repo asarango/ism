@@ -21,12 +21,12 @@ $this->params['breadcrumbs'][] = $this->title;
         <div class="card shadow col-lg-8 col-md-8">
             <div class=" row align-items-center p-2">
                 <div class="col-lg-1">
-                    <h4><img src="ISM/main/images/submenu/libros.png" width="64px" style="" class="img-thumbnail"></h4>
+                    <h4><img src="../ISM/main/images/submenu/libros.png" width="64px" style="" class="img-thumbnail"></h4>
                 </div>
                 <div class="col-lg-11">
                     <h4><?= Html::encode($this->title) ?></h4>
                     <small>
-                        (Esta pantalla muestra todas las materias pertenecientes al PAI)
+                        (Esta pantalla muestra todas las materias pertenecientes al PAI - para JEFES DE ÁREA)
                     </small>
                 </div>
             </div><!-- FIN DE CABECERA -->
@@ -56,59 +56,65 @@ $this->params['breadcrumbs'][] = $this->title;
 
             <!-- inicia cuerpo de card -->
             <div class="row" style="margin: 25px;">
-                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                <table class="table table-hover table-striped my-text-medium">
-                    <thead>
-                        <tr>
-                            <th scope="col">#</th>
-                            <th scope="col">CÓDIGO</th>
-                            <th scope="col" style="text-align:center" >MATERIA</th>
-                            <th scope="col">ACCIONES</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php
-                        $contador = 1;
-                        foreach ($materias as $materia) {
-                        ?>
-                        <tr>
-                            <th scope="row">
-                                <?= $contador ?>
-                            </th>
-                            <td scope="row">
-                                <?= $materia['id'] ?>
-                            <td style="" >
-                                <?= $materia['materia'] ?>
-                            </td>
-                            <td>
-                                <?=
-                                    Html::a(
-                                        '<span class="bagde rounded-pill bg-warning text-dark">
-                                            Enfoque
-                                            <i class="far fa-lightbulb"  ></i>
-                                        </span>',
-                                        ['mapa-enfoques','materia_id' => $materia['id']],
-                                        ['class' => 'link']
-                                        );
-                                ?>
-                            <!-- <span class="badge bg-warning text-dark">
-                                Enfoques
-                                <i class="far fa-lightbulb"></i>
-                            </span> -->
-                            </td>
-                        </tr>
+                <?php
+                    if(count($materias) > 0){           
+                    ?>
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                        <table class="table table-hover table-striped my-text-medium">
+                            <thead>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">CÓDIGO</th>
+                                    <th scope="col" style="text-align:center" >MATERIA</th>
+                                    <th scope="col">ACCIONES</th>
+                                </tr>
+                            </thead>
+                        <tbody>
+                            <?php
+                            $contador = 1;
+                            foreach ($materias as $materia) {
+                            ?>
+                            <tr>
+                                <th scope="row">
+                                    <?= $contador ?>
+                                </th>
+                                <td scope="row">
+                                    <?= $materia['id'] ?>
+                                <td style="" >
+                                    <?= $materia['materia'] ?>
+                                </td>
+                                <td>
+                                    <?=
+                                        Html::a(
+                                            '<span class="bagde rounded-pill bg-warning text-dark">
+                                                Enfoque
+                                                <i class="far fa-lightbulb"  ></i>
+                                            </span>',
+                                            ['mapa-enfoques','materia_id' => $materia['id']],
+                                            ['class' => 'link']
+                                            );
+                                    ?>
+                                <!-- <span class="badge bg-warning text-dark">
+                                    Enfoques
+                                    <i class="far fa-lightbulb"></i>
+                                </span> -->
+                                </td>
+                            </tr>
 
-                        <?php
-                        $contador = $contador+1;
-                        }
+                            <?php
+                            $contador = $contador+1;
+                            }
+                                
+                            ?>
                             
-                        ?>
-                        
-                    </tbody>
-                </table>
+                        </tbody>
+                    </table>
                 </div>
-
-
+                    <?php
+                }else{
+                    echo 'No eres un Jefe de Área todavía, por favor comunícate con tu coordinador para que te registre como Jefe de Área';
+                }
+                ?>
             </div>
             <!-- fin cuerpo de card -->
 

@@ -23,12 +23,14 @@ use Yii;
  * @property int $total_horas_semana
  * @property string $responsable_planificacion
  * @property bool $es_bi
+ * @property string $jefe_area
  *
  * @property CurriculoMecAsignatutas $asignaturaCurriculo
  * @property CurriculoMecNiveles $cursoCurriculo
  * @property IsmMallaArea $mallaArea
  * @property IsmMateria $materia
  * @property Usuario $responsablePlanificacion
+ * @property IsmGrupoMateriaPlanInterdiciplinar[] $ismGrupoMateriaPlanInterdiciplinars
  * @property KidsMicroDestreza[] $kidsMicroDestrezas
  * @property Lms[] $lms
  * @property PlanificacionDesagregacionCabecera[] $planificacionDesagregacionCabeceras
@@ -57,7 +59,7 @@ class IsmAreaMateria extends \yii\db\ActiveRecord
             [['porcentaje'], 'number'],
             [['tipo'], 'string', 'max' => 30],
             [['idioma'], 'string', 'max' => 5],
-            [['responsable_planificacion'], 'string', 'max' => 200],
+            [['responsable_planificacion', 'jefe_area'], 'string', 'max' => 200],
             [['asignatura_curriculo_id'], 'exist', 'skipOnError' => true, 'targetClass' => CurriculoMecAsignatutas::className(), 'targetAttribute' => ['asignatura_curriculo_id' => 'id']],
             [['curso_curriculo_id'], 'exist', 'skipOnError' => true, 'targetClass' => CurriculoMecNiveles::className(), 'targetAttribute' => ['curso_curriculo_id' => 'id']],
             [['malla_area_id'], 'exist', 'skipOnError' => true, 'targetClass' => IsmMallaArea::className(), 'targetAttribute' => ['malla_area_id' => 'id']],
@@ -88,6 +90,7 @@ class IsmAreaMateria extends \yii\db\ActiveRecord
             'total_horas_semana' => 'Total Horas Semana',
             'responsable_planificacion' => 'Responsable Planificacion',
             'es_bi' => 'Es Bi',
+            'jefe_area' => 'Jefe Area',
         ];
     }
 
@@ -134,6 +137,14 @@ class IsmAreaMateria extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
+    public function getIsmGrupoMateriaPlanInterdiciplinars()
+    {
+        return $this->hasMany(IsmGrupoMateriaPlanInterdiciplinar::className(), ['id_ism_area_materia' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getKidsMicroDestrezas()
     {
         return $this->hasMany(KidsMicroDestreza::className(), ['ism_area_materia_id' => 'id']);
@@ -161,5 +172,11 @@ class IsmAreaMateria extends \yii\db\ActiveRecord
     public function getScholarisClases()
     {
         return $this->hasMany(ScholarisClase::className(), ['ism_area_materia_id' => 'id']);
+    }
+
+
+    public function getJefeArea()
+    {
+        return $this->hasOne(Usuario::className(), ['usuario' => 'jefe_area']);
     }
 }

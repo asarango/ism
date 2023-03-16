@@ -5,6 +5,8 @@ namespace backend\controllers;
 use backend\models\ContenidoPaiHabilidades;
 use backend\models\mapaenfoques\AjaxMapaEnfoque;
 use backend\models\MapaEnfoquesPai;
+use backend\models\MapaEnfoquesPaiAprobacion;
+use backend\models\OpInstituteAuthorities;
 use backend\models\ScholarisMateria;
 use Yii;
 use yii\web\Controller;
@@ -69,9 +71,11 @@ class MateriasPaiController extends Controller{
         ]);
     }
 
+
     private function consulta_materias_pai(){
         $periodoId      = Yii::$app->user->identity->periodo_id;
         $institutoId    = Yii::$app->user->identity->instituto_defecto;
+        $user           = Yii::$app->user->identity->usuario;
         $con            = Yii::$app->db;
 
         $query = "select 	mat.id ,mat.nombre as materia  
@@ -86,21 +90,64 @@ class MateriasPaiController extends Controller{
                                     inner join op_section s on s.id = cur.section
                                                                     and s.period_id = sop.op_id 
                     where 	sop.scholaris_id = $periodoId
-                                    and s.code = 'PAI' group by mat.id ,mat.nombre;";
+                            and s.code = 'PAI' 
+                            and am.jefe_area = '$user'
+                    group by mat.id ,mat.nombre;";
 
         $res = $con->createCommand($query)->queryAll();
         return $res;
     } 
 
+
+    /**
+    *   ACCIÓN QUE MUESTRA LAS OPCIONES PARA EL MAPA DE ENFOQUES
+    *   Creado por: ARTURO SARANGO - 2022-12-01
+    *   Actualizado:   ARTURO SARANGO - 2023-03-15
+    */
+
     public function actionMapaEnfoques(){ //Accion para tomar las habilidades
         $materiaId = $_GET['materia_id'];
+        $periodId = Yii::$app->user->identity->periodo_id;
+
+        $aprobacion = MapaEnfoquesPaiAprobacion::find()->where([
+            'materia_id' => $materiaId,
+            'periodo_id' => $periodId
+        ])->one();
+
         $materia = \backend\models\IsmMateria::findOne($materiaId);    
         $habilidades = $this->consulta_habilidades();
         $this->procesa_hablidades_pai_a_cursos($materiaId);
+
         return $this->render('mapa-enfoques',[
-            'habilidades' => $habilidades,
-            'materia' => $materia
+            'aprobacion'    => $aprobacion,
+            'habilidades'   => $habilidades,
+            'materia'       => $materia,
+            'periodoId'     => $periodId
         ]);
+    }
+
+
+    public function actionState(){
+        
+        $periodoId = $_POST['period_id'];
+        $materiaId = $_POST['materia_id'];
+
+        $user = Yii::$app->user->identity->usuario;        
+
+        $coordinator = OpInstituteAuthorities::find()->where([
+            'cargo_codigo' => 'coordinacionpai'
+        ])->one();
+
+        $model = new MapaEnfoquesPaiAprobacion();
+        $model->materia_id  = $materiaId;
+        $model->periodo_id  = $periodoId;
+        $model->coordinador_usuario = $coordinator->usuario;
+        $model->jefe_area_usuario   = $user;
+        $model->fecha_envio_a_coordinado = date('Y-m-d H:i:s');
+        $model->estado      = 'COORDINADOR';
+        $model->save();
+
+        return $this->redirect(['mapa-enfoques', 'materia_id' => $materiaId]);
     }
 
 
@@ -126,13 +173,15 @@ class MateriasPaiController extends Controller{
                 $model = MapaEnfoquesPai::find()->where([
                     'periodo_id'         => $periodoId,
                     'course_template_id' => $curso['id'],
-                    'pai_habilidad_id'   => $habilidad->id 
+                    'pai_habilidad_id'   => $habilidad->id,
+                    'materia_id'         => $materiaId
                 ])->one();
                 if(!isset($model)){                    
                     $mapaEnfoque = new MapaEnfoquesPai();
                     $mapaEnfoque->periodo_id            = $periodoId;
                     $mapaEnfoque->course_template_id    = $curso['id'];
-                    $mapaEnfoque->pai_habilidad_id      = $habilidad->id;                    
+                    $mapaEnfoque->pai_habilidad_id      = $habilidad->id;
+                    $mapaEnfoque->materia_id            = $materiaId;
                     $mapaEnfoque->save();
                 }
             }

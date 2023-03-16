@@ -74,6 +74,7 @@ class IsmMallaAreaController extends Controller
                                     ,am.orden 
                                     ,am.total_horas_semana
                                     ,am.responsable_planificacion
+                                    ,am.jefe_area
                                     ,am.es_bi
                                     ,am.idioma
                     from	ism_area_materia am 

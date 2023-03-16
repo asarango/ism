@@ -10,13 +10,14 @@ use yii\filters\AccessControl;
 use backend\models\ScholarisClase;
 use backend\models\ScholarisGrupoAlumnoClase;
 use backend\models\ScholarisAsistenciaProfesor;
-use app\models\ScholarisAsistenciaComportamiento;
-use app\models\ScholarisAsistenciaComportamientoDetalle;
+use backend\models\ScholarisAsistenciaComportamiento;
+use backend\models\ScholarisAsistenciaComportamientoDetalle;
 use backend\models\PlanificacionOpciones;
 use backend\models\ScholarisAsistenciaAlumnosNovedades;
 use backend\models\ScholarisActividad;
 use backend\models\ScholarisAsistenciaClaseTema;
 use backend\models\helpers\Scripts;
+use backend\models\ScholarisAsistenciaComportamientoSearch;
 
 /**
  * ScholarisAsistenciaProfesorController implements the CRUD actions for ScholarisAsistenciaProfesor model.
@@ -82,10 +83,14 @@ class ComportamientoController extends Controller {
         $modelAsistencia = ScholarisAsistenciaProfesor::find()
                 ->where(['id' => $id])
                 ->one();
+        //las novedades especificas son las que del codigo 1a,1b,1c , las que se muestran en pantalla
+        $listaNovedadesEspecificas = $this->consulta_novedades_especifica($modelAsistencia->id);
+        $listaNovedadesTodas= $this->consulta_novedades_todas($modelAsistencia->id);
 
         $modelClase = ScholarisClase::find()->where(['id' => $modelAsistencia->clase_id])->one();
                
-        $query = "select sgac.id,sgac.clase_id,sgac.estudiante_id,os.last_name,os.first_name,os.middle_name 
+        $query = "select sgac.id,sgac.clase_id,sgac.estudiante_id,ltrim(rtrim(os.last_name)) as last_name,
+        ltrim(rtrim(os.first_name)) as first_name ,ltrim(rtrim(os.middle_name )) as middle_name
                          ,i.student_state
                          ,i.transfer_from_id  
                          ,os.x_origin_institute
@@ -97,7 +102,8 @@ class ComportamientoController extends Controller {
                                 inner join op_section sec on sec.id = cur.section
                                 inner join scholaris_op_period_periodo_scholaris sop on sop.op_id = sec.period_id 
                 where 	sgac.clase_id = $modelAsistencia->clase_id
-                                and sop.scholaris_id = $periodoId;";
+                                and sop.scholaris_id = $periodoId order by last_name ;;";
+    
 
         $modelGrupo = $con->createCommand($query)->queryAll();        
 
@@ -108,6 +114,7 @@ class ComportamientoController extends Controller {
                         ])
                 ->andWhere(['between', 'inicio', $fechaDesde, $fechaHasta])
                 ->all();
+             
         //buscamos alumnos con NEE, de la clase
         $objScript = new Scripts();
         $modelNeeXClase = $objScript->mostrarAlumnosNeeClase($modelClase->id);
@@ -122,12 +129,14 @@ class ComportamientoController extends Controller {
                     'modelAsistencia' => $modelAsistencia,
                     'modelActividades' => $modelActividades,
                     'modelTemas' => $modelTemas,
-                    'modelNeeXClase'=>$modelNeeXClase
+                    'modelNeeXClase'=>$modelNeeXClase,
+                    'listaNovedadesEspecificas'=>$listaNovedadesEspecificas, 
+                    'listaNovedadesTodas'=>$listaNovedadesTodas,
         ]);
     }
 
-    public function actionDetalle($alumnoId, $asistenciaId) {
-        
+    public function actionDetalle($alumnoId, $asistenciaId) 
+    {       
 
 
         $model = new ScholarisAsistenciaAlumnosNovedades();
@@ -247,70 +256,132 @@ class ComportamientoController extends Controller {
     /**
      * Genera falta automatica, con codigo 1CH, Falta injustificada hora clase 
      */
-    public function actionFaltaAutoEstudiante(){       
-       $asistenciaId = $_GET['idClase'];
-       $alumnoId = $_GET['idAlumno'];
-       $idFalta = '';
-       $obsFalta ='';       
+    public function consulta_novedades_especifica($asistenciaId)
+    {
+        $con = yii::$app->db;
+        $query = "select a1.id,a1.asistencia_profesor_id,a1.comportamiento_detalle_id,a1.observacion ,a1.grupo_id  
+        from scholaris_asistencia_alumnos_novedades a1,
+        scholaris_asistencia_comportamiento_detalle a2
+        where a1.comportamiento_detalle_id = a2.id 
+        and a2.codigo  in ('1a','1b','1c','1d')
+        and a1.observacion ilike 'AUTO:%'
+        and a1.asistencia_profesor_id = $asistenciaId;";
+        
 
-       //extraccion los parametros para faltas automaticas
-       $modelOp = PlanificacionOpciones::find()->where([
-           'tipo'=>'FALTA_A_CLASES'
-       ])->asArray()->all();
-       $idFalta = $modelOp[0]['opcion'];//id
-       $obsFalta = $modelOp[1]['opcion'];//obs
-
-       //extraccion id de grupo 
+        $listaNovedades = $con->createCommand($query)->queryAll();
+        return $listaNovedades;
+    }
+    public function consulta_novedades_todas($asistenciaId)
+    {
+        $con = yii::$app->db;
+        $query = "select a1.id,a1.asistencia_profesor_id,a1.comportamiento_detalle_id,a1.observacion ,a1.grupo_id  
+        from scholaris_asistencia_alumnos_novedades a1,
+        scholaris_asistencia_comportamiento_detalle a2
+        where a1.comportamiento_detalle_id = a2.id     
+        and a1.asistencia_profesor_id = $asistenciaId;";
+        $listaNovedades = $con->createCommand($query)->queryAll();
+        return $listaNovedades;
+    }
+    public function delete_novedades($idNovedad)
+    {
+        $con = yii::$app->db;
+        $query = "delete from scholaris_asistencia_alumnos_novedades where id =$idNovedad ";
+        $con->createCommand($query)->queryAll();
+    }
+    public function delete_novedades_especificas($asistenciaId,$alumnoId)
+    {
+        //extraccion id de grupo 
        $modelAsistencia = ScholarisAsistenciaProfesor::find()
-                ->where(['id' => $asistenciaId])
-                ->one();
+       ->where(['id' => $asistenciaId])
+       ->one();     
 
-       $modelGrupo = ScholarisGrupoAlumnoClase::find()
+        $modelGrupo = ScholarisGrupoAlumnoClase::find()
             ->where([
                 'estudiante_id' => $alumnoId,
                 'clase_id'=>$modelAsistencia->clase_id
                 ])
-            ->one();                 
-    
-       //guardamos la falta automatica
-       $model = new ScholarisAsistenciaAlumnosNovedades();
-       $model->asistencia_profesor_id=$asistenciaId;
-       $model->comportamiento_detalle_id=$idFalta;
-       $model->observacion = $obsFalta;
-       $model->grupo_id = $modelGrupo->id;
-       $model->save();       
+            ->one(); 
+
+        $con = yii::$app->db;
+        $query = "delete from scholaris_asistencia_alumnos_novedades 
+        where comportamiento_detalle_id  in ( select id from scholaris_asistencia_comportamiento_detalle where codigo in ('1a','1b','1c','1d') )
+        and grupo_id = '$modelGrupo->id' and asistencia_profesor_id = '$asistenciaId';";
+
+      
+        $con->createCommand($query)->queryAll();
     }
-    /**
-     * Elimina falta  automatica, con codigo 1CH, Falta injustificada hora clase 
-     */
-    public function actionBorrarFaltaAutoEstudiante(){       
+   
+    public function actionFaltaAutoEstudiante()
+    {   
+        /*
+        Creado Por: Santiago / Fecha Creacion: 
+        Modificado Por: Santiago	/ Fecha Modificación: 2013-03-15
+        Detalle:  Asigna un codigo de los especificados en pantalla, y elimna los demas, de la lista de codigos especificos 1a,1b,1c,1d
+        */
+
+       $asistenciaId = $_GET['idClase'];
+       $alumnoId = $_GET['idAlumno'];
+       $codigoNovedad = $_GET['codigoNovedad'];      
+       $obsFalta ='';  
+       
+       //1.- buscamos si existe algun ingreso automatico con los codigos 1a,1b,1c,1d 
+       $listaNovedades = $this->consulta_novedades_especifica($asistenciaId);         
+
+        
+        //1.2 extraemos el detalle de codigo que se ingreso en pantalla
+        $modelCodNovedad = ScholarisAsistenciaComportamientoDetalle::find()
+        ->where(['codigo'=>$codigoNovedad])
+        ->one();
+
+        //extraccion id de grupo 
+       $modelAsistencia = ScholarisAsistenciaProfesor::find()
+       ->where(['id' => $asistenciaId])
+       ->one();     
+
+        $modelGrupo = ScholarisGrupoAlumnoClase::find()
+            ->where([
+                'estudiante_id' => $alumnoId,
+                'clase_id'=>$modelAsistencia->clase_id
+                ])
+            ->one(); 
+        
+        //1.1.- eliminamos los codigos si existen con 1a,1b,1c,1d, que pertenezcan al grupo del niño
+        foreach($listaNovedades as $novedad)
+        {
+            if($novedad['grupo_id']==$modelGrupo->id)
+            {
+                $idNovedad = $novedad['id'];
+                $this->delete_novedades($idNovedad);   
+            }                    
+        }
+
+       //2.- ingresamos el nuevo codigo enviado       
+       $modelNovedad = new ScholarisAsistenciaAlumnosNovedades();
+       $modelNovedad->asistencia_profesor_id=$asistenciaId;
+       $modelNovedad->comportamiento_detalle_id=$modelCodNovedad->id;
+       $modelNovedad->observacion = 'AUTO: '.$modelCodNovedad->nombre;
+       $modelNovedad->grupo_id = $modelGrupo->id;
+       $modelNovedad->save();  
+      
+    }
+
+    public function actionBorrarFaltaAutoEstudiante()
+    {      
+        /*
+        Creado Por: Santiago / Fecha Creacion: 
+        Modificado Por: Santiago	/ Fecha Modificación: 2023-03-15
+        Detalle: Elimina todas las novedades de un estudiante  de los codigos especiales en la pantalla, codigos 1a,1b,1c,1d
+        */ 
         $asistenciaId = $_GET['idClase'];
         $alumnoId = $_GET['idAlumno'];
-        $idFalta = '';
-        $obsFalta ='';
-        //extraigo los parametros para faltas automaticas
-        $modelOp = PlanificacionOpciones::find()->where([
-            'tipo'=>'FALTA_A_CLASES'
-        ])->asArray()->all();
-        $idFalta = $modelOp[0]['opcion'];//id
-        $obsFalta = $modelOp[1]['opcion'];//obs
-        //extraigo id de grupo 
-        $modelAsistencia = ScholarisAsistenciaProfesor::find()
-                 ->where(['id' => $asistenciaId])
-                 ->one();
-        $modelGrupo = ScholarisGrupoAlumnoClase::find()
-                 ->where([
-                     'estudiante_id' => $alumnoId,
-                     'clase_id'=>$modelAsistencia->clase_id
-                     ])
-                 ->one();             
-        //eliminamos  la falta
-        $model =ScholarisAsistenciaAlumnosNovedades::find()->where([
-            'asistencia_profesor_id'=>$asistenciaId,
-            'comportamiento_detalle_id'=>$idFalta,
-            'grupo_id'=>$modelGrupo->id
-        ])->one();
-        $model->delete(); 
+        $codigoNovedad = $_GET['codigoNovedad'];    
+
+        // echo '<pre>';
+        // print_r($_GET);
+        // die();
+
+       //1. eliminamos los codigos si existen con 1a,1b,1c,1d
+        $this->delete_novedades_especificas($asistenciaId,$alumnoId);  
        
      }
 

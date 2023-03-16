@@ -228,4 +228,73 @@ class MateriasPaiController extends Controller{
         $model->save();
     }
 
+
+
+
+    /**
+     * ACCION PARA MOSTRAR LA APROBACIÓN DE COORDINACION DE MAPA DE ENFOQUES
+     * CREADO POR:  Arturo Sarango - 2023-03-16
+     * MODIFICADOS: Arturo Sarango - 2023-03-16
+     */
+    public function actionListaAsignaturas(){
+        $user = Yii::$app->user->identity->usuario;
+        $periodId = Yii::$app->user->identity->periodo_id;
+
+        $details = $this->get_asignaturas_detail($periodId);
+
+        return $this->render('lista-asignaturas',[
+            'details' => $details
+        ]);
+    }
+
+
+    /**
+     * MÉTODO QUE ENTREGA LAS ASIGNATURAS DEL PAI
+     * CREADO POR:  Arturo Sarango - 2023-03-16
+     * MODIFICADOS: Arturo Sarango - 2023-03-16
+    */
+    private function get_asignaturas_detail($periodoId){
+        $con = Yii::$app->db;
+        $query = "select    mat.id 
+                            ,mat.nombre as materia
+                            ,iam.jefe_area 
+                            ,men.estado 
+                            ,men.id as aprobacion_id 
+                    from    ism_malla mal
+                            inner join op_course cur on cur.x_template_id = mal.op_course_template_id
+                            inner join op_section sec on sec.id = cur.section
+                            inner join scholaris_op_period_periodo_scholaris sop on sop.op_id = sec.period_id
+                            inner join ism_periodo_malla ipm on ipm.malla_id = mal.id 
+                                and ipm.scholaris_periodo_id = sop.scholaris_id 
+                            inner join ism_malla_area ima on ima.periodo_malla_id = ipm.id 
+                            inner join ism_area_materia iam on iam.malla_area_id = ima.id 
+                            inner join ism_materia mat on mat.id = iam.materia_id
+                            left join mapa_enfoques_pai_aprobacion men on men.jefe_area_usuario = iam.jefe_area 
+                                    and men.materia_id = mat.id 
+                    where   sop.scholaris_id = $periodoId
+                            and sec.code = 'PAI'
+                    group by mat.id ,mat.nombre, iam.jefe_area, men.estado, men.id
+                    order by mat.nombre;";
+        $res = $con->createCommand($query)->queryAll();
+        return $res;
+    }
+
+
+     /**
+     * ACCION PARA APROBAR EL MAPA DE ENFOQUES DE LA MATARIA SELECCIONADA
+     * CREADO POR:  Arturo Sarango - 2023-03-16
+     * MODIFICADOS: Arturo Sarango - 2023-03-16
+     */
+     public function actionAprobar(){
+        $aprobacionId = $_GET['id'];
+        $today = date('Y-m-d H:i:s');
+
+        $model = MapaEnfoquesPaiAprobacion::findOne($aprobacionId);
+        $model->fecha_aprobacion = $today;
+        $model->estado = 'APROBADO';
+        $model->save();
+
+        return $this->redirect(['lista-asignaturas']);
+     }
+
 }

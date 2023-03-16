@@ -31,9 +31,9 @@ $this->params['breadcrumbs'][] = $this->title;
         <div class="card shadow col-lg-12 col-md-12">
             <div class=" row align-items-center p-2">
                 <div class="col-lg-1">
-                    <h4><img src="ISM/main/images/submenu/libros.png" width="64px" style="" class="img-thumbnail"></h4>
+                    <h4><img src="../ISM/main/images/submenu/libros.png" width="64px" style="" class="img-thumbnail"></h4>
                 </div>
-                <div class="col-lg-11">
+                <div class="col-lg-5">
                     <h4><?= Html::encode($this->title) ?></h4>
                     <h6>
                         
@@ -45,6 +45,31 @@ $this->params['breadcrumbs'][] = $this->title;
                     <br>
                     
                 </div>
+
+                <div class="col-lg-6 col-md-6" style="text-align: right;">
+                    <!-- inicio de menu derecha -->
+                    <?php
+                        
+                        if($aprobacion == null){
+                            ?>
+                            <img src="../ISM/main/images/states/enviar.png" width="80px;">
+                            <a type="button" data-bs-toggle="modal" data-bs-target="#staticBackdrop1">
+                              <span class="badge rounded-pill" style="background-color: #ff9e18"><i class="fas fa-play"></i> Aprobar mapa de enfoques</span>
+                            </a>
+                            <?php
+                        }else if($aprobacion->estado == 'APROBADO'){
+                            ?>
+                            <img src="../ISM/main/images/states/aprobado.gif" width="80px;">
+                            <?php
+                        }else if($aprobacion->estado == 'COORDINADOR'){
+                            ?>
+                            <img src="../ISM/main/images/states/revisando.gif" width="80px;">
+
+                            <?php
+                        }
+                    ?>                    
+
+                </div><!-- fin de menu derecha -->
             </div><!-- FIN DE CABECERA -->
 
 
@@ -68,6 +93,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         ['class' => 'link']
                     );
                     ?>
+                    
                     |
                 </div> <!-- fin de menu izquierda -->
 
@@ -115,6 +141,33 @@ $this->params['breadcrumbs'][] = $this->title;
     </div>
 
 </div>
+
+
+<!-- modal de aprobación -->
+<div class="modal fade" id="staticBackdrop1" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="staticBackdropLabel">Enviar a coordinación</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <?= Html::beginForm(['state'], 'post', ['enctype' => 'multipart/form-data']) ?>
+            <input type="hidden" name="period_id" value="<?= $periodoId ?>">            
+            <input type="hidden" name="materia_id" value="<?= $materia->id ?>">            
+
+            
+        
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+        <?= Html::submitButton('Enviar a coordinación', ['class' => 'btn btn-outline-primary']) ?>
+      </div>
+      <?= Html::endForm() ?>
+    </div>
+  </div>
+</div>
+<!-- fin de modal de aprobación -->
 
 <script>
     

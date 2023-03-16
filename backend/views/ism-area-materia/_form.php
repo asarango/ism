@@ -44,6 +44,13 @@ use yii\widgets\ActiveForm;
         );
     ?>
 
+    <?php 
+        $listaJ = ArrayHelper::map($docentes, 'usuario', 'usuario');
+        echo $form->field($model, 'jefe_area')->dropDownlist(
+            $lista, ['prompt' => 'Seleccione jefe de área...']
+        );
+    ?>
+
     <?= $form->field($model, 'idioma')->dropDownList([
         'es' => 'Español',
         'en' => 'Inglés',

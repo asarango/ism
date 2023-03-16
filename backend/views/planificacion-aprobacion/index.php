@@ -88,7 +88,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                         <strong>
                                             <?php 
                                             echo Html::a('<img src="../ISM/main/images/submenu/papeles.png" width="30px" class="img-fluid rounded-start" alt="..."> '.
-                                                $curso['curso'],
+                                                $curso['curso'].' - '.$curso['code'],
                                                 ['asignaturas',
                                                     'template_id' => $curso['x_template_id']
                                                 ],
@@ -137,6 +137,22 @@ $this->params['breadcrumbs'][] = $this->title;
                                                     ]);
                                             ?>
                                         </div>
+
+
+                                        <div class="row">
+                                            <?php
+                                                if($curso['code'] == 'PAI'){
+                                                    ?>
+                                                    <?=
+                                                        Html::a('<b style="color: #0a1f8f">Aprobar mapa de enfoques</b>',['mapa-enfoques-aprobacion/aprobar',
+                                                                'template_id' => $curso['x_template_id']
+                                                            ]);
+                                                    ?>
+                                                    <?php
+                                                }
+                                            ?>
+                                        </div>
+
                                 </div>
                             </div>
                         </div>

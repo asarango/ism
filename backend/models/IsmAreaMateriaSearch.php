@@ -20,7 +20,7 @@ class IsmAreaMateriaSearch extends IsmAreaMateria
             [['id', 'malla_area_id', 'materia_id', 'asignatura_curriculo_id', 'curso_curriculo_id', 'orden', 'total_horas_semana'], 'integer'],
             [['promedia', 'imprime_libreta', 'es_cuantitativa', 'es_bi'], 'boolean'],
             [['porcentaje'], 'number'],
-            [['tipo', 'idioma'], 'safe'],
+            [['tipo', 'idioma', 'jefe_area'], 'safe'],
         ];
     }
 
@@ -71,7 +71,8 @@ class IsmAreaMateriaSearch extends IsmAreaMateria
             'curso_curriculo_id' => $this->curso_curriculo_id,
             'orden' => $this->orden,
             'total_horas_semana' => $this->total_horas_semana,
-            'es_bi' => $this->es_bi
+            'es_bi' => $this->es_bi,
+            'jefe_area' => $this->jefe_area
         ]);
 
         $query->andFilterWhere(['ilike', 'tipo', $this->tipo])

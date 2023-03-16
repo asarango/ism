@@ -188,14 +188,14 @@ class PdfInterdiciplinarPai extends \yii\db\ActiveRecord
         
 
 
-        $tiempo = $objDatos->calcula_horas(
-            $planUnidad->planCabecera->ismAreaMateria->materia_id,
-            $planUnidad->planCabecera->ismAreaMateria->mallaArea->periodoMalla->malla->op_course_template_id
-        );
+        // $tiempo = $objDatos->calcula_horas(
+        //     $planUnidad->planCabecera->ismAreaMateria->materia_id,
+        //     $planUnidad->planCabecera->ismAreaMateria->mallaArea->periodoMalla->malla->op_course_template_id
+        // );
 
-        $fecha_inicio = $tiempo['fecha_inicio'] ;
-        $fecha_fin = $tiempo['fecha_inicio'];
-        $horas = $tiempo['horas'] ;
+        $fecha_inicio = substr($planUnidad->fecha_inicio,0,10);
+        $fecha_fin =substr($planUnidad->fecha_fin,0,10);
+        $horas = $planUnidad->horas  ;
 
         $get_materia = $this->get_materias($this->grupoPlanInterdisciplinar);
         $get_profesores = $this->get_docentes($this->grupoPlanInterdisciplinar);
@@ -212,7 +212,7 @@ class PdfInterdiciplinarPai extends \yii\db\ActiveRecord
                         <td ><b>Profesor(es)</b></td>
                         <td colspan="2">$get_profesores</td>
                         <td ><b>Fecha de Finalización</b></td>
-                        <td >$fecha_fin </td>               
+                        <td >$fecha_fin  </td>               
                     </tr>
                     <tr >
                         <td ><b>Título de la Unidad: </b></td>

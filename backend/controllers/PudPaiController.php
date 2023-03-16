@@ -268,6 +268,26 @@ class PudPaiController extends Controller{
           $model->relacion_ods = $competencia_relacion_ods;
           $model->save();
       }
+      //
+      public function actionGuardaDatosInformativos()
+      {
+        /*
+            Creado Por: Santiago / Fecha Creacion: 2023-03-08 
+            Modificado Por: 	/ Fecha Modificación:
+            Detalle: EL parametro , recibe 1 o 2 o 3, siendo 1= horas, 2 igual a fecha inicio, 3 igual a fecha fin
+        */
+        $parametro = $_POST['parametro'];      
+        $planUnidadId = $_POST['planUnidadId'];
+        $horas = $_POST['horas'];      
+        $fecha_inicio = $_POST['fecha_inicio'];
+        $fecha_fin = $_POST['fecha_fin'];   
+  
+          $model = PlanificacionBloquesUnidad::findOne($planUnidadId);
+          $model->horas = $horas;
+          $model->fecha_inicio = $fecha_inicio;
+          $model->fecha_fin = $fecha_fin;
+          $model->save();
+      }
     
 
 }

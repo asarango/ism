@@ -177,7 +177,7 @@ class Pdf extends \yii\db\ActiveRecord {
         $html .= '<td class="border" align="center">' . $this->planUnidad->planCabecera->ismAreaMateria->mallaArea->periodoMalla->malla->opCourseTemplate->name . '</td>';
         $html .= '</td>';
         $html .= '<td class="border" align="center" width="10%"><b>FECHA DE INICIO: </b>';
-        $html .= '<td class="border" align="center">' . $tiempo['fecha_inicio'] . '</td>';
+        $html .= '<td class="border" align="center">' . substr($this->planUnidad->fecha_inicio,0,10). '</td>';
         $html .= '</tr>';
 
         $html .= '<tr>';
@@ -190,9 +190,9 @@ class Pdf extends \yii\db\ActiveRecord {
         $html .= '<td class="border" align="center" width="10%"><b>TÍTULO DE LA UNIDAD Nº </b>';
         $html .= '<td class="border" align="center">' . $this->planUnidad->unit_title . '</td>';
         $html .= '<td class="border" align="center" width="10%"><b>DURACIÓN DE LA UNIDAD (EN HORAS) </b>';
-        $html .= '<td class="border" align="center">' . $tiempo['horas'] . '</td>';
+        $html .= '<td class="border" align="center">' .$this->planUnidad->horas. '</td>';
         $html .= '<td class="border" align="center" width="10%"><b>FECHA FINALIZACIÓN: </b>';
-        $html .= '<td class="border" align="center">' . $tiempo['fecha_final'] . '</td>';
+        $html .= '<td class="border" align="center">' . substr($this->planUnidad->fecha_fin,0,10) . '</td>';
         $html .= '</tr>';
         $html .= '</table>';
 

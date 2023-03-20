@@ -80,6 +80,11 @@ class RegistraHoras{
         $hoy = date('Y-m-d H:i:s');        
                 
         $detalleHorario = $this->consulta_detalle_horario();       
+
+        // echo $posicion;
+
+        // print_r($detalleHorario);
+        // die();
         
         $detalle = $detalleHorario[$posicion]; //Array con el dato de la semana
         $fecha = $this->busca_fecha($detalle);        

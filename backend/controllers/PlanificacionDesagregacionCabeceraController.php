@@ -88,6 +88,10 @@ class PlanificacionDesagregacionCabeceraController extends Controller
         
         $asignaturas = $objHelper->query_asignaturas_x_nivel($cursoId); //toma las asignaturas
 
+        // echo '<pre>';
+        // print_r($asignaturas);
+        // die();
+
         $html = "";
 
         foreach ($asignaturas as $asignatura) {

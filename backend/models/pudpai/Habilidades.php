@@ -44,10 +44,9 @@ class Habilidades extends ActiveRecord
     private function actualizaCampoUltimaSeccion($ultima_seccion,$idPlanBloqUni)
     {
         $con=Yii::$app->db;        
-        $query = "update pud_pai set ultima_seccion ='$ultima_seccion' where planificacion_bloque_unidad_id = $idPlanBloqUni ; ";
-
-       
-        
+        $query = "update pud_pai set ultima_seccion ='$ultima_seccion' where planificacion_bloque_unidad_id = $idPlanBloqUni ; ";      
+        // print_r($query);
+        // die();
         $con->createCommand($query )->queryOne();
     }
     //extrae la habilidades seleccionadas en el plan vertical
@@ -151,7 +150,7 @@ class Habilidades extends ActiveRecord
                 <div class="modal-dialog modal-xl">
                   <div class="modal-content">
                     <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel">Actividad: '.$id_relacion.'</h5>
+                            <h5 class="modal-title" id="exampleModalLabel">Actividad: </h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>                      
                     </div>
                     <div class="modal-body">';//inicio modal-body

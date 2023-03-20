@@ -301,7 +301,7 @@ class HelperPudPaiController extends Controller{
 
     public function actionUpdateHabilidadesNuevoFormato()
     {
-        $ultima_seccion = '3.0.-';   
+        $ultima_seccion = '3.1.-';   
         
         $idPlanUnidad = $_GET['idPlanUnidad'];        
         $actividad = $_GET['actividad'];
@@ -564,7 +564,8 @@ class HelperPudPaiController extends Controller{
         return $html;
     }
 
-    private function devuelve_preguntas($reflexiones, $tipo){
+    private function devuelve_preguntas($reflexiones, $tipo)
+    {
         if($tipo == 'antes'){
             $color = '#0a1f8f';
         }elseif($tipo == 'mientras'){
@@ -579,7 +580,7 @@ class HelperPudPaiController extends Controller{
         foreach($reflexiones as $refle){
             if($refle->tipo == $tipo){
                 $html .= '<li style="color: '.$color.'">';
-                $html .=  $this->modal_respuesta($refle->id, $refle->contenido, $refle->respuesta);
+                $html .=  $this->modal_respuesta($refle->id, $refle->contenido, $refle->respuesta,$tipo);
                 $html .= '<b><u> '.$refle->contenido.'</u></b><br>'.$refle->respuesta;
                 $html .= '</li>';
                 $html .= '<li style="color: '.$color.'"><hr></li>';
@@ -591,8 +592,14 @@ class HelperPudPaiController extends Controller{
         return $html;
     }
 
-    private function modal_respuesta($id, $pregunta, $respuesta){
-        $html = '<div class="ocultar">';
+    private function modal_respuesta($id, $pregunta, $respuesta,$tipo)
+    {
+        $html = '<div class="">';
+        if($tipo=='antes')
+        {
+            $html = '<div class="ocultar">';
+        }
+       
         $html .= '<a href="#"  data-bs-toggle="modal" data-bs-target="#reflexionModalR'.$id.'" onclick="show_reflexion_disponibles()"> 
                         <i class="fas fa-reply"> </i>';
                 $html .= '</a>';

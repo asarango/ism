@@ -56,7 +56,7 @@ class Preguntas extends ActiveRecord{
             $this->html .= '<div class="card-body">';
                 // inicia row de botones de modales
                 $this->html .= '<div class="row">';
-                $this->html .= '<div class="ocultar col-lg-3 col-md-3 text-center">'.$this->modal_facticas().$this->modal_conceptuales(). $this->modal_debatibles().'</div>';
+                $this->html .= '<div class="ocultar  col-lg-3 col-md-3 text-center">'.$this->modal_facticas().$this->modal_conceptuales(). $this->modal_debatibles().'</div>';
                 $this->html .= '</div>';
                 //******finaliza row de botones de modales
                 

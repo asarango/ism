@@ -173,7 +173,7 @@ class PudPaiController extends Controller{
         if(!$pudPai){
             $model = new PudPai();
             $model->planificacion_bloque_unidad_id = $planUnidadId;
-            $model->seccion_numero = 4;
+            $model->seccion_numero = 5;
             $model->tipo = $tipo;
             $model->contenido = 'sin contenido';
             $model->created = $usuarioLog;

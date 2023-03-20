@@ -477,6 +477,43 @@ $iconoColor = '#ffffff';
             }
         })
     }
+    //1
+    //1
+    function guardar_datos_informativos($parametro)
+    {
+        /*
+            Creado Por: Santiago / Fecha Creacion: 2023-03-16 
+            Modificado Por: 	/ Fecha Modificación:
+            Detalle: 
+        */
+        //parametro 1: horas, 2: fecha_inicio, 3: fecha_fin
+        var planUnidadId = '<?= $planUnidad->id ?>';
+        var horas = $("#horas_unidad").val();
+        var fecha_inicio = $("#fecha_inicio_unidad").val();
+        var fecha_fin = $("#fecha_fin_unidad").val();
+        var parametro = $parametro;
+        var dato_a_guardar = '';
+        var url = '<?= Url::to(['guarda-datos-informativos']) ?>';
+
+      
+        var params ={
+            parametro:parametro,           
+            planUnidadId:planUnidadId,
+            horas :horas,
+            fecha_inicio : fecha_inicio,
+            fecha_fin :fecha_fin,
+        };
+        $.ajax({
+            data:params,
+            url:url,
+            type:'POST',
+            beforeSend: function(){},
+            success: function(respuesta){
+
+            }
+        });
+       
+    }
 
     function recargar_pagina(){
         //location.reload();      

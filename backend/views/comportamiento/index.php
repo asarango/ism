@@ -41,10 +41,6 @@ $numEstFaltaInjustificada = conteo_novedades_especiale($conteoNovedadesEspecific
 $numEstAtrasoJustificada = conteo_novedades_especiale($conteoNovedadesEspecificas,'1a');
 $numEstAtrasoInjustificada = conteo_novedades_especiale($conteoNovedadesEspecificas,'1d');
 
-// echo '<pre>';
-// print_r($numEstFaltaJustificada);
-// die();
-
 function conteo_estudiante_por_novedad($id_asistencia_profesor)
 {
     $con = Yii::$app->db;

@@ -430,6 +430,25 @@ class IsmRespuestaPlanInterdiciplinarController extends Controller
         $model->relacion_ods = $competencia_relacion_ods;
         $model->save();
     }
+    public function actionGuardaDatosInformativos()
+    {
+      /*
+          Creado Por: Santiago / Fecha Creacion: 2023-03-08 
+          Modificado Por: 	/ Fecha Modificación:
+          Detalle: EL parametro , recibe 1 o 2 o 3, siendo 1= horas, 2 igual a fecha inicio, 3 igual a fecha fin
+      */
+      $parametro = $_POST['parametro'];      
+      $planUnidadId = $_POST['planUnidadId'];
+      $horas = $_POST['horas'];      
+      $fecha_inicio = $_POST['fecha_inicio'];
+      $fecha_fin = $_POST['fecha_fin'];   
+
+        $model = PlanificacionBloquesUnidad::findOne($planUnidadId);
+        $model->horas = $horas;
+        $model->fecha_inicio = $fecha_inicio;
+        $model->fecha_fin = $fecha_fin;
+        $model->save();
+    }
     /*************************************************************************************************************** */
     /*************************************************************************************************************** */
     /*************************************************************************************************************** */
@@ -473,10 +492,10 @@ class IsmRespuestaPlanInterdiciplinarController extends Controller
         $planUnidad   = PlanificacionBloquesUnidad::findOne($planUnidadId);
 
 
-        $tiempo = $objDatos->calcula_horas(
-            $planUnidad->planCabecera->ismAreaMateria->materia_id,
-            $planUnidad->planCabecera->ismAreaMateria->mallaArea->periodoMalla->malla->op_course_template_id
-        );
+        // $tiempo = $objDatos->calcula_horas(
+        //     $planUnidad->planCabecera->ismAreaMateria->materia_id,
+        //     $planUnidad->planCabecera->ismAreaMateria->mallaArea->periodoMalla->malla->op_course_template_id
+        // );
 
         $html = '';
         // inicia row
@@ -502,16 +521,19 @@ class IsmRespuestaPlanInterdiciplinarController extends Controller
         $html .= '<div class="col"><b>AÑO PAI:</b></div>';
         $html .= '<div class="col">' . $planUnidad->planCabecera->ismAreaMateria->mallaArea->periodoMalla->malla->opCourseTemplate->name . '</div>';
         $html .= '<div class="col"><b>DURACIÓN EN HORAS:</b></div>';
-        $html .= '<div class="col">' . $tiempo['horas'] . '</div>';
+        //$html .= '<div class="col">' . $tiempo['horas'] . '</div>';
+        $html .= '<div class="col"><input class="form-control" type="number" value="'.$planUnidad->horas.'" min="0" id="horas_unidad" onchange="guardar_datos_informativos(1)"/></div>';
         $html .= '</div>';
         // //******finaliza row
         $html .= '<hr>';
         // //inicia row
         $html .= '<div class="row">';
         $html .= '<div class="col"><b>FECHA INICIO:</b></div>';
-        $html .= '<div class="col">' . $tiempo['fecha_inicio'] . '</div>';
+        //$html .= '<div class="col">' . $tiempo['fecha_inicio'] . '</div>';
+        $html .= '<div class="col"><input class="form-control" type="date" value="'.substr($planUnidad->fecha_inicio,0,10).'"id="fecha_inicio_unidad"  onchange="guardar_datos_informativos(2)"/></div>';
         $html .= '<div class="col"><b>FECHA FINALIZACIÓN:</b></div>';
-        $html .= '<div class="col">' . $tiempo['fecha_final'] . '</div>';
+        //$html .= '<div class="col">' . $tiempo['fecha_final'] . '</div>';
+        $html .= '<div class="col"><input class="form-control" type="date" value="'.substr($planUnidad->fecha_fin,0,10).'"  id="fecha_fin_unidad" onchange="guardar_datos_informativos(3)"/></div>';
         $html .= '</div>';
 
         $html = $this->generico_marco_general(0, '', '1.1.-', $titulo, $esEditable, $html);

@@ -76,16 +76,19 @@ class Datos extends ActiveRecord{
                 $this->html .= '<div class="col"><b>AÑO DEL PAI:</b></div>';
                 $this->html .= '<div class="col">'.$this->planUnidad->planCabecera->ismAreaMateria->mallaArea->periodoMalla->malla->opCourseTemplate->name.'</div>';
                 $this->html .= '<div class="col"><b>DURACIÓN DE LA UNIDAD EN HORAS:</b></div>';                
-                $this->html .= '<div class="col">'.$tiempo['horas'].'</div>';
+                //$this->html .= '<div class="col">'.$tiempo['horas'].'</div>';
+                $this->html .= '<div class="col"><input class="form-control" type="number" value="'.$this->planUnidad->horas.'" min="0" id="horas_unidad" onchange="guardar_datos_informativos(1)"/></div>';
                 $this->html .= '</div>';
                 //******finaliza row
                 $this->html .= '<hr>';
                 //inicia row
                 $this->html .= '<div class="row">';
                 $this->html .= '<div class="col"><b>FECHA INICIO:</b></div>';
-                $this->html .= '<div class="col">'.$tiempo['fecha_inicio'].'</div>';
-                $this->html .= '<div class="col"><b>DURACIÓN DE LA UNIDAD EN HORAS:</b></div>';                
-                $this->html .= '<div class="col">'.$tiempo['fecha_final'].'</div>';
+                //$this->html .= '<div class="col">'.$tiempo['fecha_inicio'].'</div>';
+                $this->html .= '<div class="col"><input class="form-control" type="date" value="'.substr($this->planUnidad->fecha_inicio,0,10).'" id="fecha_inicio_unidad"  onchange="guardar_datos_informativos(2)"/></div>';
+                $this->html .= '<div class="col"><b>FECHA FIN:</b></div>';                
+                //$this->html .= '<div class="col">'.$tiempo['fecha_final'].'</div>';
+                $this->html .= '<div class="col"><input class="form-control" type="date" value="'.substr($this->planUnidad->fecha_fin,0,10).'"id="fecha_fin_unidad" onchange="guardar_datos_informativos(3)"/></div>';
                 $this->html .= '</div>';
                 //******finaliza row
             $this->html .= '</div>';//fin de card-body

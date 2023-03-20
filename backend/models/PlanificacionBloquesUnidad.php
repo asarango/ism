@@ -18,7 +18,11 @@ use Yii;
  * @property bool $pud_status
  * @property int $avance_porcentaje
  * @property string $actividades_aprendizaje
+ * @property string $horas
+ * @property string $fecha_inicio
+ * @property string $fecha_fin
  *
+ * @property IsmContenidoPaiPlanificacion[] $ismContenidoPaiPlanificacions
  * @property CurriculoMecBloque $curriculoBloque
  * @property PlanificacionDesagregacionCabecera $planCabecera
  * @property PlanificacionBloquesUnidadSubtitulo[] $planificacionBloquesUnidadSubtitulos
@@ -55,8 +59,10 @@ class PlanificacionBloquesUnidad extends \yii\db\ActiveRecord
             [['curriculo_bloque_id', 'plan_cabecera_id', 'avance_porcentaje'], 'integer'],
             [['enunciado_indagacion', 'contenidos', 'actividades_aprendizaje'], 'string'],
             [['is_open', 'pud_status'], 'boolean'],
+            [['fecha_inicio', 'fecha_fin'], 'safe'],
             [['unit_title'], 'string', 'max' => 150],
             [['settings_status'], 'string', 'max' => 30],
+            [['horas'], 'string', 'max' => 10],
             [['curriculo_bloque_id'], 'exist', 'skipOnError' => true, 'targetClass' => CurriculoMecBloque::className(), 'targetAttribute' => ['curriculo_bloque_id' => 'id']],
             [['plan_cabecera_id'], 'exist', 'skipOnError' => true, 'targetClass' => PlanificacionDesagregacionCabecera::className(), 'targetAttribute' => ['plan_cabecera_id' => 'id']],
         ];
@@ -79,7 +85,18 @@ class PlanificacionBloquesUnidad extends \yii\db\ActiveRecord
             'pud_status' => 'Pud Status',
             'avance_porcentaje' => 'Avance Porcentaje',
             'actividades_aprendizaje' => 'Actividades Aprendizaje',
+            'horas' => 'Horas',
+            'fecha_inicio' => 'Fecha Inicio',
+            'fecha_fin' => 'Fecha Fin',
         ];
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getIsmContenidoPaiPlanificacions()
+    {
+        return $this->hasMany(IsmContenidoPaiPlanificacion::className(), ['planificacion_bloque_unidad_id' => 'id']);
     }
 
     /**

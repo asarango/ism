@@ -461,16 +461,18 @@ order by c.name, p.name;";
     }
 
 
-    public function actionUnitario() {
+    public function actionUnitario() 
+    {
         $sentencias = new \backend\models\SentenciasClase();
 
-        if (isset($_GET['id'])) {
-
+        if (isset($_GET['id'])) 
+        {
             $id = $_GET['id'];
             $model = $this->findModel($id);
-            $curso = $model->idcurso;
-
-            if($model->mallaMateria->tipo == 'PROYECTOS'){
+            $curso = $model->paralelo->course->id;          
+        
+           
+            if($model->ismAreaMateria->tipo == 'PROYECTOS'){
                 $modelAlumnos = $sentencias->get_alumnos_todos();  
             }else{
                 $modelAlumnos = $sentencias->get_alumnos_curso($id, $curso);

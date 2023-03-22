@@ -191,7 +191,7 @@ class MateriasPaiController extends Controller{
     private function consulta_cursos_pai($periodoId, $institutoId){
         
         $con            = Yii::$app->db;
-        $query = "select 	t.id, t.name 		
+        $query = "select 	t.id, t.name_pai		
         from 	op_course c
                 inner join op_section s on s.id = c.section
                 inner join scholaris_op_period_periodo_scholaris sop on sop.op_id = s.period_id 
@@ -200,6 +200,9 @@ class MateriasPaiController extends Controller{
                 and s.code = 'PAI'
                 and c.x_institute = $institutoId
         order by t.next_course_id desc;";
+        // echo '<pre>';
+        // print_r( $query );
+        // die();
         $res = $con->createCommand($query)->queryAll();
         return $res;
     }
@@ -211,6 +214,7 @@ class MateriasPaiController extends Controller{
         $institutoId    = Yii::$app->user->identity->instituto_defecto;
 
         $cursosPai      = $this->consulta_cursos_pai($periodoId, $institutoId);    
+      
         $html = new AjaxMapaEnfoque($materiaId, $habilidadOrden, $cursosPai, $periodoId);
         return $html->html;
     }    

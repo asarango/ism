@@ -56,7 +56,7 @@ class SentenciasClase extends \yii\db\ActiveRecord {
                                     ,s.last_name
                                     ,s.first_name
                                     ,s.middle_name
-                                    ,concat(s.last_name,' ',s.first_name) as nombre
+                                    ,concat(s.last_name,' ',s.first_name,' - ',c.name,' ',p.name) as nombre
                     from	op_student_inscription i
                                     inner join op_course_paralelo p on p.id = i.parallel_id
                                     inner join op_course c on c.id = p.course_id

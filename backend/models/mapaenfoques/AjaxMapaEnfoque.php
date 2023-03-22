@@ -58,7 +58,7 @@ class AjaxMapaEnfoque extends \yii\db\ActiveRecord {
                             //Se repiten encabezados los cursos de PAI 
                             $html .= '<th scope="col" style="text-align:center">Exploradores</th>';
                             foreach ($this->arrayCursosPai as $curso) {
-                                $html .= '<th scope="col" style="text-align:center">'.$curso['name'].'</th>';
+                                $html .= '<th scope="col" style="text-align:center">'.$curso['name_pai'].'</th>';
                             }
                         $html .= '</tr>';
                     $html .= '</thead>';

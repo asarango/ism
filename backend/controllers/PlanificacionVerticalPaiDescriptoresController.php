@@ -288,6 +288,10 @@ class PlanificacionVerticalPaiDescriptoresController extends Controller{
                                         and contenido = c.es_exploracion
                 ) order by c.es_titulo2, c.es_exploracion ;";
 
+                // echo '<pre>';
+                // print_r($query);
+                // die();
+
 
 
         $res = $con->createCommand($query)->queryAll();
@@ -318,10 +322,19 @@ class PlanificacionVerticalPaiDescriptoresController extends Controller{
      * QUITA LOS CRITERIOS PAI
      */
     public function actionQuitar(){
+
+        // echo '<pre>';
+        // print_r($_GET);
+        // die();
         $id = $_GET['id'];
         $pestana = $_GET['pestana'];
-        $grupoMateria = $_GET['grupoMateria'];
-
+        $grupoMateria = array();
+        if(isset($_GET['grupoMateria']))
+        {
+            $grupoMateria = $_GET['grupoMateria'];
+            $esInterdisciplinar = '1';            
+        }
+      
         $model = PlanificacionVerticalPaiDescriptores::findOne($id);
         $planBloqueUnidadId = $model->plan_unidad_id;
         $model->delete();

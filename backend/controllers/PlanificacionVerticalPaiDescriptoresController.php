@@ -108,6 +108,7 @@ class PlanificacionVerticalPaiDescriptoresController extends Controller{
           ])->all();
 
         $contextoGlobalDisponibles = $this->consulta_contexto_global($planBloqueUnidadId);
+        $contextoGlobalDisponiblesCabeceras = $this->consulta_contexto_global_cabeceras($planBloqueUnidadId);
         $contextoGlobalSeleccionados = PlanificacionVerticalPaiOpciones::find()->where([
             'plan_unidad_id' => $planBloqueUnidadId,
             'tipo' => 'contexto_global'
@@ -145,6 +146,7 @@ class PlanificacionVerticalPaiDescriptoresController extends Controller{
              'conceptosRelacionadosSeleccionados' => $conceptosRelacionadosSeleccionados,
              'contextoGlobalDisponibles' => $contextoGlobalDisponibles,
              'contextoGlobalSeleccionados' => $contextoGlobalSeleccionados,
+             'contextoGlobalDisponiblesCabeceras'=>$contextoGlobalDisponiblesCabeceras,
              'habilidadesDisponibles' => $habilidadesDisponibles,
              'habilidadesSeleccionadas' => $habilidadesSeleccionadas,
              'pestana' => $pestana,
@@ -256,19 +258,35 @@ class PlanificacionVerticalPaiDescriptoresController extends Controller{
 
     private function consulta_contexto_global($planBloqueUnidadId){
             $con    = Yii::$app->db;
-            $query  = "select 	id, tipo, contenido_es, contenido_en, contenido_fr, estado
+            $query  = "select 	id, tipo, contenido_es, contenido_en, contenido_fr, estado,sub_contenido
                         from 	contenido_pai_opciones op
                         where 	op.tipo = 'contexto_global'
                                 and estado = true
-                                and contenido_es not in(
-                                    select contenido from planificacion_vertical_pai_opciones where
+                                and sub_contenido not in(
+                                    select sub_contenido from planificacion_vertical_pai_opciones where
                                     contenido = op.contenido_es
                                     and plan_unidad_id = $planBloqueUnidadId
                                     and tipo = op.tipo
-                            );";
+                            ) order by contenido_es,sub_contenido;";
+        // echo '<pre>';
+        // print_r($query );
+        // die();
         $res = $con->createCommand($query)->queryAll();
         return $res;
     }
+    private function consulta_contexto_global_cabeceras($planBloqueUnidadId){
+        $con    = Yii::$app->db;
+        $query  = "select 	 distinct contenido_es
+                    from 	contenido_pai_opciones op
+                    where 	op.tipo = 'contexto_global'
+                            and estado = true
+                            order by contenido_es;";
+    // echo '<pre>';
+    // print_r($query );
+    // die();
+    $res = $con->createCommand($query)->queryAll();
+    return $res;
+}
 
     private function consulta_habilidades_disponibles($planBloqueUnidadId, $opCourseTemplateId, $periodoId){
         $con = Yii::$app->db;
@@ -349,6 +367,7 @@ class PlanificacionVerticalPaiDescriptoresController extends Controller{
         $planBloqueUnidadId = $_GET['plan_unidad_id'];
         $tipo               = $_GET['tipo'];
         $contenido          = $_GET['contenido'];
+        $sub_contenido          = $_GET['sub_contenido'];
         $pestana            = $_GET['pestana'];
         $id_relacion        = $_GET['id_relacion'];
         $tipo2              = $_GET['tipo2'];
@@ -357,6 +376,7 @@ class PlanificacionVerticalPaiDescriptoresController extends Controller{
         $model->plan_unidad_id = $planBloqueUnidadId;
         $model->tipo = $tipo;
         $model->contenido = $contenido;
+        $model->sub_contenido = $sub_contenido ;
         $model->id_relacion = $id_relacion ;
         $model->tipo2 = $tipo2;
         $model->save();

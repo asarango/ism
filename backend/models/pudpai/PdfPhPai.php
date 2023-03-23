@@ -250,7 +250,7 @@ class PdfPhPai extends \yii\db\ActiveRecord
                     }
 
                     if($planPai->tipo =='contexto_global'){
-                        $contx_global .= '<li>'.$planPai->contenido.'</li>';
+                        $contx_global .= '<li><b>'.$planPai->contenido.'</b> : '.$planPai->sub_contenido.'</li>';
                     }                
                 }
                 $conc_clave .= '</ul>';

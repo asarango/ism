@@ -13,6 +13,7 @@ use Yii;
  * @property string $contenido_en
  * @property string $contenido_fr
  * @property bool $estado
+ * @property string $sub_contenido
  */
 class ContenidoPaiOpciones extends \yii\db\ActiveRecord
 {
@@ -34,6 +35,7 @@ class ContenidoPaiOpciones extends \yii\db\ActiveRecord
             [['contenido_es', 'contenido_en', 'contenido_fr'], 'string'],
             [['estado'], 'boolean'],
             [['tipo'], 'string', 'max' => 50],
+            [['sub_contenido'], 'string', 'max' => 500],
         ];
     }
 
@@ -49,6 +51,7 @@ class ContenidoPaiOpciones extends \yii\db\ActiveRecord
             'contenido_en' => 'Contenido En',
             'contenido_fr' => 'Contenido Fr',
             'estado' => 'Estado',
+            'sub_contenido' => 'Sub Contenido',
         ];
     }
 }

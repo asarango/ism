@@ -183,6 +183,7 @@ class HelperGeneral extends ActiveRecord{
         
         $query = "select 	cab.id
                 ,m.nombre as name
+                ,iam.grupo_pai as grupo_pai
                 ,count(cri.id) as total_criterios_evaluacion
                         from 	planificacion_desagregacion_cabecera cab 
                                         inner join ism_area_materia iam on iam.id = cab.ism_area_materia_id 
@@ -203,7 +204,12 @@ class HelperGeneral extends ActiveRecord{
                                                 and pmalla.scholaris_periodo_id  =  $periodoId
                                                 and c.es_activo = true
                                                 ) 
-                        group by cab.id ,m.nombre;";
+                        group by cab.id ,m.nombre,iam.grupo_pai
+                        order by iam.grupo_pai,m.nombre;";
+
+                        // echo '<pre>';
+                        // print_r($query);
+                        // die();
 
         $res =  $this->consultaBD($query);         
         

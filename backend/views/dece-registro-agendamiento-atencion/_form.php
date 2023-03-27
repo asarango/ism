@@ -32,7 +32,13 @@ $modelPathArchivo = PlanificacionOpciones::find()
     ->where(['tipo' => 'VER_ARCHIVO'])
     ->andWhere(['categoria' => 'PATH_DECE_SEG'])
     ->one();
+
+    echo '<pre>';
+    print_r($modelEstudiante);
+    die();
 ?>
+
+
 <!-- JS y CSS Ckeditor -->
 <!-- <script src="https://cdn.ckeditor.com/4.17.1/full/ckeditor.js"></script> -->
 <script src="https://cdn.ckeditor.com/4.19.0/standard/ckeditor.js"></script>

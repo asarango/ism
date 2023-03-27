@@ -63,6 +63,14 @@ $modelIntCompromiso = new DeceIntervencionCompromiso();
                         <td><b>Representante: </b></td>
                         <td><?= $modelRepresentante->name ?></td>
                     </tr>
+                    <tr>
+                        <td><b>Email Representante: </b></td>
+                        <td><?= $modelRepresentante->email ?></td>
+                    </tr>
+                    <tr>
+                        <td><b>Telèfono: </b></td>
+                        <td><?= $modelRepresentante->phone . ' - ' . $modelRepresentante->mobile . ' - ' . $modelRepresentante->x_work_phone ?></td>
+                    </tr>
                 </table>
                 <h3 style="color:red">Histórico Intervenciones</h3>
                 <div style="overflow-x:scroll;overflow-y:scroll;">
@@ -153,56 +161,56 @@ $modelIntCompromiso = new DeceIntervencionCompromiso();
                     </div>
                     <div class="col-lg-6">
                         <?php
-                            if(!($model->isNewRecord)){ 
-                         ?> 
-                        <table class="table table-info">
-                            <tr>
-                                <td>
-                                    <span style="color:blueviolet; font-size:12px;"><b>Compromisos de las partes involucradas</b></span>
-                                </td>
-                                <td>
-                                    <!--boton VER  boton llama modal para COMPROMISO BLOQUE 1 -->
-                                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#btn_compromiso_b1" onclick="muestraTablaCompromiso()"> 
-                                    VER
-                                    </button> 
-                                </td>
-                            </tr>
-                        </table>  
-                        <?php  
-                            }  
-                        ?>   
-                       
-                                            
+                        if (!($model->isNewRecord)) {
+                        ?>
+                            <table class="table table-info">
+                                <tr>
+                                    <td>
+                                        <span style="color:blueviolet; font-size:12px;"><b>Compromisos de las partes involucradas</b></span>
+                                    </td>
+                                    <td>
+                                        <!--boton VER  boton llama modal para COMPROMISO BLOQUE 1 -->
+                                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#btn_compromiso_b1" onclick="muestraTablaCompromiso()">
+                                            VER
+                                        </button>
+                                    </td>
+                                </tr>
+                            </table>
+                        <?php
+                        }
+                        ?>
+
+
                         <!-- Modal B1-->
                         <?php
-                            if(!($model->isNewRecord)){ 
-                         ?> 
-                        <div class="modal fade" id="btn_compromiso_b1" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                            <div class="modal-dialog modal-dialog-scrollable modal-xl">
-                                <div class="modal-content">
-                                    <div class="modal-header" >
-                                        <h5 class="modal-title" id="staticBackdropLabel"><b>Compromisos de las Partes Involucradas</b></h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                    </div>
-                                    <div class="modal-body">   
+                        if (!($model->isNewRecord)) {
+                        ?>
+                            <div class="modal fade" id="btn_compromiso_b1" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-scrollable modal-xl">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="staticBackdropLabel"><b>Compromisos de las Partes Involucradas</b></h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
 
-                                        <?= $this->render('/dece-intervencion-compromiso/create', [
-                                            'model' =>$modelIntCompromiso,
-                                            'id_intervencion' =>$model->id,
-                                        ]) ?>    
+                                            <?= $this->render('/dece-intervencion-compromiso/create', [
+                                                'model' => $modelIntCompromiso,
+                                                'id_intervencion' => $model->id,
+                                            ]) ?>
 
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
 
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <?php  
-                            }  
+                        <?php
+                        }
                         ?>
-                       
+
                     </div>
                 </div>
 
@@ -213,13 +221,13 @@ $modelIntCompromiso = new DeceIntervencionCompromiso();
                 <?= $form->field($model, 'id_caso')->hiddenInput()->label(false) ?>
 
                 <?php
-                    if ($model->isNewRecord) { 
-                 ?>
-                        <label for="exampleInputEmail1" class="form-label">Fecha Creación</label>
-                        <input type="date" id="fecha_intervencion" class="form-control" name="fecha_intervencion" require="true" value="<?= $model->fecha_intervencion; ?>">
+                if ($model->isNewRecord) {
+                ?>
+                    <label for="exampleInputEmail1" class="form-label">Fecha Creación</label>
+                    <input type="date" id="fecha_intervencion" class="form-control" name="fecha_intervencion" require="true" value="<?= $model->fecha_intervencion; ?>">
                 <?php
                 }
-                  ?>
+                ?>
 
                 <?= $form->field($model, 'razon')->textarea(['rows' => 4]) ?>
                 <!-- <script>
@@ -309,33 +317,30 @@ $modelIntCompromiso = new DeceIntervencionCompromiso();
 
 </div>
 <script>
-
-$(window).on("load",function(){
+    $(window).on("load", function() {
         muestraTablaCompromiso();
     });
 
-function muestraTablaCompromiso()
-{
-    //alert("Ingresoo ****");    
-    var url = '<?= Url::to(['dece-intervencion-compromiso/mostrar-tabla']) ?>';
-    var id_intervencion = '<?=$model->id?>';
-            var params = {
-                id_intervencion: id_intervencion
-            };
-            
-            $.ajax({
-                data: params,
-                url: url,
-                type: 'POST',
-                beforeSend: function () {},
-                success: function (response) {
-                    //alert("iNTERMEDIO ****");
-                    $('#tabla_compromisos').html(response);
+    function muestraTablaCompromiso() {
+        //alert("Ingresoo ****");    
+        var url = '<?= Url::to(['dece-intervencion-compromiso/mostrar-tabla']) ?>';
+        var id_intervencion = '<?= $model->id ?>';
+        var params = {
+            id_intervencion: id_intervencion
+        };
 
-                }
-            });
-        
-    //alert("Termino ****");
-}
+        $.ajax({
+            data: params,
+            url: url,
+            type: 'POST',
+            beforeSend: function() {},
+            success: function(response) {
+                //alert("iNTERMEDIO ****");
+                $('#tabla_compromisos').html(response);
 
+            }
+        });
+
+        //alert("Termino ****");
+    }
 </script>

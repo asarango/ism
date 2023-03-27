@@ -67,6 +67,10 @@ foreach ($usuarios as $usu)
     $arrayUsuario[$usu['usuario']]=$usu['usuario'];
 }
 
+// echo '<pre>';
+// print_r($modelEstudiante);
+// die();
+
 ?>
 <script src="https://cdn.ckeditor.com/4.19.0/standard/ckeditor.js"></script>
 
@@ -100,6 +104,14 @@ foreach ($usuarios as $usu)
                         <tr>
                             <td><b>Representante: </b></td>
                             <td><?= $modelRepresentante->name ?></td>
+                        </tr>  
+                        <tr>
+                            <td><b>Email Representante: </b></td>
+                            <td><?= $modelRepresentante->email ?></td>
+                        </tr> 
+                        <tr>
+                            <td><b>Telèfono: </b></td>
+                            <td><?= $modelRepresentante->phone . ' - ' . $modelRepresentante->mobile .' - '. $modelRepresentante->x_work_phone ?></td>
                         </tr>                       
                     </table>
                     <h3 style="color:red">Histórico Acompañamiento</h3>

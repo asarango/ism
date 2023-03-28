@@ -205,6 +205,7 @@ $modelPudBitacora = PudAprobacionBitacora::find()
                                 </div>
                                 <div class="card-body">
                                     <div class="row" style="overflow-y: scroll; overflow-x: scroll;">
+                                    
                                         <?= $modelPudBitacora->respuesta ?>                                       
 
                                     </div>

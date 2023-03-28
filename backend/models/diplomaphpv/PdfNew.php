@@ -402,7 +402,7 @@ class PdfNew extends \yii\db\ActiveRecord
 
     private function get_esquemas_curso()
     {
-        $html = '<b>1.	Esquema del curso/Plan vertical:</b>';
+        $html = '<br><br><b>1.	Esquema del curso/Plan vertical:</b>';
         $html .= '<ul>';
         $html .= '<li>Utilice la siguiente tabla para organizar los temas que van a enseñarse en el curso. Si es necesario incluir temas que cubran otros requisitos (por ejemplo, programa de estudios nacional), hágalo de manera integrada pero márquelos con cursiva. Añada tantas filas como necesite.</li>';
         $html .= '<li>Este documento no debe explicar el día a día de cada unidad. Se trata de un esquema que debe mostrar cómo van a distribuirse los temas y el tiempo de modo que los alumnos estén preparados para cumplir los requisitos de la asignatura.</li>';
@@ -443,7 +443,7 @@ class PdfNew extends \yii\db\ActiveRecord
 
     private function get_componentes_evaluacion()
     {
-        $html = '<b>2.	Componentes de evaluación interna y externa del Programa del Diploma que se deben completar durante el curso</b>';
+        $html = '<br><br><b>2.	Componentes de evaluación interna y externa del Programa del Diploma que se deben completar durante el curso</b>';
         $html .= '<ul>';
         $html .= '<li>Explique brevemente cómo y cuándo trabajará en ellos. Incluya la fecha en la que presente por primera vez a sus alumnos los componentes de evaluación.</li>';
         $html .= '<li>Explique las distintas etapas y plazos y cómo se preparará a los alumnos para completarlos.</li>';
@@ -475,7 +475,7 @@ class PdfNew extends \yii\db\ActiveRecord
 
     private function get_vinculos_tdc()
     {
-        $html = '<b>3.	Vínculos con Teoría del Conocimiento</b>';
+        $html = '<br><br><b>3.	Vínculos con Teoría del Conocimiento</b>';
         $html .= '<p>Los profesores deben explorar los vínculos que hay entre los temas de sus respectivas asignaturas y TdC. 
         Para dar un ejemplo de cómo lo haría, elija un tema del esquema del curso que permita a los alumnos establecer vínculos con TdC. 
         Explique brevemente por qué elige ese tema y describa cómo planificaría la clase.</p>';
@@ -501,7 +501,7 @@ class PdfNew extends \yii\db\ActiveRecord
 
     private function get_enfoques_aprendizaje()
     {
-        $html = '<b>4.	Enfoques del aprendizaje</b>';
+        $html = '<br><br><b>4.	Enfoques del aprendizaje</b>';
         $html .= '<p>Todas las asignaturas del IB deben contribuir al desarrollo de las habilidades de los enfoques del aprendizaje de los alumnos. 
         Para dar un ejemplo de cómo lo haría, elija un tema del esquema del curso que permita a los alumnos desarrollar 
         específicamente una o varias de las categorías de habilidades (sociales, de pensamiento, comunicación, autogestión e investigación).</p>';
@@ -528,7 +528,7 @@ class PdfNew extends \yii\db\ActiveRecord
 
     private function get_mentalidad_internacional()
     {
-        $html = '<b>5.	Mentalidad internacional</b>';
+        $html = '<br><br><b>5.	Mentalidad internacional</b>';
         $html .= '<p>Todas las asignaturas del IB deben contribuir al desarrollo de una mentalidad internacional en los alumnos. 
         Para dar un ejemplo de cómo lo haría, elija un tema del esquema del curso que permita a los alumnos analizarlo desde distintas perspectivas culturales. 
         Explique brevemente por qué elige ese tema y qué recursos utilizaría para alcanzar este objetivo.</p>';
@@ -554,7 +554,7 @@ class PdfNew extends \yii\db\ActiveRecord
 
     private function get_desarrollo_perfil()
     {
-        $html = '<b>6.	Desarrollo del perfil de la comunidad de aprendizaje del IB</b>';
+        $html = '<br><br><b>6.	Desarrollo del perfil de la comunidad de aprendizaje del IB</b>';
         $html .= '<p>También se espera que, mediante las asignaturas, los alumnos desarrollen los atributos del perfil de la comunidad de aprendizaje del IB. 
         Para dar un ejemplo de cómo lo haría, elija un tema del esquema del curso y explique de qué manera los contenidos y las 
         habilidades relacionadas fomentarían el desarrollo de los atributos del perfil de la comunidad de aprendizaje del IB que usted decida.</p>';
@@ -580,7 +580,7 @@ class PdfNew extends \yii\db\ActiveRecord
     
     private function get_equipos()
     {
-        $html = '<b>7.	Instalaciones y equipos</b>';
+        $html = '<br><br><b>7.	Instalaciones y equipos</b>';
         $html .= '<p>La enseñanza de esta asignatura requiere instalaciones y equipos para que el proceso de enseñanza y aprendizaje sea satisfactorio. 
         Describa las instalaciones y los equipos que haya en el colegio para permitir y fomentar el desarrollo del curso. 
         Incluya cualquier plan que haya para mejorarlos y los plazos.</p>';
@@ -599,7 +599,7 @@ class PdfNew extends \yii\db\ActiveRecord
 
     private function get_otros_recursos()
     {
-        $html = '<b>8.	Otros recursos</b>';
+        $html = '<br><br><b>8.	Otros recursos</b>';
         $html .= '<p>Describa otros recursos que usted y sus alumnos puedan utilizar en el colegio, si hay planes para mejorarlos y los plazos. 
         Incluya cualquier recurso existente en la comunidad fuera del colegio que pueda contribuir a implementar satisfactoriamente su asignatura.</p>';
 
@@ -616,7 +616,7 @@ class PdfNew extends \yii\db\ActiveRecord
 
     private function get_bibliografia()
     {
-        $html = '<b>9.	Bibliografía/Webgrafía. Utilizar normas APA (última edición)</b>';
+        $html = '<br><br><b>9.	Bibliografía/Webgrafía. Utilizar normas APA (última edición)</b>';
 
         $bibliografia = $this->search_data_text('datos', 'bibliografia');
 

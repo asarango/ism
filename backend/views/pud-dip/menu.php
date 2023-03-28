@@ -28,6 +28,8 @@ $colorOk = 'green';
 $colorNotOk = 'red';
 $numCaracteresOk = $modelOpciones->categoria;
 
+$contador_5_0 = 0; //para nuevo pv
+
 $contador_5_1 = 0;
 $contador_5_3_1 = 0;
 $contador_5_3_2 = 0;
@@ -251,7 +253,19 @@ function contador_diferenciacion($planUnidadId,$numCaracteresOk){
 
     <li>
         <b>5.- ACCIÓN</b>
-        <ul>                                            
+        <ul>
+            <li class="zoom"><a href="#" onclick="ver_detalle('5.0.-');">5.1.- Semanas
+                <?php                    
+                    
+                    if ($contador_5_0==0)
+                    { $iconoColor = $colorNotOk;}
+                    else
+                    { $iconoColor = $colorOk;}
+                    ?>
+                    <i class="<?=$iconoOk;?>" title="FALTA INGRESAR DATOS" style="color: <?=$iconoColor;?>;"></i>
+                    </a>       
+            </li>    
+        
             <li class="zoom"><a href="#" onclick="ver_detalle('5.1.-');">5.1.- Evaluaciones
                 <?php                    
                     

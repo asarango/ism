@@ -350,4 +350,52 @@ class ScholarisAsistenciaProfesorController extends Controller {
     }
     
 
+
+    /**
+     * ACCIÓN PARA ENTREGAR HORARIO DE CLASES DE DOCENTE
+     * CREADO POR: Arturo Sarango - 2023-03-28
+     * ACTUALIZADO POR: Arturo Sarango - 2023-03-28
+     */
+
+     public function actionHorarioDocente(){
+        $user = Yii::$app->user->identity->usuario;
+        $periodId = Yii::$app->user->identity->periodo_id;
+
+        $horario = $this->get_horario($periodId, $user);
+
+        return $this->render('horario-docente',[
+            'horario' => $horario
+        ]);
+
+     }
+
+     private function get_horario($periodId, $user){
+        $con = Yii::$app->db;
+        $query = "select 	dia.id 
+                        ,dia.nombre as dia
+                        ,hor.nombre as hora
+                        ,mat.nombre as materia
+                        ,fac.last_name 
+                        ,cur.name as curso
+		                ,par.name as paralelo
+                from	scholaris_horariov2_horario hh
+                        inner join scholaris_clase cla on cla.id = hh.clase_id
+                        inner join ism_area_materia iam on iam.id = cla.ism_area_materia_id 
+                        inner join ism_malla_area ima on ima.id = iam.malla_area_id 
+                        inner join ism_periodo_malla ipm on ipm.id = ima.periodo_malla_id 
+                        inner join op_faculty fac on fac.id = cla.idprofesor 
+                        inner join res_users rus on rus.partner_id = fac.partner_id 
+                        inner join scholaris_horariov2_detalle det on det.id = hh.detalle_id 
+                        inner join scholaris_horariov2_dia dia on dia.id = det.dia_id 
+                        inner join scholaris_horariov2_hora hor on hor.id = det.hora_id 
+                        inner join ism_materia mat on mat.id = iam.materia_id 
+                        inner join op_course_paralelo par on par.id = cla.paralelo_id 
+		                inner join op_course cur on cur.id = par.course_id
+                where 	ipm.scholaris_periodo_id = $periodId
+                        and rus.login = '$user'
+                order by dia.numero, hor.numero;";
+        $res = $con->createCommand($query)->queryAll();
+        return $res;
+     }
+
 }

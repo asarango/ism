@@ -149,6 +149,13 @@ function mostrar_datos_materia($cabecera)
 
                         if ($ismAreaMateria->es_bi == true) {
                             echo Html::a(
+                                '<span class="badge rounded-pill" style="background-color: #ff9e18 "><i class="far fa-file-pdf" aria-hidden="true"></i> Plan Vertical</span>',
+                                ['plan-vertical-diploma/index1', 'cabecera_id' => $cabecera->id],
+                                ['class' => 'link']
+                            );
+                            echo ' | ';
+
+                            echo Html::a(
                                 '<span class="badge rounded-pill" style="background-color: #ff9e18 "><i class="far fa-file-pdf" aria-hidden="true"></i> PDF Plan Vertical</span>',
                                 ['pdf-pv-dp', 'cabecera_id' => $cabecera->id],
                                 ['class' => 'link', 'target' => '_blank']

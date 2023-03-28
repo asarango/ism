@@ -376,6 +376,8 @@ class ScholarisAsistenciaProfesorController extends Controller {
                         ,hor.nombre as hora
                         ,mat.nombre as materia
                         ,fac.last_name 
+                        ,cur.name as curso
+		                ,par.name as paralelo
                 from	scholaris_horariov2_horario hh
                         inner join scholaris_clase cla on cla.id = hh.clase_id
                         inner join ism_area_materia iam on iam.id = cla.ism_area_materia_id 
@@ -387,6 +389,8 @@ class ScholarisAsistenciaProfesorController extends Controller {
                         inner join scholaris_horariov2_dia dia on dia.id = det.dia_id 
                         inner join scholaris_horariov2_hora hor on hor.id = det.hora_id 
                         inner join ism_materia mat on mat.id = iam.materia_id 
+                        inner join op_course_paralelo par on par.id = cla.paralelo_id 
+		                inner join op_course cur on cur.id = par.course_id
                 where 	ipm.scholaris_periodo_id = $periodId
                         and rus.login = '$user'
                 order by dia.numero, hor.numero;";

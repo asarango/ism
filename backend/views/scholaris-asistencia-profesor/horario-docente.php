@@ -7,7 +7,7 @@ use yii\grid\GridView;
 /* @var $searchModel app\models\ScholarisAsistenciaProfesorSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Mis hoario de clases';
+$this->title = 'Mi horario de clases';
 ?>
 
 <div class="scholaris-asistencia-profesor-index" style="padding-left: 40px; padding-right: 40px">
@@ -49,6 +49,8 @@ $this->title = 'Mis hoario de clases';
                             <th>#</th>
                             <th>DIA</th>
                             <th>HORA</th>
+                            <th>CURSO</th>
+                            <th>PARALELO</th>
                             <th>ASIGNATURA</th>                            
                         </tr>
                     </thead>
@@ -63,6 +65,8 @@ $this->title = 'Mis hoario de clases';
                                 echo '<td>' . $i. '</td>';
                                 echo '<td>' . $data['dia']. '</td>';
                                 echo '<td>' . $data['hora'] . '</td>';                                
+                                echo '<td>' . $data['curso'] . '</td>';                                
+                                echo '<td>' . $data['paralelo'] . '</td>';                                
                                 echo '<td>' . $data['materia'] . '</td>';                                
                             echo '</tr>';                            
                         }

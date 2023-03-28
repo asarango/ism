@@ -34,6 +34,8 @@ use Yii;
  * @property int $ism_area_materia_id
  * @property bool $es_activo
  *
+ * @property KidsPlanSemanalHoraClase[] $kidsPlanSemanalHoraClases
+ * @property LmsDocente[] $lmsDocentes
  * @property NeeXClase[] $neeXClases
  * @property ScholarisAlumnoRetiradoClase[] $scholarisAlumnoRetiradoClases
  * @property ScholarisArchivosPud[] $scholarisArchivosPuds
@@ -79,10 +81,7 @@ class ScholarisClase extends \yii\db\ActiveRecord
     {
         return [
             [['idmateria', 'idprofesor', 'idcurso', 'paralelo_id', 'promedia', 'asignado_horario', 'todos_alumnos', 'malla_materia', 'rector_id', 'coordinador_dece_id', 'secretaria_id', 'coordinador_academico_id', 'inspector_id', 'dece_dhi_id', 'tutor_id', 'ism_area_materia_id'], 'default', 'value' => null],
-            [['idmateria', 'idprofesor', 'idcurso', 'paralelo_id', 'promedia', 'asignado_horario', 
-                'todos_alumnos', 'malla_materia', 'rector_id', 'coordinador_dece_id', 
-                'secretaria_id', 'coordinador_academico_id', 'inspector_id', 'dece_dhi_id', 
-                'tutor_id', 'ism_area_materia_id'], 'integer'],
+            [['idmateria', 'idprofesor', 'idcurso', 'paralelo_id', 'promedia', 'asignado_horario', 'todos_alumnos', 'malla_materia', 'rector_id', 'coordinador_dece_id', 'secretaria_id', 'coordinador_academico_id', 'inspector_id', 'dece_dhi_id', 'tutor_id', 'ism_area_materia_id'], 'integer'],
             [['idprofesor'], 'required'],
             [['peso'], 'number'],
             [['fecha_cierre', 'fecha_activacion'], 'safe'],
@@ -133,8 +132,24 @@ class ScholarisClase extends \yii\db\ActiveRecord
             'dece_dhi_id' => 'Dece Dhi ID',
             'tutor_id' => 'Tutor ID',
             'ism_area_materia_id' => 'Ism Area Materia ID',
-            'es_activo' => 'Es Activo'
+            'es_activo' => 'Es Activo',
         ];
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getKidsPlanSemanalHoraClases()
+    {
+        return $this->hasMany(KidsPlanSemanalHoraClase::className(), ['clase_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getLmsDocentes()
+    {
+        return $this->hasMany(LmsDocente::className(), ['clase_id' => 'id']);
     }
 
     /**
@@ -255,7 +270,7 @@ class ScholarisClase extends \yii\db\ActiveRecord
     public function getTutor()
     {
         return $this->hasOne(OpInstituteAuthorities::className(), ['id' => 'tutor_id']);
-    }     
+    }
 
     /**
      * @return \yii\db\ActiveQuery
@@ -352,9 +367,4 @@ class ScholarisClase extends \yii\db\ActiveRecord
     {
         return $this->hasMany(ScholarisTareaInicial::className(), ['clase_id' => 'id']);
     }
-
-
-    // public function getLmsActividad(){
-    //     return $this->hasOne(LmsActividad::className(), ['id' => 'lms_actvidad_id']);
-    // }
 }

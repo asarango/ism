@@ -41,6 +41,7 @@ class ScholarisBloqueActividadSearch extends ScholarisBloqueActividad
      */
     public function search($params, $periodo, $instituto)
     {
+
         $query = ScholarisBloqueActividad::find()
                 ->where([
                             'scholaris_periodo_codigo' => $periodo,

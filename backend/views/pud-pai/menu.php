@@ -337,15 +337,7 @@ $colorNotOk = 'red';
         var dato_a_guardar = '';
         var url = '<?= Url::to(['guarda-datos-informativos']) ?>';
 
-        // switch($parametro)
-        // {
-        //     case 1: dato_a_guardar = horas;//alert(horas);
-        //     break;
-        //     case 2: dato_a_guardar = fecha_inicio;//alert(fecha_inicio);
-        //     break;
-        //     case 3: dato_a_guardar = fecha_fin; //alert(fecha_fin);
-        //     break;
-        // }
+      
         var params ={
             parametro:parametro,           
             planUnidadId:planUnidadId,

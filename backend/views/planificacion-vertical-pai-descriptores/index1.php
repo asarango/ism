@@ -280,7 +280,8 @@ $condicion = $condicionClass->aprobacion_planificacion($estado,$isOpen,$bloqueUn
                                 [
                                     'bloqueUnidad' => $bloqueUnidad,
                                     'contextoGlobalDisponibles' => $contextoGlobalDisponibles,
-                                    'contextoGlobalSeleccionados' => $contextoGlobalSeleccionados
+                                    'contextoGlobalSeleccionados' => $contextoGlobalSeleccionados,
+                                    'contextoGlobalDisponiblesCabeceras'=>$contextoGlobalDisponiblesCabeceras,
                         ]);
                         ?>
                     </div>

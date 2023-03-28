@@ -186,6 +186,7 @@ class PdfPhPai extends \yii\db\ActiveRecord
         {        
             $colorCabeceraFondo = "#BEDBEC";
             $materia = $asignatura['name']; //name de la materia
+            $grupo_pai = $asignatura['grupo_pai']; //name de la materia
             $idCabecera = $asignatura['id']; //id de desagregacion cabecera
         
         
@@ -205,7 +206,7 @@ class PdfPhPai extends \yii\db\ActiveRecord
              <br>
              <table width="100%" cellspacing="0" cellpadding="10">
              <tr>
-                 <td colspan = "9" class="border" align="center" style="font-size:9">GRUPO # $cont<b> $materia</b> </td>
+                 <td colspan = "9" class="border" align="center" style="font-size:9">$grupo_pai - <b> $materia</b> </td>
              </tr>
              <tr> 
                  <td class="border" width="10%" style="background-color:$colorCabeceraFondo;font-size:9"><b>TÍTULO DE LA UNIDAD</b></td>     
@@ -250,7 +251,7 @@ class PdfPhPai extends \yii\db\ActiveRecord
                     }
 
                     if($planPai->tipo =='contexto_global'){
-                        $contx_global .= '<li>'.$planPai->contenido.'</li>';
+                        $contx_global .= '<li><b>'.$planPai->contenido.'</b> : '.$planPai->sub_contenido.'</li>';
                     }                
                 }
                 $conc_clave .= '</ul>';

@@ -141,15 +141,25 @@ class Pdf extends \yii\db\ActiveRecord {
         $html .= '</tr>';
         $html .= '</table>';
         $html .= $this->uno();
+        $html .= '<br>';
         $html .= $this->dos();
+        $html .= '<br>';
         $html .= $this->tres();
+        $html .= '<br>';
         $html .= $this->cuatro();
+        $html .= '<br>';
         $html .= $this->cinco();
+        $html .= '<br>';
         $html .= $this->seis();
+        $html .= '<br>';
         $html .= $this->siete(); 
+        $html .= '<br>';
         $html .= $this->ocho();
+        $html .= '<br>';
         $html .= $this->nueve();
+        $html .= '<br>';
         $html .= $this->diez();
+        $html .= '<br>';
         $html .= $this->once();      
         return $html;
     }
@@ -400,13 +410,12 @@ class Pdf extends \yii\db\ActiveRecord {
         $html .= '</tr>';
 
         $html .= '<tr>';
-                $html .= '<td class="border ">' .  $objEspecificos. 
-                        '</td>';
-                // $html .= '<td class="border" valign="top">';
-                //         $html .= '<p class="colorAyudas">Resumen de las tareas de evaluación sumativa y criterios de evaluación correspondientes:</p><br>';
-                //         $html .= $this->evaluacion_sumativas();
+                $html .= '<td class="border ">' .  $objEspecificos. '</td>';
+                $html .= '<td class="border" valign="top">';
+                        $html .= '<p class="colorAyudas">Resumen de las tareas de evaluación sumativa y criterios de evaluación correspondientes:</p><br>';
+                        $html .= $this->evaluacion_sumativas();
                 // $html .= '</td>';
-                $html .= '<td class="border" valign="top">';                        
+                // $html .= '<td class="border" valign="top">';                        
                         $html .='<table >
                                     <tr>
                                         <td ><b>EVALUACIÓN FORMATIVA</b><br><br>
@@ -567,8 +576,8 @@ class Pdf extends \yii\db\ActiveRecord {
             $html .= '<tr>';
                     $html .= '<td width="25%" align="center" class="border"><b>HABILIDAD</b></td>';
                     $html .= '<td width="25%" align="center" class="border"><b>EXPLORACIÓN</b></td>';
-                    $html .= '<td width="25%" align="center" class="border"><b>SOCIALES</b></td>';
-                    $html .= '<td width="25%" align="center" class="border"><b>AUTOGESTIÓN</b></td>';
+                    $html .= '<td width="25%" align="center" class="border"><b>ACTIVIDAD</b></td>';
+                    $html .= '<td width="25%" align="center" class="border"><b>ATRIBUTOS DEL PERFIL</b></td>';
             $html .= '</tr>';
            
                 $html .=  $this->tipo_habilidades();

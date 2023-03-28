@@ -162,22 +162,54 @@ class HelperGeneral extends ActiveRecord{
         return $resp;
     }
     public function query_asignaturas_x_nivel($nivelId)
-    {       
-        $query = "select 	cab.id
-		,m.nombre as name
-		,count(cri.id) as total_criterios_evaluacion
-                from 	planificacion_desagregacion_cabecera cab 
-                                inner join ism_area_materia iam on iam.id = cab.ism_area_materia_id 
-                                inner join ism_malla_area ia on ia.id = iam.malla_area_id 
-                                inner join ism_periodo_malla ipm on ipm.id = ia.periodo_malla_id 
-                                inner join ism_malla im on im.id = ipm.malla_id
-                                inner join ism_materia m on m.id = iam.materia_id 
-                                left join planificacion_desagregacion_criterios_evaluacion cri on cri.criterio_evaluacion_id = cab.id 
-                where 	im.op_course_template_id = $nivelId
-                group by cab.id ,m.nombre;";      
+    {    
+        $periodoId = Yii::$app->user->identity->periodo_id;
+        $usuarioLog = Yii::$app->user->identity->usuario;   
+        // $query = "select 	cab.id
+		// ,m.nombre as name
+		// ,count(cri.id) as total_criterios_evaluacion
+        //         from 	planificacion_desagregacion_cabecera cab 
+        //                         inner join ism_area_materia iam on iam.id = cab.ism_area_materia_id 
+        //                         inner join ism_malla_area ia on ia.id = iam.malla_area_id 
+        //                         inner join ism_periodo_malla ipm on ipm.id = ia.periodo_malla_id 
+        //                         inner join ism_malla im on im.id = ipm.malla_id
+        //                         inner join ism_materia m on m.id = iam.materia_id 
+        //                         left join planificacion_desagregacion_criterios_evaluacion cri on cri.criterio_evaluacion_id = cab.id 
+        //         where 	im.op_course_template_id = $nivelId
+        //         group by cab.id ,m.nombre;";      
         // echo '<pre>';
         // print_r($query);
-        // die();         
+        // die();   
+        
+        $query = "select 	cab.id
+                ,m.nombre as name
+                ,iam.grupo_pai as grupo_pai
+                ,count(cri.id) as total_criterios_evaluacion
+                        from 	planificacion_desagregacion_cabecera cab 
+                                        inner join ism_area_materia iam on iam.id = cab.ism_area_materia_id 
+                                        inner join scholaris_clase cla on cla.ism_area_materia_id = iam.id
+                                        inner join ism_malla_area ia on ia.id = iam.malla_area_id 
+                                        inner join ism_periodo_malla ipm on ipm.id = ia.periodo_malla_id 
+                                        inner join ism_malla im on im.id = ipm.malla_id
+                                        inner join ism_materia m on m.id = iam.materia_id                                 
+                                        left join planificacion_desagregacion_criterios_evaluacion cri on cri.criterio_evaluacion_id = cab.id 
+                        where 	im.op_course_template_id = $nivelId
+                        and cla.id in ( select c.id from scholaris_clase c 
+                                                inner join op_faculty f on f.id = c.idprofesor 
+                                                inner join res_users u on u.partner_id = f.partner_id 
+                                                inner join ism_area_materia amat on amat.id = c.ism_area_materia_id 
+                                                inner join ism_malla_area mallaarea on mallaarea.id = amat.malla_area_id 
+                                                inner join ism_periodo_malla pmalla on pmalla.id = mallaarea.periodo_malla_id 
+                                                where u.login = '$usuarioLog' 
+                                                and pmalla.scholaris_periodo_id  =  $periodoId
+                                                and c.es_activo = true
+                                                ) 
+                        group by cab.id ,m.nombre,iam.grupo_pai
+                        order by iam.grupo_pai,m.nombre;";
+
+                        // echo '<pre>';
+                        // print_r($query);
+                        // die();
 
         $res =  $this->consultaBD($query);         
         

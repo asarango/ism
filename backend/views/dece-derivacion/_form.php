@@ -61,7 +61,15 @@ $user = Yii::$app->user->identity;
                         <tr>
                             <td><b>Representante: </b></td>
                             <td><?= $modelRepresentante->name ?></td>
-                        </tr>                       
+                        </tr>  
+                        <tr>
+                            <td><b>Email Representante: </b></td>
+                            <td><?= $modelRepresentante->email ?></td>
+                        </tr> 
+                        <tr>
+                            <td><b>Telèfono: </b></td>
+                            <td><?= $modelRepresentante->phone . ' - ' . $modelRepresentante->mobile .' - '. $modelRepresentante->x_work_phone ?></td>
+                        </tr>                      
                     </table>
                     <h3 style="color:red">Histórico Derivaciones</h3>
                     <div style="overflow-x:scroll;overflow-y:scroll;" >                        

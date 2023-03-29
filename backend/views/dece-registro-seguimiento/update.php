@@ -81,6 +81,7 @@ if($modelGrupo)
             
                 <?= $this->render('_form', [
                     'model' => $model,
+                    'resUser'=>$resUser,
                 ]) ?>
             
 

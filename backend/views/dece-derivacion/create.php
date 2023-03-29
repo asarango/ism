@@ -9,6 +9,9 @@ $this->title = 'Creación - Derivación';
 $this->params['breadcrumbs'][] = ['label' => 'Dece Derivacions', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 
+//metodo para enviar correos php?
+
+
 ?>
 <div class="dece-derivacion-create">
 

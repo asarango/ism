@@ -7,6 +7,8 @@ use backend\models\DeceMotivos;
 use Yii;
 use backend\models\DeceRegistroSeguimiento;
 use backend\models\DeceRegistroSeguimientoSearch;
+use backend\models\DeceSeguimientoAcuerdos;
+use backend\models\DeceSeguimientoFirmas;
 use backend\models\ScholarisGrupoAlumnoClase;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -105,9 +107,15 @@ class DeceRegistroSeguimientoController extends Controller
     //recibe el id de scholarisgrupoalumnoclase
     public function actionCreate()
     {
+        $userLog = \Yii::$app->user->identity->usuario;
+        $user = \backend\models\Usuario::find()->where(['usuario' => $userLog])->one();
+        $resUser = \backend\models\ResUsers::find()->where(['login' => $user->usuario])->one();
+
         $model = new DeceRegistroSeguimiento();
         $fechaActual = date('Y-m-d');
         $hora = date('H:i:s');
+   
+       
     
         if($_GET)
         {
@@ -162,6 +170,7 @@ class DeceRegistroSeguimientoController extends Controller
         }
         return $this->render('create', [
             'model' => $model,
+            'resUser'=> $resUser,
         ]);
     }
     //metodo que extrae el numero de seguimiento
@@ -184,6 +193,11 @@ class DeceRegistroSeguimientoController extends Controller
      */
     public function actionUpdate($id)
     {
+       
+        $userLog = \Yii::$app->user->identity->usuario;
+        $user = \backend\models\Usuario::find()->where(['usuario' => $userLog])->one();
+        $resUser = \backend\models\ResUsers::find()->where(['login' => $user->usuario])->one();
+
         $model = $this->findModel($id);
         $fechaActual = date('Y-m-d');
         $hora = date('H:i:s');
@@ -233,6 +247,7 @@ class DeceRegistroSeguimientoController extends Controller
         }  
         return $this->render('update', [
             'model' => $model,
+            'resUser'=>$resUser,
         ]);
     }
 
@@ -249,6 +264,188 @@ class DeceRegistroSeguimientoController extends Controller
 
         return $this->redirect(['index']);
     }
+     //*****   ACUERDOS  *******
+    public function actionGuardarAcuerdos()
+    {
+        $secuencial = '-1';
+        $acuerdo=  $_POST['acuerdo'];
+        $responsable= $_POST['responsable'];
+        $cumplio= $_POST['cumplio'];
+        $id_seguimiento= $_POST['id_seguimiento'];
+        $fecha_max_cumplimiento = $_POST['fecha_max_cumplimiento'];
+       
+
+        $maxItemAcuerdos = DeceSeguimientoAcuerdos::find()
+                    ->where(['id_reg_seguimiento' =>$id_seguimiento ])
+                    ->max('secuencial');
+
+        if(!($maxItemAcuerdos)){$secuencial = 1;}else{ $secuencial = $maxItemAcuerdos + 1;}    
+       
+
+        $modelAcuerdo = new DeceSeguimientoAcuerdos();
+        $modelAcuerdo->secuencial = $secuencial;
+        $modelAcuerdo->acuerdo = $acuerdo;
+        $modelAcuerdo->responsable = $responsable;
+        $modelAcuerdo->cumplio = $cumplio;
+        $modelAcuerdo->id_reg_seguimiento = $id_seguimiento;
+        $modelAcuerdo->fecha_max_cumplimiento = $fecha_max_cumplimiento;
+        $modelAcuerdo->save();  
+      
+        return $this->mostrar_acuerdo($id_seguimiento);
+    }
+
+    private function mostrar_acuerdo($id_seguimiento)
+    {
+        $listAcuerdos = DeceSeguimientoAcuerdos::find()
+        ->where(['id_reg_seguimiento'=>$id_seguimiento])
+        ->orderBy(['secuencial'=>SORT_ASC])
+        ->all();
+
+        $html='';
+        $html .='
+        <table class="table table-striped table-success">
+            <thead>
+                <td><b> Ítem </b></td>
+                <td><b> Acuerdo </b></td>
+                <td><b> Responsable </b></td>
+                <td><b> Fecha Cumplimiento </b></td>
+                <td><b> Cumplió </b></td>
+                <td>Acción</td>
+            </thead>
+            <tbody>';
+            
+            foreach ($listAcuerdos as $acuerdo) 
+            {
+                $html .='<tr>';
+                $html .='<td>'. $acuerdo->secuencial .'</td>
+                            <td>'. $acuerdo->acuerdo .' </td>
+                            <td>'. $acuerdo->responsable.' </td>
+                            <td> '. substr($acuerdo->fecha_max_cumplimiento,0,10) .'</td>';
+                            if($acuerdo->cumplio)
+                            {
+                                $html .='<td> <input  type="checkbox" onclick="guardar_acuerdo_cumplido('.$acuerdo->id.',0)" checked/></td>';
+                            }
+                            else
+                            {
+                                $html .='<td> <input  type="checkbox" onclick="guardar_acuerdo_cumplido('.$acuerdo->id.',1)" /></td>';
+                            }
+                            $html.='<td>
+                                        <button type="button" class="btn btn-primary"  id="icono_firmas" onclick="eliminar_acuerdo('.$acuerdo->id.')" title="Eliminar Firma">
+                                        <i class="fas fa-trash-alt" style="color:white;"></i>
+                                        </button>                                                             
+                                     </td> ';
+                $html .='</tr>';
+            
+            }
+            $html .='</tbody>
+        </table>';
+
+        // echo '<pre>';
+        // print_r($html);
+        // die();
+
+
+        return $html;
+    }
+
+    public function actionGuardarAcuerdosCumplido()
+    {
+        $id_seg_acuerdo=  $_POST['id_seg_acuerdo'];
+        $cumplio= $_POST['cumplio'];
+       
+        $model= DeceSeguimientoAcuerdos::findOne($id_seg_acuerdo);       
+        $model->cumplio = $cumplio;
+        $model->save();
+
+        return $this->mostrar_acuerdo($model->id_reg_seguimiento);
+    }
+    public function actionEliminarAcuerdo()
+    {
+        $id_seg_acuerdo=$_POST['id_seg_acuerdo'];
+
+        $model = DeceSeguimientoAcuerdos::findOne($id_seg_acuerdo);
+        $id_reg_seguimiento = $model->id_reg_seguimiento;
+        $model->delete();
+
+        return $this->mostrar_acuerdo($id_reg_seguimiento);
+    }
+    
+    //*****   FIN ACUERDOS  *******
+
+
+    //*****   FIRMAS  *******
+    public function actionGuardarFirmas()
+    {
+        $nombre=$_POST['nombre'];
+        $cedula= $_POST['cedula'];
+        $parentesco=$_POST['parentesco'];
+        $cargo=$_POST['cargo'];
+        $id_seguimiento = $_POST['id_seguimiento'];        
+
+        $modelFirma = new DeceSeguimientoFirmas();
+
+        $modelFirma->nombre = $nombre;
+        $modelFirma->cedula = $cedula;
+        $modelFirma->parentesco = $parentesco;
+        $modelFirma->cargo = $cargo;
+        $modelFirma->id_reg_seguimiento = $id_seguimiento;
+        $modelFirma->save();  
+
+       
+        return $this->mostrar_firmas($id_seguimiento);
+    }
+    private function mostrar_firmas($id_seguimiento)
+    {
+        $listFirmas = DeceSeguimientoFirmas::find()
+        ->where(['id_reg_seguimiento'=>$id_seguimiento])
+        ->orderBy(['id'=>SORT_ASC])
+        ->all();
+
+        $html='';
+        $html .='
+        <table class="table table-striped table-success">
+            <thead>
+                <td><b> Nombre </b></td>
+                <td><b> Cédula </b></td>
+                <td><b> Parentesco </b></td>
+                <td><b> Cargo </b></td>
+            </thead>
+            <tbody>';
+            
+            foreach ($listFirmas as $firmas) 
+            {
+                $html .='<tr>';
+                $html .='<td>'. $firmas->nombre .'</td>
+                            <td>'. $firmas->cedula .' </td>
+                            <td>'. $firmas->parentesco.' </td>
+                            <td>'. $firmas->cargo.' </td>'; 
+                $html.='<td>
+                        <button type="button" class="btn btn-primary"  id="icono_firmas" onclick="eliminar_firma('.$firmas->id.')" title="Eliminar Firma">
+                        <i class="fas fa-trash-alt" style="color:red;"></i>
+                        </button>  
+                            
+                        </td>';                         
+                $html .='</tr>';  
+            }
+            $html .='</tbody>
+        </table>';
+
+        return $html;
+    }
+    public function actionEliminarFirmas()
+    {
+        $id_seg_firmas=$_POST['id_seg_firmas'];
+
+        $model = DeceSeguimientoFirmas::findOne($id_seg_firmas);
+        $id_reg_seguimiento = $model->id_reg_seguimiento;
+        $model->delete();
+
+        return $this->mostrar_firmas($id_reg_seguimiento);
+
+    }
+
+    //*****   FIN FIRMAS  *******
+
 
     /**
      * Finds the DeceRegistroSeguimiento model based on its primary key value.

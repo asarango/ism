@@ -6,6 +6,7 @@ use Yii;
 use yii\filters\AccessControl;
 use backend\models\DeceCasos;
 use backend\models\DeceCasosSearch;
+use backend\models\DeceDeteccion;
 use Exception;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -252,7 +253,51 @@ class DeceCasosController extends Controller
         return $this->render('create', [           
             'model' => $modelDeceCasos
         ]);
-    }   
+    }  
+    
+    public function actionCrearDeteccion()
+    {
+        $usuarioLog = Yii::$app->user->identity->usuario;
+        $periodoId = Yii::$app->user->identity->periodo_id;
+        $fecha = date('Y-m-d H:i:s');
+
+        $idEstudiante = $_GET['id'];  
+        $idClase = $_GET['id_clase'];
+
+        /*** PROCESO 1*/
+        //Buscar si tiene un caso
+        $modelDeceCasos = DeceCasos::find()
+        ->where(['id_estudiante'=>$idEstudiante])
+        ->max('numero_caso');
+
+        $consecutivoCaso = 1;
+
+        if($modelDeceCasos)
+        {
+            // si tiene caso, conseguir el consecutivo mas uno
+            $consecutivoCaso = $modelDeceCasos + 1;
+        }
+        // Crear caso, mas un consecutivo
+            //PROCESO 1.-
+            $modelDeceCasos = new DeceCasos();
+            $modelDeceCasos->numero_caso = $consecutivoCaso;
+            $modelDeceCasos->id_estudiante = $idEstudiante;
+            $modelDeceCasos->id_periodo = $periodoId;
+            $modelDeceCasos->estado = 'PENDIENTE';
+            $modelDeceCasos->fecha_inicio =  $fecha;
+            $modelDeceCasos->motivo =  'DISCIPLINARIO';
+            $modelDeceCasos->detalle =  '-';
+            $modelDeceCasos->id_usuario =  $usuarioLog;
+            $modelDeceCasos->id_clase = $idClase;
+            $modelDeceCasos->save();
+      
+
+            return $this->redirect(['/dece-deteccion/create',
+                'id_estudiante'=>$modelDeceCasos->id_estudiante,
+                'id_caso'=>$modelDeceCasos->id,
+                'es_lexionario'=>true]);            
+
+    }
 
     public function actionHistorico()
     {

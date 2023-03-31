@@ -102,11 +102,11 @@ $this->title = 'Novedades de comportamiento ';
                 </div>
                 
                 <div class="col-lg-8 col-md-8">
-                    <div class="">
-                        <?=
+                    <div class="">                      
+                        <?=    
                                 Html::a(
                                     '<span class="badge rounded-pill" style="background-color: #0a1f8f"><i class="fa fa-briefcase" aria-hidden="true"></i>Seguimiento</span>',
-                                    ['dece-casos/create','id'=>$modelGrupo->estudiante_id,'id_clase'=>$modelGrupo->clase_id],
+                                    ['dece-casos/crear-deteccion','id'=>$modelGrupo->estudiante_id,'id_clase'=>$modelGrupo->clase_id],
                                     ['class' => 'link']
                                 );
                         ?>

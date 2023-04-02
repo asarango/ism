@@ -17,7 +17,7 @@ use backend\models\ResPartner;
 //        die();
 
 //Si el arreglo con datos del estudiante, viene vacio
-if ($model->isNewRecord && count($array_datos_estudiante) == 0) {
+if ($model->isNewRecord && count($array_datos_estudiante)==0 ) {
     $array_datos_estudiante['student'] = '';
     $array_datos_estudiante['curso'] = '';
     $array_datos_estudiante['paralelo'] = '';

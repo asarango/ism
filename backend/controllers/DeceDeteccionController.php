@@ -97,6 +97,14 @@ class DeceDeteccionController extends Controller
      */
     public function actionCreate()
     {
+        /* Creado Por: Santiago     Fecha: 
+            Modificado Por: Santiago        Ultima Fecha Mod: 2023-04-03
+            Detalle: Crear el registro del Dece-Deteccion
+         */
+
+        // echo '<pre>';
+        //     print_r($_POST);
+        //     die();
         $userLog = \Yii::$app->user->identity->usuario;
         $user = \backend\models\Usuario::find()->where(['usuario' => $userLog])->one();
         $resUser = \backend\models\ResUsers::find()->where(['login' => $user->usuario])->one();

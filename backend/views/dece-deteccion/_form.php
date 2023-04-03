@@ -17,10 +17,19 @@ use backend\models\ResPartner;
 //        die();
 
 //Si el arreglo con datos del estudiante, viene vacio
-if ($model->isNewRecord && count($array_datos_estudiante)==0 ) {
+
+if ($model->isNewRecord && count($array_datos_estudiante) == 0) {
     $array_datos_estudiante['student'] = '';
     $array_datos_estudiante['curso'] = '';
     $array_datos_estudiante['paralelo'] = '';
+}
+if ($model->isNewRecord) {
+    $model->nombre_estudiante = $array_datos_estudiante['student'];
+    $model->anio = $array_datos_estudiante['curso'];
+    $model->paralelo = $array_datos_estudiante['paralelo'];
+    $model->nombre_quien_reporta =$resUser->partner->name;
+    $model->cedula = $resUser->partner->numero_identificacion;
+    $model->cargo = 'Psicólogo';
 }
 //llamo a grupo para buscar id alumno e id clase, $id_grupo es parametro de entrada
 $modelEstudiante = OpStudent::findOne($model->id_estudiante);
@@ -173,33 +182,16 @@ $modelRegDeteccion = DeceDeteccion::find()
 
                 <div class="row ">
                     <h5 style="color:blueviolet;"><b>DATOS INFORMATIVOS GENERALES</b></h5>
-                    <?php
-                    if ($model->isNewRecord) {
-                    ?>
-                        <div class="col-lg-6">
-                            <?= $form->field($model, 'nombre_estudiante')->textInput(['maxlength' => true, 'disabled' => true, 'value' => $array_datos_estudiante['student']]) ?>
-                        </div>
-                        <div class="col-lg-3">
-                            <?= $form->field($model, 'anio')->textInput(['maxlength' => true, 'disabled' => true, 'value' => $array_datos_estudiante['curso']]) ?>
-                        </div>
-                        <div class="col-lg-3">
-                            <?= $form->field($model, 'paralelo')->textInput(['maxlength' => true, 'disabled' => true, 'value' => $array_datos_estudiante['paralelo']]) ?>
-                        </div>
-                    <?php
-                    } else {
-                    ?>
-                        <div class="col-lg-6">
-                            <?= $form->field($model, 'nombre_estudiante')->textInput(['maxlength' => true, 'disabled' => true]) ?>
-                        </div>
-                        <div class="col-lg-3">
-                            <?= $form->field($model, 'anio')->textInput(['maxlength' => true, 'disabled' => true]) ?>
-                        </div>
-                        <div class="col-lg-3">
-                            <?= $form->field($model, 'paralelo')->textInput(['maxlength' => true, 'disabled' => true]) ?>
-                        </div>
-                    <?php
-                    }
-                    ?>
+
+                    <div class="col-lg-6">
+                        <?= $form->field($model, 'nombre_estudiante')->textInput(['maxlength' => true, 'readonly' => true]) ?>
+                    </div>
+                    <div class="col-lg-3">
+                        <?= $form->field($model, 'anio')->textInput(['maxlength' => true, 'readonly' => true]) ?>
+                    </div>
+                    <div class="col-lg-3">
+                        <?= $form->field($model, 'paralelo')->textInput(['maxlength' => true, 'readonly' => true]) ?>
+                    </div>             
                 </div>
 
                 <br>
@@ -212,39 +204,17 @@ $modelRegDeteccion = DeceDeteccion::find()
 
                         </div>
                     </div>
-                    <div class="row">
-                        <?php
-                        if ($model->isNewRecord) {
-                        ?>
+                    <div class="row">                      
                             <div class="col-lg-5">
-                                <?= $form->field($model, 'nombre_quien_reporta')->textInput(['maxlength' => true, 'disabled' => true, 'value' => $resUser->partner->name]) ?>
+                                <?= $form->field($model, 'nombre_quien_reporta')->textInput(['maxlength' => true, 'readonly' => true]) ?>
                             </div>
                             <div class="col-lg-3">
-                                <?= $form->field($model, 'cedula')->textInput(['maxlength' => true, 'disabled' => true, 'value' => $resUser->partner->numero_identificacion]) ?>
-                            </div>
-                            <div class="col-lg-4">
-                                <?= $form->field($model, 'cargo')->textInput(['maxlength' => true, 'value' => 'Psicologo']) ?>
-                            </div>
-                        <?php
-                        } else {
-                        ?>
-                            <div class="col-lg-5">
-                                <?= $form->field($model, 'nombre_quien_reporta')->textInput(['maxlength' => true, 'disabled' => true]) ?>
-                            </div>
-                            <div class="col-lg-3">
-                                <?= $form->field($model, 'cedula')->textInput(['maxlength' => true, 'disabled' => true]) ?>
+                                <?= $form->field($model, 'cedula')->textInput(['maxlength' => true, 'readonly' => true]) ?>
                             </div>
                             <div class="col-lg-4">
                                 <?= $form->field($model, 'cargo')->textInput(['maxlength' => true]) ?>
-                            </div>
-
-                        <?php
-                        }
-                        ?>
+                            </div>                    
                     </div>
-
-
-
                 </div>
                 <br>
                 <div class="row">

@@ -107,8 +107,8 @@ $this->params['breadcrumbs'][] = $this->title;
                                             <td><?= $nombreEstudiante ?></td>
                                             <td><strong><?=$caso['casos']?></strong></td>
                                             <td><strong>C: <?=$caso['casos_seguimiento']?> <br> A: <?=$caso['seguimiento']?></strong></td>
-                                            <td><strong>C: <?=$caso['casos_deteccion']?> <br> D:<?=$caso['derivacion']?> </strong></td>
-                                            <td><strong>C: <?=$caso['casos_derivacion']?> <br> D:<?=$caso['deteccion']?> </strong></td>
+                                            <td><strong>C: <?=$caso['casos_deteccion']?> <br> D:<?=$caso['deteccion']?> </strong></td>
+                                            <td><strong>C: <?=$caso['casos_derivacion']?> <br> D:<?=$caso['derivacion']?> </strong></td>
                                             <td><strong>C: <?=$caso['casos_intervencion']?> <br> I:<?=$caso['intervencion']?> </strong></td>
                                             <td>
                                                 <?= Html::a(

@@ -123,21 +123,24 @@ $this->title = 'Revisión plan semanal PEP';
 
                             ?>
                                     <div class="row" style="margin: 0px 50px 50px 50px; 
-                    color: <?= $color ?>; 
-                    border: solid 1px <?= $color ?>; 
-                    ">
+                                                        color: <?= $color ?>; 
+                                                        border: solid 1px <?= $color ?>;">
                                         <nav aria-label="breadcrumb" style="background-color: <?= $color ?>;">
                                             <ol class="breadcrumb">
                                                 <li class="breadcrumb-item active" aria-current="page" style="color: white;"><?= $hour['hora'] ?></li>
                                                 <li class="breadcrumb-item active" aria-current="page" style="color: white;"><?= $hour['curso'] ?></li>
                                                 <li class="breadcrumb-item active" aria-current="page" style="color: white;"><?= $hour['materia'] ?></li>
                                                 <li class="breadcrumb-item active" aria-current="page" style="color: white;"><?= $hour['responsable_planificacion'] ?></li>
+                                                <li class="breadcrumb-item active" aria-current="page" style="color: white;">
+                                                    <?= $hour['detalle_id']. ' '.$hour['clase_id'] ?>
+                                                </li>
+
                                             </ol>
                                         </nav>
 
 
                                         <?php
-                                        $detail = get_planification_by_hour($hour['detalle_id'], $hour['clase_id']);
+                                        $detail = get_planification_by_hour($hour['detalle_id'], $hour['clase_id'], $date['fecha']);
 
                                         if ($detail) {
                                             if ($detail['fecha'] == $date['fecha']) {
@@ -321,7 +324,7 @@ $this->title = 'Revisión plan semanal PEP';
 
 <?php
 
-function get_planification_by_hour($detalleHorarioId, $claseId)
+function get_planification_by_hour($detalleHorarioId, $claseId, $fecha)
 {
     $con = Yii::$app->db;
     $query = "select 	ld.id 
@@ -334,7 +337,8 @@ function get_planification_by_hour($detalleHorarioId, $claseId)
                 from 	lms_docente ld
                     left join lms lm on lm.id = ld.lms_id 
                 where 	ld.horario_detalle_id = $detalleHorarioId
-                    and ld.clase_id = $claseId;";
+                    and ld.clase_id = $claseId
+                    and ld.fecha = '$fecha';";
 
     $res = $con->createCommand($query)->queryOne();
     return $res;

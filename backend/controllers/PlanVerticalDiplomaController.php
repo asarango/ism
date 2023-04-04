@@ -205,10 +205,10 @@ class PlanVerticalDiplomaController extends Controller
             'cabecera_id'   => $cabeceraId,
             'tipo_seccion'  => $typeSection,
             'tipo_campo'    => $typeField,
-            'opcion_texto'  => $text
+            //'opcion_texto'  => $text
         ])->one();
 
-        if (!$model) {
+        if (!isset($model->opcion_texto)) {
             $pv = new PlanVerticalDiploma();
             $pv->cabecera_id    = $cabeceraId;
             $pv->tipo_seccion   = $typeSection;

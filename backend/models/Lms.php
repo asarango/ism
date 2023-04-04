@@ -28,9 +28,14 @@ use Yii;
  * @property string $tarea
  * @property string $recursos
  * @property string $conceptos
+ * @property string $dip_inicio
+ * @property string $dip_desarrollo
+ * @property string $dip_cierre
+ * @property bool $posicion
  *
  * @property IsmAreaMateria $ismAreaMateria
  * @property LmsActividad[] $lmsActividads
+ * @property LmsDocente[] $lmsDocentes
  */
 class Lms extends \yii\db\ActiveRecord
 {
@@ -51,8 +56,8 @@ class Lms extends \yii\db\ActiveRecord
             [['ism_area_materia_id', 'tipo_bloque_comparte_valor', 'semana_numero', 'hora_numero', 'tipo_recurso', 'titulo', 'created', 'created_at', 'updated', 'updated_at'], 'required'],
             [['ism_area_materia_id', 'tipo_bloque_comparte_valor', 'semana_numero', 'hora_numero'], 'default', 'value' => null],
             [['ism_area_materia_id', 'tipo_bloque_comparte_valor', 'semana_numero', 'hora_numero'], 'integer'],
-            [['indicaciones', 'descripcion_actividades', 'tarea', 'recursos', 'conceptos'], 'string'],
-            [['publicar', 'estado_activo', 'es_aprobado'], 'boolean'],
+            [['indicaciones', 'descripcion_actividades', 'tarea', 'recursos', 'conceptos', 'dip_inicio', 'dip_desarrollo', 'dip_cierre'], 'string'],
+            [['publicar', 'estado_activo', 'es_aprobado', 'posicion'], 'boolean'],
             [['fecha_aprobacion', 'created_at', 'updated_at'], 'safe'],
             [['tipo_recurso'], 'string', 'max' => 40],
             [['titulo'], 'string', 'max' => 150],
@@ -88,6 +93,10 @@ class Lms extends \yii\db\ActiveRecord
             'tarea' => 'Tarea',
             'recursos' => 'Recursos',
             'conceptos' => 'Conceptos',
+            'dip_inicio' => 'Dip Inicio',
+            'dip_desarrollo' => 'Dip Desarrollo',
+            'dip_cierre' => 'Dip Cierre',
+            'posicion' => 'Posicion',
         ];
     }
 
@@ -105,5 +114,13 @@ class Lms extends \yii\db\ActiveRecord
     public function getLmsActividads()
     {
         return $this->hasMany(LmsActividad::className(), ['lms_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getLmsDocentes()
+    {
+        return $this->hasMany(LmsDocente::className(), ['lms_id' => 'id']);
     }
 }

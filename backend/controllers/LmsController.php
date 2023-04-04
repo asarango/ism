@@ -4,6 +4,7 @@ namespace backend\controllers;
 
 use Yii;
 use backend\models\Lms;
+use backend\models\lms\LmsColaborativo;
 use backend\models\LmsSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -67,14 +68,17 @@ class LmsController extends Controller
      * @return mixed
      */
     public function actionIndex1()
-    {
-        
+    {        
         $claseId        = $_GET['clase_id'];
         $semanaNumero   = $_GET['semana_numero'];
         $nombreSemana   = $_GET['nombre_semana'];
         
         $modelClase = \backend\models\ScholarisClase::findOne($claseId);        
-        $this->inyecta_plan_x_hora($modelClase->ismAreaMateria->total_horas_semana, $semanaNumero, $modelClase->ism_area_materia_id, $modelClase->tipo_usu_bloque);                        
+
+        /** Para inyectar las horas al plan semanal */
+        $lms = new LmsColaborativo();
+        $lms->inyecta_plan_x_hora($modelClase->ismAreaMateria->total_horas_semana, $semanaNumero, $modelClase->ism_area_materia_id, $modelClase->tipo_usu_bloque);
+        /** Fin de inyección de horas al plan semanal */
         
         $lms = Lms::find()->where([
             'ism_area_materia_id' => $modelClase->ism_area_materia_id,
@@ -123,64 +127,64 @@ class LmsController extends Controller
         ]);
     }
     
-    private function inyecta_plan_x_hora($totalHoras, $semanNumero, $ismAreaMateriaId, $uso){
+    // private function inyecta_plan_x_hora($totalHoras, $semanNumero, $ismAreaMateriaId, $uso){
 
-        $usuarioLog = Yii::$app->user->identity->usuario;
-        $hoy        = date("Y-m-d H:i:s");
+    //     $usuarioLog = Yii::$app->user->identity->usuario;
+    //     $hoy        = date("Y-m-d H:i:s");
         
-        $lms = Lms::find()->where([
-            'ism_area_materia_id' => $ismAreaMateriaId,
-            'semana_numero' => $semanNumero
-        ])
-                ->orderBy('semana_numero')
-                ->all();
+    //     $lms = Lms::find()->where([
+    //         'ism_area_materia_id' => $ismAreaMateriaId,
+    //         'semana_numero' => $semanNumero
+    //     ])
+    //             ->orderBy('semana_numero')
+    //             ->all();
         
-        isset($lms) ? $totalPlanificado = count($lms) : $totalPlanificado = 0;
+    //     isset($lms) ? $totalPlanificado = count($lms) : $totalPlanificado = 0;
         
-        $totalInyectar = $totalHoras - $totalPlanificado;
+    //     $totalInyectar = $totalHoras - $totalPlanificado;
         
-        $horaNumero = $this->toma_ultima_hora($semanNumero, $ismAreaMateriaId); //Para toma el ultimo numero de la tabla LMS 
+    //     $horaNumero = $this->toma_ultima_hora($semanNumero, $ismAreaMateriaId); //Para toma el ultimo numero de la tabla LMS 
         
-        $horaNumero ? $horaNumero = $horaNumero : $horaNumero = 0; //Convierte a 0 si no existe ultimo numero en la tabla lms
+    //     $horaNumero ? $horaNumero = $horaNumero : $horaNumero = 0; //Convierte a 0 si no existe ultimo numero en la tabla lms
         
         
         
-        if($totalInyectar > 0){
-            //inyectamos las horas con texto sin planificar            
-            for($i=0; $i<$totalInyectar; $i++){
-                $horaNumero++;
-                $modelLms = new Lms();
-                $modelLms->ism_area_materia_id          = $ismAreaMateriaId;
-                $modelLms->tipo_bloque_comparte_valor   = $uso;
-                $modelLms->semana_numero                = $semanNumero;
-                $modelLms->hora_numero                  = $horaNumero;
-                $modelLms->tipo_recurso                 = 'TEMA-HORA';
-                $modelLms->titulo                       = 'NO CONFIGURADO';
-                $modelLms->publicar                     = false;
-                $modelLms->created                      = $usuarioLog;
-                $modelLms->created_at                   = $hoy;
-                $modelLms->updated                      = $usuarioLog;
-                $modelLms->updated_at                   = $hoy;
-                $modelLms->conceptos                    = '<p><b>Concepto:</b></p><p><b>Atributo:</b></p><p><b>Línea de indagación:</b></p><p><b>Enfoque:</b></p><p><b>ODS:</b></p>';                    
-                $modelLms->save();
-            }
-        }
+    //     if($totalInyectar > 0){
+    //         //inyectamos las horas con texto sin planificar            
+    //         for($i=0; $i<$totalInyectar; $i++){
+    //             $horaNumero++;
+    //             $modelLms = new Lms();
+    //             $modelLms->ism_area_materia_id          = $ismAreaMateriaId;
+    //             $modelLms->tipo_bloque_comparte_valor   = $uso;
+    //             $modelLms->semana_numero                = $semanNumero;
+    //             $modelLms->hora_numero                  = $horaNumero;
+    //             $modelLms->tipo_recurso                 = 'TEMA-HORA';
+    //             $modelLms->titulo                       = 'NO CONFIGURADO';
+    //             $modelLms->publicar                     = false;
+    //             $modelLms->created                      = $usuarioLog;
+    //             $modelLms->created_at                   = $hoy;
+    //             $modelLms->updated                      = $usuarioLog;
+    //             $modelLms->updated_at                   = $hoy;
+    //             $modelLms->conceptos                    = '<p><b>Concepto:</b></p><p><b>Atributo:</b></p><p><b>Línea de indagación:</b></p><p><b>Enfoque:</b></p><p><b>ODS:</b></p>';                    
+    //             $modelLms->save();
+    //         }
+    //     }
         
-    }
+    // }
     
-    private function toma_ultima_hora($semanNumero, $ismAreaMateriaId){
-        $con = Yii::$app->db;
-        $query = "select 	max(hora_numero) as ultima from 	lms where ism_area_materia_id = $ismAreaMateriaId and semana_numero = $semanNumero;";
-        $res = $con->createCommand($query)->queryOne();
+    // private function toma_ultima_hora($semanNumero, $ismAreaMateriaId){
+    //     $con = Yii::$app->db;
+    //     $query = "select 	max(hora_numero) as ultima from 	lms where ism_area_materia_id = $ismAreaMateriaId and semana_numero = $semanNumero;";
+    //     $res = $con->createCommand($query)->queryOne();
         
-        if($res){
-            return $res['ultima'];
-        }else{
-            return 0;
-        }
+    //     if($res){
+    //         return $res['ultima'];
+    //     }else{
+    //         return 0;
+    //     }
         
         
-    }
+    // }
     
     
     

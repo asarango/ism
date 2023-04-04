@@ -11,8 +11,12 @@ use backend\models\PlanificacionVerticalDiplomaRelacionTdc;
 use backend\models\puddip\Pdf;
 use backend\models\helpers;
 use backend\models\helpers\Scripts;
+use backend\models\Lms;
+use backend\models\lms\LmsColaborativo;
 use backend\models\PudAprobacionBitacora;
 use backend\models\puddip\DatosInformativos;
+use backend\models\ScholarisClase;
+use backend\models\ScholarisPeriodo;
 use Codeception\Lib\Generator\Helper;
 use Yii;
 use yii\web\Controller;
@@ -134,6 +138,9 @@ class PudDipController extends Controller {
                 break;
             case '4.2.-':
                 $respuesta = $this->get_accion_habilidades($planUnidadId);
+                break;
+            case '5.0.-':
+                $respuesta = $this->get_accion_semanas($planUnidadId);
                 break;
             case '5.1.-':
                 $respuesta = $this->get_accion_evaluaciones($planUnidadId);
@@ -646,6 +653,80 @@ class PudDipController extends Controller {
         return $respuesta;
     }
 
+
+    /**
+     * MÉTODO PARA LAS SEMANAS DEL PLAN DE UNIDAD
+     * 5.0.- SEMANAS
+     * Realizado por Arturo Sarango
+     * 2023-03-29
+     * Actualizado por Arturo Sarango
+     * 2023-03-29
+     */
+    public function get_accion_semanas($planBloqueUnidadId){
+        
+        $periodId = Yii::$app->user->identity->periodo_id;
+        $periodo = ScholarisPeriodo::findOne($periodId);
+
+        $planUnidad = PlanificacionBloquesUnidad::findOne($planBloqueUnidadId);
+        $bloqueShotName = $planUnidad->curriculoBloque->shot_name;
+
+        $ismAreaMateriaId = $planUnidad->planCabecera->ism_area_materia_id;
+        $clase = ScholarisClase::find()->where(['ism_area_materia_id' => $ismAreaMateriaId])->one();
+        
+        $uso = $clase->tipo_usu_bloque;
+
+        $accion_update = "5.0.-";
+
+        $modelPlanVertical = PlanificacionVerticalDiploma::find()->where(['planificacion_bloque_unidad_id' => $planBloqueUnidadId])->one();
+        $modelPlanVertical->ultima_seccion = $accion_update;
+        $modelPlanVertical->save();
+
+
+        /***Para consultar las semanas e inyectar */
+        $semanas = $this->query_semanas($periodo->codigo, $uso, $bloqueShotName);
+        foreach($semanas as $semana){
+             /** Para inyectar las horas al plan semanal */
+            $lms = new LmsColaborativo();
+            $lms->inyecta_plan_x_hora($clase->ismAreaMateria->total_horas_semana, $semana['semana_numero'], $clase->ism_area_materia_id, $uso);
+            /** Fin de inyección de horas al plan semanal */
+        }
+        /***Fin consultar las semanas e inyectar */        
+
+        $lmsColaborativo = new LmsColaborativo();
+        $planesSemanales = $lmsColaborativo->planes_semanales_x_unidad($semanas, $ismAreaMateriaId, $uso);
+
+        return $this->renderPartial('_semanas',[
+            'planesSemanales' => $planesSemanales,
+            'planUnidadId' => $planBloqueUnidadId
+        ]);
+    }
+
+    /**
+     * MÉTODO PARA LAS SEMANAS DEL SQL
+     * 5.0.- SEMANAS
+     * Realizado por Arturo Sarango
+     * 2023-03-29
+     * Actualizado por Arturo Sarango
+     * 2023-03-29
+     */
+    private function query_semanas($periodCode, $uso, $bloqueCurriculoShotName){
+        $con = Yii::$app->db;
+        $query = "select 	sem.id as semana_id
+                            ,sem.semana_numero 
+                            ,sem.nombre_semana 		
+                            ,sem.fecha_inicio 
+		                    ,sem.fecha_finaliza 
+                    from 	scholaris_bloque_semanas sem
+                            inner join scholaris_bloque_actividad blo on blo.id = sem.bloque_id 
+                            inner join scholaris_periodo per on per.codigo = blo.scholaris_periodo_codigo 
+                            inner join curriculo_mec_bloque mbl on mbl.shot_name = blo.abreviatura 
+                    where 	per.codigo = '$periodCode'
+                            and blo.tipo_uso = '$uso'
+                            and mbl.shot_name = '$bloqueCurriculoShotName'
+                    order by sem.semana_numero;";
+        $res = $con->createCommand($query)->queryAll();
+        return $res;
+    }
     
     
     /**
@@ -1670,6 +1751,29 @@ class PudDipController extends Controller {
                     </div>
                 </div>';
         return $html;
+    }
+
+
+
+    public function actionFormActividad(){
+        $lmsId = $_GET['lms_id'];
+        $planUnidadId = $_GET['plan_bloque_unidad_id'];
+
+        $lms = Lms::findOne($lmsId);
+
+        if(isset($_GET['inicio'])){
+            $user = Yii::$app->user->identity->usuario;
+            $today = date('Y-m-d H:i:s');
+            
+            $lms->dip_inicio =  $_GET['inicio'];
+            $lms->dip_desarrollo =  $_GET['desarrollo'];
+            $lms->dip_cierre =  $_GET['cierre'];
+            $lms->updated = $user;
+            $lms->updated_at = $today;
+            $lms->save();            
+        }
+
+        return $this->redirect(['index1', 'plan_bloque_unidad_id' => $planUnidadId]);
     }
 
 }

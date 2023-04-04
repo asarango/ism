@@ -76,7 +76,8 @@ if ($modelGrupo) // si el grupo existe viene de leccionario
                 </div>
             </div>
             <?= $this->render('_form', [
-                'model' => $model
+                'model' => $model,
+                'resUser'=>$resUser,
             ]) ?>
         </div>
 

@@ -97,6 +97,14 @@ class DeceDeteccionController extends Controller
      */
     public function actionCreate()
     {
+        /* Creado Por: Santiago     Fecha: 
+            Modificado Por: Santiago        Ultima Fecha Mod: 2023-04-03
+            Detalle: Crear el registro del Dece-Deteccion
+         */
+
+        // echo '<pre>';
+        //     print_r($_POST);
+        //     die();
         $userLog = \Yii::$app->user->identity->usuario;
         $user = \backend\models\Usuario::find()->where(['usuario' => $userLog])->one();
         $resUser = \backend\models\ResUsers::find()->where(['login' => $user->usuario])->one();
@@ -107,10 +115,16 @@ class DeceDeteccionController extends Controller
         
         $array_datos_estudiante = array();
 
+        $es_lexionario = false;        
+
         if($_GET)
         {
             $id_estudiante = $_GET['id_estudiante'];
             $id_caso= $_GET['id_caso'];
+            if(isset($_GET['es_lexionario']))
+            {
+                $es_lexionario = true;    
+            }
             $ultimoNumDeteccion = $this->buscaUltimoNumDeteccion($id_caso);
             $model->numero_deteccion = $ultimoNumDeteccion + 1;            
             $model->id_estudiante = $id_estudiante;
@@ -122,8 +136,7 @@ class DeceDeteccionController extends Controller
             $model->lista_evidencias = ' - ';
             $model->path_archivos = ' - ';
 
-            $array_datos_estudiante = $this->datos_estudiante($id_estudiante);
-
+            $array_datos_estudiante = $this->datos_estudiante($id_estudiante,$es_lexionario);
         }  
 
         if ($model->load(Yii::$app->request->post())) 
@@ -218,27 +231,60 @@ class DeceDeteccionController extends Controller
         throw new NotFoundHttpException('The requested page does not exist.');
     }
 
-    private function datos_estudiante($id_estudiante)
+    private function datos_estudiante($id_estudiante, $es_lexionario)
     {
         $usuarioLog = Yii::$app->user->identity->usuario;
         $periodoId = Yii::$app->user->identity->periodo_id;
         $con = Yii::$app->db;
-       $query="select  distinct 4.id,concat(c4.last_name, ' ',c4.first_name,' ',c4.middle_name) as student,
-        c8.name curso , c7.name paralelo
-        from scholaris_clase c1 , scholaris_grupo_alumno_clase c2 ,
-         op_institute_authorities c3 ,op_student c4 ,op_student_inscription c5, 
-         scholaris_op_period_periodo_scholaris c6,op_course_paralelo c7, op_course c8
-        where c3.usuario  = '$usuarioLog' 
-        and c3.id = c1.dece_dhi_id 
-        and c1.id = c2.clase_id 
-        and c2.estudiante_id = c4.id 
-        and c4.id = c5.student_id 
-        and c5.period_id  = c6.op_id 
-        and c6.scholaris_id = '$periodoId'
-        and c7.id = c1.paralelo_id 
-        and c8.id = c7.course_id 
-        and c2.estudiante_id ='$id_estudiante'
-        order by student;";
+        $query='';
+        if($es_lexionario)
+        {      
+            //Cuando viene desde la parte del lexionario  
+            $query ="select  distinct 4.id,concat(c4.last_name, ' ',c4.first_name,' ',c4.middle_name) as student,
+                c8.name curso , c7.name paralelo
+                from scholaris_clase c1 , scholaris_grupo_alumno_clase c2, 
+                op_faculty c10,op_student c4 ,op_student_inscription c5, 
+                scholaris_op_period_periodo_scholaris c6,op_course_paralelo c7, op_course c8,
+                res_users c9         
+                where c9.login ='$usuarioLog'       
+                and c9.partner_id = c10.partner_id
+                and c1.idprofesor = c10.id
+                and c1.id = c2.clase_id 
+                and c2.estudiante_id = c4.id 
+                and c4.id = c5.student_id 
+                and c5.period_id  = c6.op_id 
+                and c6.scholaris_id ='$periodoId'
+                and c7.id = c1.paralelo_id 
+                and c8.id = c7.course_id 
+                and c2.estudiante_id ='$id_estudiante'
+                order by student;"; 
+        }
+        else
+        {
+            //Cuando viene desde el modulo de dece
+                $query="select  distinct 4.id,concat(c4.last_name, ' ',c4.first_name,' ',c4.middle_name) as student,
+                    c8.name curso , c7.name paralelo
+                    from scholaris_clase c1 , scholaris_grupo_alumno_clase c2 ,
+                    op_institute_authorities c3 ,op_student c4 ,op_student_inscription c5, 
+                    scholaris_op_period_periodo_scholaris c6,op_course_paralelo c7, op_course c8
+                    where c3.usuario  = '$usuarioLog' 
+                    and c3.id = c1.dece_dhi_id 
+                    and c1.id = c2.clase_id 
+                    and c2.estudiante_id = c4.id 
+                    and c4.id = c5.student_id 
+                    and c5.period_id  = c6.op_id 
+                    and c6.scholaris_id = '$periodoId'
+                    and c7.id = c1.paralelo_id 
+                    and c8.id = c7.course_id 
+                    and c2.estudiante_id ='$id_estudiante'
+                    order by student;";
+
+        }
+
+        // echo '<pre>';
+        // print_r($query);
+        // die();
+
 
         $resp = $con->createCommand($query)->queryOne();
 

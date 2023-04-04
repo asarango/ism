@@ -34,6 +34,7 @@ class PdfNew extends \yii\db\ActiveRecord
     {
         $periodoId = Yii::$app->user->identity->periodo_id;
         $this->planCabecera = PlanVerticalDiploma::find()->where(['cabecera_id' => $cabeceraId])->all();
+
         $cabecera = PlanificacionDesagregacionCabecera::findOne($cabeceraId);
         $this->materiaId = $cabecera->ismAreaMateria->materia_id;
 
@@ -217,14 +218,14 @@ class PdfNew extends \yii\db\ActiveRecord
     private function get_nivel()
     {
 
-        $superior = $this->search_data_select('datos', 'nivel', 'Superior');
+        $superior = $this->search_data_select('datos', 'nivel', 'Superior');        
         $checkedSuperior = $superior['seleccion'] ? 'X' : '';
 
         $dosanios = $this->search_data_select('datos', 'nivel', 'Medio completado en dos años');
-        $checkedDosAnios = $superior['seleccion'] ? 'X' : '';
+        $checkedDosAnios = $dosanios['seleccion'] ? 'X' : '';
 
         $unAnio = $this->search_data_select('datos', 'nivel', 'Medio completado en un año *');
-        $checkedUnAnio = $superior['seleccion'] ? 'X' : '';
+        $checkedUnAnio = $unAnio['seleccion']  ? 'X' : '';
 
         $html = '<table width="" cellpadding="3" cellspacing="0" class="borderB">';
         $html .= '<tr>';
@@ -632,6 +633,7 @@ class PdfNew extends \yii\db\ActiveRecord
 
     private function search_data_text($section, $typeField)
     {
+
         foreach ($this->planCabecera as $p) {
             if ($p->tipo_campo == $typeField && $p->tipo_seccion == $section) {
                 return array(

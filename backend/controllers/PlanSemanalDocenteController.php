@@ -213,6 +213,7 @@ class PlanSemanalDocenteController extends Controller {
                             inner join op_institute_authorities oia on oia.id = cla.coordinador_academico_id
                     where 	par.course_id = $courseId
                     group by oia.usuario;";
+
         $res    = $con->createCommand($query)->queryAll();
         return $res;
     }

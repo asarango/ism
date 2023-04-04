@@ -123,10 +123,7 @@ class DocenteClasesController extends Controller
         $modelSemanas   = $this->get_semanas($bloqueId);                
 
         $responsable = $modelClase->ismAreaMateria->responsable_planificacion;          
-        
-        // print_r($claseId);
-        // die();
-        
+                
         return $this->renderPartial('semanas',[
             'modelSemanas' => $modelSemanas,
             'modelClase' => $modelClase,

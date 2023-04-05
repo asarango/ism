@@ -14,12 +14,13 @@ $condicion = $condicionClass->aprobacion_planificacion($estado,$isOpen,$bloqueUn
 // echo 'entreo';
 // print_r($grupoMateria);
 // die();
+//if($grupoMateria){ echo '  (Interdisciplinar)';die();}
 ?>
 
 
 <div class="row text-center" style="margin-top:15px; background-color: #eee">
     <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
-        <h4 style="text-align:center">DISPONIBLES<?php if($grupoMateria){ echo '  (Interdisciplinar)';}?></h4>
+        <h4 style="text-align:center">DISPONIBLES 1<?php if($grupoMateria){ echo '  (Interdisciplinar)';}?></h4>
         
         <hr>
         <?php

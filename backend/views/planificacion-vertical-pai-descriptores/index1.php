@@ -329,6 +329,7 @@ $condicion = $condicionClass->aprobacion_planificacion($estado,$isOpen,$bloqueUn
                     <!-- Manda a la view: planifificacion-vertical-pai/objetivos-especificos.php -->
                     <div class="tab-pane fade <?= $showObjetivosActive ?> " id="objetivo" role="tabpanel" aria-labelledby="objetivo-tab">
                         <?php
+  
                         echo $this->render('objetivos-especificos',
                                 [
                                     'bloqueUnidad' => $bloqueUnidad,

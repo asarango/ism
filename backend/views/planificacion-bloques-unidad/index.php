@@ -41,6 +41,10 @@ function pud_dip_porcentaje_avance($planVertDiplId, $planBloqueUniId)
 $existeCurso = false;
 $grupoMateria = mostrar_datos_materia($cabecera);
 
+// echo'<pre>';
+// print_r($grupoMateria);
+// die();
+
 /********************************************************************* */
 function mostrar_datos_materia($cabecera)
 {
@@ -200,6 +204,7 @@ function mostrar_datos_materia($cabecera)
                         <tbody>
                             <?php
                             $contador = 0;
+
                             foreach ($unidades as $unidad) {
                             ?>
                                 <tr>

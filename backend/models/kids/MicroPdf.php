@@ -118,9 +118,9 @@ class MicroPdf extends \yii\db\ActiveRecord{
         $html .= '<td class="border" align="center" width="20%"><img src="imagenes/instituto/logo/logo2.png" width="60px"></td>';
         $html .= '<td class="border" align="center" width=""></td>';
         $html .= '<td class="border" align="right" width="20%">
-                    Código: ISMR20-22 <br>
+                    Código: ISMR20-17 <br>
                     Versión: 5.0<br>
-                    Fecha: 28/09/021<br>
+                    Fecha: 23/10/2022<br>
                     Página: {PAGENO} / {nb}<br>
                   </td>';
         $html .= '</tr>';

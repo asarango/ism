@@ -6,6 +6,7 @@ use backend\models\kids\PdfPlanSemanal;
 use backend\models\KidsPca;
 use Yii;
 use backend\models\KidsPlanSemanal;
+use backend\models\KidsPlanSemanalReflexion;
 use backend\models\KidsPlanSemanalHoraClase;
 use backend\models\KidsPlanSemanalSearch;
 use backend\models\KidsUnidadMicro;
@@ -60,9 +61,9 @@ class KidsPlanSemanalController extends Controller
     public function actionAjaxSemanas()
     {
 
-        $experienciaId  = $_GET['experiencia_id'];
-        $courseId     = $_GET['op_course_id'];
-        $pcaId     = $_GET['pca_id'];
+        $experienciaId = $_GET['experiencia_id'];
+        $courseId = $_GET['op_course_id'];
+        $pcaId = $_GET['pca_id'];
 
         $planSemanal = $this->get_plan_semanal_cab($pcaId, $courseId);
 
@@ -115,7 +116,8 @@ class KidsPlanSemanalController extends Controller
     }
 
 
-    private function get_uso($courseId){
+    private function get_uso($courseId)
+    {
         $con = Yii::$app->db;
         $query = "select    tipo_usu_bloque 
                     from    scholaris_clase cla
@@ -161,23 +163,23 @@ class KidsPlanSemanalController extends Controller
         $usuario = Yii::$app->user->identity->usuario;
 
         $kidsPlanSemanalId = $_GET['kids_plan_semanal_id'];
-        $kidsPlanSemanal = KidsPlanSemanal::findOne($kidsPlanSemanalId);        
+        $kidsPlanSemanal = KidsPlanSemanal::findOne($kidsPlanSemanalId);
 
         $courseId = $kidsPlanSemanal->kidsUnidadMicro->pca->op_course_id; //toma el surso asignado al plan
-        
+
         $horarioAsignado = $this->get_horario_asignado($courseId); //Consulta el horario asignado a la planificacion
         $horario = $this->get_horario($horarioAsignado, $periodoId, $courseId, $usuario); //Trae el horario del docente del curso
-        $dias = ScholarisHorariov2Dia::find()->orderBy('numero')->asArray()->all();        
+        $dias = ScholarisHorariov2Dia::find()->orderBy('numero')->asArray()->all();
 
         $arrayDias = array();
 
         foreach ($dias as $d) {
-            $diaG =  $d['nombre'];
+            $diaG = $d['nombre'];
             $arrayHoras = array();
 
             foreach ($horario as $h) {
                 $diaH = $h['dia'];
-                if ($diaH == $diaG) {                    
+                if ($diaH == $diaG) {
                     // consulta si la actividad esta llena sino devuelve none
                     $actividad = KidsPlanSemanalHoraClase::find()->where([
                         'plan_semanal_id' => $kidsPlanSemanalId,
@@ -190,27 +192,32 @@ class KidsPlanSemanalController extends Controller
                         $actividades = 'none';
                     } //fin de consuta de si existe actidades                    
 
-                    if($h['clase_id']){
-                        $h['actividades'] = $actividades;       //Inyecta al arreglo las actividades                                 
-                        $h['total_destrezas'] = $this->get_total_destrezas($kidsPlanSemanalId, $h['clase_id'], $h['detalle_id'], $usuario);                                                            
-                        $h['total_tareas'] = $this->get_total_tareas($kidsPlanSemanalId, $h['clase_id'], $h['detalle_id'], $usuario);                    
-                        $h['total_ambitos'] = $this->get_total_ambitos($kidsPlanSemanalId, $h['clase_id'], $h['detalle_id'], $usuario);                    
-                    }else{
+                    if ($h['clase_id']) {
+                        $h['actividades'] = $actividades; //Inyecta al arreglo las actividades                                 
+                        $h['total_destrezas'] = $this->get_total_destrezas($kidsPlanSemanalId, $h['clase_id'], $h['detalle_id'], $usuario);
+                        $h['total_tareas'] = $this->get_total_tareas($kidsPlanSemanalId, $h['clase_id'], $h['detalle_id'], $usuario);
+                        $h['total_ambitos'] = $this->get_total_ambitos($kidsPlanSemanalId, $h['clase_id'], $h['detalle_id'], $usuario);
+                    } else {
                         $h['actividades'] = 0;
                         $h['total_destrezas'] = 0;
                         $h['total_tareas'] = 0;
                         $h['total_ambitos'] = 0;
-                    }                    
+                    }
                     array_push($arrayHoras, $h);
                 }
             }
-        
+
             $d['horas'] = $arrayHoras;
 
             array_push($arrayDias, $d);
+
+
+
         }
 
-
+        //Llamo a funcion para insertar registro de reflexion y me regresa contador de cuantas reflexiones están detalladas
+        $contadorReflexion = $this->create_reflexion($kidsPlanSemanalId);
+        $reflexion = KidsPlanSemanalReflexion::find()->where(['plan_semanal_id' => $kidsPlanSemanalId])->one();
 
         // echo '<pre>';
         // print_r($arrayDias);
@@ -219,9 +226,69 @@ class KidsPlanSemanalController extends Controller
         return $this->render('detalle', [
             'kidsPlanSemanal' => $kidsPlanSemanal,
             'horario' => $horario,
+            'contadorReflexion' => $contadorReflexion,
+            'reflexion' => $reflexion,
             'arrayDias' => $arrayDias
         ]);
     }
+
+    /**
+     * Metodo para insertar reflexion por semana
+     * Creado por: Isaac Sarango
+     * Contacto:  isaac.sago99@gmail.com
+     */
+    private function create_reflexion($kidsPlanSemanalId)
+    {
+
+        $user = Yii::$app->user->identity->usuario;
+        $hoy = date("Y-m-d H:i:s");
+        $reflexion = KidsPlanSemanalReflexion::find()->where(['plan_semanal_id' => $kidsPlanSemanalId])->one();
+
+        $contador = 0;
+
+        if (!$reflexion) {
+            $reflexionModel = new KidsPlanSemanalReflexion();
+            $reflexionModel->plan_semanal_id = $kidsPlanSemanalId;
+            $reflexionModel->created = $user;
+            $reflexionModel->created_at = $hoy;
+            $reflexionModel->updated = $user;
+            $reflexionModel->updated_at = $hoy;
+            $reflexionModel->save();
+        } else {
+            $totalPalabras = 10;
+            if (str_word_count($reflexion->antes) > $totalPalabras)
+                $contador++;
+            if (str_word_count($reflexion->durante) > $totalPalabras)
+                $contador++;
+            if (str_word_count($reflexion->despues) > $totalPalabras)
+                $contador++;
+        }
+
+        return $contador;
+
+    }
+
+    /*
+     * Metodo que actualiza reflexion por id de registro
+     * Creado por: Isaac Sarango
+     * Contacto:  isaac.sago99@gmail.com
+     */
+    public function actionUpdateReflexion()
+    {
+        $id = $_POST['id'];
+        $plan_semanal_id = $_POST['plan_semanal_id'];
+        $reflexion = KidsPlanSemanalReflexion::findOne($id);
+
+        $reflexion->antes = $_POST['antes_reflexion'];
+        $reflexion->durante = $_POST['durante_reflexion'];
+        $reflexion->despues = $_POST['despues_reflexion'];
+
+        $reflexion->save();
+
+        return $this->redirect(['detalle', 'kids_plan_semanal_id' => $plan_semanal_id]);
+    }
+
+
 
 
     private function get_horario($cabeceraId, $periodoId, $courseId, $usuario)
@@ -330,13 +397,13 @@ class KidsPlanSemanalController extends Controller
         $res = $con->createCommand($query)->queryOne();
 
         $total = 0;
-        if($res){
+        if ($res) {
             $total = count($res);
         }
 
         return $total;
     }
-    
+
     private function get_total_tareas($planSemanalId, $claseId, $detalleId, $userLog)
     {
         $con = Yii::$app->db;
@@ -353,10 +420,33 @@ class KidsPlanSemanalController extends Controller
         return $res['total_destrezas'];
     }
 
-    public function actionPdf(){
+    public function actionPdf()
+    {
         $planSemanalId = $_GET['plan_semanal_id'];
         new PdfPlanSemanal($planSemanalId);
 
-        
+
     }
+
+    /*
+    Created by : Isaac Sarango
+    Contacto: isaac.sago99@gmail.com
+    Método para enviar plan semanal a coordinacion
+    */
+    public function actionChangeState()
+    {
+        //Se recibe id de la tabla kids_plan_semanal para cambiar ESTADO
+        $hoy = date("Y-m-d H:i:s");
+        $user = Yii::$app->user->identity->usuario;
+        $id = $_GET['id'];
+        $planSemanal = KidsPlanSemanal::findOne($id);
+        $planSemanal->estado = 'ENVIO_COORDINACION';
+        $planSemanal->sent_at = $hoy;
+        $planSemanal->sent_by = $user;
+        $planSemanal->save();
+
+        return $this->redirect(['detalle', 'kids_plan_semanal_id' => $id]);
+
+    }
+
 }

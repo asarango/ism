@@ -188,6 +188,11 @@ class ScholarisClaseAuxController extends Controller {
                                     inner join op_institute_authorities a on a.usuario = u.usuario 
                     where	u.instituto_defecto = $institutoId
                     order by rp.name;";
+
+// echo $query;
+// die();
+
+
         $res = $con->createCommand($query)->queryAll();        
         
         return $res;

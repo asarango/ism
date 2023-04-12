@@ -697,7 +697,7 @@ class PudDipController extends Controller {
 
         return $this->renderPartial('_semanas',[
             'planesSemanales' => $planesSemanales,
-            'planUnidadId' => $planBloqueUnidadId
+            'planUnidadId' => $planUnidad->id
         ]);
     }
 
@@ -968,38 +968,51 @@ class PudDipController extends Controller {
     /*     * * 5.3.1 Metacognicion */
     private function get_accion_metacognicion($planBloqueUnidadId) 
     {       
+        // $planBloqueUnidad = PlanificacionBloquesUnidad::findOne($planBloqueUnidadId);
+        // $accion_update = "5.3.1.-";
+        // $titulo = "5.3.1- METACOGNICIÓN";
+
+        //  $this->ingresa_metacognicion($planBloqueUnidadId); //ingresa las opciones 
+        //  $mostrar = $this->mostrar_seleccion_metacognicion($planBloqueUnidadId, $titulo);     
+
+        // $modelPlanVertical = PlanificacionVerticalDiploma::find()->where(['planificacion_bloque_unidad_id' => $planBloqueUnidadId])->one();
+        // $modelPlanVertical->ultima_seccion = $accion_update;
+        // $modelPlanVertical->save();     
+
+        //  //guarda el porcentaje de avance del pud dip
+        //  $this->pud_dip_actualiza_porcentaje_avance($modelPlanVertical);
+
+        // return $mostrar;
+
         $planBloqueUnidad = PlanificacionBloquesUnidad::findOne($planBloqueUnidadId);
         $accion_update = "5.3.1.-";
-        $titulo = "5.3.1- METACOGNICIÓN";
+        $titulo = "5.3.1.- METACOGNICIÓN";
 
-         $this->ingresa_metacognicion($planBloqueUnidadId); //ingresa las opciones 
-         $mostrar = $this->mostrar_seleccion_metacognicion($planBloqueUnidadId, $titulo);
-        
-//        $modelPlanVertical = PlanificacionVerticalDiploma::find()->where(['planificacion_bloque_unidad_id' => $planBloqueUnidad])->one();
-//        $modelPlanVertical->ultima_seccion = $accion_update;
-//        $modelPlanVertical->save();        
+        $this->ingresa_metacognicion($planBloqueUnidadId); //ingresa las opciones 
+        $mostrar = $this->mostrar_seleccion_metacognicion($planBloqueUnidadId, $titulo);        
 
         $modelPlanVertical = PlanificacionVerticalDiploma::find()->where(['planificacion_bloque_unidad_id' => $planBloqueUnidadId])->one();
         $modelPlanVertical->ultima_seccion = $accion_update;
-        $modelPlanVertical->save();     
+        $modelPlanVertical->save();
 
-         //guarda el porcentaje de avance del pud dip
-         $this->pud_dip_actualiza_porcentaje_avance($modelPlanVertical);
-
+        //guarda el porcentaje de avance del pud dip
+        $this->pud_dip_actualiza_porcentaje_avance($modelPlanVertical);
         return $mostrar;
+
     }
-    
+
     private function ingresa_metacognicion($planBloqueUnidadId){
         $con = Yii::$app->db;
-        $query = "insert into pud_dip (planificacion_bloques_unidad_id, codigo, campo_de, opcion_boolean, opcion_texto)
-                            select 	$planBloqueUnidadId, tipo, 'seleccion', false, opcion
-                            from 	planificacion_opciones 
-                            where 	tipo ilike 'METACOGNICION'
-                                        and opcion not in (select 	opcion_texto  
-                                                            from 	pud_dip 
-                                                            where 	planificacion_bloques_unidad_id = $planBloqueUnidadId
-                                                                        and opcion_texto = opcion
-                                                                        and codigo = 'METACOGNICION');";
+        $query = "insert into pud_dip (planificacion_bloques_unidad_id, codigo, campo_de, opcion_boolean, opcion_texto) 
+                select 	$planBloqueUnidadId,tipo, 'seleccion', false, opcion 
+                from 	dip_opciones op
+                where 	op.tipo = 'METACOGNICION'
+                                and op.opcion not in (select opcion_texto from pud_dip 
+                                where planificacion_bloques_unidad_id = $planBloqueUnidadId 
+                                and opcion_texto = opcion and codigo = 'METACOGNICION')
+                                
+                ;";
+
         $con->createCommand($query)->execute();
         
         $modelDetalle = \backend\models\PudDip::find()->where([
@@ -1008,26 +1021,23 @@ class PudDipController extends Controller {
             'planificacion_bloques_unidad_id' => $planBloqueUnidadId
         ])->one();
         
-        if(!$modelDetalle){            
+        if(!$modelDetalle){
             $model = new \backend\models\PudDip();
             $model->planificacion_bloques_unidad_id = $planBloqueUnidadId;
             $model->codigo = 'METACOGNICION';
             $model->campo_de = 'escrito';
             $model->opcion_texto = 'None';
-            $model->opcion_boolean = true;
             $model->save();
         }                
     }
-    
-    private function mostrar_seleccion_metacognicion($planBloqueUnidadId, $titulo) 
-    {
+
+    private function mostrar_seleccion_metacognicion($planBloqueUnidadId, $titulo) {
         $pudDip = \backend\models\PudDip::find()->where([
             'planificacion_bloques_unidad_id' => $planBloqueUnidadId,
             'codigo' => 'METACOGNICION'
          ])
          ->orderBy(['opcion_texto'=>SORT_ASC])
          ->all();
-
         
 
         $html = '';
@@ -1056,7 +1066,8 @@ class PudDipController extends Controller {
             }
             
         }
-        $html .= '</div>'; //FIN ROW SELECCION        
+        $html .= '</div>'; //FIN ROW SELECCION
+        
         $html .= '<hr />'; 
         
 //            $html .= '<div class="row">'; //inicia row de detalle
@@ -1083,6 +1094,7 @@ class PudDipController extends Controller {
         $html .= '</div>';
         return $html;
     }
+    /***** fin de metacognición */
     
     
      /*     * * 5.3.2  DIFERENCIACION */

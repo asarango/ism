@@ -15,6 +15,7 @@ use Yii;
  * @property string $contenido
  * @property string $actividad
  *
+ * @property IsmRespuestaContenidoPaiInterdiciplinar[] $ismRespuestaContenidoPaiInterdiciplinars
  * @property IsmRespuestaPlanInterdiciplinar $respuestaPlanInterPai
  * @property PlanificacionVerticalPaiOpciones $planVertOpciones
  */
@@ -60,6 +61,14 @@ class IsmRespuestaOpcionesPaiInterdiciplinar extends \yii\db\ActiveRecord
             'contenido' => 'Contenido',
             'actividad' => 'Actividad',
         ];
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getIsmRespuestaContenidoPaiInterdiciplinars()
+    {
+        return $this->hasMany(IsmRespuestaContenidoPaiInterdiciplinar::className(), ['id_respuesta_opciones_pai' => 'id']);
     }
 
     /**

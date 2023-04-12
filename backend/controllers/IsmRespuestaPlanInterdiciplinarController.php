@@ -714,7 +714,7 @@ class IsmRespuestaPlanInterdiciplinarController extends Controller
         $esEditable = true;
         $pestana = '2.5.-';
         $campo = 'PREGUNTAS DE INDAGACÍON';
-        $seccion = 2;
+        $seccion = 2;       
 
         $html = $this->html_preguntas_indagacion($idGrupoInter);
 

@@ -3,6 +3,7 @@
 namespace backend\controllers;
 
 use backend\models\helpers\Scripts;
+use backend\models\IsmRespuestaOpcionesPaiInterdiciplinar;
 use Yii;
 use backend\models\PlanificacionBloquesUnidad;
 use backend\models\PlanificacionBloquesUnidadSubtitulo;
@@ -200,24 +201,58 @@ class PlanificacionVerticalPaiDescriptoresController extends Controller{
     {
         $con = Yii::$app->db;
         $query = "select 	ic.id as criterio_id
-		, ic.nombre as criterio
-		, icl.nombre_espanol as criterio_detalle
-		, ild.descripcion as descriptor_detalle
-		, id.nombre as codigo
-		, da.id as descriptor_id
-        from 	ism_criterio_descriptor_area da
-                inner join ism_criterio ic on ic.id = da.id_criterio
-                inner join ism_criterio_literal icl on icl.id = da.id_literal_criterio
-                inner join ism_descriptores id on id.id = da.id_descriptor
-                inner join ism_literal_descriptores ild on ild.id = da.id_literal_descriptor
-        where 	da.id_area = $areaId
-                and id_curso = $courseTemplateId
-                and da.id not in(
-                    select descriptor_id from planificacion_vertical_pai_descriptores where descriptor_id = da.id and plan_unidad_id = $planBloqueUnidadId
-                )
-                and icl.es_interdisciplinar = '$esInterdisciplinar'
-                and ild.es_interdisciplinar = '$esInterdisciplinar'
-        order by ic.nombre, id.nombre;";
+                    , ic.nombre as criterio
+                    , icl.nombre_espanol as criterio_detalle
+                    , ild.descripcion as descriptor_detalle
+                    , id.nombre as codigo
+                    , da.id as descriptor_id
+                    from 	ism_criterio_descriptor_area da
+                            inner join ism_criterio ic on ic.id = da.id_criterio
+                            inner join ism_criterio_literal icl on icl.id = da.id_literal_criterio
+                            inner join ism_descriptores id on id.id = da.id_descriptor
+                            inner join ism_literal_descriptores ild on ild.id = da.id_literal_descriptor
+                    where 	da.id_area = $areaId
+                            and id_curso = $courseTemplateId
+                            and da.id not in(
+                                select descriptor_id from planificacion_vertical_pai_descriptores where descriptor_id = da.id and plan_unidad_id = $planBloqueUnidadId
+                            )
+                            and icl.es_interdisciplinar = '$esInterdisciplinar'
+                            and ild.es_interdisciplinar = '$esInterdisciplinar'
+                    ";
+        if($esInterdisciplinar ==0)
+        {
+            $query .="order by criterio,codigo;";
+        }
+
+        //El if de la parte inferior se activan, cuando la planificacion es interdiciplinar, para extraer los criterios
+        // tipo D, que se suman al interdiciplinar            
+        
+
+        if($esInterdisciplinar ==1)
+        {
+            $query .= "union all
+            select 	ic.id as criterio_id
+                , ic.nombre as criterio
+                , icl.nombre_espanol as criterio_detalle
+                , ild.descripcion as descriptor_detalle
+                , id.nombre as codigo
+                , da.id as descriptor_id
+                from 	ism_criterio_descriptor_area da
+                        inner join ism_criterio ic on ic.id = da.id_criterio
+                        inner join ism_criterio_literal icl on icl.id = da.id_literal_criterio
+                        inner join ism_descriptores id on id.id = da.id_descriptor
+                        inner join ism_literal_descriptores ild on ild.id = da.id_literal_descriptor
+                where 	da.id_area = $areaId
+                        and id_curso = $courseTemplateId
+                        and ic.nombre ='D'
+                        and da.id not in(
+                            select descriptor_id from planificacion_vertical_pai_descriptores where descriptor_id = da.id and plan_unidad_id = $planBloqueUnidadId
+                        )
+                        and icl.es_interdisciplinar = '$esInterdisciplinar'
+                        and ild.es_interdisciplinar = '$esInterdisciplinar'
+                order by criterio,codigo;";
+        }
+
 
         // echo '<pre>';
         // print_r($query);
@@ -338,7 +373,11 @@ class PlanificacionVerticalPaiDescriptoresController extends Controller{
         $planBloqueUnidadId = $_GET['plan_unidad_id'];
         $descriptorId       = $_GET['descriptor_id'];
         $pestana            = $_GET['pestana'];
-        $grupoMateria       = $_GET['grupoMateria'];
+        $grupoMateria = array();
+         if(isset($_GET['grupoMateria']))
+        {
+            $grupoMateria = $_GET['grupoMateria'];       
+        }      
 
         $model = new \backend\models\PlanificacionVerticalPaiDescriptores();
         $model->plan_unidad_id = $planBloqueUnidadId;
@@ -412,13 +451,25 @@ class PlanificacionVerticalPaiDescriptoresController extends Controller{
     /**
      * QUITAR CONTENIDO
      */
-    public function actionQuitarContenido(){
+    public function actionQuitarContenido()
+    {
+        /*Creado Por:                   Fecha
+          Modificado Por: Santiago Clavijo      Fecha: 2023-04-11
+          Detalle: 
+        */      
+
+         //1.- Buscamos el registro a eliminar
         $id = $_GET['id'];
         $pestana = $_GET['pestana'];
         $model = PlanificacionVerticalPaiOpciones::findOne($id);
         $planBloqueUnidadId = $model->plan_unidad_id;
 
+
+
+        //2.- Eliminamos el registro de habilidades original
         $model->delete();
+
+        
 
         return $this->redirect(['index1',
             'unidad_id' => $planBloqueUnidadId,

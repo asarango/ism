@@ -23,13 +23,17 @@ use Mpdf\Mpdf;
 use DateTime;
 use backend\models\helpers\HelperGeneral;
 use backend\models\helpers\Scripts;
+use backend\models\lms\LmsColaborativo;
+use backend\models\ScholarisClase;
 
 class Pdf extends \yii\db\ActiveRecord{
 
     private $planVertDipl;
-    private $IdCabecera;
+    private $IdCabecera;    
+    private $planBloqueUnidadId;
 
-    public function __construct($idPlanUniBloque){        
+    public function __construct($idPlanUniBloque){    
+        $this->planBloqueUnidadId = $idPlanUniBloque;    
         $this->planVertDipl = PlanificacionVerticalDiploma::find()->where([
             'planificacion_bloque_unidad_id' => $idPlanUniBloque
         ])->one(); 
@@ -437,10 +441,6 @@ class Pdf extends \yii\db\ActiveRecord{
         ->where(['plan_unidad_id'=>$objPlanVertDip->planificacion_bloque_unidad_id])
         ->one(); 
 
-    //     echo '<pre>';
-    //    print_r($enfoqueEvaluacion);
-    //    die();
-
 
         $objScrip = new Scripts();                 
         $textProcesoApre = $objScrip->get_enfoques($objPlanVertDip->id);
@@ -458,54 +458,152 @@ class Pdf extends \yii\db\ActiveRecord{
         }  
         $proceso .= '</ul>';
 
+
+        /*** Proceso para plan semanal */
+        $periodoId = Yii::$app->user->identity->periodo_id;
+        $periodo = ScholarisPeriodo::findOne($periodoId);
+        $planUnidad = PlanificacionBloquesUnidad::findOne($this->planBloqueUnidadId);
+        $bloqueShotName = $planUnidad->curriculoBloque->shot_name;
+
+        $ismAreaMateriaId = $planUnidad->planCabecera->ism_area_materia_id;
+        $clase = ScholarisClase::find()->where(['ism_area_materia_id' => $ismAreaMateriaId])->one();
+        
+        $uso = $clase->tipo_usu_bloque;
+        $semanas = $this->query_semanas($periodo->codigo, $uso, $bloqueShotName);
+
+        $lmsColaborativo = new LmsColaborativo();
+        $planesSemanales = $lmsColaborativo->planes_semanales_x_unidad($semanas, $ismAreaMateriaId, $uso);
+
+        /*** Fin para plan semanal */
        
         $html ='<br>';
         $html.='<b>ACCION:</b> Enseñanza y aprendizaje a través de la investigación';
+
         $html.='<table style="font-size:10;" width="100%" cellspacing="0" cellpadding="5">';
-                    $html.='<tr>                       
-                                <td class="border" style="background-color:'.$colorCabeceraFondo.';"><b>PROCESO DE APRENDIZAJE: </b></td> 
-                                <td class="border" style="background-color:'.$colorCabeceraFondo.';"><b>ENFOQUES DEL APRENDIZAJE: </b></td>
-                                <td class="border" style="background-color:'.$colorCabeceraFondo.';"><b>EVALUACIÓN SUMATIVA: </b></td>                                                  
-                            </tr>';
-                   $html.='<tr> ';                      
-                        $html.= '<td rowspan="3" class="border">'.$proceso.'</td>                        
-                                 <td rowspan="3" class="border" >'. $textProcesoApre.'</td>
-                                 <td class="border" >';
-                                 if($enfoqueEvaluacion){$html.= ''.$enfoqueEvaluacion->sumativa;} 
-                        $html.= '</td> ';                      
-                    $html.='</tr>';            
-                    $html.='<tr>                                
-                                <td class="border" style="background-color:'.$colorCabeceraFondo.';"><b>EVALUACIÓN FORMATIVA: </b></td> 
-                            </tr>'; 
-                    $html.='<tr>
-                                <td class="border" >';
-                                    if($enfoqueEvaluacion){$html.= ''.$enfoqueEvaluacion->formativa;}
-                    $html.='</td> 
-                            </tr>';
-                      
-                    $html.='<tr>                       
-                                <td class="border" style="background-color:'.$colorCabeceraFondo.';"><b>METACOGNICIÓN: </b></td> 
-                                <td class="border" style="background-color:'.$colorCabeceraFondo.';"><b>DIFERECIACIÓN: </b></td>
-                                <td class="border" style="background-color:'.$colorCabeceraFondo.';"><b>ESTUDIANTE CON NEE: </b></td>                                                  
-                            </tr>';
-                    $html.='<tr >                       
-                                <td rowspan="3" class="border">'.$textMetacognicion.'</td>
-                                <td rowspan="3" class="border" >'. $textDiferenciacion.'</td>
-                                <td class="border">'.$estudianteNEE.'</td>                       
-                            </tr>';                   
-                    $html.='<tr>                                
-                                <td class="border" style="background-color:'.$colorCabeceraFondo.';"><b>ESTUDIANTES CON TALENTOS SOBRESALIENTES: </b></td> 
-                            </tr>'; 
-                    $html.='<tr>
-                                <td class="border" >'.$estuSobresalientes.'</td> 
-                            </tr>'; 
+        foreach($planesSemanales as $pl){
+            $html.='<tr>';
+            $html.='<td class="border centrarTexto" width="30%"><b>'.$pl['nombre_semana'].'</b></td>';
+            $html.='<td class="border centrarTexto" width="35%"><b>PROCESO DE APRENDIZAJE (ACTIVIDADES):</b></td>';
+            $html.='<td class="border centrarTexto" width="35%"><b>TAREAS:</b></td>';
+            $html.='</tr>';
+
+            $html.='<tr>';
+            
+            $html.='<td class="border">';
+            $html.='<b>DESDE: </b>'.$pl['fecha_inicio'].'</b><br>';
+            $html.='<b>HASTA: </b>'.$pl['fecha_finaliza'].'</b>';
+            $html.='</td>';
+
+            $html.='<td class="border">';
+                foreach($pl['actividades'] as $acti){
+                    $html.='<p>';
+                    $html.= $acti['hora_numero']. ' HORA<br>';
+                    $html.='<b>Inicio: </b>'.$acti['dip_inicio'].'<br>';
+                    $html.='<b>Desarrollo: </b>'.$acti['dip_desarrollo'].'<br>';
+                    $html.='<b>Cierre: </b>'.$acti['dip_cierre'];
+                    $html.='</p>';
+                    $html.='<hr>';
+                }
+            $html.='</td>';
+
+            $html.='<td class="border">';
+                foreach($pl['tareas'] as $tarea){
+                    $html.='<ul>';
+                    $html.='<li>'.$tarea['titulo'].'</li>';
+                    $html.='</ul>';
+                }
+            $html.='</td>';
+
+            $html.='</tr>';            
+        }
+        $html.='</table>';
+
+        $html.='<table style="font-size:10;" width="100%" cellspacing="0" cellpadding="5">';
+        $html.='<tr>';
+        $html.='<td class="border" width="30%" style="background-color:'.$colorCabeceraFondo.';"><b>ENFOQUES DEL APRENDIZAJE: </b></td>';
+        $html.='<td class="border" width="35%" style="background-color:'.$colorCabeceraFondo.';"><b>EVALUACIÓN FORMATIVA: </b></td> ';
+        $html.='<td class="border" width="35%" style="background-color:'.$colorCabeceraFondo.';"><b>EVALUACIÓN SUMATIVA: </b></td>';
+        $html.='</tr>';
+        
+        $html.='<tr>';
+        $html.='<td class="border" >'. $textProcesoApre.'</td>';
+        $html.='<td class="border" >';
+            if($enfoqueEvaluacion){$html.= ''.$enfoqueEvaluacion->formativa;}
+        $html.='</td>';
+        $html.='<td class="border" >';
+            if($enfoqueEvaluacion){$html.= ''.$enfoqueEvaluacion->sumativa;}
+        $html.='</td>';
+        $html.='</tr>';
+
+        $html.='<tr>                       
+                    <td class="border" style="background-color:'.$colorCabeceraFondo.';"><b>METACOGNICIÓN: </b></td> 
+                    <td class="border" style="background-color:'.$colorCabeceraFondo.';"><b>DIFERENCIACIÓN: </b></td>
+                    <td class="border" style="background-color:'.$colorCabeceraFondo.';"><b>ESTUDIANTE CON NEE: </b></td>                                                  
+                </tr>';
+        $html.='<tr >                       
+                    <td rowspan="3" class="border">'.$textMetacognicion.'</td>
+                    <td rowspan="3" class="border" >'. $textDiferenciacion.'</td>
+                    <td class="border">'.$estudianteNEE.'</td>                       
+                </tr>';                   
+        $html.='<tr>                                
+                    <td class="border" style="background-color:'.$colorCabeceraFondo.';"><b>ESTUDIANTES CON TALENTOS SOBRESALIENTES: </b></td> 
+                </tr>'; 
+        $html.='<tr>
+                    <td class="border" >'.$estuSobresalientes.'</td> 
+                </tr>'; 
                     //** fila de LENGUA Y APRENDISAJE */
                     $html.=$this->lenguaje_y_aprendizaje_reporte();
-        $html.='</table>'; 
-      
-        
+        $html.='</table>';        
         return $html;
     }
+
+
+    /**
+     * MÉTODO PARA LAS SEMANAS DEL SQL
+     * 5.0.- SEMANAS
+     * Realizado por Arturo Sarango
+     * 2023-03-29
+     * Actualizado por Arturo Sarango
+     * 2023-03-29
+     */
+    private function query_semanas($periodCode, $uso, $bloqueCurriculoShotName){
+        $con = Yii::$app->db;
+        $query = "select 	sem.id as semana_id
+                            ,sem.semana_numero 
+                            ,sem.nombre_semana 		
+                            ,sem.fecha_inicio 
+		                    ,sem.fecha_finaliza 
+                    from 	scholaris_bloque_semanas sem
+                            inner join scholaris_bloque_actividad blo on blo.id = sem.bloque_id 
+                            inner join scholaris_periodo per on per.codigo = blo.scholaris_periodo_codigo 
+                            inner join curriculo_mec_bloque mbl on mbl.shot_name = blo.abreviatura 
+                    where 	per.codigo = '$periodCode'
+                            and blo.tipo_uso = '$uso'
+                            and mbl.shot_name = '$bloqueCurriculoShotName'
+                    order by sem.semana_numero;";
+        $res = $con->createCommand($query)->queryAll();
+        return $res;
+    }
+
+
+    public function planes_semanales_x_unidad($arraySemanas, $ismAreaMateriaId, $uso){
+        $arreglo = array();
+        
+        foreach($arraySemanas as $semana){
+            $lms = $this->get_lms($semana['semana_numero'], $ismAreaMateriaId, $uso);
+            $semana['actividades'] = $lms;
+
+            $tareas = $this->get_lms_actividad($semana['semana_numero'], $ismAreaMateriaId, $uso);
+            $semana['tareas'] = $tareas;
+            array_push($arreglo, $semana);
+        }
+
+        return $arreglo;
+    }
+
+
+
+
     private function get_metacognicion($planBloqueUnidadId)
     {
         $pudDip = \backend\models\PudDip::find()->where([
@@ -922,6 +1020,3 @@ class Pdf extends \yii\db\ActiveRecord{
         return $html;
     }
 }
-
-
-?>

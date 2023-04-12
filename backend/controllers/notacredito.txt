@@ -1,0 +1,59 @@
+Para crear un archivo XML para una nota de crédito electrónica en PHP que pueda ser transmitido al SRI en Ecuador, puede seguir estos pasos:
+
+    Cree un array que contenga la información de la nota de crédito electrónica. La información debe incluir el número de la nota de crédito, la fecha de emisión, la información del cliente y los detalles de la transacción.
+
+php
+
+$nota_credito = array(
+   'numero' => '001-001-000000001',
+   'fechaEmision' => '2023-04-06',
+   'tipoIdentificacionComprador' => '04',
+   'razonSocialComprador' => 'Juan Perez',
+   'identificacionComprador' => '1712345678001',
+   'direccionComprador' => 'Av. 12 de Octubre y Patria',
+   'motivo' => 'Devolucion de producto',
+   'totalSinImpuestos' => '100.00',
+   'valorModificacion' => '20.00',
+   'codigo' => '01',
+   'razon' => 'Devolucion',
+   'valor' => '20.00',
+   'totalConImpuestos' => '120.00',
+   'propina' => '0.00',
+   'importeTotal' => '120.00',
+);
+
+    Cree un objeto SimpleXMLElement que represente el elemento principal del archivo XML de nota de crédito electrónica.
+
+php
+
+$xml = new SimpleXMLElement('<notaCredito></notaCredito>');
+
+    Agregue los elementos de encabezado al elemento principal del XML.
+
+php
+
+$xml->addAttribute('id', 'comprobante');
+$xml->addAttribute('version', '1.1.0');
+$xml->addAttribute('xmlns', 'http://www.w3.org/2000/09/xmldsig#');
+$xml->addAttribute('xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance');
+$xml->addAttribute('xsi:schemaLocation', 'http://www.w3.org/2000/09/xmldsig# xmldsig-core-schema.xsd');
+
+    Agregue los elementos de información de la nota de crédito electrónica al elemento principal del XML.
+
+php
+
+$fecha = new DateTime($nota_credito['fechaEmision']);
+$fecha_emision = $fecha->format('d/m/Y');
+
+$info_nota_credito = $xml->addChild('infoNotaCredito');
+$info_nota_credito->addChild('fechaEmision', $fecha_emision);
+$info_nota_credito->addChild('dirEstablecimiento', 'Av. Amazonas y Eloy Alfaro');
+$info_nota_credito->addChild('tipoIdentificacionComprador', $nota_credito['tipoIdentificacionComprador']);
+$info_nota_credito->addChild('razonSocialComprador', $nota_credito['razonSocialComprador']);
+$info_nota_credito->addChild('identificacionComprador', $nota_credito['identificacionComprador']);
+$info_nota_credito->addChild('direccionComprador', $nota_credito['direccionComprador']);
+$info_nota_credito->addChild('contribuyenteEspecial', '000');
+$info_nota_credito->addChild('obligadoContabilidad', 'SI');
+$info_nota_credito->addChild('codDocModificado', '01');
+$info_nota_credito->addChild('numDocModificado', '001-001-000000001');
+$info_nota_credito->addChild('fechaEmisionDocSust

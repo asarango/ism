@@ -3,8 +3,6 @@
 use yii\helpers\Html;
 use yii\helpers\Url;
 
-
-
 ?>
 
 <style>
@@ -63,7 +61,7 @@ use yii\helpers\Url;
                                             <th class="text-center">INICIO</th>
                                             <th class="text-center">DESARROLLO</th>
                                             <th class="text-center">CIERRE</th>
-                                            <th class="text-center">ACCIONES</th>
+                                            <th class="text-center" colspan="2">ACCIONES</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -103,7 +101,7 @@ use yii\helpers\Url;
                                                         <div class="modal-dialog">
                                                             <div class="modal-content">
                                                                 <div class="modal-header">
-                                                                    <h5 class="modal-title" id="staticBackdropLabel">Modal title</h5>
+                                                                    <h5 class="modal-title" id="staticBackdropLabel">Configurando actividades de la semana</h5>
                                                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                                 </div>
 
@@ -150,6 +148,16 @@ use yii\helpers\Url;
 
 
                                                 </td>
+
+                                                <td>
+                                                    <?=
+                                                        Html::a('<i class="fas fa-tasks"></i>',['lms-actividad/index1',
+                                                            'lms_id' => $actividad['id'],
+                                                            'plan_bloque_unidad_id' => $planUnidadId,
+                                                            'action-back' => 'pud-dip/index1'
+                                                        ]);
+                                                    ?>
+                                                </td>
                                             </tr>
                                         <?php
                                         }
@@ -161,11 +169,11 @@ use yii\helpers\Url;
                         <!-- finaliza para actividades -->
 
                         <!-- inicio de tareas -->
-                        <div class="col-lg-4 col-md-4 text-center row-body">
+                        <div class="col-lg-4 col-md-4 row-body">
                             <ul>
                                 <?php
                                 foreach ($semana['tareas'] as $tarea) {
-                                    echo '<li>' . $tarea['titulo'] . '</li>';
+                                    echo '<li><b>* </b>' . $tarea['titulo'] . '</li>';
                                 };
                                 ?>
                             </ul>

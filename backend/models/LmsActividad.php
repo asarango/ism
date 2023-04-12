@@ -25,6 +25,7 @@ use Yii;
  *
  * @property Lms $lms
  * @property ScholarisTipoActividad $tipoActividad
+ * @property LmsActividadCriteriosPai[] $lmsActividadCriteriosPais
  * @property LmsActividadXArchivo[] $lmsActividadXArchivos
  */
 class LmsActividad extends \yii\db\ActiveRecord
@@ -94,6 +95,14 @@ class LmsActividad extends \yii\db\ActiveRecord
     public function getTipoActividad()
     {
         return $this->hasOne(ScholarisTipoActividad::className(), ['id' => 'tipo_actividad_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getLmsActividadCriteriosPais()
+    {
+        return $this->hasMany(LmsActividadCriteriosPai::className(), ['lms_actividad_id' => 'id']);
     }
 
     /**

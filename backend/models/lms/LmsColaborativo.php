@@ -77,7 +77,6 @@ class LmsColaborativo extends ActiveRecord {
         
     }
 
-
     /**
      * MÉDOTO PARA TOMAR LOS PLANES SEMANALES Y RETORNAR COMO ARREGLO, ES DE TODO EL BLOQUE
      * CREADO POR: Arturo Sarango - 2023-03-30 
@@ -114,7 +113,7 @@ class LmsColaborativo extends ActiveRecord {
                     where 	ism_area_materia_id = $ismAreaMateriaId
                             and tipo_bloque_comparte_valor = $uso
                             and semana_numero = $semanaNumero
-                    order by semana_numero;";
+                    order by lms.hora_numero;";
         $res = $con->createCommand($query)->queryAll();
 
         return $res;

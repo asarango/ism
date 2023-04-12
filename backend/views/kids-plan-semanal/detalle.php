@@ -31,63 +31,92 @@ $termina = $kidsPlanSemanal->kidsUnidadMicro->fecha_termina;
 
                 <!-- comienza encabezado -->
                 <div class="row" style="background-color: #ccc; font-size: 12px">
-                    <div class="col-md-12 col-sm-12">
+                    <div class="col-md-7 col-sm-7">
                         <p style="color:white">
-                            |                                
-                            <?=
-                            Html::a('<span class="badge rounded-pill" style="background-color: #0a1f8f"><i class="fa fa-briefcase" aria-hidden="true"></i> Inicio</span>',
-                                    ['site/index'], ['class' => 'link']);
-                            ?>                
                             |
                             <?=
-                            Html::a(
+                                Html::a(
+                                    '<span class="badge rounded-pill" style="background-color: #0a1f8f"><i class="fa fa-briefcase" aria-hidden="true"></i> Inicio</span>',
+                                    ['site/index'],
+                                    ['class' => 'link']
+                                );
+                            ?>
+                            |
+                            <?=
+                                Html::a(
                                     '<span class="badge rounded-pill" style="background-color: #0a1f8f"><i class="fa fa-briefcase" aria-hidden="true"></i> Planificaciones</span>',
                                     [
                                         'kids-menu/index1'
                                     ]
-                            );
-                            ?>    
+                                );
+                            ?>
                             |
                             <?=
-                            Html::a(
+                                Html::a(
                                     '<span class="badge rounded-pill" style="background-color: #0a1f8f"><i class="fa fa-briefcase" aria-hidden="true"></i> Experiencias</span>',
                                     [
                                         'kids-plan-semanal/index',
-                                        'pca_id'=> $kidsPlanSemanal->kids_unidad_micro_id
+                                        'pca_id' => $kidsPlanSemanal->kids_unidad_micro_id
                                     ]
-                            );
-                            ?>    
-                            |
-                            <?=
-                            Html::a(
-                                    '<span class="badge rounded-pill" style="background-color: #ab0a3d">
-                                    <i class="fa fa-briefcase" aria-hidden="true"></i> PDF</span>',
-                                    [
-                                        'pdf',
-                                        'plan_semanal_id'=> $kidsPlanSemanal->id
-                                    ]
-                            );
-                            ?>    
-                            |
-                           
+                                );
+                            ?>
                         </p>
                     </div>
+
+                    <div class="col-lg-5 col-md-5">
+                    
+                        <div class="row text-center">
+                        <div class="col-lg-4 col-md-4">
+                                <?=
+                                    $this->render('_reflexion', [
+                                        'reflexion' => $reflexion,
+                                        'contadorReflexion' => $contadorReflexion
+                                    ]);
+                                ?>
+                                </div> 
+
+                                <div class="col-lg-4 col-md-4">
+                                    
+                                    <span class="badge rounded-pill bg-success " style="background-color: #ab0a3d" >
+                                    <?=$kidsPlanSemanal->estado?>
+                                    </span>
+                                </div>
+                                
+                                <div class="col-lg-4 col-md-4">
+                                <?php
+
+                                if($kidsPlanSemanal->estado != 'ENVIO_COORDINACION' ){
+                                    echo  Html::a(
+                                        '<span class="badge rounded-pill" style="background-color: #ff9e18"><i class="fa fa-briefcase" aria-hidden="true"></i> Enviar Coordinación</span>',
+                                        [
+                                            'kids-plan-semanal/change-state',
+                                            'id' => $kidsPlanSemanal->id
+                                        ]
+                                    );
+                                }
+                            ?>
+                                </div>
+                                
+                        </div>
+
+                    </div>
+
                     <hr>
                     <div class="col-md-12 col-sm-12">
                         <div class="row">
                             <div class="col-md-3 col-sm-3">
-                                <strong>#SEMANA: <?=$kidsPlanSemanal->semana->nombre_semana?></strong>
+                                <strong>#SEMANA: <?= $kidsPlanSemanal->semana->nombre_semana ?></strong>
                             </div>
                             <div class="col-md-3 col-sm-3">
-                                <strong>EXPERIENCIA: <?=$kidsPlanSemanal->kidsUnidadMicro->experiencia?></strong>
+                                <strong>EXPERIENCIA: <?= $kidsPlanSemanal->kidsUnidadMicro->experiencia ?></strong>
                             </div>
                             <div class="col-md-3 col-sm-3">
-                                <strong>DURACIÓN DE EXPERIENCIA: 
+                                <strong>DURACIÓN DE EXPERIENCIA:
                                     <?php
-                                    
-                                        // $diff = new DateTime();
-                                        $fecha_actual = date("d-m-Y");
-                                        echo date("Y-m-d",strtotime($termina."-1 days")); 
+
+                                    // $diff = new DateTime();
+                                    $fecha_actual = date("d-m-Y");
+                                    echo date("Y-m-d", strtotime($termina . "-1 days"));
                                     ?>
                                 </strong>
                             </div>
@@ -100,26 +129,30 @@ $termina = $kidsPlanSemanal->kidsUnidadMicro->fecha_termina;
                 <!-- Fin de encabezado -->
 
                 <!--comienza cuerpo de documento-->
-               <div class="row" style="text-align:center; margin-top:10px">
+                <div class="row" style="text-align:center; margin-top:10px">
                     <div class="col-md-9 col-sm-9">
-                        <h4><?=$kidsPlanSemanal->semana->nombre_semana?> - <?=$kidsPlanSemanal->kidsUnidadMicro->experiencia?></h4>
-                        <p><strong><i class="far fa-calendar"></i>&nbsp;<?=$inicia?> 
-                                / 
-                                <i class="far fa-calendar"></i>&nbsp;<?=$termina?></strong></p>
+                        <h4><?= $kidsPlanSemanal->semana->nombre_semana ?> -
+                            <?= $kidsPlanSemanal->kidsUnidadMicro->experiencia ?></h4>
+                        <p><strong><i class="far fa-calendar"></i>&nbsp;
+                                <?= $inicia ?>
+                                /
+                                <i class="far fa-calendar"></i>&nbsp;
+                                <?= $termina ?>
+                            </strong></p>
                     </div>
-                   
-                   <div class="col-md-2 col-sm-2">
-                       <b>Código: </b>ISMR20-41<br>
-                       <b>Versión: </b>2.0<br>
-                       <b>Fecha: </b>28/09/021
-                   </div>
-                   
-                   <div class="col-md-1 col-sm-1">
-                       <img src="../imagenes/iso/iso.png" class="img-thumbnail">
-                   </div>
-               </div>
 
-               <div class="row">
+                    <div class="col-md-2 col-sm-2">
+                        <b>Código: </b>ISMR20-41<br>
+                        <b>Versión: </b>2.0<br>
+                        <b>Fecha: </b>28/09/021
+                    </div>
+
+                    <div class="col-md-1 col-sm-1">
+                        <img src="../imagenes/iso/iso.png" class="img-thumbnail">
+                    </div>
+                </div>
+
+                <div class="row">
                     <div class="col-md-12 col-sm-12">
                         <div class="table table-responsive">
                             <table class="table table-bordered table-stripped table-hover">
@@ -136,114 +169,120 @@ $termina = $kidsPlanSemanal->kidsUnidadMicro->fecha_termina;
                                 </thead>
                                 <tbody>
                                     <tr>
-                                        <td style="text-align:center; background-color:#898b8d" rowspan="<?=count($arrayDias[0]['horas'])?>">
-                                            <?=$arrayDias[0]['nombre']?>
+                                        <td style="text-align:center; background-color:#898b8d"
+                                            rowspan="<?= count($arrayDias[0]['horas']) ?>">
+                                            <?= $arrayDias[0]['nombre'] ?>
                                         </td>
-                                    <?php
-                                        for ($i=0; $i < count($arrayDias) ; $i++) { 
-                                            for ($j=0; $j < count($arrayDias[$i]['horas']) ; $j++) { 
-                                              ?>
-                                              <td style="background-color:#65b2e8">°<?=$arrayDias[$i]['horas'][$j]['hora']?></td>
+                                        <?php
+                                        for ($i = 0; $i < count($arrayDias); $i++) {
+                                            for ($j = 0; $j < count($arrayDias[$i]['horas']); $j++) {
+                                                ?>
+                                                <td style="background-color:#65b2e8">°
+                                                    <?= $arrayDias[$i]['horas'][$j]['hora'] ?>
+                                                </td>
                                                 <td style="text-align:center">
                                                     <div class="zoom">
-                                                        <?=Html::a(
-                                                        $arrayDias[$i]['horas'][$j]['materia'].
-                                                            '<br><small class="my-text-small">'.$arrayDias[$i]['horas'][$j]['curso'].'</small>',
-                                                            ['kids-plan-semanal-hora-clase/index1',
-                                                            'plan_semanal_id' => $kidsPlanSemanal->id,
-                                                            'clase_id' => $arrayDias[$i]['horas'][$j]['clase_id'],
-                                                            'detalle_id' => $arrayDias[$i]['horas'][$j]['detalle_id']
-                                                        ],
-                                                        [
-                                                            'class' => 'link'
+                                                        <?= Html::a(
+                                                            $arrayDias[$i]['horas'][$j]['materia'] .
+                                                            '<br><small class="my-text-small">' . $arrayDias[$i]['horas'][$j]['curso'] . '</small>',
+                                                            [
+                                                                'kids-plan-semanal-hora-clase/index1',
+                                                                'plan_semanal_id' => $kidsPlanSemanal->id,
+                                                                'clase_id' => $arrayDias[$i]['horas'][$j]['clase_id'],
+                                                                'detalle_id' => $arrayDias[$i]['horas'][$j]['detalle_id']
+                                                            ],
+                                                            [
+                                                                'class' => 'link'
 
-                                                        ]
-                                                        )?>
+                                                            ]
+                                                        ) ?>
                                                     </div>
                                                 </td>
-                                                <?php $colorBg1 = ($arrayDias[$i]['horas'][$j]['total_ambitos'] > 0 ) ? 'bg-success' : 'bg-danger' ?>
-                                                <?php $colorBg2 = ($arrayDias[$i]['horas'][$j]['total_destrezas'] > 0 ) ? 'bg-success' : 'bg-danger' ?>
-                                                <?php $colorBg3 = ($arrayDias[$i]['horas'][$j]['actividades'] > 0 || $arrayDias[$i]['horas'][$j]['actividades'] == 'none' ) ? 'bg-danger' : 'bg-success' ?>
-                                                <?php $colorBg4 = ($arrayDias[$i]['horas'][$j]['total_tareas'] > 0 ) ? 'bg-success' : 'bg-danger' ?>
-                                                
+                                                <?php $colorBg1 = ($arrayDias[$i]['horas'][$j]['total_ambitos'] > 0) ? 'bg-success' : 'bg-danger' ?>
+                                                <?php $colorBg2 = ($arrayDias[$i]['horas'][$j]['total_destrezas'] > 0) ? 'bg-success' : 'bg-danger' ?>
+                                                <?php $colorBg3 = ($arrayDias[$i]['horas'][$j]['actividades'] > 0 || $arrayDias[$i]['horas'][$j]['actividades'] == 'none') ? 'bg-danger' : 'bg-success' ?>
+                                                <?php $colorBg4 = ($arrayDias[$i]['horas'][$j]['total_tareas'] > 0) ? 'bg-success' : 'bg-danger' ?>
+
                                                 <td style="text-align:center">
-                                                <?php 
+                                                    <?php
                                                     //SI EXISTE CLASE_ID PINTA LOS COUNTS DE AMBITOS(si es la clase del profesor logeado)
-                                                    if(isset($arrayDias[$i]['horas'][$j]['clase_id'])){
-                                                    ?>
-                                                    <span class="badge rounded-pill <?=$colorBg1?>">
-                                                        <?=$arrayDias[$i]['horas'][$j]['total_ambitos']?>
-                                                    </span>
-                                                    <?php
+                                                    if (isset($arrayDias[$i]['horas'][$j]['clase_id'])) {
+                                                        ?>
+                                                        <span class="badge rounded-pill <?= $colorBg1 ?>">
+                                                            <?= $arrayDias[$i]['horas'][$j]['total_ambitos'] ?>
+                                                        </span>
+                                                        <?php
                                                     }
-                                                ?>
+                                                    ?>
                                                 </td>
-                                               
-                                                    
-                                                
+
+
+
                                                 <td style="text-align:center">
-                                                <?php 
-                                                    //SI EXISTE CLASE_ID PINTA LOS COUNTS DE DESTREZAS(si es la clase del profesor logeado)
-                                                    if(isset($arrayDias[$i]['horas'][$j]['clase_id'])){
-                                                    ?>
-                                                    <span class="badge rounded-pill <?=$colorBg2?>"><?=$arrayDias[$i]['horas'][$j]['total_destrezas']?></span>
                                                     <?php
+                                                    //SI EXISTE CLASE_ID PINTA LOS COUNTS DE DESTREZAS(si es la clase del profesor logeado)
+                                                    if (isset($arrayDias[$i]['horas'][$j]['clase_id'])) {
+                                                        ?>
+                                                        <span
+                                                            class="badge rounded-pill <?= $colorBg2 ?>"><?= $arrayDias[$i]['horas'][$j]['total_destrezas'] ?></span>
+                                                        <?php
                                                     }
-                                                ?>  
+                                                    ?>
                                                 </td>
 
                                                 <td style="text-align:center">
-                                                    <?php 
-                                                        //SI EXISTE CLASE_ID PINTA LOS COUNTS DE ACTIVIDADES(si es la clase del profesor logeado)
-                                                        if(isset($arrayDias[$i]['horas'][$j]['clase_id'])){
+                                                    <?php
+                                                    //SI EXISTE CLASE_ID PINTA LOS COUNTS DE ACTIVIDADES(si es la clase del profesor logeado)
+                                                    if (isset($arrayDias[$i]['horas'][$j]['clase_id'])) {
                                                         ?>
-                                                        <span class="badge rounded-pill <?=$colorBg3?>">
+                                                        <span class="badge rounded-pill <?= $colorBg3 ?>">
                                                             <?=
-                                                                $actividad = 
-                                                                ($arrayDias[$i]['horas'][$j]['actividades'] <> 0 || $arrayDias[$i]['horas'][$j]['actividades'] <> 'none' ) ?
-                                                                    '<i class="fas fa-check" style="color:white; font-size:10px"></i>' :
-                                                                    '<i class="fas fa-times" style="color:white; font-size:10px"></i>' 
-                                                              ?>
+                                                                $actividad =
+                                                                ($arrayDias[$i]['horas'][$j]['actividades'] <> 0 || $arrayDias[$i]['horas'][$j]['actividades'] <> 'none') ?
+                                                                '<i class="fas fa-check" style="color:white; font-size:10px"></i>' :
+                                                                '<i class="fas fa-times" style="color:white; font-size:10px"></i>'
+                                                                ?>
                                                         </span>
                                                         <?php
-                                                        }
+                                                    }
                                                     ?>
-                                                    
+
                                                 </td>
                                                 <td style="text-align:center">
-                                                    <?php 
-                                                        //SI EXISTE CLASE_ID PINTA LOS COUNTS DE TAREAS(si es la clase del profesor logeado)
-                                                        if(isset($arrayDias[$i]['horas'][$j]['clase_id'])){
+                                                    <?php
+                                                    //SI EXISTE CLASE_ID PINTA LOS COUNTS DE TAREAS(si es la clase del profesor logeado)
+                                                    if (isset($arrayDias[$i]['horas'][$j]['clase_id'])) {
                                                         ?>
-                                                        <span class="badge rounded-pill <?=$colorBg4?>">
-                                                            <?=$arrayDias[$i]['horas'][$j]['total_tareas']?>
+                                                        <span class="badge rounded-pill <?= $colorBg4 ?>">
+                                                            <?= $arrayDias[$i]['horas'][$j]['total_tareas'] ?>
                                                         </span>
                                                         <?php
-                                                        }
+                                                    }
                                                     ?>
-                                                    
-                                                </td> 
-                                                </tr>
-                                              <?php  
+
+                                                </td>
+                                            </tr>
+                                        <?php
                                             }
                                             ?>
-                                            <tr>
+                                        <tr>
+                                            <?php
+                                            if ($i + 1 < count($arrayDias)) {
+                                                ?>
+                                                <td style="text-align:center; background-color:#898b8d"
+                                                    rowspan="<?= count($arrayDias[$i + 1]['horas']) ?>">
+                                                    <?= $arrayDias[$i + 1]['nombre'] ?>
+                                                </td>
                                                 <?php
-                                                if($i+1 < count($arrayDias)){
-                                                    ?>
-                                                    <td style="text-align:center; background-color:#898b8d" rowspan="<?=count($arrayDias[$i+1]['horas'])?>">
-                                                        <?=$arrayDias[$i+1]['nombre']?>
-                                                    </td>
-                                                    <?php
-                                                }
+                                            }
                                         }
-                                    ?>
-                                    
+                                        ?>
+
                                 </tbody>
                             </table>
                         </div>
                     </div>
-               </div>
+                </div>
 
                 <!--finaliza cuerpo de documento-->
 

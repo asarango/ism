@@ -293,15 +293,16 @@ class IsmRespuestaPlanInterdiciplinarController extends Controller
     //9
     public function actionGuardarPreguntaReflexion()
     {
+        
         $idGrupoInter = $_POST['idGrupoInter'];
         $id_pregunta = $_POST['id_pregunta'];
         $tipo_pregunta = $_POST['tipo_pregunta'];
 
         //insertamos datos de la pregunta
-        $this->guardar_pregunta_reflexion($id_pregunta, $tipo_pregunta, $idGrupoInter);
+        $this->guardar_pregunta_reflexion($id_pregunta, $tipo_pregunta, $idGrupoInter);       
 
         $html = $this->mostrar_preguntas_disponibles($idGrupoInter);
-
+    
         return $html;
     }
     //9
@@ -638,7 +639,7 @@ class IsmRespuestaPlanInterdiciplinarController extends Controller
     private function extrae_datos_plan_vertical($idGrupoInter, $tipo, $tipoM, $tipoM2, $pestana)
     {
         //buscamos los tipos seleccionados de las materias
-        $arrayHabilidades = $this->obtener_array_opciones_pai($idGrupoInter, $tipo);
+        $arrayHabilidades = $this->obtener_array_opciones_pai($idGrupoInter, $tipo);        
 
         //buscamos el id de la respuesta para planificar pai inter
         $con = Yii::$app->db;
@@ -650,6 +651,8 @@ class IsmRespuestaPlanInterdiciplinarController extends Controller
                      and i1.id_grupo_plan_inter = $idGrupoInter;";
 
         $arraylPlanOpciones = $con->createCommand($query)->queryOne();
+
+        
 
 
 
@@ -703,7 +706,7 @@ class IsmRespuestaPlanInterdiciplinarController extends Controller
 
         return $html;
     }
-    //2.4.-
+    //2.5.-
     private function preguntas_indagacion($idGrupoInter)
     {
         $titulo = '2.5.- Preguntas de Indagación';
@@ -1884,7 +1887,7 @@ class IsmRespuestaPlanInterdiciplinarController extends Controller
         $campo = 'RECURSOS';
         $seccion = 8;
 
-        $html = $this->html_recursos($idGrupoInter);
+        $html = $this->html_recursos($idGrupoInter);        
 
         return $html;
     }
@@ -2103,6 +2106,7 @@ class IsmRespuestaPlanInterdiciplinarController extends Controller
                     and id_grupo_plan_inter  = $idIsmGrupoInter;";
         $resp = $con->createCommand($query)->queryOne();
 
+       
         $modelRespuestaReflexion = new IsmRespuestaReflexionPaiInterdiciplinar();
         $modelRespuestaReflexion->id_respuesta_plan_inter_pai = $resp['id'];
         $modelRespuestaReflexion->id_planificacion_opciones = $idPregunta;

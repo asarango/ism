@@ -67,6 +67,7 @@ class PlanificacionVerticalPaiDescriptoresController extends Controller{
 
     public function actionIndex1(){
 
+
         ///////para tomar en cuenta la pestaña
         if(isset($_GET['pestana'])){
             $pestana = $_GET['pestana'];
@@ -85,6 +86,10 @@ class PlanificacionVerticalPaiDescriptoresController extends Controller{
             $grupoMateria = $_GET['grupoMateria'];
             $esInterdisciplinar = '1';            
         }
+        
+        // echo '<pre>';
+        // print_r($esInterdisciplinar);
+        // die();
 
         $bloqueUnidad       = PlanificacionBloquesUnidad::findOne($planBloqueUnidadId);
         $areaId             = $bloqueUnidad->planCabecera->ismAreaMateria->mallaArea->area_id;
@@ -94,6 +99,8 @@ class PlanificacionVerticalPaiDescriptoresController extends Controller{
 
         $criteriosDisponibles   = $this->consulta_disponibles($planBloqueUnidadId, $areaId, $courseTemplateId,$esInterdisciplinar);
         $criteriosSeleccionados = $this->consulta_seleccionados($planBloqueUnidadId,$esInterdisciplinar);
+
+         
 
         $conceptosClaveDisponibles      = $this->consulta_conceptos_clave_disponibles($planBloqueUnidadId);
         $conceptosClaveSeleccionados    = PlanificacionVerticalPaiOpciones::find()->where([
@@ -114,7 +121,13 @@ class PlanificacionVerticalPaiDescriptoresController extends Controller{
             'tipo' => 'contexto_global'
         ])->all();
 
+        
+
         $habilidadesDisponibles = $this->consulta_habilidades_disponibles($planBloqueUnidadId, $courseTemplateId, $periodoId);
+        // echo '<pre>';
+        // print_r($habilidadesDisponibles);
+        // die();
+       
         $habilidadesSeleccionadas = PlanificacionVerticalPaiOpciones::find()->where([
             'plan_unidad_id' => $planBloqueUnidadId,
             'tipo' => 'habilidad_enfoque'
@@ -364,10 +377,18 @@ class PlanificacionVerticalPaiDescriptoresController extends Controller{
      * ASIGNAR CONTENIDOS
      */
     public function actionAsignarContenido(){
+
+        // echo '<pre>';
+        // print_r($_GET);
+        // die();
         $planBloqueUnidadId = $_GET['plan_unidad_id'];
         $tipo               = $_GET['tipo'];
         $contenido          = $_GET['contenido'];
-        $sub_contenido          = $_GET['sub_contenido'];
+        $sub_contenido      ='';
+        if(isset($_GET['sub_contenido']))
+        {
+            $sub_contenido =$_GET['sub_contenido'];
+        }        
         $pestana            = $_GET['pestana'];
         $id_relacion        = $_GET['id_relacion'];
         $tipo2              = $_GET['tipo2'];

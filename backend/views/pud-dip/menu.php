@@ -254,15 +254,15 @@ function contador_diferenciacion($planUnidadId,$numCaracteresOk){
     <li>
         <b>5.- ACCIÓN</b>
         <ul>
-            <li class="zoom"><a href="#" onclick="ver_detalle('5.0.-');">5.1.- Semanas
+            <li class="zoom"><a href="#" onclick="ver_detalle('5.0.-');">5.0.- Semanas
                 <?php                    
                     
-                    if ($contador_5_0==0)
-                    { $iconoColor = $colorNotOk;}
-                    else
-                    { $iconoColor = $colorOk;}
+                    // if ($contador_5_0==0)
+                    // { $iconoColor = $colorNotOk;}
+                    // else
+                    // { $iconoColor = $colorOk;}
                     ?>
-                    <i class="<?=$iconoOk;?>" title="FALTA INGRESAR DATOS" style="color: <?=$iconoColor;?>;"></i>
+                    <!-- <i class="<?=$iconoOk;?>" title="FALTA INGRESAR DATOS" style="color: <?=$iconoColor;?>;"></i> -->
                     </a>       
             </li>    
         

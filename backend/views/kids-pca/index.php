@@ -63,8 +63,8 @@ $curso = $modelPca->opCourse->name;
                     
                     <div class="col-lg-2 col-md-2">
                         <b>Código:</b> ISMR20-17 <br>
-                        <b>Versión:</b> 4.0 <br>
-                        <b>Fecha:</b> 28/09/021 <br>
+                        <b>Versión:</b> 5.0 <br>
+                        <b>Fecha:</b> 23/10/2022 <br>
                     </div>
                     
                     <div class="col-lg-1 col-md-1">

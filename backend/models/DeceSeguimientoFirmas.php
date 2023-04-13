@@ -32,7 +32,7 @@ class DeceSeguimientoFirmas extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id_reg_seguimiento', 'nombre', 'cedula', 'parentesco'], 'required'],
+            [['id_reg_seguimiento', 'nombre', 'cedula', ], 'required'],
             [['id_reg_seguimiento'], 'default', 'value' => null],
             [['id_reg_seguimiento'], 'integer'],
             [['nombre', 'parentesco', 'cargo'], 'string', 'max' => 100],

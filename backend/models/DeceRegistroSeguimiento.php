@@ -31,7 +31,7 @@ use Yii;
  *
  * @property DeceRegistroAgendamientoAtencion[] $deceRegistroAgendamientoAtencions
  * @property DeceCasos $caso
- * @property DeceCasos $caso0
+ * @property OpStudent $estudiante
  * @property DeceSeguimientoAcuerdos[] $deceSeguimientoAcuerdos
  * @property DeceSeguimientoFirmas[] $deceSeguimientoFirmas
  */
@@ -61,7 +61,7 @@ class DeceRegistroSeguimiento extends \yii\db\ActiveRecord
             [['departamento', 'nombre_quien_lidera'], 'string', 'max' => 200],
             [['hora_inicio', 'hora_cierre'], 'string', 'max' => 20],
             [['id_caso'], 'exist', 'skipOnError' => true, 'targetClass' => DeceCasos::className(), 'targetAttribute' => ['id_caso' => 'id']],
-            [['id_caso'], 'exist', 'skipOnError' => true, 'targetClass' => DeceCasos::className(), 'targetAttribute' => ['id_caso' => 'id']],
+            [['id_estudiante'], 'exist', 'skipOnError' => true, 'targetClass' => OpStudent::className(), 'targetAttribute' => ['id_estudiante' => 'id']],
         ];
     }
 
@@ -82,7 +82,7 @@ class DeceRegistroSeguimiento extends \yii\db\ActiveRecord
             'atendido_por' => 'Atendido Por',
             'atencion_para' => 'Atencion Para',
             'responsable_seguimiento' => 'Responsable Seguimiento',
-            'pronunciamiento' => 'Detalle del Seguimiento',
+            'pronunciamiento' => 'Pronunciamiento',
             'acuerdo_y_compromiso' => 'Acuerdo Y Compromiso',
             'eviencia' => 'Eviencia',
             'path_archivo' => 'Path Archivo',
@@ -114,9 +114,9 @@ class DeceRegistroSeguimiento extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getCaso0()
+    public function getEstudiante()
     {
-        return $this->hasOne(DeceCasos::className(), ['id' => 'id_caso']);
+        return $this->hasOne(OpStudent::className(), ['id' => 'id_estudiante']);
     }
 
     /**

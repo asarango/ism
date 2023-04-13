@@ -268,6 +268,7 @@ class AdaptacionCurricularXBloqueController extends Controller
             // {
                 $detalleAdaptacion = '';
                 $finalizoAdaptacion = '';
+                $es_bloqueado = '';
                 
                 $modelNeeXClase = AdaptacionCurricularXBloque::find()
                     ->where(['id_nee_x_clase' => $datos['idneexclase']])
@@ -276,9 +277,11 @@ class AdaptacionCurricularXBloqueController extends Controller
                 if ($modelNeeXClase) {
                     $detalleAdaptacion = $modelNeeXClase->adaptacion_curricular;
                 }
-                if($fecha_actual>$datos['fecha_finaliza'] )
+                
+                if(strlen($datos['fecha_finaliza'])>0 && $fecha_actual>$datos['fecha_finaliza'] )
                 {
                     $finalizoAdaptacion ='<h6 style="color:red"><b>Adaptación Finalizada</b></h6>';
+                    $es_bloqueado ='readonly';
                 }
 
 
@@ -317,7 +320,7 @@ class AdaptacionCurricularXBloqueController extends Controller
                                             <tr>
                                                 <td>Adaptación: </td>
                                                 <td>
-                                                    <textarea class="form-control" id="adaptacion_clase_' . $datos['idneexclase'] . '" rows="3">' . $detalleAdaptacion . '</textarea>
+                                                    <textarea class="form-control" id="adaptacion_clase_' . $datos['idneexclase'] . '" rows="3" '.$es_bloqueado.'>' . $detalleAdaptacion . '</textarea>
                                                 </td>
                                             </tr>
                                         </table>

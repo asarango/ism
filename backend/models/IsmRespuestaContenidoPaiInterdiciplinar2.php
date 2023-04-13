@@ -13,6 +13,9 @@ use Yii;
  * @property bool $mostrar
  * @property string $tipo
  * @property string $contenido
+ * @property string $actividad
+ * @property string $objetivo
+ * @property string $relacion_ods
  *
  * @property IsmRespuestaPlanInterdiciplinar $respuestaPaiInterdisciplinar
  */
@@ -36,6 +39,7 @@ class IsmRespuestaContenidoPaiInterdiciplinar2 extends \yii\db\ActiveRecord
             [['id_respuesta_pai_interdisciplinar', 'id_contenido_pai'], 'default', 'value' => null],
             [['id_respuesta_pai_interdisciplinar', 'id_contenido_pai'], 'integer'],
             [['mostrar'], 'boolean'],
+            [['actividad', 'objetivo', 'relacion_ods'], 'string'],
             [['tipo'], 'string', 'max' => 50],
             [['contenido'], 'string', 'max' => 100],
             [['id_respuesta_pai_interdisciplinar'], 'exist', 'skipOnError' => true, 'targetClass' => IsmRespuestaPlanInterdiciplinar::className(), 'targetAttribute' => ['id_respuesta_pai_interdisciplinar' => 'id']],
@@ -54,6 +58,9 @@ class IsmRespuestaContenidoPaiInterdiciplinar2 extends \yii\db\ActiveRecord
             'mostrar' => 'Mostrar',
             'tipo' => 'Tipo',
             'contenido' => 'Contenido',
+            'actividad' => 'Actividad',
+            'objetivo' => 'Objetivo',
+            'relacion_ods' => 'Relacion Ods',
         ];
     }
 

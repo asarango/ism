@@ -122,7 +122,8 @@ function mostrar_datos_materia($cabecera)
                     <?php
                     if ($seccion == 'PAI') {
                         echo Html::a(
-                            '<span class="badge rounded-pill" style="background-color: #ff9e18 "><i class="far fa-file-pdf" aria-hidden="true"></i> PDF Plan Vertical</span>',
+                            '<span class="badge rounded-pill" style="background-color: #ff9e18 ">
+                            <i class="far fa-file-pdf" aria-hidden="true"></i> PDF Plan Vertical</span>',
                             ['pdf-pv-pai', 'cabecera_id' => $cabecera->id],
                             ['class' => 'link', 'target' => '_blank']
                         );
@@ -153,25 +154,26 @@ function mostrar_datos_materia($cabecera)
 
                         if ($ismAreaMateria->es_bi == true) {
                             echo Html::a(
-                                '<span class="badge rounded-pill" style="background-color: #ff9e18 "><i class="far fa-file-pdf" aria-hidden="true"></i> Plan Vertical</span>',
+                                '<span class="badge rounded-pill" style="background-color: #ff9e18 ">
+                                <i class="fas fa-book-reader"></i> Plan Vertical</span>',
                                 ['plan-vertical-diploma/index1', 'cabecera_id' => $cabecera->id],
                                 ['class' => 'link']
                             );
                             echo ' | ';
 
-                            echo Html::a(
-                                '<span class="badge rounded-pill" style="background-color: #ff9e18 "><i class="far fa-file-pdf" aria-hidden="true"></i> PDF Plan Vertical</span>',
-                                ['pdf-pv-dp', 'cabecera_id' => $cabecera->id],
-                                ['class' => 'link', 'target' => '_blank']
-                            );
-                            echo ' | ';
+                            // echo Html::a(
+                            //     '<span class="badge rounded-pill" style="background-color: #ff9e18 "><i class="far fa-file-pdf" aria-hidden="true"></i> PDF Plan Vertical</span>',
+                            //     ['pdf-pv-dp', 'cabecera_id' => $cabecera->id],
+                            //     ['class' => 'link', 'target' => '_blank']
+                            // );
+                            // echo ' | ';
 
-                            echo Html::a(
-                                '<span class="badge rounded-pill" style="background-color: #F08080 "><i class="far fa-file-pdf" aria-hidden="true"></i> PDF Plan Horizontal</span>',
-                                ['pdf-ph-dp', 'cabecera_id' => $cabecera->id],
-                                ['class' => 'link', 'target' => '_blank']
-                            );
-                            echo ' | ';
+                            // echo Html::a(
+                            //     '<span class="badge rounded-pill" style="background-color: #F08080 "><i class="far fa-file-pdf" aria-hidden="true"></i> PDF Plan Horizontal</span>',
+                            //     ['pdf-ph-dp', 'cabecera_id' => $cabecera->id],
+                            //     ['class' => 'link', 'target' => '_blank']
+                            // );
+                            // echo ' | ';
                         } else {
                             echo Html::a(
                                 '<span class="badge rounded-pill" style="background-color: #f9b900 "><i class="far fa-calendar" aria-hidden="true"></i> 4.-PCA</span>',

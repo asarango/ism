@@ -301,6 +301,10 @@ where hor.clase_id in
 
                            ,0),0) as porcentaje;
                  ";
+        // echo '<pre>';         
+        // print_r($query);
+        // die();
+
 
         $resultado = $con->createCommand($query)->queryOne();
         return $resultado;

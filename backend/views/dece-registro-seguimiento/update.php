@@ -54,7 +54,15 @@ if($modelGrupo)
                                     ['class' => 'link']
                                 );
                                 ?>      
-                            |             
+                            |    
+                            <?=
+                            Html::a(
+                                    '<span class="badge rounded-pill" style="background-color: #C70039 "><i class="fa fa-briefcase" aria-hidden="true"></i>PDF</span>',
+                                    ['pdf', 'id' => $model->id],
+                                    ['class' => 'link',
+                                     'target'=>'_blank']
+                                );
+                                ?>         
                             <?php
                             if($model->id_clase>0)//si es mayor a cero, biene de leccionario
                             { 

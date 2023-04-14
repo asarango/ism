@@ -4,7 +4,7 @@ namespace backend\controllers;
 
 use backend\models\DeceCasos;
 use backend\models\DeceMotivos;
-use backend\models\dece\DecePdf;
+use backend\models\dece\DeceAcompaniamientoPdf;
 use Yii;
 use backend\models\DeceRegistroSeguimiento;
 use backend\models\DeceRegistroSeguimientoSearch;
@@ -273,7 +273,7 @@ class DeceRegistroSeguimientoController extends Controller
         // print_r($_GET);
         // die();
         $id_acompaniamiento=  $_GET['id'];
-        $objDecePdf = new DecePdf($id_acompaniamiento);
+        $objDecePdf = new DeceAcompaniamientoPdf($id_acompaniamiento);
     }
     //*****   ACUERDOS  *******
     public function actionGuardarAcuerdos()

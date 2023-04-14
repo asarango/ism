@@ -23,13 +23,22 @@ $this->params['breadcrumbs'][] = 'Update';
                 </div>
                 <div class="col-lg-2">
                         <div class=" row align-items-center p-2">
-                        <?=
+                             <?=
                                 Html::a(
                                     '<span class="badge rounded-pill" style="background-color: #0a1f8f"><i class="fa fa-briefcase" aria-hidden="true"></i>Regresar Casos</span>',
                                     ['dece-casos/update', 'id' => $model->id_casos, 'id_clase' => 0],
                                     ['class' => 'link']
                                 );
                             ?>
+                            |    
+                            <?=
+                            Html::a(
+                                    '<span class="badge rounded-pill" style="background-color: #C70039 "><i class="fa fa-briefcase" aria-hidden="true"></i>PDF</span>',
+                                    ['pdf', 'id' => $model->id],
+                                    ['class' => 'link',
+                                     'target'=>'_blank']
+                                );
+                                ?> 
                         </div>
                 </div>
                 <div class="col-lg-8">

@@ -7,6 +7,7 @@ use backend\models\DeceCasos;
 use Yii;
 use backend\models\PlanificacionOpciones;
 use backend\models\DeceDerivacion;
+use backend\models\dece\DeceDerivacionPdf;
 use backend\models\DeceDerivacionInstitucionExterna;
 use backend\models\DeceDerivacionSearch;
 use backend\models\DeceInstitucionExterna;
@@ -289,6 +290,15 @@ class DeceDerivacionController extends Controller
 
         return $this->redirect(['index']);
     }
+     //*****   PDF  *******
+     public function actionPdf()
+     {
+         // echo '<pre>';
+         // print_r($_GET);
+         // die();
+         $id_derivacion=  $_GET['id'];
+         $objDecePdf = new DeceDerivacionPdf($id_derivacion);
+     }
 
     /**
      * Finds the DeceDerivacion model based on its primary key value.

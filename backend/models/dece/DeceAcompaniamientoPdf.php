@@ -14,9 +14,10 @@ use backend\models\helpers\HelperGeneral;
 
 
 
-class DecePdf extends \yii\db\ActiveRecord
+class DeceAcompaniamientoPdf extends \yii\db\ActiveRecord
 {
     private $dece_acompaniamiento;
+    private $colorFondo ='#D5DBDB';
     
     public function __construct($id_acompaniamiento)
     {     
@@ -61,6 +62,8 @@ class DecePdf extends \yii\db\ActiveRecord
             <tr> 
                 <td class="border" align="center" width="20%">
                     <img src="imagenes/instituto/logo/logoISM1.png" width="80px">
+                    <br>
+                    Proceso Académico
                 </td>
                 <td class="border" align="center" width="" >
                         <font size="4">
@@ -112,9 +115,8 @@ class DecePdf extends \yii\db\ActiveRecord
 
         $html = '
         <br>
-        <br>
         <table border="1" width="100%" cellspacing="0" cellpadding="5">    
-            <tr style="background-color:#AED6F1"> 
+            <tr style="background-color:'.$this->colorFondo.'"> 
                 <td colspan="4"  align="left" style="font-size:10">
                     <b>3.- DETALLE DE ACUERDOS</b>
                 </td>
@@ -159,7 +161,7 @@ class DecePdf extends \yii\db\ActiveRecord
         $html = '
         <br>
         <table border="1" width="100%" cellspacing="0" cellpadding="5">    
-            <tr style="background-color:#AED6F1"> 
+            <tr style="background-color:'.$this->colorFondo.'"> 
                 <td colspan="4"  align="left" style="font-size:10">
                     <b>4.- FIRMAS</b>
                 </td>
@@ -191,17 +193,17 @@ class DecePdf extends \yii\db\ActiveRecord
         $html ='';
         $html.='
         <table border="1" width="100%" cellspacing="0" cellpadding="5">  
-                <tr style="background-color:#AED6F1"> 
+                <tr style="background-color:'.$this->colorFondo.'"> 
                         <td colspan="5"  align="center" style="font-size:12">
                             <b>REGISTRO DE ACOMPAÑAMIENTO</b>
                         </td>
                 </tr>
-                <tr style="background-color:#AED6F1"> 
+                <tr style="background-color:'.$this->colorFondo.'"> 
                         <td colspan="5"  align="left" style="font-size:10">
                             <b>1.- DATOS INFORMATIVOS</b>
                         </td>
                 </tr>
-                <tr style="background-color:#AED6F1"> 
+                <tr style="background-color:'.$this->colorFondo.'"> 
                         <td colspan="2"  align="left" style="font-size:10">
                             <b>Nombre completo estudiante/staff:</b>
                         </td>
@@ -217,7 +219,7 @@ class DecePdf extends \yii\db\ActiveRecord
                             '.$model->nombre_quien_lidera.'
                         </td>
                 </tr>                
-                <tr style="background-color:#AED6F1"> 
+                <tr style="background-color:'.$this->colorFondo.'"> 
                         <td align="left" style="font-size:10">
                             <b>Departamento</b>
                         </td>
@@ -256,7 +258,7 @@ class DecePdf extends \yii\db\ActiveRecord
         $html.='<br>';
         $html.='
         <table border="1" width="100%" cellspacing="0" cellpadding="5"> 
-                <tr style="background-color:#AED6F1"> 
+                <tr style="background-color:'.$this->colorFondo.'"> 
                         <td colspan="5"  align="left" style="font-size:10">
                             <b>2.- DETALLE DEL SEGUIMIENTO</b>
                         </td>

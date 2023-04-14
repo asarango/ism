@@ -26,6 +26,7 @@ use Yii;
  * @property string $path_archivos
  *
  * @property DeceCasos $caso
+ * @property OpStudent $estudiante
  */
 class DeceDeteccion extends \yii\db\ActiveRecord
 {
@@ -53,6 +54,7 @@ class DeceDeteccion extends \yii\db\ActiveRecord
             [['cedula', 'hora_aproximada'], 'string', 'max' => 20],
             [['descripcion_del_hecho', 'acciones_realizadas'], 'string', 'max' => 2000],
             [['id_caso'], 'exist', 'skipOnError' => true, 'targetClass' => DeceCasos::className(), 'targetAttribute' => ['id_caso' => 'id']],
+            [['id_estudiante'], 'exist', 'skipOnError' => true, 'targetClass' => OpStudent::className(), 'targetAttribute' => ['id_estudiante' => 'id']],
         ];
     }
 
@@ -88,5 +90,13 @@ class DeceDeteccion extends \yii\db\ActiveRecord
     public function getCaso()
     {
         return $this->hasOne(DeceCasos::className(), ['id' => 'id_caso']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getEstudiante()
+    {
+        return $this->hasOne(OpStudent::className(), ['id' => 'id_estudiante']);
     }
 }

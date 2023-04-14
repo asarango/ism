@@ -27,6 +27,15 @@ $this->params['breadcrumbs'][] = 'Update';
                                     ['class' => 'link']
                                 );
                             ?>
+                            |    
+                            <?=
+                            Html::a(
+                                    '<span class="badge rounded-pill" style="background-color: #C70039 "><i class="fa fa-briefcase" aria-hidden="true"></i>PDF</span>',
+                                    ['pdf', 'id' => $model->id],
+                                    ['class' => 'link',
+                                     'target'=>'_blank']
+                                );
+                                ?> 
                         </div>
                 </div>
                 <div class="col-lg-8">

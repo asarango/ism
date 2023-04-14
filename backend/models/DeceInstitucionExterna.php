@@ -9,6 +9,7 @@ use Yii;
  *
  * @property int $id
  * @property string $nombre
+ * @property string $code
  *
  * @property DeceDerivacionInstitucionExterna[] $deceDerivacionInstitucionExternas
  */
@@ -29,7 +30,8 @@ class DeceInstitucionExterna extends \yii\db\ActiveRecord
     {
         return [
             [['nombre'], 'string', 'max' => 100],
-            [['code'], 'string', 'max' => 10],
+            [['code'], 'string', 'max' => 5],
+            [['code'], 'unique'],
         ];
     }
 

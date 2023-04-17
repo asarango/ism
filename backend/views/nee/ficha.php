@@ -53,6 +53,12 @@ if($pestana == 'informe_psicopedagogico'){
 
 
 function getIniciales($nombre){
+    //echo '<pre>';
+    //print_r(trim($nombre));
+    //die();
+    //print_r($nombre);
+    $nombre = str_replace('  ',' ',$nombre);
+    
     $name = '';
     $explode = explode(' ',$nombre);
     foreach($explode as $x){

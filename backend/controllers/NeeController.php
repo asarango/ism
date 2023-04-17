@@ -112,7 +112,7 @@ class NeeController extends Controller
     private function consulta_nee($scholarisPeriodoId, $usuarioLog)
     {
         $con = Yii::$app->db;
-        $query = "select  nee.id,concat(c4.last_name, ' ',c4.first_name,' ',c4.middle_name) as student,
+        $query = "select  distinct nee.id,concat(c4.last_name, ' ',c4.first_name,' ',c4.middle_name) as student,
                             concat( c8.name,' ', c7.name ) curso
                     from 	scholaris_clase c1 
                             ,scholaris_grupo_alumno_clase c2 

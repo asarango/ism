@@ -153,7 +153,9 @@ class DeceDerivacionPdf extends \yii\db\ActiveRecord
         // echo '<pre>';
         // print_r($model);
         // die();
-        //$estudiante = $model->estudiante->last_name.' '.$model->estudiante->middle_name.' '.$model->estudiante->first_name;
+        $nombre_institucion = $model->estudiante->xInstitute->name.' ('.$model->estudiante->xInstitute->location.')';
+        $direccion_institucion = $model->estudiante->xInstitute->direccion;
+        $telf_institucion = $model->estudiante->xInstitute->telefono;
         $html ='';
         $html.='
         <table border="1" width="100%" cellspacing="0" cellpadding="5">  
@@ -164,12 +166,12 @@ class DeceDerivacionPdf extends \yii\db\ActiveRecord
                             <b>International Scholastic Model</b>
                         </td>
                 </tr>
-                <tr style="background-color:'.$this->colorFondo.'"> 
+                <tr > 
                         ';
                         if($model->tipo_derivacion=='Interna')
                         {
                             $html.='<td colspan="2"  align="left" style="font-size:10">
-                                    <b>Interna:</b>'.$model->tipo_derivacion.'
+                                    <b>Interna:</b> <span style="font-size:15px; color:red;">X</span>
                                     </td>
                                     <td colspan="2"  align="left" style="font-size:10">
                                         <b>Externa:</b>
@@ -181,7 +183,7 @@ class DeceDerivacionPdf extends \yii\db\ActiveRecord
                                     <b>Interna:</b>
                                     </td>
                                     <td colspan="2"  align="left" style="font-size:10">
-                                        <b>Externa:</b>'.$model->tipo_derivacion.'
+                                        <b>Externa:</b> <span style="font-size:15px; color:red;">X</span>
                                     </td>';
                         }
                 $html.='      
@@ -196,7 +198,7 @@ class DeceDerivacionPdf extends \yii\db\ActiveRecord
                             <b>Nombre de la institución educativa:</b>
                         </td>
                         <td colspan="3"  align="left" style="font-size:10">
-                            Ism International Scholastic Model
+                        '.$nombre_institucion.'
                         </td>
                 </tr>   
                 <tr > 
@@ -204,13 +206,13 @@ class DeceDerivacionPdf extends \yii\db\ActiveRecord
                             <b>Dirección de la institución: </b>
                         </td>
                         <td colspan="1"  align="left" style="font-size:10">
-                            ***************************************************
+                            '.$direccion_institucion.'
                         </td>
                         <td colspan="1"  align="left" style="font-size:10">
                             <b>Número de teléfono de la Institución: </b>
                         </td>
                         <td colspan="1"  align="left" style="font-size:10">
-                            **************************************************
+                           '.$telf_institucion.'
                         </td>
                 </tr>  
                 <tr > 
@@ -254,7 +256,7 @@ class DeceDerivacionPdf extends \yii\db\ActiveRecord
         $html.='
             <table border="1" width="100%" cellspacing="0" cellpadding="5">
                         <tr style="background-color:'.$this->colorFondo.'"> 
-                                <td colspan="4"  align="left" style="font-size:10">
+                                <td colspan="6"  align="left" style="font-size:10">
                                     <b>INSTITUCIÓN EXTERNA</b>
                                 </td>
                         </tr>';                           
@@ -293,50 +295,15 @@ class DeceDerivacionPdf extends \yii\db\ActiveRecord
                                         
                                         }//fin foreach 2                                        
                                     $html.='</tr>';                                
-                                }//fin foreach 1   
-                            
-                            /*else
-                            {
-
-                                $arrayDividido = array_chunk($arrayInstExtUpdate, $numDivisionesIntExterna); 
-                                // echo '<pre>';
-                                // print_r($arrayDividido);
-                                // die();
-
-                                foreach($arrayDividido as $array)
-                                {
-                                ?>
-                                <tr>
-                                    <?php   
-                                        foreach($array as $inst)
-                                        {
-                                            if($inst['seleccionado']=='si')
-                                            {
-                                    ?>
-                                            <td>                                        
-                                                <label style='font-size:15px;' for="<?=$inst['id']?>"> <?=$inst['nombre']?></label><br>
-                                                <input style='align-items:center;font-size:18px;' type="checkbox" id ="<?=$inst['id']?>" name="<?=$inst['code']?>" value="<?=$inst['code']?>" checked="true">
-                                            </td>
-                                    <?php
-                                            }
-                                            else
-                                            { 
-                                    ?>
-                                            <td>                                        
-                                                <label style='font-size:15px;' for="<?=$inst['id']?>"> <?=$inst['nombre']?></label><br>
-                                                <input style='align-items:center;' type="checkbox" id ="<?=$inst['id']?>" name="<?=$inst['code']?>" value="<?=$inst['code']?>" >
-                                            </td>
-                                    <?php
-                                            }
-                                        }//fin foreach 2
-                                        
-                                    ?>
-                                </tr> 
-                                <?php
-                                }//fin foreach 1 
-                            }         
-                            ?>*/
-                    $html.='</table>';      
+                                }//fin foreach 1  
+                    $html.='</table>';   
+                    $html.='<table  border="1" width="100%" cellspacing="0" cellpadding="5">
+                                <tr > 
+                                    <td colspan="4"  align="left" style="font-size:10">
+                                        <b>Indique Cual: </b> '.$model->otra_institucion_externa.'
+                                    </td>
+                                 </tr>
+                            </table>';     
         return $html;
 
     }
@@ -353,8 +320,11 @@ class DeceDerivacionPdf extends \yii\db\ActiveRecord
                     </td>
                 </tr>
                 <tr > 
-                    <td colspan="4"  align="left" style="font-size:10">
-                        <b>Apellidos y nombres completos:</b>'.$estudiante.'
+                    <td colspan="1"  align="left" style="font-size:10">
+                        <b>Apellidos y nombres completos:</b>
+                    </td>
+                    <td colspan="3"  align="left" style="font-size:10">
+                        '.$estudiante.'
                     </td>
                 </tr>
                 <tr > 

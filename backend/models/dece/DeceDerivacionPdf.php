@@ -1,4 +1,5 @@
 <?php
+
 namespace backend\models\dece;
 
 use backend\models\DeceDerivacion;
@@ -15,17 +16,16 @@ use yii\filters\VerbFilter;
 use Mpdf\Mpdf;
 use datetime;
 use backend\models\helpers\HelperGeneral;
-
-
+use backend\models\OpStudent;
 
 class DeceDerivacionPdf extends \yii\db\ActiveRecord
 {
     private $dece_derivacion;
-    private $colorFondo ='#D5DBDB';
-    
+    private $colorFondo = '#D5DBDB';
+
     public function __construct($id_derivacion)
-    {     
-        $this->dece_derivacion = DeceDerivacion::findOne($id_derivacion);                      
+    {
+        $this->dece_derivacion = DeceDerivacion::findOne($id_derivacion);
         $this->generate_pdf();
     }
     private function generate_pdf()
@@ -35,37 +35,40 @@ class DeceDerivacionPdf extends \yii\db\ActiveRecord
             'format' => 'A4',
             'margin_left' => 10,
             'margin_right' => 10,
-            'margin_top' => 40,
+            'margin_top' => 30,
             'margin_bottom' => 10,
             'margin_header' => 5,
             'margin_footer' => 5,
         ]);
         $cabecera = $this->cabecera();
         $mpdf->SetHtmlHeader($cabecera);
-        $mpdf->showImageErrors = true;  
-        
-        $html = $this->cuerpo();               
-        $html.= $this->firmas();            
-        $mpdf->WriteHTML($html); 
+        $mpdf->showImageErrors = true;
 
-        $piePagina=$this->piePagina();
-        $mpdf->SetFooter($piePagina);      
+        $html = $this->cuerpo();
+        $html .= $this->firmas();
+        $mpdf->WriteHTML($html);
+
+        $piePagina = $this->piePagina();
+        $mpdf->SetFooter($piePagina);
+        //$mpdf->SetHTMLFooter($piePagina);
+        //$mpdf->SetHTMLFooter($piePagina);
 
         //$mpdf->Output('Planificacion-de-unidad' . "curso" . '.pdf', 'D');
         $mpdf->Output();
         exit;
     }
     /****CABCERA */
-    private function cabecera(){
+    private function cabecera()
+    {
         $codigoISO = "ISMR21-06";
-        $version ="4.0";
-        $fecha=date('Y-m-d H:i:s'); 
-        $fecha='08/03/2022';
+        $version = "4.0";
+        $fecha = date('Y-m-d H:i:s');
+        $fecha = '08/03/2022';
         $html = <<<EOT
         <table border="1" width="100%" cellspacing="0" cellpadding="10"> 
             <tr> 
                 <td class="border" align="center" width="20%">
-                    <img src="imagenes/instituto/logo/logoISM1.png" width="80px">
+                    <img src="imagenes/instituto/logo/logoISM1.png" width="50px">
                     <br>
                     Proceso DECE
                 </td>
@@ -99,15 +102,15 @@ class DeceDerivacionPdf extends \yii\db\ActiveRecord
                 </td>
             </tr> 
         </table>  
-        EOT;  
+        EOT;
         return $html;
-    }    
+    }
     private function firmas()
-    {   
-        $html=''; 
-        $html.='
+    {
+        $html = '';
+        $html .= '
         <table border="1" width="100%" cellspacing="0" cellpadding="5"> 
-                <tr style="background-color:'.$this->colorFondo.'"> 
+                <tr style="background-color:' . $this->colorFondo . '"> 
                         <td colspan="2"  align="left" style="font-size:10">
                             <b>PSICÓLOGO RESPONSABLE</b>
                         </td>
@@ -130,10 +133,10 @@ class DeceDerivacionPdf extends \yii\db\ActiveRecord
                         </td>
                 </tr>              
         </table>';
-        return  $html;   
-
-    }   
-    private function piePagina(){
+        return  $html;
+    }
+    private function piePagina()
+    {
         $html = '
         <table border="0" width="100%" cellspacing="0" cellpadding="5">    
             <tr> 
@@ -142,24 +145,23 @@ class DeceDerivacionPdf extends \yii\db\ActiveRecord
                 </td>
             </tr>
         </table>';
-        
+
         return $html;
-        
     }
-    
+
     private function cabecera_derivacion()
     {
         $model = $this->dece_derivacion;
         // echo '<pre>';
         // print_r($model);
         // die();
-        $nombre_institucion = $model->estudiante->xInstitute->name.' ('.$model->estudiante->xInstitute->location.')';
+        $nombre_institucion = $model->estudiante->xInstitute->name . ' (' . $model->estudiante->xInstitute->location . ')';
         $direccion_institucion = $model->estudiante->xInstitute->direccion;
         $telf_institucion = $model->estudiante->xInstitute->telefono;
-        $html ='';
-        $html.='
+        $html = '';
+        $html .= '
         <table border="1" width="100%" cellspacing="0" cellpadding="5">  
-                <tr style="background-color:'.$this->colorFondo.'"> 
+                <tr style="background-color:' . $this->colorFondo . '"> 
                         <td colspan="4"  align="center" style="font-size:12">
                             <b>ISM</b>
                             <br>
@@ -168,27 +170,24 @@ class DeceDerivacionPdf extends \yii\db\ActiveRecord
                 </tr>
                 <tr > 
                         ';
-                        if($model->tipo_derivacion=='Interna')
-                        {
-                            $html.='<td colspan="2"  align="left" style="font-size:10">
-                                    <b>Interna:</b> <span style="font-size:15px; color:red;">X</span>
+        if ($model->tipo_derivacion == 'Interna') {
+            $html .= '<td colspan="2"  align="left" style="font-size:10">
+                                    <b>Interna:</b> <span style="font-size:15px; color:black;">X</span>
                                     </td>
                                     <td colspan="2"  align="left" style="font-size:10">
                                         <b>Externa:</b>
                                     </td>';
-
-                        }else
-                        {
-                            $html.='<td colspan="2"  align="left" style="font-size:10">
+        } else {
+            $html .= '<td colspan="2"  align="left" style="font-size:10">
                                     <b>Interna:</b>
                                     </td>
                                     <td colspan="2"  align="left" style="font-size:10">
-                                        <b>Externa:</b> <span style="font-size:15px; color:red;">X</span>
+                                        <b>Externa:</b> <span style="font-size:15px; color:black;">X</span>
                                     </td>';
-                        }
-                $html.='      
+        }
+        $html .= '      
                 </tr>
-                <tr style="background-color:'.$this->colorFondo.'"> 
+                <tr style="background-color:' . $this->colorFondo . '"> 
                         <td colspan="4"  align="left" style="font-size:10">
                             <b>Datos Institucionales:</b>
                         </td>
@@ -198,7 +197,7 @@ class DeceDerivacionPdf extends \yii\db\ActiveRecord
                             <b>Nombre de la institución educativa:</b>
                         </td>
                         <td colspan="3"  align="left" style="font-size:10">
-                        '.$nombre_institucion.'
+                        ' . $nombre_institucion . '
                         </td>
                 </tr>   
                 <tr > 
@@ -206,13 +205,13 @@ class DeceDerivacionPdf extends \yii\db\ActiveRecord
                             <b>Dirección de la institución: </b>
                         </td>
                         <td colspan="1"  align="left" style="font-size:10">
-                            '.$direccion_institucion.'
+                            ' . $direccion_institucion . '
                         </td>
                         <td colspan="1"  align="left" style="font-size:10">
                             <b>Número de teléfono de la Institución: </b>
                         </td>
                         <td colspan="1"  align="left" style="font-size:10">
-                           '.$telf_institucion.'
+                           ' . $telf_institucion . '
                         </td>
                 </tr>  
                 <tr > 
@@ -228,93 +227,98 @@ class DeceDerivacionPdf extends \yii\db\ActiveRecord
                             <b>Nombre de la persona que deriva:  </b>
                         </td>
                         <td colspan="3"  align="left" style="font-size:10">
-                            '.$model->nombre_quien_deriva.'
+                            ' . $model->nombre_quien_deriva . '
                         </td>
                 </tr>
                 <tr > 
                         <td colspan="4"  align="left" style="font-size:10">
-                            <b>Fecha de derivación: </b>'.substr($model->fecha_derivacion,0,10).'
+                            <b>Fecha de derivación: </b>' . substr($model->fecha_derivacion, 0, 10) . '
                         </td>
                 </tr>                
         </table>        
         ';
-      
+
         return  $html;
     }
     private function institucion_externa()
     {
         $model = $this->dece_derivacion;
-        
+
 
         //institucion externa derivacion
         $arrayInstExterna = DeceInstitucionExterna::find()->asArray()->all();
 
-        $numDivisionesIntExterna = count($arrayInstExterna)/4;
-        $numDivisionesIntExterna = intval($numDivisionesIntExterna)+1;      
+        $numDivisionesIntExterna = count($arrayInstExterna) / 4;
+        $numDivisionesIntExterna = intval($numDivisionesIntExterna) + 1;
 
-        $html='';
-        $html.='
+        $html = '';
+        $html .= '
             <table border="1" width="100%" cellspacing="0" cellpadding="5">
-                        <tr style="background-color:'.$this->colorFondo.'"> 
+                        <tr style="background-color:' . $this->colorFondo . '"> 
                                 <td colspan="6"  align="left" style="font-size:10">
                                     <b>INSTITUCIÓN EXTERNA</b>
                                 </td>
-                        </tr>';                           
-                           $arrayDividido = array_chunk($arrayInstExterna, $numDivisionesIntExterna); 
-                                foreach($arrayDividido as $array)
-                                {
-                                    // echo '<pre>';
-                                    // print_r($array);
-                                    // die();
-                                    $html.='<tr >';
-                                        foreach($array as $inst)
-                                        {     
-                                            $modelDerInsExterna = DeceDerivacionInstitucionExterna::find()
-                                            ->where(['id_dece_derivacion'=>$model->id])
-                                            ->andWhere(['id_dece_institucion_externa'=>$inst['id']])
-                                            ->all();
+                        </tr>';
+        $arrayDividido = array_chunk($arrayInstExterna, $numDivisionesIntExterna);
+        foreach ($arrayDividido as $array) {
+            // echo '<pre>';
+            // print_r($array);
+            // die();
+            $html .= '<tr >';
+            foreach ($array as $inst) {
+                $modelDerInsExterna = DeceDerivacionInstitucionExterna::find()
+                    ->where(['id_dece_derivacion' => $model->id])
+                    ->andWhere(['id_dece_institucion_externa' => $inst['id']])
+                    ->all();
 
-                                            
-                                                /*// $html.='<td>                                        
+
+                /*// $html.='<td>                                        
                                                 //     <label style='font-size:15px;' for="<?=$inst['id']?>"> <?=$inst['nombre']?></label><br>
                                                 //     <input style='align-items:center;font-size:18px;' type="checkbox" id ="<?=$inst['id']?>" name="<?=$inst['code']?>" value="<?=$inst['code']?>" checked="true">
-                                                // </td>';  */ 
-                                                $html.='<td style="font-size:10px;">
-                                                    '. $inst['nombre'];                                               
-                                                 
-                                                    if($modelDerInsExterna)
-                                                    {
-                                                        $html.='<td>(X)</td>';
-                                                    }
-                                                    else
-                                                    {
-                                                        $html.='<td></td>';
-                                                    }
-                                                $html.='</td>';                                     
-                                            
-                                        
-                                        }//fin foreach 2                                        
-                                    $html.='</tr>';                                
-                                }//fin foreach 1  
-                    $html.='</table>';   
-                    $html.='<table  border="1" width="100%" cellspacing="0" cellpadding="5">
+                                                // </td>';  */
+                $html .= '<td style="font-size:10px;">
+                                                    ' . $inst['nombre'];
+
+                if ($modelDerInsExterna) {
+                    $html .= '<td>(X)</td>';
+                } else {
+                    $html .= '<td></td>';
+                }
+                $html .= '</td>';
+            } //fin foreach 2                                        
+            $html .= '</tr>';
+        } //fin foreach 1  
+        $html .= '</table>';
+        $html .= '<table  border="1" width="100%" cellspacing="0" cellpadding="5">
                                 <tr > 
                                     <td colspan="4"  align="left" style="font-size:10">
-                                        <b>Indique Cual: </b> '.$model->otra_institucion_externa.'
+                                        <b>Indique Cual: </b> ' . $model->otra_institucion_externa . '
                                     </td>
                                  </tr>
-                            </table>';     
+                            </table>';
         return $html;
-
     }
     private function datos_personales_del_derivado()
     {
         $model = $this->dece_derivacion;
-        $estudiante = $model->estudiante->last_name.' '.$model->estudiante->middle_name.' '.$model->estudiante->first_name;
-        $html='';
-        $html.='
+        $estudiante = $model->estudiante->last_name . ' ' . $model->estudiante->middle_name . ' ' . $model->estudiante->first_name;
+        $modelEstudiante = OpStudent::findOne($model->id_estudiante);
+        //para la busqueda de a consulta, siempre vendra la madre , luego padre
+        $arrayPadre = $this->mostrar_datos_padres($modelEstudiante->id);
+        $madre = '';
+        $padre='';
+        if($arrayPadre[0]) {$madre = $arrayPadre[0]['name'];}
+        if($arrayPadre[1]) {$padre = $arrayPadre[1]['name'];}        
+
+        $arrayCurso = $this->mostrar_curso_estudiante($modelEstudiante->id);
+        $curso = '';
+        if($arrayCurso[0]) {$curso = $arrayCurso[0]['curso'];}       
+
+       
+        $html = '';
+        $html .= '
         <table border="1" width="100%" cellspacing="0" cellpadding="5">
-                <tr style="background-color:'.$this->colorFondo.'"> 
+                <tr style="background-color:' . $this->colorFondo . '"> 
                     <td colspan="4"  align="center" style="font-size:10">
                         <b>DATOS PERSONALES DEL DERIVADO</b>
                     </td>
@@ -324,7 +328,7 @@ class DeceDerivacionPdf extends \yii\db\ActiveRecord
                         <b>Apellidos y nombres completos:</b>
                     </td>
                     <td colspan="3"  align="left" style="font-size:10">
-                        '.$estudiante.'
+                        ' . $estudiante . '
                     </td>
                 </tr>
                 <tr > 
@@ -332,27 +336,27 @@ class DeceDerivacionPdf extends \yii\db\ActiveRecord
                         <b>Fecha de Nacimiento:</b>
                     </td>
                     <td colspan="1"  align="left" style="font-size:10">
-                        *****************
+                    ' . $modelEstudiante->birth_date . '
                     </td>
                     <td colspan="1"  align="left" style="font-size:10">
                         <b>Edad:</b>
                     </td>
                     <td colspan="1"  align="left" style="font-size:10">
-                        *****************
+                        '.$this->obtener_edad_segun_fecha(substr($modelEstudiante->birth_date,0,10) ).'
                     </td>
                 </tr>
                 <tr > 
                     <td colspan="1"  align="left" style="font-size:10">
                         <b>Año que cursa:</b>
                     </td>
-                    <td colspan="1"  align="left" style="font-size:10">
-                        *****************
+                    <td colspan="1"  align="left" style="font-size:10">    
+                    '.$curso .'
                     </td>
                     <td colspan="1"  align="left" style="font-size:10">
                         <b>Sexo:</b>
                     </td>
                     <td colspan="1"  align="left" style="font-size:10">
-                        *****************
+                    ' . $modelEstudiante->gender . '
                     </td>
                 </tr>
                 <tr > 
@@ -360,13 +364,13 @@ class DeceDerivacionPdf extends \yii\db\ActiveRecord
                         <b>Dirección domiciliaria:</b>
                     </td>
                     <td colspan="1"  align="left" style="font-size:10">
-                        *****************
+                    ' . $modelEstudiante->x_main_street . ' y ' . $modelEstudiante->x_second_street . ' ' . $modelEstudiante->x_home_number . ' ' . $modelEstudiante->x_residence_number . '
                     </td>
                     <td colspan="1"  align="left" style="font-size:10">
                         <b>Número telefónico:</b>
                     </td>
                     <td colspan="1"  align="left" style="font-size:10">
-                        *****************
+                    '.$modelEstudiante->partner->phone.' - '.$modelEstudiante->partner->mobile.'
                     </td>
                 </tr>
                 <tr > 
@@ -374,32 +378,135 @@ class DeceDerivacionPdf extends \yii\db\ActiveRecord
                         <b>Nombre del padre:</b>
                     </td>
                     <td colspan="1"  align="left" style="font-size:10">
-                        *****************
+                    '.$padre.'
                     </td>
                     <td colspan="1"  align="left" style="font-size:10">
                         <b>Nombre de la madre:</b>
                     </td>
                     <td colspan="1"  align="left" style="font-size:10">
-                        *****************
+                    '.$madre.'
                     </td>
                 </tr>
         </table>';
 
         return $html;
+    }
+    private function valoracion_caso()
+    {
+        $model = $this->dece_derivacion;
+       
+        $html = '';
+        $html .= '
+                <table border="1" width="100%" cellspacing="0" cellpadding="5">
+                        <tr style="background-color:' . $this->colorFondo . ';"> 
+                            <td  align="center" style="font-size:10">
+                                <b>VALORACIÓN DEL CASO</b>
+                            </td>
+                        </tr>
+                        <tr style="background-color:' . $this->colorFondo . '"> 
+                            <td  align="left" style="font-size:10">
+                                <b>MOTIVO DE REFERENCIA / DESCRIPCIÓN DEL CASO:</b>
+                            </td>
+                        </tr>
+                        <tr> 
+                            <td  align="left" style="font-size:10">
+                                '.$model->motivo_referencia.'
+                            </td>
+                        </tr>
+                        <tr style="background-color:' . $this->colorFondo . '"> 
+                            <td  align="left" style="font-size:10">
+                                <b>HISTORIA DE LA SITUACIÓN ACTUAL, ANTECEDENTES FAMILIARES, SOCIALES Y ACADÉMICOS:</b>
+                            </td>
+                        </tr>
+                        <tr> 
+                            <td  align="left" style="font-size:10">
+                                '.$model->historia_situacion_actual.'
+                            </td>
+                        </tr>
+                        <tr style="background-color:' . $this->colorFondo . '"> 
+                            <td  align="left" style="font-size:10">
+                                <b>ACCIONES DESARROLLADAS POR LA INSTITUCIÓN:</b>
+                            </td>
+                        </tr>
+                        <tr> 
+                            <td  align="left" style="font-size:10">
+                                '.$model->accion_desarrollada.'
+                            </td>
+                        </tr>
+                        <tr style="background-color:' . $this->colorFondo . '"> 
+                            <td  align="left" style="font-size:10">
+                                <b>¿QUÉ TIPO DE AYUDA REQUIERE?</b>
+                            </td>
+                        </tr>
+                        <tr> 
+                            <td  align="left" style="font-size:10">
+                                '.$model->tipo_ayuda.'
+                            </td>
+                        </tr>
+                        
+                        ';
 
+
+        $html.='</table>';
+
+        return $html;
+    }
+    private function mostrar_datos_padres($idEstudiante)
+    {
+        $con = Yii::$app->db;
+        $query ='select a3."name", a3."ref" 
+                from op_parent_op_student_rel a1,op_parent a2,res_partner a3
+                where a1.op_student_id ='.$idEstudiante.'
+                and a1.op_parent_id = a2.id 
+                and a2."name" = a3.id
+                order by a3.ref;';
+        $resp = $con->createCommand($query)->queryAll();
+
+        return $resp;
+    }
+    private function mostrar_curso_estudiante($idEstudiante)
+    {
+        $usuarioLog = Yii::$app->user->identity->usuario;
+        $periodoId = Yii::$app->user->identity->periodo_id;
+        $con = Yii::$app->db;
+        $query ="select  distinct c4.id,concat(c4.last_name, ' ',c4.first_name,' ',c4.middle_name) as student,
+                concat( c8.name,' ', c7.name ) curso 
+                from scholaris_clase c1 , scholaris_grupo_alumno_clase c2 ,
+                    op_institute_authorities c3 ,op_student c4 ,op_student_inscription c5, 
+                    scholaris_op_period_periodo_scholaris c6,op_course_paralelo c7, op_course c8
+                where c3.usuario  = '$usuarioLog' 
+                        and c3.id = c1.dece_dhi_id 
+                        and c1.id = c2.clase_id 
+                        and c2.estudiante_id = c4.id 
+                        and c2.estudiante_id ='$idEstudiante'
+                        and c4.id = c5.student_id 
+                        and c5.period_id  = c6.op_id 
+                        and c6.scholaris_id = '$periodoId'
+                        and c7.id = c1.paralelo_id 
+                        and c8.id = c7.course_id 
+                order by student;";
+
+               
+        $resp = $con->createCommand($query)->queryAll();
+        // echo '<pre>';
+        // print_r($resp);
+        // die();
+        return $resp;
     }
 
 
     private function cuerpo()
     {
         $html = '';
-        $html.= $this->cabecera_derivacion(); 
-        $html.= $this->institucion_externa();     
-        $html.= $this->datos_personales_del_derivado();          
+        $html .= $this->cabecera_derivacion();
+        $html .= $this->institucion_externa();
+        $html .= $this->datos_personales_del_derivado();
+        $html .= $this->valoracion_caso();
         return $html;
     }
 
-    private function estilos(){
+    private function estilos()
+    {
         $html = '';
         $html .= '<style>';
         $html .= '.border {
@@ -441,5 +548,11 @@ class DeceDerivacionPdf extends \yii\db\ActiveRecord
         $html .= '</style>';
         return $html;
     }
-
+    function obtener_edad_segun_fecha($fecha_nacimiento)
+    {
+        $nacimiento = new DateTime($fecha_nacimiento);
+        $ahora = new DateTime(date("Y-m-d"));
+        $diferencia = $ahora->diff($nacimiento);
+        return $diferencia->format("%y");
+    }
 }

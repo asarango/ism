@@ -69,7 +69,7 @@ $this->title = 'Estudiantes NEE';
                                 <option selected="selected" value="" >Escoja un estudiante...</option>
                                 <?php
                                 foreach ($estudiantes as $estudiante) {
-                                    echo '<option value="' . $estudiante['id'] . '">' . $estudiante['student'] . '</option>';
+                                    echo '<option value="' . $estudiante['id'] . '">' . $estudiante['student'].' - '.$estudiante['curso'] . '</option>';
                                 }
                                 ?>
                             </select> 

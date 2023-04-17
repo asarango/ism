@@ -2,6 +2,7 @@
 
 namespace backend\controllers;
 
+use backend\models\dece\DeceDeteccionPdf;
 use Yii;
 use backend\models\DeceDeteccion;
 use backend\models\DeceDeteccionSearch;
@@ -214,6 +215,15 @@ class DeceDeteccionController extends Controller
 
         return $this->redirect(['index']);
     }
+     //*****   PDF  *******
+     public function actionPdf()
+     {
+         // echo '<pre>';
+         // print_r($_GET);
+         // die();
+         $id_deteccion=  $_GET['id'];
+         $objDecePdf = new DeceDeteccionPdf($id_deteccion);
+     }
 
     /**
      * Finds the DeceDeteccion model based on its primary key value.

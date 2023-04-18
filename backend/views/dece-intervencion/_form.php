@@ -237,12 +237,9 @@ $modelIntCompromiso = new DeceIntervencionCompromiso();
                 <div>
                     <hr>
                     <h6><u>Áreas a Intervenir</u></h6>
+                   
                     <table class="table table-info table-hover">
-                        <?php
-
-                        // echo '<pre>';
-                        // print_r($arrayAreaIntervenir);
-                        // die();
+                        <?php                        
                         if ($model->isNewRecord) {
                             $arrayDividido = array_chunk($arrayAreaIntervenir, $numDivisionesAreaIntervenir);
                             foreach ($arrayDividido as $array) {
@@ -262,23 +259,24 @@ $modelIntCompromiso = new DeceIntervencionCompromiso();
                             <?php
                             } //fin foreach 1   
                         } else {
+                            
                             $arrayDividido = array_chunk($arrayAreaIntervenirUpdate, $numDivisionesAreaIntervenir);
                             foreach ($arrayDividido as $array) {
                             ?>
                                 <tr>
                                     <?php
-                                    foreach ($array as $inst) {
+                                    foreach ($array as $inst) {                                        
                                         if ($inst['seleccionado'] == 'si') {
                                     ?>
                                             <td>
-                                                <label style='font-size:10px;' for="<?= $inst['id'] ?>"> <?= $inst['nombre'] ?></label><br>
+                                                <label style='font-size:14px;' for="<?= $inst['id'] ?>"> <?= $inst['nombre'] ?></label><br>
                                                 <input style='align-items:center;' type="checkbox" id="<?= $inst['id'] ?>" name="<?= $inst['code'] ?>" value="<?= $inst['code'] ?>" checked="true">
                                             </td>
                                         <?php
                                         } else {
                                         ?>
                                             <td>
-                                                <label style='font-size:10px;' for="<?= $inst['id'] ?>"> <?= $inst['nombre'] ?></label><br>
+                                                <label style='font-size:14px;' for="<?= $inst['id'] ?>"> <?= $inst['nombre'] ?></label><br>
                                                 <input style='align-items:center;' type="checkbox" id="<?= $inst['id'] ?>" name="<?= $inst['code'] ?>" value="<?= $inst['code'] ?>">
                                             </td>
                                     <?php

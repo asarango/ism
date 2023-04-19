@@ -2,6 +2,7 @@
 
 namespace backend\controllers;
 
+use backend\models\ScholarisFaltas;
 use Yii;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -14,10 +15,12 @@ use backend\models\ScholarisAsistenciaComportamiento;
 use backend\models\ScholarisAsistenciaComportamientoDetalle;
 use backend\models\PlanificacionOpciones;
 use backend\models\ScholarisAsistenciaAlumnosNovedades;
+use backend\models\ScholarisHorariov2Hora;
 use backend\models\ScholarisActividad;
 use backend\models\ScholarisAsistenciaClaseTema;
 use backend\models\helpers\Scripts;
 use backend\models\ScholarisAsistenciaComportamientoSearch;
+use backend\models\ScholarisFaltas as ModelsScholarisFaltas;
 
 /**
  * ScholarisAsistenciaProfesorController implements the CRUD actions for ScholarisAsistenciaProfesor model.
@@ -83,6 +86,9 @@ class ComportamientoController extends Controller {
         $modelAsistencia = ScholarisAsistenciaProfesor::find()
                 ->where(['id' => $id])
                 ->one();
+        $modelHora = ScholarisHorariov2Hora::findOne($modelAsistencia->hora_id);
+
+        $fechaHoy = $modelAsistencia->fecha;
         //las novedades especificas son las que del codigo 1a,1b,1c , las que se muestran en pantalla
         $listaNovedadesEspecificas = $this->consulta_novedades_especifica($modelAsistencia->id);
         $listaNovedadesTodas= $this->consulta_novedades_todas($modelAsistencia->id);
@@ -94,6 +100,8 @@ class ComportamientoController extends Controller {
                          ,i.student_state
                          ,i.transfer_from_id  
                          ,os.x_origin_institute
+                         ,fal.fecha
+                         ,fal.id as falta_id
                 from	op_student os
                                 inner join scholaris_grupo_alumno_clase sgac on os.id = sgac.estudiante_id
                                 inner join op_student_inscription i on i.student_id = sgac.estudiante_id
@@ -101,9 +109,10 @@ class ComportamientoController extends Controller {
                                 inner join op_course cur on cur.id = par.course_id
                                 inner join op_section sec on sec.id = cur.section
                                 inner join scholaris_op_period_periodo_scholaris sop on sop.op_id = sec.period_id 
+                                left join scholaris_faltas fal on fal.student_id = os.id 
+                                and fal.fecha = '$fechaHoy'
                 where 	sgac.clase_id = $modelAsistencia->clase_id
-                                and sop.scholaris_id = $periodoId order by last_name ;;";
-    
+                                and sop.scholaris_id = $periodoId order by last_name ;";
 
         $modelGrupo = $con->createCommand($query)->queryAll();        
 
@@ -132,6 +141,7 @@ class ComportamientoController extends Controller {
                     'modelNeeXClase'=>$modelNeeXClase,
                     'listaNovedadesEspecificas'=>$listaNovedadesEspecificas, 
                     'listaNovedadesTodas'=>$listaNovedadesTodas,
+                    'modelHora' => $modelHora
         ]);
     }
 
@@ -143,6 +153,8 @@ class ComportamientoController extends Controller {
         $modelAsistencia = ScholarisAsistenciaProfesor::find()
                 ->where(['id' => $asistenciaId])
                 ->one();
+
+        
         
         $modelGrupo = ScholarisGrupoAlumnoClase::find()
                 ->where([
@@ -174,7 +186,7 @@ class ComportamientoController extends Controller {
                     'modelAsistencia' => $modelAsistencia,
                     'modelComportamientos' => $modelComportamientos,
                     'modelCompDetalle' => $modelCompDetalle,
-                    'modelGrupo' => $modelGrupo,
+                    'modelGrupo' => $modelGrupo
         ]);
     }
 
@@ -386,7 +398,59 @@ class ComportamientoController extends Controller {
      }
 
 
+     public function actionRetirarFalta(){
+        $faltaId = ($_GET['falta_id']);
+        $asistenciaId = $_GET['asistencia_id'];
+
+        $model = ScholarisFaltas::findOne($faltaId);
+        $modelAsistencia = ScholarisAsistenciaProfesor::findOne($asistenciaId);
+
+        /***Todas las asistencias */
+        $asistencias = ScholarisAsistenciaProfesor::find()->where([
+            'fecha' => $model->fecha
+        ])
+        ->andWhere(['<>','hora_id', $modelAsistencia->hora_id])
+        ->all();
+
+        return $this->render('retirar-falta',[
+            'model' => $model,
+            'asistenciaId' => $asistenciaId,
+            'asistencias' => $asistencias
+        ]);
+
+     }
 
 
+     /** ACCION PARA REGISTRAR LA FALTA DE TODO EL DIA DEL ESTUDIANTE */
+     public function actionRegistraFalta(){
+        $periodoId = Yii::$app->user->identity->periodo_id;
+        $studentId = $_GET['student_id'];
+        $asistenciaId = $_GET['asistencia_id'];
+        $fecha = $_GET['fecha'];
+
+        $today = date('Y-m-d H:i:s');
+        $user =  Yii::$app->user->identity->usuario;
+
+        $falta = ScholarisFaltas::find()->where([
+            'scholaris_perido_id' => $periodoId,
+            'student_id' => $studentId,
+            'fecha' => $fecha
+        ])->one();
+
+        if(!$falta){
+            $model = new ScholarisFaltas();
+        $model->scholaris_perido_id = $periodoId;
+        $model->student_id = $studentId;
+        $model->fecha = $fecha;
+        $model->created = $today;
+        $model->created_at = $user;
+        $model->updated = $today;
+        $model->updated_at = $user;
+
+        $model->save();
+        }
+
+        return $this->redirect(['index', 'id' => $asistenciaId]);
+     }
 
 }

@@ -86,7 +86,9 @@ function conteo_novedades_especiale($array,$codigo)
                         echo $modelClase->ismAreaMateria->materia->nombre .
                             ' / ' . $modelClase->paralelo->course->name . '"' . $modelClase->paralelo->name .
                             '" / ' . $modelClase->profesor->last_name .
-                            ' ' . $modelClase->profesor->x_first_name;
+                            ' ' . $modelClase->profesor->x_first_name.
+                            ' / '.$modelHora->nombre.
+                            ' / '.$modelHora->numero;
                         ?>
                     </p>
                 </div>
@@ -117,7 +119,7 @@ function conteo_novedades_especiale($array,$codigo)
 
             <div class="row">
                 <div class="col-lg-7 col-md-7">
-                    <div class="table table-responsive" style="height: 500px; overflow-y: scroll">
+                    <div class="table table-responsive" style="height: 500px; overflow-y: scroll; font-size: 10px;">
                         <table class="table table-responsive table-bordered table-striped ">
                             <thead class="table-success">
                                 <tr style=" text-align: center;color: #ab0a3d;">
@@ -142,6 +144,9 @@ function conteo_novedades_especiale($array,$codigo)
                                     </th>
                                     <th>NAT</th>
                                     <th>Estudiantes <span>(<?= count($modelGrupo); ?>)</span></th>
+
+                                    <th>FALTAS</th>
+
                                     <th>Novedades
                                         <table>
                                             <tr>
@@ -274,8 +279,33 @@ function conteo_novedades_especiale($array,$codigo)
 
 
                                     //******** ESTUDIANTES  *****************//
-                                    echo '<td>' . $alumno['last_name'] . ' ' . $alumno['first_name'] . '</td>';                                    
+                                    echo '<td>' . $alumno['last_name'] . ' ' . $alumno['first_name'] . '</td>';
 
+                                    /*************** FALTAS *********************/
+                                    $fechaFalta = isset($alumno['fecha']) ? 'falta' : 'no falto';
+                                    echo '<td>';
+                                    if(isset($alumno['fecha'])){
+                                        echo Html::a('<i class="fas fa-user-graduate" style="color: red"></i>',['retirar-falta',
+                                        'falta_id' => $alumno['falta_id'],
+                                        'asistencia_id' => $modelAsistencia->id
+                                    ],['title' => 'Retirar falta del día']);
+                                    }else{
+                                        if($modelHora->numero == 0){
+                                            echo Html::a('<i class="fas fa-user-graduate" style="color: green"></i>',['registra-falta',
+                                                'student_id' => $alumno['estudiante_id'],
+                                                'asistencia_id' => $modelAsistencia->id,
+                                                'fecha' => $modelAsistencia->fecha
+                                            ],['title' => 'Registrar falta']);
+                                        }else{
+                                            echo '<i class="fas fa-user-graduate" style="color: green"></i>';
+                                        }
+                                    }
+                                    // if($modelHora->numero == 0){
+                                    //     echo Html::a('<i class="fas fa-user-graduate"></i>');
+                                    // }
+                                    // '.$fechaFalta.
+                                    echo '</td>';
+                                    /****************FIN DE FALTAS***************/
                                     //******** NOVEDADES  *****************//
                                     $numObsAlumno = consulta_num_falta_por_alumno($numNovedadesPorMateria, $alumno['id']);
                                     echo '<td class="text-center">';
@@ -307,10 +337,10 @@ function conteo_novedades_especiale($array,$codigo)
                                     else {$colorIcono="green";}       
 
                                     echo '<td class="text-center"><a href="#" onclick="borrar_falta_a_clases_estudiante(' . $alumno['estudiante_id'] . ',' . $modelAsistencia->id . ',\''.$neutro.'\')"><span class="fas fa-user" style="color:'.$colorIcono.'"></span></a></td>';
-                                    echo '<td class="text-center"><a href="#" onclick="falta_a_clases_estudiante(' . $alumno['estudiante_id'] . ',' . $modelAsistencia->id . ',\''.$fi.'\')"><span class="badge rounded-pill" style="background-color: red ;color:white;font-size:14px;">F.I.</span></a></td>';
-                                    echo '<td class="text-center"><a href="#" onclick="falta_a_clases_estudiante(' . $alumno['estudiante_id'] . ',' . $modelAsistencia->id . ',\''.$fj.'\')"><span class="badge rounded-pill" style="background-color: blue ;color:white;font-size:14px;">F.J.</span></a></td>';
-                                    echo '<td class="text-center"><a href="#" onclick="falta_a_clases_estudiante(' . $alumno['estudiante_id'] . ',' . $modelAsistencia->id . ',\''.$ai.'\')"><span class="badge rounded-pill" style="background-color: brown ;color:white;font-size:14px;">A.I.</span></a></td>';
-                                    echo '<td class="text-center"><a href="#" onclick="falta_a_clases_estudiante(' . $alumno['estudiante_id'] . ',' . $modelAsistencia->id . ',\''.$aj.'\')"><span class="badge rounded-pill" style="background-color: black ;color:white;font-size:14px;">A.J.</span></a></td>';
+                                    echo '<td class="text-center"><a href="#" onclick="falta_a_clases_estudiante(' . $alumno['estudiante_id'] . ',' . $modelAsistencia->id . ',\''.$fi.'\')"><span class="badge rounded-pill" style="background-color: red ;color:white;font-size:10px;">F.I.</span></a></td>';
+                                    echo '<td class="text-center"><a href="#" onclick="falta_a_clases_estudiante(' . $alumno['estudiante_id'] . ',' . $modelAsistencia->id . ',\''.$fj.'\')"><span class="badge rounded-pill" style="background-color: blue ;color:white;font-size:10px;">F.J.</span></a></td>';
+                                    echo '<td class="text-center"><a href="#" onclick="falta_a_clases_estudiante(' . $alumno['estudiante_id'] . ',' . $modelAsistencia->id . ',\''.$ai.'\')"><span class="badge rounded-pill" style="background-color: brown ;color:white;font-size:10px;">A.I.</span></a></td>';
+                                    echo '<td class="text-center"><a href="#" onclick="falta_a_clases_estudiante(' . $alumno['estudiante_id'] . ',' . $modelAsistencia->id . ',\''.$aj.'\')"><span class="badge rounded-pill" style="background-color: black ;color:white;font-size:10px;">A.J.</span></a></td>';
                                     
 
                                     echo '</tr>';

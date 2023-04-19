@@ -169,7 +169,7 @@ $listFirmas = DeceSeguimientoFirmas::find()
                                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                     </div>
                                                     <div class="modal-body">
-                                                        <table class="table table-striped table-hover">
+                                                        <table class="table table-striped table-hover" style="font-size:13px">
                                                             <tr>
                                                                 <td><b>Fecha Creación: </b></td>
                                                                 <td><?= substr($modelReg->fecha_inicio, 0, 10) ?></td>
@@ -191,20 +191,20 @@ $listFirmas = DeceSeguimientoFirmas::find()
                                                                 <td><?= $modelReg->pronunciamiento ?></td>
                                                             </tr>
                                                             <tr>
-                                                                <td><b>Acuerdo y Compromiso: </b></td>
-                                                                <td><?= $modelReg->acuerdo_y_compromiso ?></td>
+                                                                <td><b>Hora Inicio: </b></td>
+                                                                <td><?= $modelReg->hora_inicio ?></td>
                                                             </tr>
                                                             <tr>
-                                                                <td><b>Evidencia: </b></td>
-                                                                <td><?= $modelReg->eviencia ?></td>
+                                                                <td><b>Hora Fin: </b></td>
+                                                                <td><?= $modelReg->hora_cierre ?></td>
                                                             </tr>
                                                             <tr>
-                                                                <td><b>Atendido Por: </b></td>
-                                                                <td><?= $modelReg->atendido_por ?></td>
+                                                                <td><b>Nombre Quien Lidera: </b></td>
+                                                                <td><?= $modelReg->nombre_quien_lidera ?></td>
                                                             </tr>
                                                             <tr>
-                                                                <td><b>Responsable Seguimiento:</b></td>
-                                                                <td><?= $modelReg->responsable_seguimiento ?></td>
+                                                                <td><b>Departamento:</b></td>
+                                                                <td><?= $modelReg->departamento?></td>
                                                             </tr>
                                                             <tr>
                                                                 <?php $arrayArchivo = array("", "");

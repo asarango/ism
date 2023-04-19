@@ -2,6 +2,7 @@
 
 namespace backend\controllers;
 
+use backend\models\dece\DeceIntervencionPdf;
 use Yii;
 use backend\models\DeceCasos;
 use backend\models\DeceIntervencionAreaCompromiso;
@@ -181,6 +182,15 @@ class DeceIntervencionController extends Controller
             $modelNumeroCaso =0;
         }
         return $modelNumeroCaso;
+    }
+    //*****   PDF  *******
+    public function actionPdf()
+    {
+        // echo '<pre>';
+        // print_r($_GET);
+        // die();
+        $id_intervencion=  $_GET['id'];
+        $objDecePdf = new DeceIntervencionPdf($id_intervencion);
     }
 
     /**

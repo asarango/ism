@@ -12,10 +12,10 @@ $this->title = 'Justificar falta de: ';
 
 <div class="scholaris-asistencia-alumno-novedades-index" style="padding-left: 40px; padding-right: 40px">
     <div class="m-0 vh-50 row justify-content-center align-items-center">
-        <div class="card shadow col-lg-8 col-md-8">
+        <div class="card shadow col-lg-12 col-md-12">
             <div class=" row align-items-center p-2">
                 <div class="col-lg-1">
-                    <h4><img src="ISM/main/images/submenu/areas.png" width="64px" style="" class="img-thumbnail"></h4>
+                    <h4><img src="../ISM/main/images/submenu/areas.png" width="64px" style="" class="img-thumbnail"></h4>
                 </div>
                 <div class="col-lg-11">
                     <h4><?= Html::encode($this->title) ?></h4>
@@ -81,11 +81,31 @@ $this->title = 'Justificar falta de: ';
                     </div>
                     <hr />
                     <div class="row" style="margin-top: 20px">
-                        <?=
-                        $this->render('_form', [
-                            'model' => $model,
-                        ])
-                        ?>
+                        
+                        <div class="col-lg-6 col-md-6">
+                        <div class="card mb-3" style="max-width: 540px;">
+                            <div class="row g-0">
+                                <div class="col-md-4" style="padding: 20px; background-color: #ff9e18; color: white">
+                                <?= $docente->login ?>
+                                </div>
+                                <div class="col-md-8">
+                                <div class="card-body">
+                                    <h5 class="card-title">Solicitud de justificación</h5>
+                                    <p class="card-text"><?= $model->solicitud_representante_motivo ?></p>
+                                    <p class="card-text"><small class="text-muted"><?= $model->solicitud_representante_fecha ?></small></p>
+                                </div>
+                                </div>
+                            </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-6">
+                            <?=
+                                $this->render('_form', [
+                                    'model' => $model,
+                                ])
+                            ?>
+                        </div>
+                                                
                     </div>
                 </div>                
             </div><!-- ######################## fin cuerpo de card #######################-->

@@ -100,6 +100,17 @@ $this->title = 'Mis actividades de hoy';
                     ['class' => 'link']
                 );
                 ?>
+
+|
+                <?=
+                Html::a(
+                    '<span class="badge rounded-pill" style="background-color: #ab0a3d">
+                        <i class="fa fa-briefcase" aria-hidden="true"></i> Mis Novedades
+                    </span>',
+                    ['scholaris-asistencia-alumnos-novedades/index1'],
+                    ['class' => 'link']
+                );
+                ?>
                
             </p>
 

@@ -7,7 +7,7 @@ use yii\grid\GridView;
 //echo'<pre>';
 //print_r($areas);
 
-$this->title = 'Faltas de estudiantes';
+$this->title = 'Mis novedades en la clase';
 ?>
 
 <div class="scholaris-asistencia-alumno-novedades-index" style="padding-left: 40px; padding-right: 40px">
@@ -15,7 +15,7 @@ $this->title = 'Faltas de estudiantes';
         <div class="card shadow col-lg-12 col-md-12">
             <div class=" row align-items-center p-2">
                 <div class="col-lg-1">
-                    <h4><img src="ISM/main/images/submenu/areas.png" width="64px" style="" class="img-thumbnail"></h4>
+                    <h4><img src="../ISM/main/images/submenu/areas.png" width="64px" style="" class="img-thumbnail"></h4>
                 </div>
                 <div class="col-lg-11">
                     <h4><?= Html::encode($this->title) ?></h4>
@@ -35,16 +35,6 @@ $this->title = 'Faltas de estudiantes';
                     );
                     ?>
 
-                    |
-                    <?=
-                    Html::a(
-                            '<span class="badge rounded-pill" style="background-color: #65b2e8"><i class="fas fa-clipboard-list"></i> Menù Principal</span>',
-                            ['insp-fecha-periodo/index'],
-                            ['class' => 'link']
-                    );
-                    ?>
-
-                    |
                 </div> <!-- fin de menu izquierda -->
 
                 <div class="col-lg-6 col-md-6" style="text-align: right;">
@@ -69,37 +59,18 @@ $this->title = 'Faltas de estudiantes';
                     'columns' => [
                         ['class' => 'yii\grid\SerialColumn'],
                         
-//                        'id',
-//                        'asistencia_profesor_id',
-                        'grupo_id',
-                        [
-                            'attribute' => 'grupo_id',
-                            'format' => 'raw',
-                            'value' => function ($model) {
-                                return $model->grupo->alumno->last_name.' '.$model->grupo->alumno->first_name;
-                            },
-                            'filter' => $listaS,
-                            'filterInputOptions' => [
-                                'class' => 'form-control',
-                                'prompt' => 'Seleccione estudiante...'
-                            ],
-                        ],
-                        [
-                            'attribute' => 'asistencia_profesor_id',
-                            'format' => 'raw',
-                            'value' => function ($model) {
-                                return $model->asistenciaProfesor->fecha;
-                            },
-//                            'filter' => $listaM,
-//                            'filterInputOptions' => [
-//                                'class' => 'form-control',
-//                                'prompt' => 'Seleccione asignatura...'
-//                            ],
-                        ],
-                        'comportamiento_detalle_id',
-                        'observacion',                        
-                        'es_justificado:boolean',
-                        'codigo_justificacion',
+                    //    'id',
+                       'fecha',
+                       'nombre',
+                       'docente',
+                       'curso',
+                       'paralelo',
+                       'materia',
+                       'estudiante',
+                       'codigo',
+                       'observacion:ntext',
+                       'es_justificado',
+                       'solicitud_representante_fecha',
                         //'acuerdo_justificacion:ntext',
                         
                         /** INICIO BOTONES DE ACCION * */
@@ -116,7 +87,7 @@ $this->title = 'Faltas de estudiantes';
                             ],
                             'urlCreator' => function ($action, $model, $key) {
                                 if ($action === 'justificar') {
-                                    return \yii\helpers\Url::to(['justificar', 'id' => $key]);
+                                    return \yii\helpers\Url::to(['justificar', 'id' => $model->id]);
                                 } 
 //                                else if($action === 'mapa') {
 //                                    return \yii\helpers\Url::to(['materias-pai/mapa-enfoques', 'materia_id' => $key]);
@@ -137,106 +108,3 @@ $this->title = 'Faltas de estudiantes';
     </div>
 </div>
 
-<script
-    src="https://code.jquery.com/jquery-2.2.4.js"
-    integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI="
-crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-<script>
-
-    semanas();
-    no_justificado();
-
-    function semanas() {
-        var url = "<?= yii\helpers\Url::to(['ajax-laborados']) ?>";
-
-        $.ajax({
-            url: url,
-            //        data:params,
-            type: 'GET',
-
-            success: function (resp) {
-                var respuesta = JSON.parse(resp);
-                console.log(respuesta);
-                var meses = respuesta.meses;
-                var totales = respuesta.totales;
-
-                const labels = meses;
-
-                const data = {
-                    labels: labels,
-                    datasets: [{
-                            label: 'Días Laborados',
-                            backgroundColor: 'rgb(255, 99, 132)',
-                            borderColor: 'rgb(255, 99, 132)',
-//                            data: [0, 10, 5, 2, 20, 30, 45],
-                            data: totales
-                        }]
-                };
-
-                const config = {
-                    type: 'line',
-                    data: data,
-                    options: {}
-                };
-                const myChart = new Chart(
-                        document.getElementById('myChart'),
-                        config
-                        );
-
-            }
-        });
-
-    }
-    
-    function no_justificado() {
-        var url = "<?= yii\helpers\Url::to(['ajax-no-justificado']) ?>";
-
-        $.ajax({
-            url: url,
-            //        data:params,
-            type: 'GET',
-
-            success: function (resp) {
-                var respuesta = JSON.parse(resp);
-                console.log(respuesta);
-                var cursos = respuesta.cursos;
-                var totales = respuesta.totales;
-
-                const labels = cursos;
-
-                const data = {
-                    labels: labels,
-                    datasets: [{
-                            label: 'Total Alumnos Injustificados',
-//                            backgroundColor: 'rgb(255, 99, 132)',
-                            backgroundColor: 'rgb(178, 213, 249)',
-                            borderColor: 'rgb(255, 99, 132)',
-//                            data: [0, 10, 5, 2, 20, 30, 45],
-                            data: totales
-                        }]
-                };
-
-                const config = {
-                    type: 'bar',
-                    data: data,
-                    options: {}
-                };
-                const myChart = new Chart(
-                        document.getElementById('myChartnojustificado'),
-                        config
-                        );
-
-            }
-        });
-
-    }
-    
-    
-
-</script>
-
-<script>
-
-</script>

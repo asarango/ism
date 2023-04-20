@@ -108,8 +108,13 @@ $this->params['breadcrumbs'][] = $this->title;
             <div class="" style="margin-top: 20px;">
                 <p style="margin: 20px;"><b>Desea modificar el estado de falta al día?: </b></p>
                 <p style="margin: 20px; padding-right: 20px;">
-                    <?= Html::a('SI',['retirar-falta']) ?>
-                    <?= Html::a('NO',['index', 'index', 'id' => $asistencia->id]) ?>
+                    <?= Html::a('SI',['retirar-falta', 
+                                'falta_id' => $model->id, 
+                                'asistencia_id' => $asistencia->id,
+                                'accion' => 'procesar'  ],
+                                ['class' => 'btn btn-outline-success']
+                                ) ?>
+                    <?= Html::a('NO',['index', 'index', 'id' => $asistencia->id ], ['class' => 'btn btn-outline-danger']) ?>
                 </p>
 
                 

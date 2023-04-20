@@ -39,7 +39,7 @@ class ScholarisAsistenciaAlumnosNovedadesSearch extends ScholarisAsistenciaAlumn
      *
      * @return ActiveDataProvider
      */
-    public function search($params, $periodoId)
+    public function search($params, $periodoId, $user)
     {
         $query = ScholarisAsistenciaAlumnosNovedades::find()
                 ->innerJoin('scholaris_asistencia_profesor a', 'a.id = scholaris_asistencia_alumnos_novedades.asistencia_profesor_id')
@@ -47,7 +47,9 @@ class ScholarisAsistenciaAlumnosNovedadesSearch extends ScholarisAsistenciaAlumn
                 ->innerJoin('ism_area_materia am', 'am.id = cla.ism_area_materia_id') 
                 ->innerJoin('ism_malla_area ma', 'ma.id = am.malla_area_id') 
                 ->innerJoin('ism_periodo_malla pm', 'pm.id = ma.periodo_malla_id') 
-                ->where(['pm.scholaris_periodo_id' => $periodoId]);
+                ->innerJoin('op_faculty fac', 'fac.id = cla.idprofesor')
+                ->innerJoin('res_users rus' ,'rus.partner_id = fac.partner_id')
+                ->where(['pm.scholaris_periodo_id' => $periodoId, 'rus.login' => $user]);
 
         // add conditions that should always apply here
 

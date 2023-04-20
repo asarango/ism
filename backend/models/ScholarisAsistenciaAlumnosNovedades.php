@@ -15,6 +15,11 @@ use Yii;
  * @property bool $es_justificado
  * @property string $codigo_justificacion
  * @property string $acuerdo_justificacion
+ * @property string $solicitud_representante_user_id
+ * @property string $solicitud_representante_fecha
+ * @property string $solicitud_representante_motivo
+ * @property string $justificacion_fecha
+ * @property string $justificacion_usuario
  *
  * @property ScholarisAsistenciaComportamientoDetalle $comportamientoDetalle
  * @property ScholarisAsistenciaProfesor $asistenciaProfesor
@@ -40,9 +45,11 @@ class ScholarisAsistenciaAlumnosNovedades extends \yii\db\ActiveRecord
             [['asistencia_profesor_id', 'comportamiento_detalle_id', 'grupo_id'], 'default', 'value' => null],
             [['asistencia_profesor_id', 'comportamiento_detalle_id', 'grupo_id'], 'integer'],
             [['es_justificado'], 'boolean'],
-            [['acuerdo_justificacion'], 'string'],
+            [['acuerdo_justificacion', 'solicitud_representante_motivo'], 'string'],
+            [['solicitud_representante_fecha', 'justificacion_fecha'], 'safe'],
             [['observacion'], 'string', 'max' => 255],
             [['codigo_justificacion'], 'string', 'max' => 10],
+            [['solicitud_representante_user_id', 'justificacion_usuario'], 'string', 'max' => 200],
             [['comportamiento_detalle_id'], 'exist', 'skipOnError' => true, 'targetClass' => ScholarisAsistenciaComportamientoDetalle::className(), 'targetAttribute' => ['comportamiento_detalle_id' => 'id']],
             [['asistencia_profesor_id'], 'exist', 'skipOnError' => true, 'targetClass' => ScholarisAsistenciaProfesor::className(), 'targetAttribute' => ['asistencia_profesor_id' => 'id']],
             [['grupo_id'], 'exist', 'skipOnError' => true, 'targetClass' => ScholarisGrupoAlumnoClase::className(), 'targetAttribute' => ['grupo_id' => 'id']],
@@ -63,6 +70,11 @@ class ScholarisAsistenciaAlumnosNovedades extends \yii\db\ActiveRecord
             'es_justificado' => 'Es Justificado',
             'codigo_justificacion' => 'Codigo Justificacion',
             'acuerdo_justificacion' => 'Acuerdo Justificacion',
+            'solicitud_representante_user_id' => 'Solicitud Representante User ID',
+            'solicitud_representante_fecha' => 'Solicitud Representante Fecha',
+            'solicitud_representante_motivo' => 'Solicitud Representante Motivo',
+            'justificacion_fecha' => 'Justificacion Fecha',
+            'justificacion_usuario' => 'Justificacion Usuario',
         ];
     }
 

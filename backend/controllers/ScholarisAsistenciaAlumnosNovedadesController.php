@@ -2,13 +2,17 @@
 
 namespace backend\controllers;
 
+use backend\models\ResUsers;
 use Yii;
 use backend\models\ScholarisAsistenciaAlumnosNovedades;
 use backend\models\ScholarisAsistenciaAlumnosNovedadesSearch;
+use backend\models\ScholarisAsistenciaComportamientoDetalle;
+use backend\models\ViewNovedadesEstudianteSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
+use yii\helpers\ArrayHelper;
 
 /**
  * ScholarisAsistenciaAlumnosNovedadesController implements the CRUD actions for ScholarisAsistenciaAlumnosNovedades model.
@@ -73,36 +77,19 @@ class ScholarisAsistenciaAlumnosNovedadesController extends Controller
     {
         
         $periodoId = Yii::$app->user->identity->periodo_id;
-        $searchModel = new ScholarisAsistenciaAlumnosNovedadesSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams, $periodoId);
-        
-        $students = $this->get_student_novedades($periodoId);
-        $listaS = \yii\helpers\ArrayHelper::map($students, 'id', 'name');
+        $user = Yii::$app->user->identity->usuario;
+
+        $searchModel = new ViewNovedadesEstudianteSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams, $periodoId, $user);
 
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
-            'listaS' => $listaS
+            // 'listaS' => $listaS,
+            // 'listaNoveades' => $listaNovedades
         ]);
     }
-    
-    private function get_student_novedades($periodoId){
-        $con = Yii::$app->db;
-        $query = "select 	g.id 
-                                    ,concat(s.last_name,' ', s.first_name, ' ', s.middle_name ) as name
-                    from 	scholaris_asistencia_alumnos_novedades n
-                                    inner join scholaris_grupo_alumno_clase g on g.id = n.grupo_id 
-                                    inner join op_student s on s.id = g.estudiante_id
-                                    inner join scholaris_asistencia_profesor a on a.id = n.asistencia_profesor_id 
-                                    inner join scholaris_clase cla on cla.id = a.clase_id
-                                    inner join ism_area_materia am on am.id = cla.ism_area_materia_id 
-                                    inner join ism_malla_area ma on ma.id = am.malla_area_id 
-                                    inner join ism_periodo_malla pm on pm.id = ma.periodo_malla_id 
-                    where 	pm.scholaris_periodo_id = $periodoId
-                    order by 2;";
-        $res = $con->createCommand($query)->queryAll();
-        return $res;
-    }
+
    
 
     /**
@@ -126,6 +113,7 @@ class ScholarisAsistenciaAlumnosNovedadesController extends Controller
 
         return $this->render('update', [
             'model' => $model,
+            'docente' => ResUsers::findOne($model->asistenciaProfesor->user_id)
         ]);
     }
 

@@ -1,6 +1,7 @@
 <?php
 namespace backend\models\dece;
 
+use backend\models\CurriculoMecBloque;
 use backend\models\DeceDeteccion;
 use backend\models\DeceIntervencion;
 use backend\models\DeceAreasIntervenir;
@@ -46,7 +47,7 @@ class DeceIntervencionPdf extends \yii\db\ActiveRecord
         $mpdf->showImageErrors = true;  
         
         $html = $this->cuerpo();               
-        $html.= $this->firmas();            
+        //$html.= $this->firmas();            
         $mpdf->WriteHTML($html); 
 
         $piePagina=$this->piePagina();
@@ -119,7 +120,6 @@ class DeceIntervencionPdf extends \yii\db\ActiveRecord
     }
     private function firmas()
     {   
-
         $revision_compromisos =$this->bloque_1_revision_est().'<br>'.$this->bloque_1_revision_repre().'<br>'.$this->bloque_1_revision_docente().'<br>'.$this->bloque_1_revision_dece();
         $html=''; 
         $html.='
@@ -170,7 +170,7 @@ class DeceIntervencionPdf extends \yii\db\ActiveRecord
                             <b>1.	Apellidos y nombres completos del estudiante: </b>
                         </td>
                         <td colspan="4"  align="left" style="font-size:10">
-                            <b>'.$estudiante.'</b>
+                            '.$estudiante.'
                         </td>
                 </tr>
                 <tr > 
@@ -178,7 +178,7 @@ class DeceIntervencionPdf extends \yii\db\ActiveRecord
                             <b>Curso y paralelo:</b>
                         </td>
                         <td colspan="4"  align="left" style="font-size:10">
-                            <b>'.$curso.'</b>
+                            '.$curso.'
                         </td>
                 </tr>
                 <tr > 
@@ -186,7 +186,7 @@ class DeceIntervencionPdf extends \yii\db\ActiveRecord
                             <b>Fecha de inicio de intervención:</b>
                         </td>
                         <td colspan="4"  align="left" style="font-size:10">
-                            <b>'.substr($model->fecha_intervencion,0,10).'</b>
+                            '.substr($model->fecha_intervencion,0,10).'
                         </td>
                 </tr>
                 <tr > 
@@ -194,7 +194,7 @@ class DeceIntervencionPdf extends \yii\db\ActiveRecord
                             <b>2.	Razón:</b>
                         </td>
                         <td colspan="4"  align="left" style="font-size:10">
-                            <b>'.$model->razon.'</b>
+                            '.$model->razon.'
                         </td>
                 </tr> 
         </table>        
@@ -292,101 +292,127 @@ class DeceIntervencionPdf extends \yii\db\ActiveRecord
         $html.='</table>';
         return $html;
     }
-    private function bloque_1()
+    private function bloques()
     {
         $model = $this->dece_intervencion;
-        $fecha_max_cumplimiento = '';
-        $modelIntervencion = DeceIntervencionCompromiso::find()
-        ->where(['id_dece_intervencion'=>$model->id])
-        ->andWhere(['bloque'=>'B1'])
-        ->orderBy(['id'=>SORT_ASC])
-        ->one();        
+       
+        $modelBloques = CurriculoMecBloque::find()
+        ->where(['is_active'=>true])
+        ->all();
 
-        $fecha_max_cumplimiento = $modelIntervencion->fecha_max_cumplimiento;
+       
+        
         $html ='';
+        //realizamos iteracion de los bloques que estan activos para el año escolar
+        foreach($modelBloques as $bloque)
+        {
+            $fecha_max_cumplimiento = '';
+            $modelIntervencion = DeceIntervencionCompromiso::find()
+            ->where(['id_dece_intervencion'=>$model->id])
+            ->andWhere(['bloque'=>$bloque->shot_name])
+            ->orderBy(['id'=>SORT_ASC])
+            ->one(); 
+
+              if($modelIntervencion)
+            {
+                $fecha_max_cumplimiento = $modelIntervencion->fecha_max_cumplimiento;
+            }
+            //echo '<pre>';
+            //print_r($modelIntervencion);
+            //die();
+
         $html.='<br>
                 <table border="" width="100%" cellspacing="0" cellpadding="5">  
                     <tr> 
                         <td  align="center" style="font-size:10">
-                            <b>BLOQUE 1</b>
+                            <b>'.strtoupper($bloque->last_name).'</b>
                             <br>
                             <b>Compromisos de las partes involucradas</b>
                         </td>
                     </tr>
                 </table>
-                <table border="1" width="100%" cellspacing="0" cellpadding="5">  
+                <table  width="100%" cellspacing="0" cellpadding="5">  
                     <tr> 
-                            <td align="left" style="font-size:12" width="200px">
+                            <td class="border" align="left" style="font-size:12" width="200px">
                                 <b>ESTUDIANTE</b>
                             </td>
-                            <td align="left" style="font-size:12" width="200px">
+                            <td class="border" align="left" style="font-size:12" width="200px">
                                 <b>REPRESENTANTE</b>
                             </td>
-                            <td align="left" style="font-size:12" width="200px">
+                            <td class="border" align="left" style="font-size:12" width="200px">
                                 <b>DOCENTES</b>
                             </td>
-                            <td align="left" style="font-size:12" width="200px">
+                            <td class="border" align="left" style="font-size:12" width="200px">
                                 <b>DECE</b>
                             </td>
-                    </tr>';
-                $html.='<tr> 
-                                <td align="left" style="font-size:12" width="200px">
-                                    '.$this->bloque_1_compro_est().'
-                                </td>
-                                <td align="left" style="font-size:12" width="200px">
-                                    '.$this->bloque_1_compro_repre().'
-                                </td>
-                                <td align="left" style="font-size:12" width="200px">
-                                    '.$this->bloque_1_compro_docente().'
-                                </td>
-                                <td align="left" style="font-size:12" width="200px">
-                                    '.$this->bloque_1_compro_dece().'
-                                </td>
-                        </tr>';
-                // foreach($modelIntervencion as $modelInter)
-                // {
-                //     $fecha_max_cumplimiento = $modelInter->fecha_max_cumplimiento;
-                //     $html.='<tr> 
-                //                     <td align="left" style="font-size:12">
-                //                         '.$modelInter->comp_estudiante.'
-                //                     </td>
-                //                     <td align="left" style="font-size:12">
-                //                         '.$modelInter->comp_representante.'
-                //                     </td>
-                //                     <td align="left" style="font-size:12">
-                //                         '.$modelInter->comp_docente.'
-                //                     </td>
-                //                     <td align="left" style="font-size:12">
-                //                         '.$modelInter->comp_dece.'
-                //                     </td>
-                //             </tr>';
-                    
-                // }
+                    </tr>';                
+                    $html.='<tr> 
+                                    <td class="border" align="left" style="font-size:12" width="200px">
+                                        '.$this->bloque_1_compro_est($bloque->shot_name).'
+                                    </td>
+                                    <td class="border" align="left" style="font-size:12" width="200px">
+                                        '.$this->bloque_1_compro_repre($bloque->shot_name).'
+                                    </td>
+                                    <td class="border" align="left" style="font-size:12" width="200px">
+                                        '.$this->bloque_1_compro_docente($bloque->shot_name).'
+                                    </td>
+                                    <td class="border" align="left" style="font-size:12" width="200px">
+                                        '.$this->bloque_1_compro_dece($bloque->shot_name).'
+                                    </td>
+                            </tr>';                            
 
         $html.='</table> ';
         $html.='<br>
                 <table border="0"   width="100%" cellspacing="0" cellpadding="5">  
                     <tr >
-                        <td align="center">
+                        <td align="center" style="font-size:12">
                             Fecha máxima de cumplimiento: '.substr($fecha_max_cumplimiento,0,10).'
                         </td>
                     </tr>                    
                 </table>';
+        $revision_compromisos =$this->bloque_1_revision_est($bloque->shot_name).'<br>'.
+                $this->bloque_1_revision_repre($bloque->shot_name).'<br>'.$this->bloque_1_revision_docente($bloque->shot_name).
+                '<br>'.$this->bloque_1_revision_dece($bloque->shot_name);
+                
+                $html.='
+                <table border="0" width="100%" cellspacing="0" cellpadding="5"> 
+                        <tr> 
+                                <td colspan="4"  align="center" style="font-size:10">
+                                    <span style="align:center">
+                                    <br> <br> <br> <br>
+                                    ___________________________________
+                                    <br>
+                                    FIRMA DEL REPRESENTANTE
+                                    </span>
+                                </td>
+                        </tr>                             
+                </table>        
+                <table border="1" width="100%" cellspacing="0" cellpadding="5"> 
+                        <tr > 
+                                <td colspan="4"  align="left" style="font-size:10">
+                                    <b>Revisión cumplimiento:</b>
+                                    '.$revision_compromisos.'
+                                </td>
+                        </tr>                             
+                </table>';
+        }
         
         return $html;
     }
-    private function bloque_1_compro_est()
+    //COMPROMISPOS    ************************************************************************************************
+    private function bloque_1_compro_est($bloque)
     {
         $model = $this->dece_intervencion;       
         $modelIntervencion = DeceIntervencionCompromiso::find()
         ->where(['id_dece_intervencion'=>$model->id])
-        ->andWhere(['bloque'=>'B1'])
+        ->andWhere(['bloque'=>$bloque])
         ->orderBy(['id'=>SORT_ASC])
-        ->all();    
+        ->all();  
+
         $cont=1;
         $html ='';
         $html.='
-                <table border="1"   width="100%" cellspacing="0" cellpadding="5">  ';
+                <table  width="100%" cellspacing="0" cellpadding="5">  ';
                 foreach($modelIntervencion as $modelInter)
                 {
                      if($modelInter->comp_estudiante)
@@ -403,19 +429,19 @@ class DeceIntervencionPdf extends \yii\db\ActiveRecord
         $html.='</table> ';        
         return $html;
     }
-    private function bloque_1_compro_repre()
+    private function bloque_1_compro_repre($bloque)
     {
         $model = $this->dece_intervencion;       
         $modelIntervencion = DeceIntervencionCompromiso::find()        
         ->where(['id_dece_intervencion'=>$model->id])
-        ->andWhere(['bloque'=>'B1'])
+        ->andWhere(['bloque'=>$bloque])
         ->orderBy(['id'=>SORT_ASC])
         ->all(); 
 
         $cont=1;
         $html ='';
         $html.='
-                <table border="1"  width="100%" cellspacing="0" cellpadding="5"> ';
+                <table  width="100%" cellspacing="0" cellpadding="5"> ';
                     
                 foreach($modelIntervencion as $modelInter)
                 {
@@ -433,19 +459,19 @@ class DeceIntervencionPdf extends \yii\db\ActiveRecord
         $html.='</table> ';        
         return $html;
     }
-    private function bloque_1_compro_docente()
+    private function bloque_1_compro_docente($bloque)
     {
         $model = $this->dece_intervencion;       
         $modelIntervencion = DeceIntervencionCompromiso::find()
         ->where(['id_dece_intervencion'=>$model->id])
-        ->andWhere(['bloque'=>'B1'])
+        ->andWhere(['bloque'=>$bloque])
         ->orderBy(['id'=>SORT_ASC])
         ->all();     
 
         $cont=1;
         $html ='';
         $html.='
-                <table border="1" width="100%" cellspacing="0" cellpadding="5"> ';
+                <table width="100%" cellspacing="0" cellpadding="5"> ';
                     
                 foreach($modelIntervencion as $modelInter)
                 {
@@ -463,19 +489,19 @@ class DeceIntervencionPdf extends \yii\db\ActiveRecord
         $html.='</table> ';        
         return $html;
     }
-    private function bloque_1_compro_dece()
+    private function bloque_1_compro_dece($bloque)
     {
         $model = $this->dece_intervencion;       
         $modelIntervencion = DeceIntervencionCompromiso::find()
         ->where(['id_dece_intervencion'=>$model->id])
-        ->andWhere(['bloque'=>'B1'])
+        ->andWhere(['bloque'=>$bloque])
         ->orderBy(['id'=>SORT_ASC])
         ->all();   
         
         $cont=1;
         $html ='';
         $html.='
-                <table border="1" width="100%" cellspacing="0" cellpadding="5"> ';
+                <table  width="100%" cellspacing="0" cellpadding="5"> ';
                     
                 foreach($modelIntervencion as $modelInter)
                 {
@@ -493,19 +519,20 @@ class DeceIntervencionPdf extends \yii\db\ActiveRecord
         $html.='</table> ';        
         return $html;
     }
-    private function bloque_1_revision_est()
+    //REVISIONES   ********************************************************************************************************************
+    private function bloque_1_revision_est($bloque)
     {
         $model = $this->dece_intervencion;       
         $modelIntervencion = DeceIntervencionCompromiso::find()
         ->where(['id_dece_intervencion'=>$model->id])
-        ->andWhere(['bloque'=>'B1'])
+        ->andWhere(['bloque'=>$bloque])
         ->orderBy(['id'=>SORT_ASC])
         ->all();   
         
         $cont=1;
         $html ='';
         $html.='
-                <table border="0" width="100%" cellspacing="0" cellpadding="5"> 
+                <table border="0" width="100%" cellspacing="0" cellpadding="5" style="font-size:10"> 
                 <tr><td><b>Estudiante</b></td></tr>';
                     
                 foreach($modelIntervencion as $modelInter)
@@ -513,7 +540,7 @@ class DeceIntervencionPdf extends \yii\db\ActiveRecord
                     if($modelInter->revision_compromiso)
                     {
                         $html.='<tr> 
-                                    <td align="left" style="font-size:12">
+                                    <td align="left" style="font-size:10">
                                     '.$cont.'.-'.$modelInter->revision_compromiso.'
                                     </td>
                             </tr>';
@@ -524,19 +551,19 @@ class DeceIntervencionPdf extends \yii\db\ActiveRecord
         $html.='</table> ';        
         return $html;
     }
-    private function bloque_1_revision_repre()
+    private function bloque_1_revision_repre($bloque)
     {
         $model = $this->dece_intervencion;       
         $modelIntervencion = DeceIntervencionCompromiso::find()
         ->where(['id_dece_intervencion'=>$model->id])
-        ->andWhere(['bloque'=>'B1'])
+        ->andWhere(['bloque'=>$bloque])
         ->orderBy(['id'=>SORT_ASC])
         ->all();   
         
         $cont=1;
         $html ='';
         $html.='
-                <table border="0" width="100%" cellspacing="0" cellpadding="5"> 
+                <table border="0" width="100%" cellspacing="0" cellpadding="5" style="font-size:10"> 
                 <tr><td><b>Representante</b></td></tr>';
                     
                 foreach($modelIntervencion as $modelInter)
@@ -544,7 +571,7 @@ class DeceIntervencionPdf extends \yii\db\ActiveRecord
                     if($modelInter->revision_comp_representante)
                     {
                         $html.='<tr> 
-                                    <td align="left" style="font-size:12">
+                                    <td align="left" style="font-size:10">
                                     '.$cont.'.-'.$modelInter->revision_comp_representante.'
                                     </td>
                             </tr>';
@@ -555,19 +582,19 @@ class DeceIntervencionPdf extends \yii\db\ActiveRecord
         $html.='</table> ';        
         return $html;
     }
-    private function bloque_1_revision_docente()
+    private function bloque_1_revision_docente($bloque)
     {
         $model = $this->dece_intervencion;       
         $modelIntervencion = DeceIntervencionCompromiso::find()
         ->where(['id_dece_intervencion'=>$model->id])
-        ->andWhere(['bloque'=>'B1'])
+        ->andWhere(['bloque'=>$bloque])
         ->orderBy(['id'=>SORT_ASC])
         ->all();   
         
         $cont=1;
         $html ='';
         $html.='
-                <table border="0" width="100%" cellspacing="0" cellpadding="5"> 
+                <table border="0" width="100%" cellspacing="0" cellpadding="5" style="font-size:10"> 
                 <tr><td><b>Docente</b></td></tr>';
                 
                     
@@ -576,7 +603,7 @@ class DeceIntervencionPdf extends \yii\db\ActiveRecord
                     if($modelInter->revision_comp_docente)
                     {
                         $html.='<tr> 
-                                    <td align="left" style="font-size:12">
+                                    <td align="left" style="font-size:10">
                                     '.$cont.'.-'.$modelInter->revision_comp_docente.'
                                     </td>
                             </tr>';
@@ -587,19 +614,19 @@ class DeceIntervencionPdf extends \yii\db\ActiveRecord
         $html.='</table> ';        
         return $html;
     }
-    private function bloque_1_revision_dece()
+    private function bloque_1_revision_dece($bloque)
     {
         $model = $this->dece_intervencion;       
         $modelIntervencion = DeceIntervencionCompromiso::find()
         ->where(['id_dece_intervencion'=>$model->id])
-        ->andWhere(['bloque'=>'B1'])
+        ->andWhere(['bloque'=>$bloque])
         ->orderBy(['id'=>SORT_ASC])
         ->all();   
         
         $cont=1;
         $html ='';
         $html.='
-                <table border="0" width="100%" cellspacing="0" cellpadding="5"> 
+                <table border="0" width="100%" cellspacing="0" cellpadding="5" style="font-size:10"> 
                 <tr><td><b>Dece</b></td></tr>';
                     
                 foreach($modelIntervencion as $modelInter)
@@ -607,7 +634,7 @@ class DeceIntervencionPdf extends \yii\db\ActiveRecord
                     if($modelInter->revision_comp_dece)
                     {
                         $html.='<tr> 
-                                    <td align="left" style="font-size:12">
+                                    <td align="left" style="font-size:10">
                                     '.$cont.'.-'.$modelInter->revision_comp_dece.'
                                     </td>
                             </tr>';
@@ -623,10 +650,11 @@ class DeceIntervencionPdf extends \yii\db\ActiveRecord
     private function cuerpo()
     {
         $html = '';
+        $html.= $this->estilos();
         $html.= $this->cabecera_intervencion();   
         $html.= $this->area_a_intervenir();   
         $html.= $this->lineamiento_y_accion();  
-        $html.= $this->bloque_1();
+        $html.= $this->bloques();
         return $html;
     }
     //busca la institucion externa por el ID, de la Area Intervencion

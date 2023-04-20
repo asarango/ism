@@ -412,6 +412,32 @@ class ComportamientoController extends Controller {
         ->andWhere(['<>','hora_id', $modelAsistencia->hora_id])
         ->all();
 
+        /**** PARA RETIRAR LA FALTA */
+        if(isset($_GET['accion']) == 'procesar'){
+
+            $detalleComportamiento = ScholarisAsistenciaComportamientoDetalle::find()->where(['codigo' => '1ch'])->one();
+             
+            foreach($asistencias as $asis){
+
+                $grupo = ScholarisGrupoAlumnoClase::find()->where([
+                    'clase_id' => $asis->clase_id,
+                    'estudiante_id' => $model->student_id
+                    ])->one();
+
+                $modelNovedad = new ScholarisAsistenciaAlumnosNovedades();
+                $modelNovedad->asistencia_profesor_id = $asis->id;
+                $modelNovedad->comportamiento_detalle_id = $detalleComportamiento->id;
+                $modelNovedad->observacion = 'AUTO: POR PRESENTARSE A UNA HORA DIFERENTE EN EL DÍA';
+                $modelNovedad->grupo_id = $grupo->id;
+                $modelNovedad->es_justificado = false;
+                $modelNovedad->save();
+            }
+
+            $model->delete();
+
+            return $this->redirect(['index', 'id' => $asistenciaId]);
+        }
+
         return $this->render('retirar-falta',[
             'model' => $model,
             'asistenciaId' => $asistenciaId,

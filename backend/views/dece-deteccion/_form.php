@@ -125,7 +125,7 @@ $modelRegDeteccion = DeceDeteccion::find()
                                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                     </div>
                                                     <div class="modal-body">
-                                                        <table class="table table-striped table-hover">
+                                                        <table class="table table-striped table-hover" style="font-size:15px;">
                                                             <tr>
                                                                 <td><b>Fecha Creación: </b></td>
                                                                 <td><?= $modelReg->fecha_reporte ?></td>
@@ -135,15 +135,19 @@ $modelRegDeteccion = DeceDeteccion::find()
                                                                 <td><?= $modelReg->nombre_quien_reporta ?></td>
                                                             </tr>
                                                             <tr>
+                                                                <td><b>Hora Aproximada: </b></td>
+                                                                <td><?= $modelReg->hora_aproximada ?></td>
+                                                            </tr>
+                                                            <tr>
                                                                 <td><b>Descripción del Hecho: </b></td>
                                                                 <td><?= $modelReg->descripcion_del_hecho ?></td>
                                                             </tr>
                                                             <tr>
-                                                                <td><b>Acciones Realizadas </b></td>
+                                                                <td><b>Acciones Realizadas: </b></td>
                                                                 <td><?= $modelReg->acciones_realizadas ?></td>
                                                             </tr>
                                                             <tr>
-                                                                <td><b>Listar Evidencias </b></td>
+                                                                <td><b>Listar Evidencias: </b></td>
                                                                 <td><?= $modelReg->lista_evidencias ?></td>
                                                             </tr>
                                                         </table>

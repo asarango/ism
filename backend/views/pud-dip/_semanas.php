@@ -109,8 +109,8 @@ use yii\helpers\Url;
                                                                 <div class="modal-body">
                                                                     
 
-                                                                        <input type="text" name="lms_id" value="<?= $actividad['id'] ?>">
-                                                                        <input type="text" name="plan_bloque_unidad_id" value="<?= $planUnidadId ?>">
+                                                                        <input type="hidden" name="lms_id" value="<?= $actividad['id'] ?>">
+                                                                        <input type="hidden" name="plan_bloque_unidad_id" value="<?= $planUnidadId ?>">
                                                                         <div class="form-group">
                                                                         
                                                                         <label class="form-label" for="inicio"><b>INICIO:</b></label>

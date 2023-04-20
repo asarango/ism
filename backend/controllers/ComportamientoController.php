@@ -415,7 +415,7 @@ class ComportamientoController extends Controller {
         /**** PARA RETIRAR LA FALTA */
         if(isset($_GET['accion']) == 'procesar'){
 
-            $detalleComportamiento = ScholarisAsistenciaComportamientoDetalle::find()->where(['codigo' => '1c'])->one();
+            $detalleComportamiento = ScholarisAsistenciaComportamientoDetalle::find()->where(['codigo' => '1ch'])->one();
              
             foreach($asistencias as $asis){
 

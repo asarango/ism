@@ -47,7 +47,7 @@ $ahora = date('Y-m-d H:i:s');
                                 ['dece-casos/historico','id'=>$model->id_estudiante],
                                 ['class' => 'link']
                             );
-                            ?>
+                            ?>                            
                 <hr>
                 
                 <?= $this->render('_form', [

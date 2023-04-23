@@ -4,14 +4,14 @@ use yii\helpers\Html;
 use yii\widgets\DetailView;
 
 /* @var $this yii\web\View */
-/* @var $model backend\models\ScholarisFaltasYAtrasosParcial */
+/* @var $model backend\models\ScholarisFaltas */
 
 $this->title = $model->id;
-$this->params['breadcrumbs'][] = ['label' => 'Scholaris Faltas Yatrasos Parcials', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => 'Scholaris Faltas', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
 ?>
-<div class="scholaris-faltas-yatrasos-parcial-view">
+<div class="scholaris-faltas-view">
 
     <h1><?= Html::encode($this->title) ?></h1>
 
@@ -30,12 +30,19 @@ $this->params['breadcrumbs'][] = $this->title;
         'model' => $model,
         'attributes' => [
             'id',
-            'alumno_id',
-            'bloque_id',
-            'atrasos',
-            'faltas_justificadas',
-            'faltas_injustificadas',
-            'observacion:ntext',
+            'scholaris_perido_id',
+            'student_id',
+            'fecha',
+            'fecha_solicitud_justificacion',
+            'motivo_justificacion:ntext',
+            'es_justificado:boolean',
+            'fecha_justificacion',
+            'respuesta_justificacion:ntext',
+            'usuario_justifica',
+            'created',
+            'created_at',
+            'updated',
+            'updated_at',
         ],
     ]) ?>
 

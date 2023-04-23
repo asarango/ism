@@ -1,161 +1,106 @@
 <?php
 
+use backend\models\OpStudent;
 use yii\helpers\Html;
 use yii\grid\GridView;
-use yii\helpers\ArrayHelper;
-use yii\helpers\Url;
-use kartik\select2\Select2;
 
-/* @var $this yii\web\View */
-/* @var $searchModel backend\models\ScholarisFaltasYAtrasosParcialSearch */
-/* @var $dataProvider yii\data\ActiveDataProvider */
+$this->title = 'Justificación de faltas del día';
 
-$this->title = 'Faltas y Atrasos';
-$this->params['breadcrumbs'][] = $this->title;
+
 ?>
-<div class="scholaris-faltas-yatrasos-parcial-index">
+<!--Scripts para que funcionen AJAX'S-->
+<!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>-->
+<script src="https://cdn.ckeditor.com/4.17.1/standard/ckeditor.js"></script>
 
 
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
+<div class="scholaris-faltas-index">
+    <div class="m-0 vh-50 row justify-content-center align-items-center">
+        <div class="card shadow col-lg-12 col-md-12">
+            <div class=" row align-items-center p-2">
+                <div class="col-lg-1">
+                    <h4><img src="../ISM/main/images/submenu/herramientas-para-reparar.png" width="64px" style="" class="img-thumbnail"></h4>
+                </div>
+                <div class="col-lg-11">
+                    <h4><?= Html::encode($this->title) ?></h4>
+                    <small>
+                        <h6>
+                           
+                        </h6>
+                    </small>
+                </div>
+            </div>
+            <!-- FIN DE CABECERA -->
 
-    <div class="container">
-    <div class="row">
-        <div class="col-md-1">Curso:</div>
-        <div class="col-md-2">
-            <?php
-            $listData = ArrayHelper::map($modelCursos, 'id', 'name');
+            <!-- inicia menu cabecera -->
+            <div class="row">
+                <div class="col-lg-6 col-md-6">
+                    <!-- menu cabecera izquierda -->
+                    |
+                    <?=
+                    Html::a(
+                        '<span class="badge rounded-pill" style="background-color: #9e28b5">
+                            <i class="fa fa-briefcase" aria-hidden="true"></i> Inicio</span>',
+                        ['site/index'],
+                        ['class' => 'link']
+                    );
+                    ?>
+                    |
+                </div> <!-- fin de menu cabecera izquierda -->
 
-//        echo '<label class="control-label">Curso:</label>';
-            echo Select2::widget([
-                'name' => 'curso',
-                'value' => 0,
-                'data' => $listData,
-                'size' => Select2::SMALL,
-                'options' => [
-                    'placeholder' => 'Seleccione curso',
-                    'onchange' => 'CambiaParalelo(this,"' . Url::to(['reportes-parcial/paralelos']) . '");',
+                <!-- inicio de menu cabecera derecha -->
+                <div class="col-lg-6 col-md-6" style="text-align: right;">
+
+                </div>
+                <!-- fin de menu cabecera derecha -->
+            <!-- finaliza menu cabecera  -->
+
+            <!-- inicia cuerpo de card -->
+            <?= GridView::widget([
+                'dataProvider' => $dataProvider,
+                'filterModel' => $searchModel,
+                'columns' => [
+                    ['class' => 'yii\grid\SerialColumn'],
+
+                    'id',
+                    //'scholaris_perido_id',
+                    'student',
+                    'fecha_falta',
+                    'solicita_justificacion',
+                    'fecha_solicitud_justificacion',
+                    //'motivo_justificacion:ntext',
+                    'es_justificado:boolean',
+                    'fecha_justificacion',
+                    //'respuesta_justificacion:ntext',
+                    //'usuario_justifica',
+                    //'created',
+                    //'created_at',
+                    //'updated',
+                    //'updated_at',
+
+                    /** INICIO BOTONES DE ACCION * */
+                    [
+                        'class' => 'yii\grid\ActionColumn',
+//                    'width' => '150px',
+                        'template' => '{justificar}',
+                        'buttons' => [
+                            'justificar' => function ($url, $model) {
+                                return Html::a('<i class="fas fa-balance-scale-right"></i>', $url, [
+                                    'title' => 'Justificar falta', 'data-toggle' => 'tooltip', 'role' => 'modal-remote', 'data-pjax' => "0", 'class' => 'hand'
+                                ]);
+                            }
+                        ],
+                        'urlCreator' => function ($action, $model, $key) {
+                            if ($action === 'justificar') {
+                                return \yii\helpers\Url::to(['justificar', 'id' => $model->id]);
+                            }
+//                        else if ($action === 'update') {
+//                            return \yii\helpers\Url::to(['update', 'id' => $key]);
+//                        }
+                        }
+                    ],
+                    /** FIN BOTONES DE ACCION * */
                 ],
-                'pluginLoading' => false,
-                'pluginOptions' => [
-                    'allowClear' => false
-                ],
-            ]);
-
-//        echo '<label class="control-label">Paralelo:</label>';
-            ?>
+            ]); ?>
+            <!-- fin cuerpo de card -->
         </div>
-
-
-        <div class="col-md-1">Paralelo:</div>
-        <div class="col-md-2" id="paralelo"></div>
-        
-        <div class="col-md-1">Bloque:</div>
-        <div class="col-md-2" id="bloque"></div>
-
-
     </div>
-    </div>
-    <hr>
-    
-    <div class="row" id="detalle">
-        
-    </div>
-
-
-</div>
-
-
-<script>
-    function CambiaParalelo(obj, url)
-    {
-        //var instituto = $(obj).val();
-        var parametros = {
-            "id": $(obj).val(),
-        };
-
-        $.ajax({
-            data:  parametros,
-            url:   url,
-            type:  'post',
-            beforeSend: function () {
-                //$(".field-facturadetalles-"+ItemId+"-servicios_id").val(0);
-            },
-            success:  function (response) {
-                $("#paralelo").html(response);
-
-            }
-        });
-    }
-    
-    function mostrarBloque(obj, url) {
-        var parametros = {
-            "id": $(obj).val()
-        };
-
-        $.ajax({
-            data: parametros,
-            url: url,
-            type: 'POST',
-            beforeSend: function () {},
-            success: function (response) {
-                $("#bloque").html(response);
-//                detalle();
-            }
-        });
-    }
-    
-    
-    function mostrarDetalle(obj, paralelo){
-//        console.log($(obj).val());
-//        console.log(paralelo);
-        
-        var url = "<?= Url::to(["detalle"]) ?>";
-        
-        var parametros = {
-            "id" : $(obj).val(),
-            "paralelo" : paralelo
-        };
-        
-        $.ajax({
-            data: parametros,
-            url : url,
-            type: 'POST',
-            beforeSend: function(){},
-            success: function(response){
-                $("#detalle").html(response);
-            }
-        });
-        
-        
-    }
-    
-    function cambiaNovedad(obj,bloque,alumno, tipo){
-//        console.log(obj);
-//        console.log(bloque);
-//        console.log(alumno);
-//        console.log($(obj).val());
-//        console.log(tipo);
-        
-        var url = "<?= Url::to(["asigna"]) ?>";
-        
-        var parametros = {
-            'alumno' : alumno,
-            'bloque' : bloque,
-            'valor' : $(obj).val(),
-            'tipo' : tipo
-        };
-        
-        $.ajax({
-            data: parametros,
-            url: url,
-            type: 'POST',
-            beforeSend: function(){},
-            success: function(response){
-                //$("#detalle").html(response);
-            }
-        });
-        
-        
-    }
-
-</script>

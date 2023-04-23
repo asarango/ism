@@ -290,7 +290,7 @@ function conteo_novedades_especiale($array,$codigo)
                                         'asistencia_id' => $modelAsistencia->id
                                     ],['title' => 'Retirar falta del día']);
                                     }else{
-                                        if($modelHora->numero == 0){
+                                        if($modelHora->numero == $primeraHora->valor){
                                             echo Html::a('<i class="fas fa-user-graduate" style="color: green"></i>',['registra-falta',
                                                 'student_id' => $alumno['estudiante_id'],
                                                 'asistencia_id' => $modelAsistencia->id,

@@ -4,11 +4,11 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
 /* @var $this yii\web\View */
-/* @var $model backend\models\ScholarisFaltasYAtrasosParcialSearch */
+/* @var $model backend\models\ScholarisFaltasSearch */
 /* @var $form yii\widgets\ActiveForm */
 ?>
 
-<div class="scholaris-faltas-yatrasos-parcial-search">
+<div class="scholaris-faltas-search">
 
     <?php $form = ActiveForm::begin([
         'action' => ['index'],
@@ -17,17 +17,31 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'id') ?>
 
-    <?= $form->field($model, 'alumno_id') ?>
+    <?= $form->field($model, 'scholaris_perido_id') ?>
 
-    <?= $form->field($model, 'bloque_id') ?>
+    <?= $form->field($model, 'student_id') ?>
 
-    <?= $form->field($model, 'atrasos') ?>
+    <?= $form->field($model, 'fecha') ?>
 
-    <?= $form->field($model, 'faltas_justificadas') ?>
+    <?= $form->field($model, 'fecha_solicitud_justificacion') ?>
 
-    <?php // echo $form->field($model, 'faltas_injustificadas') ?>
+    <?php // echo $form->field($model, 'motivo_justificacion') ?>
 
-    <?php // echo $form->field($model, 'observacion') ?>
+    <?php // echo $form->field($model, 'es_justificado')->checkbox() ?>
+
+    <?php // echo $form->field($model, 'fecha_justificacion') ?>
+
+    <?php // echo $form->field($model, 'respuesta_justificacion') ?>
+
+    <?php // echo $form->field($model, 'usuario_justifica') ?>
+
+    <?php // echo $form->field($model, 'created') ?>
+
+    <?php // echo $form->field($model, 'created_at') ?>
+
+    <?php // echo $form->field($model, 'updated') ?>
+
+    <?php // echo $form->field($model, 'updated_at') ?>
 
     <div class="form-group">
         <?= Html::submitButton('Search', ['class' => 'btn btn-primary']) ?>

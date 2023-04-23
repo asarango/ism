@@ -3,6 +3,7 @@
 namespace backend\controllers;
 
 use backend\models\ScholarisFaltas;
+use backend\models\ScholarisParametrosOpciones;
 use Yii;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -88,6 +89,8 @@ class ComportamientoController extends Controller {
                 ->one();
         $modelHora = ScholarisHorariov2Hora::findOne($modelAsistencia->hora_id);
 
+        $primeraHora = ScholarisParametrosOpciones::find()->where(['codigo' => 'primerahora'])->one();
+
         $fechaHoy = $modelAsistencia->fecha;
         //las novedades especificas son las que del codigo 1a,1b,1c , las que se muestran en pantalla
         $listaNovedadesEspecificas = $this->consulta_novedades_especifica($modelAsistencia->id);
@@ -141,7 +144,8 @@ class ComportamientoController extends Controller {
                     'modelNeeXClase'=>$modelNeeXClase,
                     'listaNovedadesEspecificas'=>$listaNovedadesEspecificas, 
                     'listaNovedadesTodas'=>$listaNovedadesTodas,
-                    'modelHora' => $modelHora
+                    'modelHora' => $modelHora,
+                    'primeraHora' => $primeraHora
         ]);
     }
 

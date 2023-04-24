@@ -21,42 +21,47 @@ if (isset($modelSemanas[0]['bloque'])) {
             <div class="col">
                 <div class="card">
                     <div class="card-header" style="background-color: #65b2e8; color: white">
-                        <?= $semana['semana_numero'] ?>
-                        -- ( del <?= $semana['fecha_inicio'].' al '.$semana['fecha_finaliza'] ?> )
+                        <h5 class="card-title">
+                            <?= $semana['nombre_semana'] ?>
+                            <small><?= $semana['semana_numero'] ?></small>
+                        </h5>                        
                     </div>
                     <!--<img src="..." class="card-img-top" alt="...">-->
                     <div class="card-body">
-                        <h5 class="card-title"><?= $semana['nombre_semana'] ?></h5>
-                        <p class="card-text"><b>Total de horas a planificar: </b><?= $modelClase->ismAreaMateria->total_horas_semana ?></p>
-                        <p class="card-text"><b>Total de horas planificadas: </b><?= $semana['total_horas'] ?></p>
-                    </div>
-                    
-                    <div class="card-footer">
-                        <?php
-                            
+                    <?php
+                            echo '<div class="card-text">';
                             if(trim($usuarioLog) == ($responsable)){
-                                echo Html::a('<i class="fas fa-user-cog"></i>',['lms/index1',
+                                echo Html::a('<i class="fas fa-user-cog"> Docente encargado de planificación</i>',['lms/index1',
                                     'semana_numero' => $semana['semana_numero'],
                                     'nombre_semana' => $semana['nombre_semana'],
                                     'clase_id' => $modelClase->id
-                                ],['style' => "color: #ab0a3d", 'title' => 'Configurar plan semanal']);
+                                ],['style' => "color: #ab0a3d", 'title' => 'Configurar plan semanal', 'target' => '_blank']);
                                 
                             }
-
-                            echo Html::a('<i class="fas fa-calendar-week"></i>',['lms-docente/index1',
+                            echo '</div>';
+                            echo '<div class="card-text">';
+                            echo Html::a('<i class="fas fa-calendar-week"> Descargar planificación</i>',['lms-docente/index1',
                                     'semana_numero' => $semana['semana_numero'],
                                     'nombre_semana' => $semana['nombre_semana'],
                                     'clase_id' => $modelClase->id
                                 ]
-                                ,['style' => "color: #0a1f8f; margin-left:10px", 
+                                ,['style' => "color: #0a1f8f;", 
                                     'title' => 'Plan semanal',
                                     'target' => '_blank'    
                                 ]
                                 ,['class' => 'zoom']
                             
                             );
+                            echo '</div>';
                                 
-                        ?>
+                        ?>                    
+                    </div>
+                    
+                    <div class="card-footer">
+                        
+                            Inicia: <?= $semana['fecha_inicio'].' Termina: '.$semana['fecha_finaliza'] ?> 
+                            <!-- <p class="card-text"><b>Total de horas a planificar: </b><?= $modelClase->ismAreaMateria->total_horas_semana ?></p>
+                            <p class="card-text"><b>Total de horas planificadas: </b><?= $semana['total_horas'] ?></p> -->
                     </div>
                 </div>
             </div>                                

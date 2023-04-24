@@ -20,20 +20,17 @@ $this->title = 'Mis asignaturas';
         <div class="card shadow col-lg-12 col-md-12">
             <div class=" row align-items-center p-2">
                 <div class="col-lg-1"><h4><img src="../ISM/main/images/submenu/aula.png" width="64px" style="" class="img-thumbnail"></h4></div>
-                <div class="col-lg-11"><h4><?= Html::encode($this->title) ?></h4></div>
-            </div>
-            <hr>
-
-            <p>
+                <div class="col-lg-3"><h4><?= Html::encode($this->title) ?></h4></div>
+                <div class="col-lg-8 col-md-8" style="text-align: right;">
                 |                                
                 <?= Html::a('<span class="badge rounded-pill" style="background-color: #ab0a3d"><i class="far fa-file"></i> Inicio</span>', ['site/index'], ['class' => 'link']); ?>
                 |                                
                 <?= Html::a('<span class="badge rounded-pill" style="background-color: #0a1f8f"><i class="fas fa-clock"></i> Leccionario</span>', ['scholaris-asistencia-profesor/index'], ['class' => 'link']); ?>                
                 |
-            </p>
+                </div>
+            </div>
             
-            <div class="row p-3">
-                
+            <div class="row" style="padding: 0px 10px 10px 10px;">                
                 <div class="card">
                     <div class="row">
                         <div class="col-lg-2 col-md-2">
@@ -43,8 +40,8 @@ $this->title = 'Mis asignaturas';
                         </div>
                         
                         <div class="col-lg-10 col-md-10">
-                            <div class="card" id="div-detalle" style="display: none; margin-top: 5px; padding: 15px"></div>
-                            <div class="card p-3" id="div-semanas" style="display: none; margin-top: 15px;"></div>                           
+                            <div id="div-detalle" style="display: none; margin-top: 5px;"></div>
+                            <div id="div-semanas" style="display: none; padding: 15px;"></div>                           
                         </div>
                     </div>
                 </div>
@@ -69,7 +66,7 @@ $this->title = 'Mis asignaturas';
             url: url,
             type: 'GET',
             beforeSend: function (){},
-            success: function (response) {                                
+            success: function (response) {       
                 $("#div-detalle").html(response);
                 $("#div-info-bloque").hide();
                 $("#div-actividades").hide();

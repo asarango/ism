@@ -44,6 +44,13 @@ $this->params['breadcrumbs'][] = $this->title;
                         ?>
 
                         |
+                        <?=
+                            Html::a(
+                                '<span class="badge rounded-pill" style="background-color:#9e28b5"><i class="fa fa-briefcase" aria-hidden="true"></i> Registro General Acompañamiento</span>',
+                                ['reg-gen-acompaniamiento'],
+                                ['class' => 'link']
+                            );
+                            ?>
                     </div> <!-- fin de menu izquierda -->
 
                     <div class="col-lg-6 col-md-6" style="text-align: right;">
@@ -59,7 +66,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         <?= Html::beginForm(['create','idEstudiante'=>0], 'post') ?>
                         <div class="row">
                             <div class="col-lg-10 col-md-10">
-                                
+                                Total: <?= count($estudiantes)?>
                                 <select id="idAlumno" name="idAlumno" class="form-control select2 select2-hidden-accessible" style="width: 100%;" tabindex="-1" aria-hidden="true">
                                     <option selected="selected" value="">Escoja un estudiante...</option>
                                     <?php
@@ -81,7 +88,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     </div>
                     <hr>
                     <div class="col-lg-12 col-md-12">
-                        <h6 class="my-text-medium">ESTUDIANTES EN SEGUIMIENTO:</h6>
+                        <h6 class="my-text-medium">ESTUDIANTES EN SEGUIMIENTO: <?=count($casos)?></h6>
                         <div class="table responsive">
                             <table class="table table-hover table-striped my-text-medium">
                                 <thead>

@@ -10,7 +10,7 @@ use yii\helpers\Html;
     <table class="table table-hover table-stripped" id="table-exp" >
         <thead>
             <tr>
-                <th scope="col" style="text-align:center">ACCIÓN</th>
+                <th scope="col">ACCIÓN</th>
                 <th scope="col">SEMANA</th>
                 <th scope="col">ESTADO</th>
                 <th scope="col">EXPERIENCIA</th>
@@ -67,29 +67,29 @@ use yii\helpers\Html;
 <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.js"></script>
 
 <script>
-function agregar(semanaId){
-var experienciaId = '<?=$experienciaId?>';
-// alert(experienciaId);
-// alert(semanaId);
-    if(experienciaId == 0){
-        alert('Debe seleccionar una experiencia!!!');
-        return false;
-    }
+// function agregar(semanaId){
+// var experienciaId = '<=$experienciaId?>';
+// // alert(experienciaId);
+// // alert(semanaId);
+//     if(experienciaId == 0){
+//         alert('Debe seleccionar una experiencia!!!');
+//         return false;
+//     }
 
-    var url = '<?=Url::to(['ajax-insert-experiencia'])?>';
-    var params = {
-        experiencia_id: experienciaId,
-        semana_id: semanaId
-    };
+//     var url = '<?=Url::to(['ajax-insert-experiencia'])?>';
+//     var params = {
+//         experiencia_id: experienciaId,
+//         semana_id: semanaId
+//     };
 
-    $.ajax({
-        url: url,
-        data: params,
-        type: 'POST',
-        success: function(){
-            semanas(experienciaId);
-        }
-    });
+//     $.ajax({
+//         url: url,
+//         data: params,
+//         type: 'POST',
+//         success: function(){
+//             semanas(experienciaId);
+//         }
+//     });
 
-}
+// }
 </script>

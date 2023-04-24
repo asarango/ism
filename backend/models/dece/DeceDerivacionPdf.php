@@ -9,6 +9,7 @@ use backend\models\DeceInstitucionExterna;
 use backend\models\DeceRegistroSeguimiento;
 use backend\models\DeceSeguimientoAcuerdos;
 use backend\models\DeceSeguimientoFirmas;
+use backend\models\helpers\Scripts;
 use Yii;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -310,7 +311,8 @@ class DeceDerivacionPdf extends \yii\db\ActiveRecord
         if($arrayPadre[0]) {$madre = $arrayPadre[0]['name'];}
         if($arrayPadre[1]) {$padre = $arrayPadre[1]['name'];}        
 
-        $arrayCurso = $this->mostrar_curso_estudiante($modelEstudiante->id);
+        $objScript = new Scripts();
+        $arrayCurso = $objScript->mostrar_curso_estudiante($model->id_estudiante);
         $curso = '';
         if($arrayCurso[0]) {$curso = $arrayCurso[0]['curso'];}       
 
@@ -464,35 +466,7 @@ class DeceDerivacionPdf extends \yii\db\ActiveRecord
 
         return $resp;
     }
-    private function mostrar_curso_estudiante($idEstudiante)
-    {
-        $usuarioLog = Yii::$app->user->identity->usuario;
-        $periodoId = Yii::$app->user->identity->periodo_id;
-        $con = Yii::$app->db;
-        $query ="select  distinct c4.id,concat(c4.last_name, ' ',c4.first_name,' ',c4.middle_name) as student,
-                concat( c8.name,' ', c7.name ) curso 
-                from scholaris_clase c1 , scholaris_grupo_alumno_clase c2 ,
-                    op_institute_authorities c3 ,op_student c4 ,op_student_inscription c5, 
-                    scholaris_op_period_periodo_scholaris c6,op_course_paralelo c7, op_course c8
-                where c3.usuario  = '$usuarioLog' 
-                        and c3.id = c1.dece_dhi_id 
-                        and c1.id = c2.clase_id 
-                        and c2.estudiante_id = c4.id 
-                        and c2.estudiante_id ='$idEstudiante'
-                        and c4.id = c5.student_id 
-                        and c5.period_id  = c6.op_id 
-                        and c6.scholaris_id = '$periodoId'
-                        and c7.id = c1.paralelo_id 
-                        and c8.id = c7.course_id 
-                order by student;";
-
-               
-        $resp = $con->createCommand($query)->queryAll();
-        // echo '<pre>';
-        // print_r($resp);
-        // die();
-        return $resp;
-    }
+   
 
 
     private function cuerpo()

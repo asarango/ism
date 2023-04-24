@@ -12,6 +12,11 @@ use yii\widgets\ActiveForm;
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 $this->title = 'Revisión plan semanal KIDS';
+
+// echo '<pre>';
+// print_r($hours);
+
+
 ?>
 <!-- JS y CSS Ckeditor -->
 <script src="https://cdn.ckeditor.com/4.17.1/standard/ckeditor.js"></script>
@@ -50,11 +55,14 @@ $this->title = 'Revisión plan semanal KIDS';
         <div class="card shadow col-lg-12 col-md-12">
             <div class=" row align-items-center p-2">
                 <div class="col-lg-1 col-md-1">
-                    <h4><img src="../ISM/main/images/submenu/calendario.png" width="34px" style="" class="img-thumbnail"></h4>
+                    <h4><img src="../ISM/main/images/submenu/calendario.png" width="34px" style=""
+                            class="img-thumbnail"></h4>
                 </div>
 
                 <div class="col-lg-4 col-md-4">
-                    <h5><?= Html::encode($this->title) ?></h5>
+                    <h5>
+                        <?= Html::encode($this->title) ?>
+                    </h5>
                     <smal>
                         <?= $plans->semana->nombre_semana ?> |
                         <?= $plans->created ?>
@@ -73,11 +81,11 @@ $this->title = 'Revisión plan semanal KIDS';
                 <div class="col-lg-2 col-md-2" style="text-align: right;">
                     |
                     <?=
-                    Html::a(
-                        '<span class="badge rounded-pill" style="background-color: #0a1f8f"><i class="fa fa-briefcase" aria-hidden="true"></i> Inicio</span>',
-                        ['site/index'],
-                        ['class' => 'link']
-                    );
+                        Html::a(
+                            '<span class="badge rounded-pill" style="background-color: #0a1f8f"><i class="fa fa-briefcase" aria-hidden="true"></i> Inicio</span>',
+                            ['site/index'],
+                            ['class' => 'link']
+                        );
                     ?>
                     |
                 </div>
@@ -94,123 +102,80 @@ $this->title = 'Revisión plan semanal KIDS';
                                             padding: 5px;">
                         <h6><b>Planificación semanal</b></h6>
                         <?php
-                        //inicio de foreach principal de dias y fechas
-                        $contadorNoPlanificado = 0;
-                        foreach ($dates as $date) {
-                        ?>
+                        //Recorro array para pintar las planificaciones
+                        // print_r($aDiasPlans);
+                        // die();
+                        
 
-                            <!-- inicio de dia y fecha -->
-                            <div class="row" style="margin-top: 30px;">
-                                <div class="col-lg-12 col-md-12" style="color: #0a1f8f;">
-                                    <i class="fas fa-clock"></i>
-                                    <?= $date['nombre'] . ' ' . $date['fecha'] ?>
-                                    <hr>
+                        foreach ($aDiasPlans as $keyDia => $dia) {
+                            ?>
+                            <div class="accordion" id="accordionExample">
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="headingOne">
+                                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                            data-bs-target="#collapse_<?= $dia["nombre"] ?>" aria-expanded="true"
+                                            aria-controls="collapseOne">
+                                            <?= $dia["curso"] . " / " . $dia["nombre"] . " / " . $dia["fecha"] ?>
+                                        </button>
+                                    </h2>
+                                    <div id="collapse_<?= $dia["nombre"] ?>" class="accordion-collapse collapse show"
+                                        aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                                        <div class="accordion-body">
+                                            <?php
+                                            if (!isset($dia["planificaciones"])) {
+                                                echo "No tiene clases en este día el profesor!";
+                                            } else {
+                                                foreach ($dia["planificaciones"] as $keyPlan => $plan) {
+                                                    ?>
+                                                    <div class="accordion" id="accordionExample" style="margin-bottom: 10px;">
+                                                        <div class="accordion-item">
+                                                            <h2 class="accordion-header" id="headingOne">
+                                                                <button class="accordion-button" type="button"
+                                                                    data-bs-toggle="collapse"
+                                                                    data-bs-target="#collapse_<?= $keyPlan ?>" aria-expanded="true"
+                                                                    aria-controls="collapseOne">
+                                                                    <?= $plan["materia"] ?> / PARALELO: <?= $plan["paralelo"] ?> /
+                                                                    HORA: <?= $plan["hora"] ?>
+                                                                </button>
+                                                            </h2>
+                                                            <div id="collapse_<?= $keyPlan ?>"
+                                                                class="accordion-collapse collapse show"
+                                                                aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                                                                <div class="accordion-body">
+
+                                                                    <ul class="nav nav-tabs" id="myTab" role="tablist">
+                                                                        <li class="nav-item" role="presentation">
+                                                                            <button class="nav-link" id="home-tab"
+                                                                                data-bs-toggle="tab"
+                                                                                data-bs-target="#home_<?= $keyPlan ?>" type="button"
+                                                                                role="tab" aria-controls="home" aria-selected="true"
+                                                                                onclick="get_info_planificacion(<?= $plan['clase_id'] ?>, <?= $plan['detalle_id'] ?>, `actividades`, <?= $keyPlan ?>)">
+                                                                                Detalle Planificación
+                                                                            </button>
+                                                                        </li>
+
+                                                                    </ul>
+
+
+                                                                    <div class="tab-content" id="myTabContent">
+                                                                        <div class="tab-pane fade" id="home_<?= $keyPlan ?>"
+                                                                            role="tabpanel" aria-labelledby="home-tab"></div>
+                                                                    </div>
+
+
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <?php
+                                                }
+                                            }
+                                            ?>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                            <!-- fin de dia y fecha -->
-
                             <?php
-                            //inicio de horas
-
-                            foreach ($hours as $hour) {
-                                if ($date['numero'] == $hour['dia_numero']) {
-
-                                    if ($hour['responsable_planificacion'] == $user) {
-                                        $color = '#ff9e18';
-                                    } else {
-                                        $color = '#9e28b5';
-                                    }
-
-                            ?>
-                                    <div class="row" style="margin: 0px 50px 50px 50px; 
-                    color: <?= $color ?>; 
-                    border: solid 1px <?= $color ?>; 
-                    ">
-                                        <nav aria-label="breadcrumb" style="background-color: <?= $color ?>;">
-                                            <ol class="breadcrumb">
-                                                <li class="breadcrumb-item active" aria-current="page" style="color: white;"><?= $hour['hora'] ?></li>
-                                                <li class="breadcrumb-item active" aria-current="page" style="color: white;"><?= $hour['curso'] ?></li>
-                                                <li class="breadcrumb-item active" aria-current="page" style="color: white;"><?= $hour['materia'] ?></li>
-                                                <li class="breadcrumb-item active" aria-current="page" style="color: white;"><?= $hour['responsable_planificacion'] ?></li>
-                                            </ol>
-                                        </nav>
-
-
-                                        <?php
-                                        $detail = get_planification_by_hour($hour['detalle_id'], $hour['clase_id']);
-
-                                        if ($detail) {
-                                            if ($detail['fecha'] == $date['fecha']) {
-                                                if ($detail['titulo'] == 'NO CONFIGURADO') {
-                                                    $contadorNoPlanificado++;
-                                                    echo '<div class="col">';
-                                                    echo '<p>';
-                                                    echo '<img src="../ISM/main/images/actions/trabajando.gif" width="70px" style="" class="">';
-                                                    echo '<b>' . $detail['titulo'] . '</b>';
-                                                    echo '</p>';
-                                                    echo '</div>';
-                                                } else {
-                                                    echo '<div class="col" style="overflow-y: scroll; height: 400px">';
-                                                    echo '<p><b>TÍTULO: </b>' . $detail['titulo'] . '</p>';
-
-                                                    echo '<div class="row">';
-                                                    echo '<div class="col-lg-3">';
-
-                                                    echo '</div>';
-                                                    echo '</div>';
-
-                                                    echo '<p><b>ACTIVIDADES</b>' . $detail['descripcion_actividades'] . '</p>';
-
-                                                    echo '<p style="margin-top:10px">';
-                                                    echo '<b>TAREAS / EVALUACIONES</b><br>';
-
-                                                    $homeWork = LmsActividad::find()->where(['lms_id' => $detail['lms_id']])->all();
-
-                                                    foreach ($homeWork as $hw) {
-                                                        echo '<span class="badge rounded-pill" style="background-color: #0a1f8f; margin-right:3px;">
-                                        <i class="fas fa-book-reader"> ' . $hw->titulo . '</i>'
-                                                            . '</span>';
-                                                    }
-                                                    echo '</p>';
-
-                                                    echo '<p style="margin-top:10px">';
-                                                    echo '<b>ADAPATACIONES CURRICULARES</b><br>';
-                                                    $adaptaciones = LmsDocenteNee::find()->where(['lms_docente_id' => $detail['id']])->all();
-                                                    echo '<ul style="font-size: 10px">';
-                                                    foreach ($adaptaciones as $adaptacion) {
-                                                        echo '<li style="margin-bottom: 10px"><i class="fas fa-child"></i> '
-                                                            . '<b><u>' . $adaptacion->neeXClase->nee->student->first_name . ' ' . $adaptacion->neeXClase->nee->student->last_name . '</u></b>'
-                                                            . '<br>' . $adaptacion->adaptacion_curricular
-                                                            . '</li>';
-                                                    }
-
-                                                    echo '</ul>';
-
-                                                    echo '</p>';
-                                                    echo '</div>';
-                                                }
-                                            } else {
-                                                $contadorNoPlanificado++;
-                                                echo 'Hora libre';
-                                            }
-                                        } else {
-                                            $contadorNoPlanificado++;
-                                            echo '<div class="col">
-                                <img src="../ISM/main/images/actions/no.gif" 
-                                     width="50px" style="" class="">Sin planificar</div>';
-                                        }
-
-                                        ?>
-                                    </div>
-
-                            <?php
-                                }
-                            }
-                            //fin de horas
-                            ?>
-
-
-                        <?php //fin de foreach principal de dias y fechas
                         }
                         ?>
                     </div>
@@ -225,11 +190,12 @@ $this->title = 'Revisión plan semanal KIDS';
 
                         <?php
                         $form = ActiveForm::begin([
-                            'action' => Url::to(['change-state', 
-                                                    'plan_id' => $plans->id,
-                                                    'week_id' => $week->id,
-                                                    'action'  => 'cambiarestado'
-                                                ]),
+                            'action' => Url::to([
+                                'change-state',
+                                'plan_id' => $plans->id,
+                                'week_id' => $week->id,
+                                'action' => 'cambiarestado'
+                            ]),
                             'method' => 'post'
                         ]);
                         ?>
@@ -248,56 +214,62 @@ $this->title = 'Revisión plan semanal KIDS';
 
                         <?php
                         if ($plans->estado == 'APROBADO') {
-                        ?>
+                            ?>
                             <div class="alert alert-success" role="alert" style="text-align:center">
                                 ¡Usted aprobó Planificaciones <i class="fas fa-thumbs-up"></i>!
                             </div>
-                        <?php
-                        } elseif ($plans->estado == 'COORDINADOR') {
-                        ?>
+                            <?php
+                        } elseif ($plans->estado == 'ENVIO_COORDINACION') {
+                            ?>
                             <br>
+                            <input type="hidden" name="plan_id" value="<?= $plans->id ?>">
+                            <input type="hidden" name="week_id" value="<?= $week->id ?>">
+                            <input type="hidden" name="cursoId" value="<?= $cursoId ?>">
                             <input type="hidden" name="estado" value="DEVUELTO">
                             <input type="hidden" name="user_teacher" value="<?= $user ?>">
                             <div class="row" style="text-align: center; padding-left: 30px;padding-right: 30px;">
                                 <?=
-                                Html::submitButton(
-                                    'Devolver Planificación',
-                                    [
-                                        'class' => 'btn btn-danger my-text-medium'
-                                    ]
-                                )
-                                ?>
+                                    Html::submitButton(
+                                        'Devolver Planificación',
+                                        [
+                                            'class' => 'btn btn-danger my-text-medium'
+                                        ]
+                                    )
+                                    ?>
                                 <hr>
                                 <i class="far fa-hand-point-down" style="font-size: 20px;color: #0a1f8f"></i>
                                 <?=
-                                // Html::a port yii2 ?  
-                                Html::a(
-                                    '<i class="fas fa-check-circle"> Aprobar Planificación</i>',
-                                    ['change-state', 
-                                        'plan_id' => $plans->id,
-                                        'week_id' => $week->id,
-                                        'action'  => 'cambiarestado',
-                                        'observaciones' => 'APROBADO',
-                                        'estado'    => 'APROBADO',
-                                        'user_teacher' => $user
-                                    ],
-                                    ['class' => 'btn btn-success my-text-medium']
-                                );
+                                    // Html::a port yii2 ?  
+                                    Html::a(
+                                        '<i class="fas fa-check-circle"> Aprobar Planificación</i>',
+                                        [
+                                            'change-state',
+                                            'plan_id' => $plans->id,
+                                            'week_id' => $week->id,
+                                            'curso_id' => $cursoId,
+                                            // 'curso_id' => $week->id,
+                                            'action' => 'cambiarestado',
+                                            'observaciones' => 'APROBADO',
+                                            'estado' => 'APROBADO',
+                                            'user_teacher' => $user
+                                        ],
+                                        ['class' => 'btn btn-success my-text-medium']
+                                    );
                                 ?>
                             </div>
-                        <?php
+                            <?php
                         } elseif ($plans->estado == 'DEVUELTO') {
-                        ?>
+                            ?>
                             <div class="alert alert-warning" role="alert" style="text-align:center">
                                 ¡Se ha enviado a modificar al profesor!
                             </div>
-                        <?php
+                            <?php
                         } elseif ($plans->estado == 'INICIANDO') {
-                        ?>
+                            ?>
                             <div class="alert alert-info" role="alert" style="text-align:center">
                                 ¡El profesor está iniciando su planificación!
                             </div>
-                        <?php
+                            <?php
                         }
                         ?>
 
@@ -318,25 +290,34 @@ $this->title = 'Revisión plan semanal KIDS';
 
 </div>
 
+<script>
+    //Funcion que trae info de planificacion de la clase
+    function get_info_planificacion(curso_id, detalle_id, bandera, indicador) {
 
-<?php
+        // alert(indicador);
 
-function get_planification_by_hour($detalleHorarioId, $claseId)
-{
-    $con = Yii::$app->db;
-    $query = "select 	ld.id 
-                    ,ld.fecha 
-                    ,lm.titulo 
-                    ,lm.descripcion_actividades 
-                    ,lm.id as lms_id
-                    ,ld.clase_id
-                    ,ld.observaciones                    
-                from 	lms_docente ld
-                    left join lms lm on lm.id = ld.lms_id 
-                where 	ld.horario_detalle_id = $detalleHorarioId
-                    and ld.clase_id = $claseId;";
+        var plan_semanal_id = "<?= $planSemanalId ?>";
 
-    $res = $con->createCommand($query)->queryOne();
-    return $res;
-}
-?>
+        var url = "<?= Url::to(["info-planificacion"]) ?>";
+        var params = {
+            plan_semanal_id: plan_semanal_id,
+            curso_id: curso_id,
+            detalle_id: detalle_id,
+            bandera: bandera
+        };
+
+        $.ajax({
+            url: url,
+            data: params,
+            type: 'POST',
+            success: function (resp) {
+                $("#home_" + indicador).html(resp);
+            }
+        });
+
+        // $("#clase_planificacion_id").val(id);
+
+
+
+    }
+</script>

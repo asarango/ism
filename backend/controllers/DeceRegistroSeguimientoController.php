@@ -278,12 +278,18 @@ class DeceRegistroSeguimientoController extends Controller
     //*****   ACUERDOS  *******
     public function actionGuardarAcuerdos()
     {
+        // echo '<pre>';
+        // print_r($_POST);
+        // die();
         $secuencial = '-1';
         $acuerdo=  $_POST['acuerdo'];
         $responsable= $_POST['responsable'];
         $cumplio= $_POST['cumplio'];
         $id_seguimiento= $_POST['id_seguimiento'];
         $fecha_max_cumplimiento = $_POST['fecha_max_cumplimiento'];
+        $parentesco = $_POST['parentesco'];
+        $cargo = $_POST['cargo'];
+        $cedula = $_POST['cedula'];
        
 
         $maxItemAcuerdos = DeceSeguimientoAcuerdos::find()
@@ -300,9 +306,29 @@ class DeceRegistroSeguimientoController extends Controller
         $modelAcuerdo->cumplio = $cumplio;
         $modelAcuerdo->id_reg_seguimiento = $id_seguimiento;
         $modelAcuerdo->fecha_max_cumplimiento = $fecha_max_cumplimiento;
+
         $modelAcuerdo->save();  
-      
-        return $this->mostrar_acuerdo($id_seguimiento);
+
+        //agregamos enseguida el registro en la firma
+        $modelFirma = new DeceSeguimientoFirmas();
+
+        $modelFirma->nombre = $responsable;
+        $modelFirma->cedula = $cedula;
+        $modelFirma->parentesco = $parentesco;
+        $modelFirma->cargo = $cargo;
+        $modelFirma->id_reg_seguimiento = $id_seguimiento;
+        $modelFirma->save();  
+
+        //Guardamos en un JSON, los html a mostrar en pantalla
+
+        $acuerdos = $this->mostrar_acuerdo($id_seguimiento);
+        $firmas = $this->mostrar_firmas($id_seguimiento);
+        $arratRetornos['acuerdos'] = $acuerdos;
+        $arratRetornos['firmas'] = $firmas;
+        $jsonRetorno = json_encode($arratRetornos);
+
+        
+        return $jsonRetorno;
     }
 
     private function mostrar_acuerdo($id_seguimiento)

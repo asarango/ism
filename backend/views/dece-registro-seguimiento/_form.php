@@ -25,25 +25,36 @@ $DateAndTime = date('m-d-Y h:i:s a', time());
 
 //*** motivos */ 
 
-$arrayMotivos = cargaArreglo("motivo");
-$arrayEstado = cargaArreglo("estado_seg");
-$arrayResponsableSeg = cargaArreglo("responsable_seg");
-$arrayAtencionPara = cargaArreglo("atencion_para");
-function cargaArreglo($campo)
+$arrayMotivos = cargaArreglo("motivo", true);
+$arrayEstado = cargaArreglo("estado_seg", true);
+$arrayResponsableSeg = cargaArreglo("responsable_seg", true);
+$arrayAtencionPara = cargaArreglo("atencion_para", true);
+
+$cargoList = cargaArreglo("responsable_seg", false);
+$parentescoList = cargaArreglo("atencion_para", false);
+// echo '<pre>';
+// print_r($cargoList);
+// echo '<pre>';
+// print_r($arrayMotivos);
+// die();
+function cargaArreglo($campo, $esArray)
 {
     $consulta = DeceMotivos::find()
         ->select([$campo,])
         ->distinct()
         ->where(['not', [$campo => null]])
-        ->asArray()
+        //->asArray()
         ->all();
 
-    $array = array();
-    //recorremos arreglo
-    foreach ($consulta as $dato) {
-        $array[$dato[$campo]] = $dato[$campo];
+    if ($esArray) {
+        $array = array();
+        //recorremos arreglo
+        foreach ($consulta as $dato) {
+            $array[$dato[$campo]] = $dato[$campo];
+        }
+        return $array;
     }
-    return $array;
+    return $consulta;
 }
 $modelPathArchivo = PlanificacionOpciones::find()
     ->where(['tipo' => 'VER_ARCHIVO'])
@@ -204,7 +215,7 @@ $listFirmas = DeceSeguimientoFirmas::find()
                                                             </tr>
                                                             <tr>
                                                                 <td><b>Departamento:</b></td>
-                                                                <td><?= $modelReg->departamento?></td>
+                                                                <td><?= $modelReg->departamento ?></td>
                                                             </tr>
                                                             <tr>
                                                                 <?php $arrayArchivo = array("", "");
@@ -336,20 +347,55 @@ $listFirmas = DeceSeguimientoFirmas::find()
                                 <div class="card">
                                     <div class="card-header" style="background-color:lightblue">
                                         <div class="row">
-                                            <div class="col-lg-5">
-                                                <textarea class="form-control" type="text" id="acuerdo_acuerdo" placeholder="Acuerdo"></textarea>
+                                            <div class="col-lg-6">
+                                                <textarea class="form-control" type="text" id="acuerdo_acuerdo" rows="4"placeholder="Acuerdo"></textarea>
                                             </div>
-                                            <div class="col-lg-3">
-                                                <input class="form-control" type="text" id="responsable_acuerdo" placeholder="Responsable" />
+                                            <div class="col-lg-6">
+                                                <div class="row">
+                                                    <div class="col-lg-6">
+                                                        <input class="form-control" type="text" id="responsable_acuerdo" placeholder="Responsable" />
+                                                    </div>
+                                                    <div class="col-lg-6">
+                                                        <input class="form-control" type="date" id="fecha_cumplimiento_acuerdo" placeholder="Fecha max cumplimiento" />
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-lg-6">
+                                                        <select class="form-select" aria-label="Default select example" id="parentesco" >
+                                                            <option value="">Parentesco</option>
+                                                            <?php
+                                                            foreach ($parentescoList as $item) {
+                                                            ?>
+                                                                <option value="<?= $item->atencion_para ?>"><?= $item->atencion_para ?></option>
+                                                            <?php
+                                                            }
+                                                            ?>
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-lg-6">
+                                                        <select class="form-select" aria-label="Default select example" id="cargo" aria-placeholder="Parentesco">
+                                                            <option value=""> Cargo</option>
+                                                            <?php
+                                                            foreach ($cargoList as $item) {
+                                                            ?>
+                                                                <option value="<?= $item->responsable_seg ?>"><?= $item->responsable_seg ?></option>
+                                                            <?php
+                                                            }
+                                                            ?>
+                                                        </select>
+                                                    </div>
+                                                    <div class="row">  
+                                                        <div class="col-lg-6">
+                                                            <input class="form-control" type="text" id="cedula" placeholder="Cédula" />
+                                                        </div>
+                                                        <div class="col-lg-6">
+                                                            <button type="button" class="btn btn-primary" id="icono_acuerdo" onclick="guardar_acuerdo()" title="Guardar Acuerdos"><i class="fas fa-save"></i></button>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
-                                            <div class="col-lg-3">
-                                                <input class="form-control" type="date" id="fecha_cumplimiento_acuerdo" placeholder="Fecha max cumplimiento" />
-
-                                            </div>
-                                            <div class="col-lg-1">
-                                                <button type="button" class="btn btn-primary" id="icono_acuerdo" onclick="guardar_acuerdo()" title="Guardar Acuerdos"><i class="fas fa-save"></i></button>
-                                            </div>
-                                        </div>
+                                        </div>                                      
+                                        
                                     </div>
                                     <div class="card-body" id="div_muestra_acuerdo">
                                         <table class="table table-striped table-success">
@@ -516,6 +562,11 @@ $listFirmas = DeceSeguimientoFirmas::find()
                 var cumplio = 0;
                 var fecha_max_cumplimiento = $('#fecha_cumplimiento_acuerdo').val();
                 var id_seguimiento = '<?= $model->id ?>';
+                var parentesco = $("#parentesco").val();
+                var cargo = $("#cargo").val();
+                var cedula = $("#cedula").val();
+
+               // alert(cedula)
 
                 var params = {
                     secuencial: secuencial,
@@ -524,6 +575,9 @@ $listFirmas = DeceSeguimientoFirmas::find()
                     cumplio: cumplio,
                     fecha_max_cumplimiento: fecha_max_cumplimiento,
                     id_seguimiento: id_seguimiento,
+                    parentesco: parentesco,
+                    cargo: cargo,
+                    cedula:cedula,
                 }
 
                 $.ajax({
@@ -532,7 +586,10 @@ $listFirmas = DeceSeguimientoFirmas::find()
                     type: 'POST',
                     beforeSend: function(response) {},
                     success: function(response) {
-                        $('#div_muestra_acuerdo').html(response);
+                        //$('#div_muestra_acuerdo').html(response);
+                        var data = $.parseJSON(response);
+                        $('#div_muestra_acuerdo').html(data.acuerdos);
+                        $('#div_muestra_firmas').html(data.firmas);
                     }
 
                 });

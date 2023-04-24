@@ -7,6 +7,8 @@ use yii\filters\AccessControl;
 use backend\models\DeceCasos;
 use backend\models\DeceCasosSearch;
 use backend\models\DeceDeteccion;
+use backend\models\DeceMotivos;
+use backend\models\OpInstituteAuthorities;
 use Exception;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -72,6 +74,7 @@ class DeceCasosController extends Controller
     {
         $usuarioLog = Yii::$app->user->identity->usuario;
         $periodoId = Yii::$app->user->identity->periodo_id;
+
         $estudiantes = $this->consulta_estudiantes($periodoId, $usuarioLog);
         $conteoEjesDeAccion = $this->consulta_conteo_por_eje($usuarioLog);
         //$casos = $this->mostrar_casos_por_usuario($usuarioLog);   
@@ -90,10 +93,23 @@ class DeceCasosController extends Controller
     }
     private function mostrar_casos_y_estadistica($user)
     {
+        //buscamos si el usuario es coordinador
+        $modelCoordinadorDece = OpInstituteAuthorities::find()
+        ->where(['ilike','cargo_descripcion','dececoor'])
+        ->andWhere(['usuario'=>$user])
+        ->one();        
+
         $con = yii::$app->db;
         $periodoId = Yii::$app->user->identity->periodo_id;
         //extrae tdos los estudiantes asociados a un usuario de la tabla dece_casos
-        $query ="select distinct id_estudiante from dece_casos dc where id_usuario  = '$user';";
+        if($modelCoordinadorDece)
+        {
+            $query ="select distinct id_estudiante from dece_casos dc where id_usuario_super_dece  = '$user';";
+        }else
+        {
+            $query ="select distinct id_estudiante from dece_casos dc where id_usuario_dece  = '$user';";
+        }
+       
         $usuariosCasos = $con->createCommand($query)->queryAll();
         
         $arrayCasos = array();
@@ -112,13 +128,27 @@ class DeceCasosController extends Controller
                         (select count(*) from dece_intervencion d where id_estudiante  = dc.id_estudiante ) intervencion,
                         (select count(distinct id_caso) from dece_intervencion drs where id_estudiante = dc.id_estudiante) casos_intervencion
                         from dece_casos dc, op_student os  
-                        where id_estudiante =  $id_estudiante
-                        and id_usuario = '$user'
-                        and os.id = dc.id_estudiante 
+                        where id_estudiante =  $id_estudiante";
+                        if($modelCoordinadorDece )
+                            {
+                                $query2 .= " and id_usuario_super_dece = '$user'";
+                            }else{
+                                $query2 .= " and id_usuario_dece = '$user'";
+                            }
+                        
+                            $query2 .= " and os.id = dc.id_estudiante 
                         group by os.last_name,os.middle_name,os.first_name,dc.id_estudiante ;";
+
+        // echo '<pre>';
+        // print_r($query2);
+        // die();
                    
             $arrayCasos[]= $con->createCommand($query2)->queryOne();
         }
+
+        // echo '<pre>';
+        // print_r($arrayCasos);
+        // die();
         return $arrayCasos;
 
 
@@ -135,6 +165,12 @@ class DeceCasosController extends Controller
     }
     private function consulta_estudiantes($scholarisPeriodoId, $usuarioLog)
     {
+        //buscamos si el usuario es coordinador
+        $modelCoordinadorDece = OpInstituteAuthorities::find()
+        ->where(['ilike','cargo_descripcion','dececoor'])
+        ->andWhere(['usuario'=>$usuarioLog])
+        ->one();        
+
         $con = Yii::$app->db;
         $query = 
         "select  distinct c4.id,concat(c4.last_name, ' ',c4.first_name,' ',c4.middle_name) as student,
@@ -142,8 +178,14 @@ class DeceCasosController extends Controller
         from scholaris_clase c1 , scholaris_grupo_alumno_clase c2 ,
          op_institute_authorities c3 ,op_student c4 ,op_student_inscription c5, 
          scholaris_op_period_periodo_scholaris c6,op_course_paralelo c7, op_course c8
-        where c3.usuario  = '$usuarioLog' 
-        and c3.id = c1.dece_dhi_id 
+        where c3.usuario  = '$usuarioLog' ";
+        if($modelCoordinadorDece )
+        {
+            $query .= " and c3.id = c1.coordinador_dece_id";
+        }else{
+            $query .= " and c3.id = c1.dece_dhi_id";
+        }
+        $query.="
         and c1.id = c2.clase_id 
         and c2.estudiante_id = c4.id 
         and c4.id = c5.student_id 
@@ -151,14 +193,14 @@ class DeceCasosController extends Controller
         and c6.scholaris_id = '$scholarisPeriodoId'
         and c7.id = c1.paralelo_id 
         and c8.id = c7.course_id 
-        order by student;";
-
-        // echo '<pre>';
-        // print_r($query);
-        // die();
+        order by student;";      
 
 
         $res = $con->createCommand($query)->queryAll();
+
+        // echo '<pre>';
+        // print_r(count($res));
+        // die();
 
         return $res;
     }
@@ -220,10 +262,18 @@ class DeceCasosController extends Controller
     {
         $model = new DeceCasos();
         $hora = date('H:i:s');
-        //la fecha de ingreso viene vacio cuando es un nuevo, por eso guarda solo cuando hay fecha de ingreso
+        //la fecha de ingreso viene vacio cuando es un nuevo registro, por eso guarda solo cuando hay fecha de ingreso
         //quiere decir que vino desde la pantalla de de CREACION
         if ($model->load(Yii::$app->request->post()) && isset($_POST['fecha_inicio']))
         {
+            $decesPorAlumno = $this->mostrar_dece_y_super_dece_por_alumno($model->id_estudiante);
+
+            // echo '<pre>';
+            // print_r($decesPorAlumno);
+            // die();
+
+            $model->id_usuario_dece = $decesPorAlumno['hdi_dece'];
+            $model->id_usuario_super_dece = $decesPorAlumno['super_dece'];
             $model->fecha_inicio = $_POST['fecha_inicio']. ' '.$hora;
             $model->save();            
             return $this->redirect(['historico','id'=>$model->id_estudiante]);
@@ -254,6 +304,33 @@ class DeceCasosController extends Controller
             'model' => $modelDeceCasos
         ]);
     }  
+    private function mostrar_dece_y_super_dece_por_alumno($id_estudiante)
+    {
+        $con = Yii::$app->db;
+        $usuario = Yii::$app->user->identity->usuario;
+        $periodoId = Yii::$app->user->identity->periodo_id;
+        $query = "select  distinct c4.id,concat(c4.last_name, ' ',c4.first_name,' ',c4.middle_name) as student,
+                    concat( c8.name,' ', c7.name ) curso, 
+                    (select usuario from op_institute_authorities a where a.id=c1.coordinador_dece_id) super_dece,
+                    (select usuario from op_institute_authorities a where a.id=c1.dece_dhi_id) hdi_dece
+                    from scholaris_clase c1 , scholaris_grupo_alumno_clase c2 ,
+                    op_institute_authorities c3 ,op_student c4 ,op_student_inscription c5, 
+                    scholaris_op_period_periodo_scholaris c6,op_course_paralelo c7, op_course c8
+                    where c3.usuario  = '$usuario' 
+                    and c3.id = c1.dece_dhi_id 
+                    and c1.id = c2.clase_id 
+                    and c2.estudiante_id = c4.id 
+                    and c4.id = c5.student_id 
+                    and c5.period_id  = c6.op_id 
+                    and c6.scholaris_id = '1'
+                    and c7.id = c1.paralelo_id 
+                    and c8.id = c7.course_id 
+                    and c4.id = '$id_estudiante'
+                    order by student;";
+        $resp = $con->createCommand($query)->queryOne();
+        return $resp;
+
+    }
     
     public function actionCrearDeteccion()
     {
@@ -325,6 +402,12 @@ class DeceCasosController extends Controller
             'model' => $modelDeceCasos
         ]);           
     }
+    public function actionRegGenAcompaniamiento()
+    {
+        return $this->render('reg_gen_acompaniamiento', [           
+                    'model' => ''
+                ]); 
+    }
     private function mostrar_numero_maximo_caso($id_periodo,$idEstudiante)
     {
         $resp = DeceCasos::find()
@@ -370,6 +453,80 @@ class DeceCasosController extends Controller
         $this->findModel($id)->delete();
 
         return $this->redirect(['index']);
+    }
+    public function actionMostrarReporteGeneral()
+    {
+        $modelPersonasA = DeceMotivos::find()
+        ->select(['atencion_para'])
+        ->distinct()
+        ->where(['not', ['atencion_para' => null]])
+        ->orderBy(['atencion_para'=>SORT_ASC])
+        ->all();
+        $modelMotivos = DeceMotivos::find()
+        ->select(['motivo'])
+        ->distinct()
+        ->where(['not', ['motivo' => null]])
+        ->orderBy(['motivo'=>SORT_ASC])
+        ->all();
+        //   echo '<pre>';
+        // print_r($modelPersonasA);
+        // die(); 
+        
+        $usuario = $_POST['usuario'];
+        $fecha_inicio=$_POST['fecha_inicio'];
+        $fecha_fin=$_POST['fecha_fin'];
+
+        $html="";
+        $html='<table class="table table-striped table-bordered">
+            <tr >
+                <td>
+                    No
+                </td>
+                <td>
+                    Fecha
+                </td>
+                <td>
+                    Nómina de Estudiantes
+                </td>
+                <td >
+                    <span style="writing-mode: vertical-lr;transform: rotate(180deg);">Año</span>
+                </td>
+                <td >
+                    <span style="writing-mode: vertical-lr;transform: rotate(180deg);">Paralelo</span>
+                </td>
+                 <td>
+                    <table class="table table-striped table-bordered">                    
+                        <tr><td colspan="'.count($modelPersonasA).'">Persona/s atendida/s</td></tr>';
+                        $html.='<tr>';
+                        foreach($modelPersonasA as $model)
+                        {
+                            $html.='<td style="writing-mode: vertical-lr;transform: rotate(180deg);">'
+                            .$model->atencion_para.
+                            '</td>';
+                        }
+                        $html.='</tr>';
+                    $html.='                        
+                    </table>
+                </td>';
+                foreach($modelMotivos as $model1)
+                {
+                    $html.='<td style="writing-mode: vertical-lr;transform: rotate(180deg);">'
+                    .$model1->motivo.
+                    '</td>';
+                }
+                $html.='
+                <td>
+                    Estado de los Casos
+                </td>
+            </tr>
+            
+        </table>';
+
+        // echo '<pre>';
+        // print_r($_POST);
+        // die();        
+
+        return $html;
     }
 
     /**

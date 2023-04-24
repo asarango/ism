@@ -18,6 +18,8 @@ use Yii;
  * @property string $detalle
  * @property string $id_usuario
  * @property int $id_clase
+ * @property string $id_usuario_dece
+ * @property string $id_usuario_super_dece
  *
  * @property OpStudent $estudiante
  * @property ScholarisPeriodo $periodo
@@ -25,7 +27,6 @@ use Yii;
  * @property DeceDeteccion[] $deceDeteccions
  * @property DeceIntervencion[] $deceIntervencions
  * @property DeceRegistroSeguimiento[] $deceRegistroSeguimientos
- * @property DeceRegistroSeguimiento[] $deceRegistroSeguimientos0
  */
 class DeceCasos extends \yii\db\ActiveRecord
 {
@@ -48,7 +49,7 @@ class DeceCasos extends \yii\db\ActiveRecord
             [['numero_caso', 'id_estudiante', 'id_periodo', 'id_clase'], 'integer'],
             [['fecha_inicio', 'fecha_fin'], 'safe'],
             [['detalle'], 'string'],
-            [['estado'], 'string', 'max' => 50],
+            [['estado', 'id_usuario_dece', 'id_usuario_super_dece'], 'string', 'max' => 50],
             [['motivo', 'id_usuario'], 'string', 'max' => 100],
             [['id_estudiante'], 'exist', 'skipOnError' => true, 'targetClass' => OpStudent::className(), 'targetAttribute' => ['id_estudiante' => 'id']],
             [['id_periodo'], 'exist', 'skipOnError' => true, 'targetClass' => ScholarisPeriodo::className(), 'targetAttribute' => ['id_periodo' => 'id']],
@@ -72,6 +73,8 @@ class DeceCasos extends \yii\db\ActiveRecord
             'detalle' => 'Detalle',
             'id_usuario' => 'Id Usuario',
             'id_clase' => 'Id Clase',
+            'id_usuario_dece' => 'Id Usuario Dece',
+            'id_usuario_super_dece' => 'Id Usuario Super Dece',
         ];
     }
 
@@ -119,14 +122,6 @@ class DeceCasos extends \yii\db\ActiveRecord
      * @return \yii\db\ActiveQuery
      */
     public function getDeceRegistroSeguimientos()
-    {
-        return $this->hasMany(DeceRegistroSeguimiento::className(), ['id_caso' => 'id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getDeceRegistroSeguimientos0()
     {
         return $this->hasMany(DeceRegistroSeguimiento::className(), ['id_caso' => 'id']);
     }

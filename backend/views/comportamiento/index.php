@@ -37,7 +37,7 @@ $numNovedades = ScholarisAsistenciaAlumnosNovedades::find()
 $conteoNovedadesEspecificas = conteo_estudiante_por_novedad($modelAsistencia->id);
 
 $numEstFaltaJustificada = conteo_novedades_especiale($conteoNovedadesEspecificas,'1b');
-$numEstFaltaInjustificada = conteo_novedades_especiale($conteoNovedadesEspecificas,'1c');
+$numEstFaltaInjustificada = conteo_novedades_especiale($conteoNovedadesEspecificas,'1ch');
 $numEstAtrasoJustificada = conteo_novedades_especiale($conteoNovedadesEspecificas,'1a');
 $numEstAtrasoInjustificada = conteo_novedades_especiale($conteoNovedadesEspecificas,'1d');
 
@@ -49,7 +49,7 @@ function conteo_estudiante_por_novedad($id_asistencia_profesor)
             scholaris_asistencia_alumnos_novedades a2
             where a1.id = a2.comportamiento_detalle_id 
             and a2.asistencia_profesor_id  = '$id_asistencia_profesor'
-            and a1.codigo in ('1a','1b','1c','1d')
+            and a1.codigo in ('1a','1b','1ch','1d')
             group by a1.codigo,a1.nombre ;";
     $resp = $con->createCommand($query)->queryAll();
     
@@ -318,13 +318,13 @@ function conteo_novedades_especiale($array,$codigo)
 
                                     //******** ASISTENCIA  *****************//
                                     //verifica si existe un registro con falta.
-                                    $fi="1c";
+                                    $fi="1ch";
                                     $fj='1b';
                                     $ai='1a';
                                     $aj='1d';
                                     $neutro ='';
                                     $colorIcono = 'green';
-
+                                    
                                     $respFI = consulta_falta_automatica($numNovedadesEspecificasPorMateria, $fi, $alumno['id']);
                                     $respFJ = consulta_falta_automatica($numNovedadesEspecificasPorMateria, $fj, $alumno['id']);
                                     $respAI = consulta_falta_automatica($numNovedadesEspecificasPorMateria, $ai, $alumno['id']);
@@ -522,6 +522,7 @@ function consulta_num_falta_por_alumno($numNovedadesPorMateria, $idAlumno)
     }
 
     function borrar_falta_a_clases_estudiante(alumnoId, claseId,codigoNovedad) {
+
         var url = '<?= Url::to(['comportamiento/borrar-falta-auto-estudiante']) ?>';
         params = {
             idAlumno: alumnoId,
@@ -534,7 +535,7 @@ function consulta_num_falta_por_alumno($numNovedadesPorMateria, $idAlumno)
             type: 'GET',
             beforeSend: function() {},
             success: function() {
-                    location.reload();
+                   location.reload();
             }
         });
     }

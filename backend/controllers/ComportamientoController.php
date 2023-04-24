@@ -279,7 +279,7 @@ class ComportamientoController extends Controller {
         from scholaris_asistencia_alumnos_novedades a1,
         scholaris_asistencia_comportamiento_detalle a2
         where a1.comportamiento_detalle_id = a2.id 
-        and a2.codigo  in ('1a','1b','1c','1d')
+        and a2.codigo  in ('1a','1b','1ch','1d')
         and a1.observacion ilike 'AUTO:%'
         and a1.asistencia_profesor_id = $asistenciaId;";
         
@@ -333,7 +333,7 @@ class ComportamientoController extends Controller {
         Creado Por: Santiago / Fecha Creacion: 
         Modificado Por: Santiago	/ Fecha Modificación: 2013-03-15
         Detalle:  Asigna un codigo de los especificados en pantalla, y elimna los demas, de la lista de codigos especificos 1a,1b,1c,1d
-        */
+        */        
 
        $asistenciaId = $_GET['idClase'];
        $alumnoId = $_GET['idAlumno'];
@@ -352,14 +352,14 @@ class ComportamientoController extends Controller {
         //extraccion id de grupo 
        $modelAsistencia = ScholarisAsistenciaProfesor::find()
        ->where(['id' => $asistenciaId])
-       ->one();     
+       ->one();            
 
         $modelGrupo = ScholarisGrupoAlumnoClase::find()
             ->where([
                 'estudiante_id' => $alumnoId,
                 'clase_id'=>$modelAsistencia->clase_id
                 ])
-            ->one(); 
+            ->one();            
         
         //1.1.- eliminamos los codigos si existen con 1a,1b,1c,1d, que pertenezcan al grupo del niño
         foreach($listaNovedades as $novedad)
@@ -376,7 +376,7 @@ class ComportamientoController extends Controller {
        $modelNovedad->asistencia_profesor_id=$asistenciaId;
        $modelNovedad->comportamiento_detalle_id=$modelCodNovedad->id;
        $modelNovedad->observacion = 'AUTO: '.$modelCodNovedad->nombre;
-       $modelNovedad->grupo_id = $modelGrupo->id;
+       $modelNovedad->grupo_id = $modelGrupo->id;       
        $modelNovedad->save();  
       
     }
@@ -409,34 +409,46 @@ class ComportamientoController extends Controller {
         $model = ScholarisFaltas::findOne($faltaId);
         $modelAsistencia = ScholarisAsistenciaProfesor::findOne($asistenciaId);
 
+        /***Para verificar si está e la primera hora */
+        $hora = ScholarisHorariov2Hora::findOne($modelAsistencia->hora_id);
+        $primeraHora = ScholarisParametrosOpciones::find()->where(['codigo' => 'primerahora'])->one();
+        /*************Fin de Para verificar si está e la primera hora*************** */
+
         /***Todas las asistencias */
-        $asistencias = ScholarisAsistenciaProfesor::find()->where([
-            'fecha' => $model->fecha
-        ])
-        ->andWhere(['<>','hora_id', $modelAsistencia->hora_id])
-        ->all();
+        if($hora->numero == $primeraHora->valor){
+            $asistencias = ScholarisAsistenciaProfesor::find()->where([
+                'fecha' => $model->fecha
+            ])            
+            ->all();    
+        }else{
+            $asistencias = ScholarisAsistenciaProfesor::find()->where([
+                'fecha' => $model->fecha
+            ])
+            ->andWhere(['<>','hora_id', $modelAsistencia->hora_id])
+            ->all();   
+        }        
 
         /**** PARA RETIRAR LA FALTA */
         if(isset($_GET['accion']) == 'procesar'){
 
             $detalleComportamiento = ScholarisAsistenciaComportamientoDetalle::find()->where(['codigo' => '1ch'])->one();
              
-            foreach($asistencias as $asis){
+                foreach($asistencias as $asis){
 
-                $grupo = ScholarisGrupoAlumnoClase::find()->where([
-                    'clase_id' => $asis->clase_id,
-                    'estudiante_id' => $model->student_id
-                    ])->one();
-
-                $modelNovedad = new ScholarisAsistenciaAlumnosNovedades();
-                $modelNovedad->asistencia_profesor_id = $asis->id;
-                $modelNovedad->comportamiento_detalle_id = $detalleComportamiento->id;
-                $modelNovedad->observacion = 'AUTO: POR PRESENTARSE A UNA HORA DIFERENTE EN EL DÍA';
-                $modelNovedad->grupo_id = $grupo->id;
-                $modelNovedad->es_justificado = false;
-                $modelNovedad->save();
-            }
-
+                    $grupo = ScholarisGrupoAlumnoClase::find()->where([
+                        'clase_id' => $asis->clase_id,
+                        'estudiante_id' => $model->student_id
+                        ])->one();
+    
+                    $modelNovedad = new ScholarisAsistenciaAlumnosNovedades();
+                    $modelNovedad->asistencia_profesor_id = $asis->id;
+                    $modelNovedad->comportamiento_detalle_id = $detalleComportamiento->id;
+                    $modelNovedad->observacion = 'AUTO: POR PRESENTARSE A UNA HORA DIFERENTE EN EL DÍA';
+                    $modelNovedad->grupo_id = $grupo->id;
+                    $modelNovedad->es_justificado = false;
+                    $modelNovedad->save();
+                }
+     
             $model->delete();
 
             return $this->redirect(['index', 'id' => $asistenciaId]);

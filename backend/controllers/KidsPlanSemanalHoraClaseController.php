@@ -197,8 +197,11 @@ class KidsPlanSemanalHoraClaseController extends Controller
 
      //Función para destreza
     public function actionEliminaDestreza(){
-        print_r($_GET);
-        die();
+        // print_r($_GET);
+        // die();
+        $idDestreza = $_GET['destreza_id'];
+        KidsPlanSemanalHoraDestreza::deleteAll(["id" => $idDestreza]);
+        die("Se elimino la destreza");
     }
 
     // /**

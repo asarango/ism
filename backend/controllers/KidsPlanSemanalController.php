@@ -48,9 +48,15 @@ class KidsPlanSemanalController extends Controller
             ->where(['pca_id' => $pcaId])
             ->orderBy('orden')
             ->all();
+        $courseId = $pca->opCourse->id;
+        $usoId = $this->get_uso($courseId);
+        $semanas = $this->get_semanas($usoId);
+
+        
 
         return $this->render('index', [
             'pca' => $pca,
+            'semanas' => $semanas,
             'experiencias' => $experiencias
         ]);
     }
@@ -94,19 +100,39 @@ class KidsPlanSemanalController extends Controller
         //             group by s.id, s.nombre_semana, ks.id, ex.experiencia
         //             order by s.semana_numero;";
 
-        $query = "select  sem.id 
-                            ,sem.nombre_semana  
-                            ,mic.id as kids_unidad_micro_id
-                            ,mic.experiencia 
-                            ,kps.id as plan_semanal_id
-                            ,kps.estado
-                    from    scholaris_bloque_actividad blo
-                            inner join scholaris_bloque_semanas sem on sem.bloque_id = blo.id
-                            left join kids_plan_semanal kps on kps.semana_id = sem.id 
-                                    and kps.created = '$user'
-                            left join kids_unidad_micro mic on mic.id = kps.kids_unidad_micro_id 
-                                and mic.pca_id = $pcaId
-                    where   blo.tipo_uso = '$uso';";
+        // $query = "select  sem.id 
+        //                     ,sem.nombre_semana  
+        //                     ,mic.id as kids_unidad_micro_id
+        //                     ,mic.experiencia 
+        //                     ,kps.id as plan_semanal_id
+        //                     ,kps.estado
+        //             from    scholaris_bloque_actividad blo
+        //                     inner join scholaris_bloque_semanas sem on sem.bloque_id = blo.id
+        //                     left join kids_plan_semanal kps on kps.semana_id = sem.id 
+        //                             and kps.created = '$user'
+        //                     left join kids_unidad_micro mic on mic.id = kps.kids_unidad_micro_id 
+        //                         and mic.pca_id = $pcaId
+        //             where   blo.tipo_uso = '$uso';";
+
+        $query = "select
+                    sem.id 
+                             ,sem.nombre_semana  
+                             ,mic.id as kids_unidad_micro_id
+                             ,mic.experiencia 
+                             ,kps.id as plan_semanal_id
+                             ,kps.estado
+                from
+                    scholaris_bloque_actividad blo
+                inner join scholaris_bloque_semanas sem on	sem.bloque_id = blo.id
+                inner join kids_plan_semanal kps on	kps.semana_id = sem.id
+                inner join kids_unidad_micro mic on	mic.id = kps.kids_unidad_micro_id
+                where
+                    blo.tipo_uso = '$uso'
+                     and mic.pca_id = $pcaId
+                     and kps.created = '$user'
+                order by
+                    sem.semana_numero 
+                    ;";
 
         // echo $query;
         // die();
@@ -128,6 +154,24 @@ class KidsPlanSemanalController extends Controller
         return $res['tipo_usu_bloque'];
     }
 
+
+    private function get_semanas($usoId)
+    {
+        $con = Yii::$app->db;
+        $query = "select
+        sem.id as semana_id ,
+        sem.nombre_semana as semana_nombre
+    from
+        scholaris_bloque_actividad blo
+    inner join scholaris_bloque_semanas sem on	sem.bloque_id = blo.id
+    where
+        blo.tipo_uso = '$usoId'
+    order by
+        sem.semana_numero 	;";
+
+        $res = $con->createCommand($query)->queryAll();
+        return $res;
+    }
 
 
     public function actionAjaxInsertExperiencia()

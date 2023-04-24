@@ -56,7 +56,7 @@ $termina = $kidsPlanSemanal->kidsUnidadMicro->fecha_termina;
                                     '<span class="badge rounded-pill" style="background-color: #0a1f8f"><i class="fa fa-briefcase" aria-hidden="true"></i> Experiencias</span>',
                                     [
                                         'kids-plan-semanal/index',
-                                        'pca_id' => $kidsPlanSemanal->kids_unidad_micro_id
+                                        'pca_id' => $kidsPlanSemanal->kidsUnidadMicro->pca->id
                                     ]
                                 );
                             ?>

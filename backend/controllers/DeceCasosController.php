@@ -7,6 +7,7 @@ use yii\filters\AccessControl;
 use backend\models\DeceCasos;
 use backend\models\DeceCasosSearch;
 use backend\models\DeceDeteccion;
+use backend\models\DeceMotivos;
 use backend\models\OpInstituteAuthorities;
 use Exception;
 use yii\web\Controller;
@@ -164,6 +165,12 @@ class DeceCasosController extends Controller
     }
     private function consulta_estudiantes($scholarisPeriodoId, $usuarioLog)
     {
+        //buscamos si el usuario es coordinador
+        $modelCoordinadorDece = OpInstituteAuthorities::find()
+        ->where(['ilike','cargo_descripcion','dececoor'])
+        ->andWhere(['usuario'=>$usuarioLog])
+        ->one();        
+
         $con = Yii::$app->db;
         $query = 
         "select  distinct c4.id,concat(c4.last_name, ' ',c4.first_name,' ',c4.middle_name) as student,
@@ -171,8 +178,14 @@ class DeceCasosController extends Controller
         from scholaris_clase c1 , scholaris_grupo_alumno_clase c2 ,
          op_institute_authorities c3 ,op_student c4 ,op_student_inscription c5, 
          scholaris_op_period_periodo_scholaris c6,op_course_paralelo c7, op_course c8
-        where c3.usuario  = '$usuarioLog' 
-        and c3.id = c1.dece_dhi_id 
+        where c3.usuario  = '$usuarioLog' ";
+        if($modelCoordinadorDece )
+        {
+            $query .= " and c3.id = c1.coordinador_dece_id";
+        }else{
+            $query .= " and c3.id = c1.dece_dhi_id";
+        }
+        $query.="
         and c1.id = c2.clase_id 
         and c2.estudiante_id = c4.id 
         and c4.id = c5.student_id 
@@ -180,14 +193,14 @@ class DeceCasosController extends Controller
         and c6.scholaris_id = '$scholarisPeriodoId'
         and c7.id = c1.paralelo_id 
         and c8.id = c7.course_id 
-        order by student;";
-
-        // echo '<pre>';
-        // print_r($query);
-        // die();
+        order by student;";      
 
 
         $res = $con->createCommand($query)->queryAll();
+
+        // echo '<pre>';
+        // print_r(count($res));
+        // die();
 
         return $res;
     }
@@ -389,6 +402,12 @@ class DeceCasosController extends Controller
             'model' => $modelDeceCasos
         ]);           
     }
+    public function actionRegGenAcompaniamiento()
+    {
+        return $this->render('reg_gen_acompaniamiento', [           
+                    'model' => ''
+                ]); 
+    }
     private function mostrar_numero_maximo_caso($id_periodo,$idEstudiante)
     {
         $resp = DeceCasos::find()
@@ -434,6 +453,80 @@ class DeceCasosController extends Controller
         $this->findModel($id)->delete();
 
         return $this->redirect(['index']);
+    }
+    public function actionMostrarReporteGeneral()
+    {
+        $modelPersonasA = DeceMotivos::find()
+        ->select(['atencion_para'])
+        ->distinct()
+        ->where(['not', ['atencion_para' => null]])
+        ->orderBy(['atencion_para'=>SORT_ASC])
+        ->all();
+        $modelMotivos = DeceMotivos::find()
+        ->select(['motivo'])
+        ->distinct()
+        ->where(['not', ['motivo' => null]])
+        ->orderBy(['motivo'=>SORT_ASC])
+        ->all();
+        //   echo '<pre>';
+        // print_r($modelPersonasA);
+        // die(); 
+        
+        $usuario = $_POST['usuario'];
+        $fecha_inicio=$_POST['fecha_inicio'];
+        $fecha_fin=$_POST['fecha_fin'];
+
+        $html="";
+        $html='<table class="table table-striped table-bordered">
+            <tr >
+                <td>
+                    No
+                </td>
+                <td>
+                    Fecha
+                </td>
+                <td>
+                    Nómina de Estudiantes
+                </td>
+                <td >
+                    <span style="writing-mode: vertical-lr;transform: rotate(180deg);">Año</span>
+                </td>
+                <td >
+                    <span style="writing-mode: vertical-lr;transform: rotate(180deg);">Paralelo</span>
+                </td>
+                 <td>
+                    <table class="table table-striped table-bordered">                    
+                        <tr><td colspan="'.count($modelPersonasA).'">Persona/s atendida/s</td></tr>';
+                        $html.='<tr>';
+                        foreach($modelPersonasA as $model)
+                        {
+                            $html.='<td style="writing-mode: vertical-lr;transform: rotate(180deg);">'
+                            .$model->atencion_para.
+                            '</td>';
+                        }
+                        $html.='</tr>';
+                    $html.='                        
+                    </table>
+                </td>';
+                foreach($modelMotivos as $model1)
+                {
+                    $html.='<td style="writing-mode: vertical-lr;transform: rotate(180deg);">'
+                    .$model1->motivo.
+                    '</td>';
+                }
+                $html.='
+                <td>
+                    Estado de los Casos
+                </td>
+            </tr>
+            
+        </table>';
+
+        // echo '<pre>';
+        // print_r($_POST);
+        // die();        
+
+        return $html;
     }
 
     /**

@@ -939,5 +939,32 @@ where 	pm.scholaris_periodo_id = $periodId
         $res = $con->createCommand($query)->queryOne();
         return $res['code'];
     }
+    public function mostrar_curso_estudiante($idEstudiante)
+    {
+        $usuarioLog = Yii::$app->user->identity->usuario;
+        $periodoId = Yii::$app->user->identity->periodo_id;
+        $con = Yii::$app->db;
+        $query ="select  distinct c4.id,concat(c4.last_name, ' ',c4.first_name,' ',c4.middle_name) as student,
+                concat( c8.name,' ', c7.name ) curso 
+                from scholaris_clase c1 , scholaris_grupo_alumno_clase c2 ,
+                    op_student c4 ,op_student_inscription c5, 
+                    scholaris_op_period_periodo_scholaris c6,op_course_paralelo c7, op_course c8
+                where  c1.id = c2.clase_id 
+                        and c2.estudiante_id = c4.id 
+                        and c2.estudiante_id ='$idEstudiante'
+                        and c4.id = c5.student_id 
+                        and c5.period_id  = c6.op_id 
+                        and c6.scholaris_id = '$periodoId'
+                        and c7.id = c1.paralelo_id 
+                        and c8.id = c7.course_id 
+                order by student;";
+
+               
+        $resp = $con->createCommand($query)->queryAll();
+        // echo '<pre>';
+        // print_r( $query);
+        // die();
+        return $resp;
+    }
 
 }

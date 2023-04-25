@@ -945,7 +945,9 @@ where 	pm.scholaris_periodo_id = $periodId
         $periodoId = Yii::$app->user->identity->periodo_id;
         $con = Yii::$app->db;
         $query ="select  distinct c4.id,concat(c4.last_name, ' ',c4.first_name,' ',c4.middle_name) as student,
-                concat( c8.name,' ', c7.name ) curso 
+                concat( c8.name,' ', c7.name ) curso,
+                c8.name as curso1,
+                c7.name as paralelo
                 from scholaris_clase c1 , scholaris_grupo_alumno_clase c2 ,
                     op_student c4 ,op_student_inscription c5, 
                     scholaris_op_period_periodo_scholaris c6,op_course_paralelo c7, op_course c8
@@ -959,11 +961,12 @@ where 	pm.scholaris_periodo_id = $periodId
                         and c8.id = c7.course_id 
                 order by student;";
 
-               
-        $resp = $con->createCommand($query)->queryAll();
-        // echo '<pre>';
+        //         echo '<pre>';
         // print_r( $query);
         // die();
+               
+        $resp = $con->createCommand($query)->queryAll();
+        
         return $resp;
     }
 

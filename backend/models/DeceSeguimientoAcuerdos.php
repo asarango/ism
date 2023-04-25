@@ -14,6 +14,7 @@ use Yii;
  * @property string $responsable
  * @property string $fecha_max_cumplimiento
  * @property bool $cumplio
+ * @property string $parentesco
  *
  * @property DeceRegistroSeguimiento $regSeguimiento
  */
@@ -40,6 +41,7 @@ class DeceSeguimientoAcuerdos extends \yii\db\ActiveRecord
             [['fecha_max_cumplimiento'], 'safe'],
             [['cumplio'], 'boolean'],
             [['responsable'], 'string', 'max' => 100],
+            [['parentesco'], 'string', 'max' => 50],
             [['id_reg_seguimiento'], 'exist', 'skipOnError' => true, 'targetClass' => DeceRegistroSeguimiento::className(), 'targetAttribute' => ['id_reg_seguimiento' => 'id']],
         ];
     }
@@ -57,6 +59,7 @@ class DeceSeguimientoAcuerdos extends \yii\db\ActiveRecord
             'responsable' => 'Responsable',
             'fecha_max_cumplimiento' => 'Fecha Max Cumplimiento',
             'cumplio' => 'Cumplio',
+            'parentesco' => 'Parentesco',
         ];
     }
 

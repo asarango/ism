@@ -304,8 +304,9 @@ class DeceRegistroSeguimientoController extends Controller
         $modelAcuerdo->acuerdo = $acuerdo;
         $modelAcuerdo->responsable = $responsable;
         $modelAcuerdo->cumplio = $cumplio;
-        $modelAcuerdo->id_reg_seguimiento = $id_seguimiento;
+        $modelAcuerdo->id_reg_seguimiento = $id_seguimiento;        
         $modelAcuerdo->fecha_max_cumplimiento = $fecha_max_cumplimiento;
+        $modelAcuerdo->parentesco = $parentesco;
 
         $modelAcuerdo->save();  
 

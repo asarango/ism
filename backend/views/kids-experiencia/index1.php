@@ -94,7 +94,7 @@ if (!isset($pestana)) {
                                         <strong><i class="fas fa-user"></i> DOCENTE: </strong>
                                         <?php
                                         foreach ($datos['docentes'] as $docen) {
-                                            echo $docen['docente'] . ' ';
+                                            echo $docen['docente'] . ' / ';
                                         }
                                         ?>
                                     </div>
@@ -145,7 +145,8 @@ if (!isset($pestana)) {
                             <div class="tab-pane fade <?= $activeContentPlan ?>" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
                                 <?=
                                 $this->render('plan-experiencia', [
-                                    'micro' => $micro
+                                    'micro' => $micro,
+                                    'html' => $html
                                 ]);
                                 ?>
                             </div>

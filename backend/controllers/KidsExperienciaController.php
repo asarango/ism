@@ -44,6 +44,37 @@ class KidsExperienciaController extends Controller {
         }else{
             $pestana = $_GET['pestana'];
         }
+
+
+
+        
+        $objPlan = new PlanExperiencia($experienciaId);
+        $plan = $objPlan->response;
+        
+        $scripts = new \backend\models\helpers\Scripts();
+        $materias = $scripts->get_materias_kids_x_docente();
+
+        foreach ($plan['disponibles'] as $dis) {
+            $destrezaId = $dis['id'];
+            $html .= '<tr>';
+            $html .= '<td>' . $dis['ambito'] . '</td>';
+            $html .= '<td>' . $dis['destreza_codigo'] . '</td>';
+            $html .= '<td>' . $dis['destreza'] . '</td>';
+            $html .= '<td>';
+            $html .= '<select class="form-control" name="materia" id="select-materia'.$dis['id'].'">';
+            foreach ($materias as $mat){
+                $html .= '<option value="'.$mat['id'].'">'.$mat['nombre'].'</option>';
+            }
+            $html .= '</select>';
+            $html .= '</td>';
+            $html .= '<td><a href="#" 
+                        onclick="inserta_destreza(\'crear\', ' . $destrezaId . ')">Ingresar</a></td>';
+            $html .= '</tr>';
+        }
+
+
+
+
         
         return $this->render('index1', [
                     'micro' => $micro,
@@ -354,6 +385,7 @@ class KidsExperienciaController extends Controller {
             $html .= '</td>';
             $html .= '<td><a href="#" 
                         onclick="inserta_destreza(\'crear\', ' . $destrezaId . ')">Ingresar</a></td>';
+            $html .= '</tr>';
         }
 
         return $html;

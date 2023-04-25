@@ -45,7 +45,7 @@ class Datos extends ActiveRecord{
                     from 	scholaris_clase c
                             inner join op_faculty f on f.id = c.idprofesor
                             inner join op_course_paralelo p on p.id = c.paralelo_id
-                    where  	p.course_id  = $this->opCourseId;";
+                    where  	p.course_id  = $this->opCourseId group by 1 order by 1;";
 
         $res = $con->createCommand($query)->queryAll();
         return $res;

@@ -2,7 +2,6 @@
 namespace backend\models\dece;
 
 use backend\models\DeceDeteccion;
-use backend\models\DeceRegistroSeguimiento;
 use backend\models\DeceSeguimientoAcuerdos;
 use backend\models\DeceSeguimientoFirmas;
 use Yii;
@@ -15,7 +14,7 @@ use backend\models\helpers\HelperGeneral;
 
 
 
-class DeceDerivacionPdf extends \yii\db\ActiveRecord
+class DeceDeteccionPdf extends \yii\db\ActiveRecord
 {
     private $dece_deteccion;
     private $colorFondo ='#D5DBDB';

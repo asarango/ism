@@ -306,10 +306,13 @@ class DeceDerivacionPdf extends \yii\db\ActiveRecord
         $modelEstudiante = OpStudent::findOne($model->id_estudiante);
         //para la busqueda de a consulta, siempre vendra la madre , luego padre
         $arrayPadre = $this->mostrar_datos_padres($modelEstudiante->id);
+
+      
         $madre = '';
         $padre='';
-        if($arrayPadre[0]) {$madre = $arrayPadre[0]['name'];}
-        if($arrayPadre[1]) {$padre = $arrayPadre[1]['name'];}        
+
+        if(isset($arrayPadre[0])) {$madre = $arrayPadre[0]['name'];}
+        if(isset($arrayPadre[1])) {$padre = $arrayPadre[1]['name'];}        
 
         $objScript = new Scripts();
         $arrayCurso = $objScript->mostrar_curso_estudiante($model->id_estudiante);
@@ -462,6 +465,8 @@ class DeceDerivacionPdf extends \yii\db\ActiveRecord
                 and a1.op_parent_id = a2.id 
                 and a2."name" = a3.id
                 order by a3.ref;';
+
+                
         $resp = $con->createCommand($query)->queryAll();
 
         return $resp;

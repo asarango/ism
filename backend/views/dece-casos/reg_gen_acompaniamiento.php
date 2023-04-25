@@ -1,5 +1,6 @@
 <?php
 
+use backend\models\OpInstituteAuthorities;
 use yii\helpers\Html;
 use backend\models\ScholarisAsistenciaComportamientoDetalle;
 use backend\models\ScholarisAsistenciaProfesor;
@@ -18,6 +19,13 @@ $ahora = date('Y-m-d H:i:s');
 // print_r($model);
 // print_r($model->estudiante);
 // die();
+
+$modelUsuariosDeces = OpInstituteAuthorities::find()
+->select(['id','usuario'])
+->distinct()
+->where(['ilike','usuario','dece'])
+->orderBy(['id'=>SORT_ASC])
+->all();
 
 ?>
 <!--Scripts para que funcionen AJAX de select 2 -->
@@ -88,36 +96,45 @@ $ahora = date('Y-m-d H:i:s');
                 <hr>
 
             </div>
-            <div class="table">
-                <div class="row">
-                    <div class="col">
+            <div class="">
+                <div class="row ">
+                    <div class="col-lg-2">
                         PSICÓLOGO DEL NIVEL:
                     </div>
-                    <div class="col">
+                    <div class="col-lg-4">
                         <select class="form-select" aria-label="Default select example" id="usuario">
                             <option >Seleccione Opción</option>
-                            <option value="quitodece2@ism.edu.ec">quitodece2@ism.edu.ec</option>                            
+                            <?php
+                            foreach($modelUsuariosDeces as $model)
+                            {
+                            ?>
+                            <option value="quitodece2@ism.edu.ec"><?= $model->usuario?></option> 
+                            <?php
+                            }
+                            ?>                                                     
                         </select>
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col">
+                    <div class="col-lg-2">
                         Fecha de Inicio:
                     </div>
-                    <div class="col">
+                    <div class="col-lg-2">
                         <input type="date" id="fecha_inicio"/>
                     </div>
-                    <div class="col">
+                    <div class="col-lg-2">
                         Fecha de Tèrmino:
                     </div>
-                    <div class="col">
+                    <div class="col-lg-2">
                         <input type="date" id="fecha_fin"/>
                     </div>
-                    <div class="col">
+                    <div class="col-lg-2">
                         <button type="submit"  onclick="mostrar_reporte_general()">Buscar</button>
                     </div>
                 </div>
             </div>
+            <br>
+            <tr>
             <div id="div_reporte">
 
             </div>

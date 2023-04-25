@@ -151,24 +151,24 @@ function destreza_seleccionada() {
 }
 
 //Funcion para mostar destrezas disponibles
-// function muestra_destrezas_disponibles(bandera) {
-// //    console.log(bandera);
-//     var url = "<?= Url::to(['kids-experiencia/micro']) ?>";
-//     var id = "<?= $micro['id'] ?>";
-//     var params = {
-//         bandera: bandera,
-//         id: id
-//     };
-//     $.ajax({
-//         url: url,
-//         data: params,
-//         type: 'POST',
-//         beforeSend: function () {},
-//         success: function (resp) {
-//             $('#body-destreza-disponible').html(resp);
-//         }
-//     });
-// }
+function muestra_destrezas_disponibles(bandera) {
+//    console.log(bandera);
+    var url = "<?= Url::to(['kids-experiencia/micro']) ?>";
+    var id = "<?= $micro['id'] ?>";
+    var params = {
+        bandera: bandera,
+        id: id
+    };
+    $.ajax({
+        url: url,
+        data: params,
+        type: 'POST',
+        beforeSend: function () {},
+        success: function (resp) {
+            $('#body-destreza-disponible').html(resp);
+        }
+    });
+}
 
 //funcion para insertar destreza disponible
 function inserta_destreza(bandera, id) {

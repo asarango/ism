@@ -9,6 +9,9 @@ use yii\helpers\Url;
 // print_r($plan); //dentro de plan tengo arrat de destrezas disponibles y seleccionadas
 // die();
 ?>
+
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css"> 
+
 <!--INCIA CRITERIOS-->
 <div class="plan-experiencia my-text-medium">
     <div class="row">
@@ -25,8 +28,7 @@ use yii\helpers\Url;
         <div class="col-lg-12 col-md-12 col-sm-12">
             <strong>
                 <!-- Button trigger modal -->
-                <a type="button" title="Agregar Destreza" data-bs-toggle="modal" data-bs-target="#exampleModal"
-                   onclick="muestra_destrezas_disponibles('plan')">
+                <a type="button" title="Agregar Destreza" data-bs-toggle="modal" data-bs-target="#exampleModal">
                     <i class="fas fa-plus-square" style="color:#ff9e18"></i>
                 </a> DESTREZAS</strong>
         </div>
@@ -76,7 +78,13 @@ use yii\helpers\Url;
                                     <th>ACCIONES</th>
                                 </tr>
                             </thead>
-                            <tbody id="body-destreza-disponible"></tbody> <!-- Muestra contenido en ajax -->
+                            
+                            <!-- Muestra contenido en ajax -->
+                            <!-- <tbody id="body-destreza-disponible"></tbody>  -->
+                            <tbody>
+                                <?= $html ?>
+                            </tbody> 
+                            
                         </table>
                     </div>
                 </div>
@@ -89,7 +97,8 @@ use yii\helpers\Url;
 
 <script src="https://code.jquery.com/jquery-2.2.4.js" integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI=" crossorigin="anonymous"></script>
 <!--<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jsgrid/1.5.3/jsgrid.min.js"></script>-->
-<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.js"></script>
+<!-- <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.js"></script> -->
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
 <script>
 $(function () {
     muestra_criterio();
@@ -142,24 +151,24 @@ function destreza_seleccionada() {
 }
 
 //Funcion para mostar destrezas disponibles
-function muestra_destrezas_disponibles(bandera) {
-//    console.log(bandera);
-    var url = "<?= Url::to(['kids-experiencia/micro']) ?>";
-    var id = "<?= $micro['id'] ?>";
-    var params = {
-        bandera: bandera,
-        id: id
-    };
-    $.ajax({
-        url: url,
-        data: params,
-        type: 'POST',
-        beforeSend: function () {},
-        success: function (resp) {
-            $('#body-destreza-disponible').html(resp);
-        }
-    });
-}
+// function muestra_destrezas_disponibles(bandera) {
+// //    console.log(bandera);
+//     var url = "<?= Url::to(['kids-experiencia/micro']) ?>";
+//     var id = "<?= $micro['id'] ?>";
+//     var params = {
+//         bandera: bandera,
+//         id: id
+//     };
+//     $.ajax({
+//         url: url,
+//         data: params,
+//         type: 'POST',
+//         beforeSend: function () {},
+//         success: function (resp) {
+//             $('#body-destreza-disponible').html(resp);
+//         }
+//     });
+// }
 
 //funcion para insertar destreza disponible
 function inserta_destreza(bandera, id) {

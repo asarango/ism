@@ -32,6 +32,10 @@ $modelUsuariosDeces = OpInstituteAuthorities::find()
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet" />
+
+
+
+
 <script type="css">
     .table {
         display: table;
@@ -108,7 +112,7 @@ $modelUsuariosDeces = OpInstituteAuthorities::find()
                             foreach($modelUsuariosDeces as $model)
                             {
                             ?>
-                            <option value="quitodece2@ism.edu.ec"><?= $model->usuario?></option> 
+                            <option value="<?= $model->usuario?>"><?= $model->usuario?></option> 
                             <?php
                             }
                             ?>                                                     
@@ -120,16 +124,16 @@ $modelUsuariosDeces = OpInstituteAuthorities::find()
                         Fecha de Inicio:
                     </div>
                     <div class="col-lg-2">
-                        <input type="date" id="fecha_inicio"/>
+                        <input type="date" class="form-control" id="fecha_inicio"/>
                     </div>
                     <div class="col-lg-2">
                         Fecha de Tèrmino:
                     </div>
                     <div class="col-lg-2">
-                        <input type="date" id="fecha_fin"/>
+                        <input type="date" class="form-control" id="fecha_fin"/>
                     </div>
                     <div class="col-lg-2">
-                        <button type="submit"  onclick="mostrar_reporte_general()">Buscar</button>
+                        <button type="submit" class="btn btn-success" onclick="mostrar_reporte_general()">Buscar</button>
                     </div>
                 </div>
             </div>
@@ -143,17 +147,28 @@ $modelUsuariosDeces = OpInstituteAuthorities::find()
 </div>
 <script>
 
+buscador();
+
+function buscador() {
+    $('.select2').select2({
+        closeOnSelect: true
+    });
+}
+
+
 function mostrar_reporte_general()
 {
     var url = '<?= Url::to(['mostrar-reporte-general'])?>';
     var usuario =$("#usuario").val();
     var fecha_inicio =$("#fecha_inicio").val();
     var fecha_fin =$("#fecha_fin").val();
+    var id_alumno =$("#alumno").val();
 
     var params ={
         usuario: usuario,
         fecha_inicio:fecha_inicio,
         fecha_fin:fecha_fin,
+        id_alumno:id_alumno,
     };
 
     
@@ -162,6 +177,36 @@ function mostrar_reporte_general()
         url:url,
         type: 'POST',
         beforeSend: function(){},
+        success:function(respuesta){
+            //alert("holaaa");
+            $("#div_reporte").html(respuesta);
+
+        }
+    });
+} 
+function mostrar_reporte_general_filtrado()
+{
+    var url = '<?= Url::to(['mostrar-reporte-general'])?>';
+    var usuario =$("#usuario").val();
+    var fecha_inicio =$("#fecha_inicio").val();
+    var fecha_fin =$("#fecha_fin").val();
+    var id_alumno =$("#alumno").val();
+
+    var params ={
+        usuario: usuario,
+        fecha_inicio:fecha_inicio,
+        fecha_fin:fecha_fin,
+        id_alumno:id_alumno,
+    };
+
+        
+    $.ajax({
+        data: params,
+        url:url,
+        type: 'POST',
+        beforeSend: function(){
+            $("#div_reporte").html('Procesando...');
+        },
         success:function(respuesta){
             //alert("holaaa");
             $("#div_reporte").html(respuesta);

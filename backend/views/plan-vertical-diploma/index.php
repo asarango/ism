@@ -181,8 +181,9 @@ $idioma = $cabecera->ismAreaMateria->idioma;
 
                             <div class="col-lg-2 col-md-2 response">
                                 <?php
-                                $asignatura = search_data_text($plan, 'datos', 'colegio');
-                                echo $asignatura['contenido'];
+                                // $asignatura = search_data_text($plan, 'datos', 'colegio');
+                                // echo $asignatura['contenido'];
+                                    echo $codigo
                                 ?>
                             </div>
                         </div>
@@ -222,29 +223,35 @@ $idioma = $cabecera->ismAreaMateria->idioma;
 
 
                         <!-- inicia Completar artes -->
-                        <div class="row background-gray border-t border-b">
-                            <div class="col-lg-3 col-md-3 border-l border-r">Completar solo para artes</div>
-                            <div class="col-lg-5 col-md-5 border-r">
-                                <form-group>
-                                    <label for="artes-visuales" class="form-label">(Indique la opción o las opciones de Artes Visuales)</label>
-                                    <?php
-                                    $data = search_data_text($plan, 'datos', 'artes_visuales');
+                        <?php
+                        if ($area == 'ARTES') {
+                        ?>
+                            <div class="row background-gray border-t border-b">
+                                <div class="col-lg-3 col-md-3 border-l border-r">Completar solo para artes</div>
+                                <div class="col-lg-5 col-md-5 border-r">
+                                    <form-group>
+                                        <label for="artes-visuales" class="form-label">(Indique la opción o las opciones de Artes Visuales)</label>
+                                        <?php
+                                        $data = search_data_text($plan, 'datos', 'artes_visuales');
 
-                                    ?>
-                                    <textarea class="form-control text-cerrado class-input" name="artes-visuales" id="artes-visuales" onchange="update_text(<?= $data['id'] ?>, 'artes-visuales');"><?= $data['contenido']; ?></textarea>
-                                </form-group>
-                            </div>
+                                        ?>
+                                        <textarea class="form-control text-cerrado class-input" name="artes-visuales" id="artes-visuales" onchange="update_text(<?= $data['id'] ?>, 'artes-visuales');"><?= $data['contenido']; ?></textarea>
+                                    </form-group>
+                                </div>
 
-                            <div class="col-lg-4 col-md-4 border-r">
-                                <form-group>
-                                    <label for="artes-visuales" class="form-label">(Indique la opción o las opciones de Música)</label>
-                                    <?php
-                                    $data = search_data_text($plan, 'datos', 'artes_musica');
-                                    ?>
-                                    <textarea class="form-control text-cerrado class-input" id="artes-musica" onchange="update_text(<?= $data['id'] ?>, 'artes-musica');" name="artes-musica"><?= $data['contenido']; ?></textarea>
-                                </form-group>
+                                <div class="col-lg-4 col-md-4 border-r">
+                                    <form-group>
+                                        <label for="artes-visuales" class="form-label">(Indique la opción o las opciones de Música)</label>
+                                        <?php
+                                        $data = search_data_text($plan, 'datos', 'artes_musica');
+                                        ?>
+                                        <textarea class="form-control text-cerrado class-input" id="artes-musica" onchange="update_text(<?= $data['id'] ?>, 'artes-musica');" name="artes-musica"><?= $data['contenido']; ?></textarea>
+                                    </form-group>
+                                </div>
                             </div>
-                        </div>
+                        <?php
+                        }
+                        ?>
                         <!-- inicia Completar artes -->
 
 

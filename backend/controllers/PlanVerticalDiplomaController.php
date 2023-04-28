@@ -78,10 +78,16 @@ class PlanVerticalDiplomaController extends Controller
     public function actionIndex1()
     {
         $periodoId = Yii::$app->user->identity->periodo_id;
+        $institutoId = Yii::$app->user->identity->instituto_defecto;
+
+        $codigo = $institutoId == 1 ? '003574' : '052176';
+
         $planificacionCabeceraId = $_GET['cabecera_id'];
         $cabecera = PlanificacionDesagregacionCabecera::findOne($planificacionCabeceraId);
         $materiaId = $cabecera->ismAreaMateria->materia_id;
 
+        $area = $cabecera->ismAreaMateria->mallaArea->area->nombre;
+        
         $this->add_elements($cabecera);
 
         $plan = PlanVerticalDiploma::find()->where(['cabecera_id' => $planificacionCabeceraId])->orderBy('id')->all();
@@ -96,7 +102,9 @@ class PlanVerticalDiplomaController extends Controller
             'cabecera'  => $cabecera,
             'plan'      => $plan,
             'unidades'  => $unidades,
-            'componentes' => $componentes
+            'componentes' => $componentes,
+            'area'      => $area,
+            'codigo'    => $codigo
         ]);
     }
 

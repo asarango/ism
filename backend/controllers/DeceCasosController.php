@@ -306,10 +306,10 @@ class DeceCasosController extends Controller
         $usuario = Yii::$app->user->identity->usuario;
         $periodoId = Yii::$app->user->identity->periodo_id;
 
-        $query=" select  distinct c4.id,concat(c4.last_name, ' ',c4.first_name,' ',c4.middle_name) as student,
+        $query = " select  distinct c4.id,concat(c4.last_name, ' ',c4.first_name,' ',c4.middle_name) as student,
                     concat( c8.name,' ', c7.name ) curso, 
                     (select usuario from op_institute_authorities a where a.id=c1.coordinador_dece_id) super_dece,
-                    (select usuario from op_institute_authorities a where a.id=c1.dece_dhi_id) hdi_dece
+                    (select usuario from op_institute_authorities a where a.id=c1.dece_dhi_id) hdi_dece,
                     from scholaris_clase c1 , scholaris_grupo_alumno_clase c2 ,
                     op_student c4 ,op_student_inscription c5, 
                     scholaris_op_period_periodo_scholaris c6,op_course_paralelo c7, op_course c8
@@ -333,7 +333,7 @@ class DeceCasosController extends Controller
     {
         $usuarioLog = Yii::$app->user->identity->usuario;
         $periodoId = Yii::$app->user->identity->periodo_id;
-        $fecha = date('Y-m-d H:i:s');        
+        $fecha = date('Y-m-d H:i:s');
 
         $idEstudiante = $_GET['id'];
         $idClase = $_GET['id_clase'];
@@ -345,7 +345,7 @@ class DeceCasosController extends Controller
             ->max('numero_caso');
 
         $decesPorAlumno = $this->mostrar_dece_y_super_dece_por_alumno($idEstudiante);
-       
+
         $consecutivoCaso = 1;
 
         if ($modelDeceCasos) {
@@ -366,7 +366,7 @@ class DeceCasosController extends Controller
         $modelDeceCasos->id_clase = $idClase;
         $modelDeceCasos->id_usuario_dece = $decesPorAlumno['hdi_dece'];
         $modelDeceCasos->id_usuario_super_dece = $decesPorAlumno['super_dece'];
-        
+
         $modelDeceCasos->save();
 
 
@@ -455,13 +455,21 @@ class DeceCasosController extends Controller
     }
     public function actionMostrarReporteGeneral()
     {
+        /*Creado por: Santiago  Fecha: 2023-04-27
+            Modificado Por:     Fecha:
+            Descripcion: Metodo que despliega el reporte general dece de acompañamientos, sin filtrar
+        */
+
         $usuario = $_POST['usuario'];
         $fecha_inicio = $_POST['fecha_inicio'];
         $fecha_fin = $_POST['fecha_fin'];
+        $id_alumno =0;
+        //id_alumno, permite saber si la consulta es filtrada por alumno o no
+        if(isset($_POST['id_alumno'])){$id_alumno=$_POST['id_alumno'];}
 
         $html = '';
         $con = Yii::$app->db;
-
+        //Numero de Seguimientos por Usuario
         $query = "select COUNT(a1.estado)
         from dece_registro_seguimiento a1, dece_casos a4
         where a1.id_caso = a4.id
@@ -470,6 +478,7 @@ class DeceCasosController extends Controller
         or a4.id_usuario_super_dece ilike '$usuario'  );";
         $total = $con->createCommand($query)->queryScalar();
 
+        //Numero de seguimientos con estado FINALIZADO
         $query = "select COUNT(a1.estado)
         from dece_registro_seguimiento a1, dece_casos a4
         where a1.id_caso = a4.id
@@ -479,7 +488,21 @@ class DeceCasosController extends Controller
         or a4.id_usuario_super_dece ilike '$usuario'  );  ";
         $resueltos = $con->createCommand($query)->queryScalar();
 
+        //Consulta de todos los alumnos que aparecen en la consulta, NOMBRE Y EL ID 
 
+        //Consulta QUE DEVUELVE, NOMBRE DE LOS ESTUDIANTES Y EL ID, PARA POSTERIOR DESPELGAR EN PANTALLA POR ALUMNO LOS SEGUIMIENTOS
+        $query = "select distinct 
+        (select concat(c4.last_name, ' ',c4.first_name,' ',c4.middle_name) as estudiante from op_student c4 where c4.id = a1.id_estudiante ) as estudiante,
+        a1.id_estudiante as id
+        from dece_registro_seguimiento a1, dece_seguimiento_acuerdos a2,dece_casos a4
+        where a2.id_reg_seguimiento  = a1.id 
+        and a1.id_caso = a4.id
+        and a1.fecha_inicio between '$fecha_inicio' and '$fecha_fin'      
+        and (a4.id_usuario_dece ilike '$usuario' 
+        or a4.id_usuario_super_dece ilike '$usuario' 
+         );";
+
+        $listEstudiantes = $con->createCommand($query)->queryAll();
 
 
         $modelPersonasA = DeceMotivos::find()
@@ -508,29 +531,58 @@ class DeceCasosController extends Controller
                     <td> NÚMERO DE CASOS RESUELTOS:   <b>' . $resueltos . '</b></td>                   
                 </tr>';
         $html .= '</table>';
+
+        //tabla con los estudiantes para generar un filtro, en caso desplegarse Muchos estudiantes
+        $html .= '
+            <table class="table table-striped table-bordered">
+            <tr>
+                <td colspan="2">
+                Total: ' . count($listEstudiantes) . '
+                </td>
+            </tr>
+            <tr>
+                <td>                
+                <select id="alumno" name="alumno" class="form-control select2 select2-accessible" >
+                    <option selected>Seleccione Estudiante para Filtrar</option>';
+        foreach ($listEstudiantes as $model) {
+            $html .= '<option value="' . $model['id'] . '">' . $model['estudiante'] . '</option>';
+        }
+        $html .= '</select>
+                </td>
+                <td>
+                    <button  class="btn btn-danger" onclick="mostrar_reporte_general()">FILTRAR</button>
+                </td>
+            </tr>
+        </table>
+        ';
+        return $html.$this->html_cabecera_reporte_general($modelPersonasA, $modelMotivos, $modelEstado, $listEstudiantes, $_POST,$id_alumno);
+    }
+    private function html_cabecera_reporte_general($modelPersonasA, $modelMotivos, $modelEstado, $listEstudiantes, $listPost,$id_alumno)
+    {
+        $html = '';
         $html .= '<table class="table table-striped table-bordered">
-            <tr >
-                <td width="20px">
-                    
-                </td>
-                <td width="20px">
-                    <b>No</b>
-                </td>
-                <td width="120px">
-                    <b>Fecha</b>
-                </td>
-                <td width="300px">
-                    <b>Nómina de Estudiantes</b>
-                </td>
-                <td width="100px">
-                    <span style="writing-mode: vertical-lr;transform: rotate(180deg);"><b>Año</b></span>
-                </td>
-                <td width="30px">
-                    <span style="writing-mode: vertical-lr;transform: rotate(180deg);"><b>Paralelo</b></span>
-                </td>
-                <td >
-                    <table class="border">                    
-                        <tr><td colspan="' . count($modelPersonasA) . '"><b>Persona/s atendida/s</b></td></tr>';
+        <tr >
+            <td width="20px">
+                
+            </td>
+            <td width="20px">
+                <b>No</b>
+            </td>
+            <td width="120px">
+                <b>Fecha</b>
+            </td>
+            <td width="300px">
+                <b>Nómina de Estudiantes</b>
+            </td>
+            <td width="100px">
+                <span style="writing-mode: vertical-lr;transform: rotate(180deg);"><b>Año</b></span>
+            </td>
+            <td width="30px">
+                <span style="writing-mode: vertical-lr;transform: rotate(180deg);"><b>Paralelo</b></span>
+            </td>
+            <td >
+                <table class="border">                    
+                    <tr><td colspan="' . count($modelPersonasA) . '"><b>Persona/s atendida/s</b></td></tr>';
         $html .= '<tr>';
         foreach ($modelPersonasA as $model) {
             $html .= '<td class="border" width="30px" style="writing-mode: vertical-lr;transform: rotate(180deg);"><b>'
@@ -539,42 +591,42 @@ class DeceCasosController extends Controller
         }
         $html .= '</tr>';
         $html .= '                        
-                    </table>
-                </td>
-                <td width="300">
-                    <b>Acuerdos</b>
-                </td>
-                <td>
-                    <table class="border"> 
-                        <tr>';
+                </table>
+            </td>
+            <td width="300">
+                <b>Acuerdos</b>
+            </td>
+            <td>
+                <table class="border"> 
+                    <tr>';
         foreach ($modelMotivos as $model1) {
             $html .= '<td class="border" width="30px" style="writing-mode: vertical-lr;transform: rotate(180deg);" ><b>'
-                . $model1->motivo .
+                . substr($model1->motivo, 0, 20) .
                 '</b></td>';
         }
         $html .= '</tr>';
         $html .= '</table>
-                <td>
-                   <table class="border">                    
-                        <tr><td colspan="' . count($modelEstado) . '"><b>Estado de los casos</b></td></tr>';
+            <td>
+               <table class="border">                    
+                    <tr><td colspan="' . count($modelEstado) . '"><b>Estado de los casos</b></td></tr>';
         $html .= '<tr>';
         foreach ($modelEstado as $model) {
             $html .= '<td class="border" width="30px" style="writing-mode: vertical-lr;transform: rotate(180deg);"><b>'
-                . $model->estado_seg .
+                . substr($model->estado_seg, 0, 20) .
                 '</b></td>';
         }
         $html .= '</tr>';
         $html .= '                        
-                    </table>
-                </td>';
-        $html .= $this->cuerpo_rep_gen_seguimiento($modelPersonasA, $modelMotivos, $modelEstado, $_POST);
+                </table>
+            </td>';
+        $html .= $this->cuerpo_rep_gen_seguimiento($modelPersonasA, $modelMotivos, $modelEstado, $listPost, $listEstudiantes,$id_alumno);
         $html .= '</tr>
-            
-        </table>';
+        
+    </table>';
 
         return $html;
     }
-    private function cuerpo_rep_gen_seguimiento($modelPersonasA, $modelMotivos, $modelEstado, $arrayPost)
+    private function cuerpo_rep_gen_seguimiento($modelPersonasA, $modelMotivos, $modelEstado, $arrayPost, $listEstudiantes,$id_alumno)
     {
         $usuario = $arrayPost['usuario'];
         $fecha_inicio = $arrayPost['fecha_inicio'];
@@ -583,25 +635,9 @@ class DeceCasosController extends Controller
         $html = '';
         $objScript = new Scripts();
         $con = Yii::$app->db;
+    
 
-        $query = "select distinct 
-        (select concat(c4.last_name, ' ',c4.first_name,' ',c4.middle_name) as estudiante from op_student c4 where c4.id = a1.id_estudiante ) as estudiante
-        from dece_registro_seguimiento a1, dece_seguimiento_acuerdos a2,dece_casos a4
-        where a2.id_reg_seguimiento  = a1.id 
-        and a1.id_caso = a4.id
-        and a1.fecha_inicio between '$fecha_inicio' and '$fecha_fin'      
-        and (a4.id_usuario_dece ilike '$usuario' 
-        or a4.id_usuario_super_dece ilike '$usuario' 
-         );";
-        //echo '<pre>';
-        // print_r($query);
-        // die();
-        $listEstudiantes = $con->createCommand($query)->queryAll();
-
-        // echo '<pre>';
-        // print_r($listEstudiantes);
-        // die();
-
+        //Consulta QUE DEVUELVE, TODA LA INFORMACION PARA EL REPORTE POR ESTUDIANTE Y SEGUIMEINTO
         $query = "select distinct a1.numero_seguimiento,a1.id as id_seguimiento ,a1.fecha_inicio,a1.id_estudiante,
         (select concat(c4.last_name, ' ',c4.first_name,' ',c4.middle_name) as estudiante from op_student c4 where c4.id = a1.id_estudiante ),
         '' as anio, '' as paralelo,a2.parentesco, a2.acuerdo ,
@@ -611,17 +647,23 @@ class DeceCasosController extends Controller
         and a1.id_caso = a4.id
         and a1.fecha_inicio between '$fecha_inicio' and '$fecha_fin'      
         and (a4.id_usuario_dece ilike '$usuario' 
-        or a4.id_usuario_super_dece ilike '$usuario' );";
+        or a4.id_usuario_super_dece ilike '$usuario' )";
+        if($id_alumno>0)
+        {
+            $query.=" and a1.id_estudiante  = '$id_alumno';";
+        }
+        $query.=';';
 
         $listRegAcompaniamiento = $con->createCommand($query)->queryAll();
-
-        // echo '<pre>';
-        // print_r($listRegAcompaniamiento);
-        // die();
-        foreach ($listEstudiantes as $reg1) 
-        {
+        $cont=0;
+        $nombreEstudiante ='';
+        foreach ($listEstudiantes as $reg1) {
+            
+            
             foreach ($listRegAcompaniamiento as $reg) 
             {
+                
+                //para ayudar a que solo apareza una vez los datos del estudiante
                 if ($reg1['estudiante'] == $reg['estudiante']) 
                 {
                     $cursoParalelo = $objScript->mostrar_curso_estudiante($reg['id_estudiante']);
@@ -630,45 +672,75 @@ class DeceCasosController extends Controller
                     $tableMotivo = $this->mostrar_seleccion_listadp($modelMotivos, 'motivo', $reg['motivo']);
                     $tableEstado = $this->mostrar_seleccion_listadp($modelEstado, 'estado_seg', $reg['estado']);
                     // $cursoParalelo = explode(" ",$cursoParalelo[0]);
-
                     $html .= '
-            <tr >                
-                <td>
-                <a href="../dece-registro-seguimiento/update?id=' . $reg['id_seguimiento'] . '" target="_blank"><i class="fa fa-edit" aria-hidden="true"></i></a>
-                </td>
-                <td width="20px">
-                    ' . $reg['numero_seguimiento'] . '
-                </td>
-                <td width="100px">
-                    ' . substr($reg['fecha_inicio'], 0, 10) . '
-                </td>
-                <td width="300px">
-                    ' . $reg['estudiante'] . '
-                </td>
-                <td >
-                    ' . $cursoParalelo[0]['curso1'] . '
-                </td>
-                <td >
-                    ' . $cursoParalelo[0]['paralelo'] . '
-                </td>
-                <td >
-                    ' . $tablePersonas . '
-                </td>
-                <td >
-                    ' . $reg['acuerdo'] . '
-                </td>
-                <td >
-                    ' . $tableMotivo . '
-                </td>
-                <td >
-                    ' . $tableEstado . '
-                </td>
-                ';
+                    <tr >';
+                    if($cont==0)
+                    {
+                                 
+                        $html.='<td>
+                        <a href="../dece-registro-seguimiento/update?id=' . $reg['id_seguimiento'] . '" target="_blank"><i class="fa fa-edit" aria-hidden="true"></i></a>
+                        </td>
+                        <td width="20px">
+                            ' . $reg['numero_seguimiento'] . '
+                        </td>
+                        <td width="100px">
+                            ' . substr($reg['fecha_inicio'], 0, 10) . '
+                        </td>
+                        <td width="300px">
+                            ' . $reg['estudiante'] . '
+                        </td>
+                        <td >
+                            ' . $cursoParalelo[0]['curso1'] . '
+                        </td>
+                        <td >
+                            ' . $cursoParalelo[0]['paralelo'] . '
+                        </td>';
+                    }else
+                    {
+                        $html .= '  <td></td>
+                                    <td width="20px"></td>
+                                    <td width="100px"> </td>
+                                    <td width="300px"></td>
+                                    <td ></td>
+                                    <td ></td>';
+                    }
+                    $html.='<td >
+                            ' . $tablePersonas . '
+                        </td>
+                        <td >
+                            ' . $reg['acuerdo'] . '
+                        </td>';
+                    if($cont==0)
+                    {        
+                        $html.='<td >
+                            ' . $tableMotivo . '
+                        </td>
+                        <td >
+                            ' . $tableEstado . '
+                        </td>
+                        ';
+                    }else
+                    {
+                        $html.='<td > </td>
+                                <td ></td>
+                                ';
+                    }
+
+
                     $html .= '</tr>';
+                    $cont++; 
+                    
+
+                            
                 }
                 
+                
             }
-            $html .= '<tr  style="background-color:#AAE0F9"><td colspan="10"></td></tr>';
+            $cont=0;
+            // if(count($listEstudiantes)>1)
+            // {
+            // $html .= '<tr  style="background-color:#AAE0F9"><td colspan="10"></td></tr>';
+            // }
            
         }
 

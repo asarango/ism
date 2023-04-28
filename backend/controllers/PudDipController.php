@@ -3,6 +3,8 @@
 namespace backend\controllers;
 
 //use backend\models\pca\DatosInformativos as PcaDatosInformativos;
+
+use backend\models\DipOpciones;
 use backend\models\PlanificacionBloquesUnidad;
 use backend\models\PlanificacionVerticalDiploma;
 use backend\models\PlanificacionBloquesUnidadSubtitulo;
@@ -176,6 +178,9 @@ class PudDipController extends Controller {
                 break;
             case '5.8.-':
                 $respuesta = $this->get_accion_talentos($planUnidadId);
+                break;
+            case '5.9.-':
+                $respuesta = $this->get_accion_ods($planUnidadId);
                 break;
             case '6.1.-':
                 $respuesta = $this->get_accion_recurso($planUnidadId);
@@ -968,22 +973,6 @@ class PudDipController extends Controller {
     /*     * * 5.3.1 Metacognicion */
     private function get_accion_metacognicion($planBloqueUnidadId) 
     {       
-        // $planBloqueUnidad = PlanificacionBloquesUnidad::findOne($planBloqueUnidadId);
-        // $accion_update = "5.3.1.-";
-        // $titulo = "5.3.1- METACOGNICIÓN";
-
-        //  $this->ingresa_metacognicion($planBloqueUnidadId); //ingresa las opciones 
-        //  $mostrar = $this->mostrar_seleccion_metacognicion($planBloqueUnidadId, $titulo);     
-
-        // $modelPlanVertical = PlanificacionVerticalDiploma::find()->where(['planificacion_bloque_unidad_id' => $planBloqueUnidadId])->one();
-        // $modelPlanVertical->ultima_seccion = $accion_update;
-        // $modelPlanVertical->save();     
-
-        //  //guarda el porcentaje de avance del pud dip
-        //  $this->pud_dip_actualiza_porcentaje_avance($modelPlanVertical);
-
-        // return $mostrar;
-
         $planBloqueUnidad = PlanificacionBloquesUnidad::findOne($planBloqueUnidadId);
         $accion_update = "5.3.1.-";
         $titulo = "5.3.1.- METACOGNICIÓN";
@@ -1521,6 +1510,123 @@ class PudDipController extends Controller {
     }
     
     
+    /*     * * 5.9 ODS */
+    private function get_accion_ods($planBloqueUnidadId) 
+    {       
+        $planBloqueUnidad = PlanificacionBloquesUnidad::findOne($planBloqueUnidadId);
+        $accion_update = "5.9.-";
+        $titulo = "5.9.- COMPETENCIAS PARA ODS";
+
+        $this->ingresa_ods($planBloqueUnidadId); //ingresa las opciones 
+        $mostrar = $this->mostrar_seleccion_ods($planBloqueUnidadId, $titulo);        
+
+        $modelPlanVertical = PlanificacionVerticalDiploma::find()->where(['planificacion_bloque_unidad_id' => $planBloqueUnidadId])->one();
+        $modelPlanVertical->ultima_seccion = $accion_update;
+        $modelPlanVertical->save();
+
+        //guarda el porcentaje de avance del pud dip
+        $this->pud_dip_actualiza_porcentaje_avance($modelPlanVertical);
+        return $mostrar;
+
+    }
+
+    private function ingresa_ods($planBloqueUnidadId){
+        $con = Yii::$app->db;
+        $query = "insert into pud_dip (planificacion_bloques_unidad_id, codigo, campo_de, opcion_boolean, opcion_texto) 
+                select 	$planBloqueUnidadId,tipo, 'seleccion', false, opcion 
+                from 	dip_opciones op
+                where 	op.tipo = 'ODS'
+                                and op.opcion not in (select opcion_texto from pud_dip 
+                                where planificacion_bloques_unidad_id = $planBloqueUnidadId 
+                                and opcion_texto = opcion and codigo = 'ODS')
+                                
+                ;";
+
+        $con->createCommand($query)->execute();
+        
+        $modelDetalle = \backend\models\PudDip::find()->where([
+            'codigo' => 'ODS',
+            'campo_de' => 'escrito',
+            'planificacion_bloques_unidad_id' => $planBloqueUnidadId
+        ])->one();
+        
+        if(!$modelDetalle){
+            $model = new \backend\models\PudDip();
+            $model->planificacion_bloques_unidad_id = $planBloqueUnidadId;
+            $model->codigo = 'ODS';
+            $model->campo_de = 'escrito';
+            $model->opcion_texto = 'None';
+            $model->save();
+        }                
+    }
+
+    private function mostrar_seleccion_ods($planBloqueUnidadId, $titulo) {
+        $pudDip = \backend\models\PudDip::find()->where([
+            'planificacion_bloques_unidad_id' => $planBloqueUnidadId,
+            'codigo' => 'ODS'
+         ])
+         ->orderBy(['id'=>SORT_ASC])
+         ->all();
+        
+
+        $html = '';
+        $html .= '<div class="" style="align-items: center; display: flex; justify-content: center;">';
+        $html .= '<div class="card" style="width: 100%; margin-top:20px">';
+        $html .= '<div class="card-header">';
+        $html .= '<div class="row">';
+        $html .= '<h5 class=""><b>' . $titulo . '</b></h5>';
+        $html .= '</div>';
+        $html .= '</div>';
+        $html .= '<div class="card-body" >';
+        // inicia row
+        $html .= '<div class="row">';
+        foreach ($pudDip as $pud) {
+            $pud->opcion_boolean ? $check = 'checked' : $check = '';
+            
+            if($pud->campo_de == 'seleccion'){
+                $ods = DipOpciones::find()->where(['opcion' => $pud->opcion_texto])->one();
+                $html .= '<div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked" '.$check.' '
+                        . 'onclick="update_pud_dip_boolean('.$pud->id.')">
+                        <label class="form-check-label" for="flexSwitchCheckChecked"><b>('.$ods->categoria.')</b>: '.$pud->opcion_texto.'</label>
+                      </div>';
+            }else{
+                $detalle = $pud->opcion_texto;
+                $pudId = $pud->id;
+            }
+            
+        }
+        $html .= '</div>'; //FIN ROW SELECCION
+        
+        $html .= '<hr />'; 
+        
+//            $html .= '<div class="row">'; //inicia row de detalle
+        $html .= Html::beginForm(['update-pud-dip'], 'post');
+                $html .= '<b>Información Detallada</b>';
+                $html .= '<input type="hidden" name="campo_de" value="escrito">';
+                $html .= '<input type="hidden" name="id" value="'.$pudId.'">';
+                $html.= '<textarea name="contenido" class="form-control" id="detalle-metacognicion" >'.$detalle.'</textarea>
+                                <script>
+                                    CKEDITOR.replace( "contenido",{
+                                        customConfig: "/ckeditor_settings/config.js"                                
+                                        } );
+                                </script>';                       
+
+            $html .= '<div style="text-align:end; margin-top:5px">
+                        <button type="submit" class="btn btn-success">Actualizar</button>
+                  </div>';
+        
+            $html .= Html::endForm();
+//        $html .= '</div>';//fin de row de detalle
+        //******finaliza row
+        $html .= '</div>'; //fin de card-body
+        $html .= '</div>';
+        $html .= '</div>';
+        return $html;
+    }
+    /***** fin de ODS */
+
+
     
 
     /** 6.1.- Recursos */

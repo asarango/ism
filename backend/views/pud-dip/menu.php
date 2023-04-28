@@ -35,6 +35,7 @@ $contador_5_3_1 = 0;
 $contador_5_3_2 = 0;
 $contador_5_4 = 0;
 $contador_5_6 = 0;
+$contador_5_9 = 0;
 $opcion = '1.1.-';
 
 if($modelPVD)
@@ -45,6 +46,7 @@ if($modelPVD)
     $contador_5_3_2 = contador_diferenciacion($planUnidad->id,$numCaracteresOk);
     $contador_5_4 = contador_de_consultar_lenguaje_y_aprendizaje_ckeck($modelPVD->id);    
     $contador_5_6 = consultar_conexion_cas_ckeck($modelPVD->id);    
+    $contador_5_9 = contador_ods($planUnidad->id,$numCaracteresOk);
    
 }else{
     $modelPVD = new PlanificacionVerticalDiploma();
@@ -119,6 +121,38 @@ function contador_de_consultar_lenguaje_y_aprendizaje_ckeck($planVertDiplId)
      return $contador_5_1;
  }
  
+  //para competencias para ODS
+function contador_ods($planUnidadId,$numCaracteresOk)
+{
+    
+    $pudDip = backend\models\PudDip::find()->where([
+    'planificacion_bloques_unidad_id' => $planUnidadId,
+    'codigo' => 'ODS',
+    //'opcion_boolean'=>true,
+    //'opcion'
+    ])->all();    
+    
+    $contador_5_9 = 0;
+    
+    $cont = 0;
+    $contDetalle = 0;
+    foreach ($pudDip as $pud){
+        // if($pud->opcion_boolean == true){
+        //     $cont++;
+        // }
+        
+        if($pud->campo_de == 'escrito' && strlen($pud->opcion_texto) >$numCaracteresOk ){
+            $contDetalle = 1;
+        }
+    }
+    
+    if($contDetalle > 0 ){
+        $contador_5_9 = 1;
+    }
+    
+    return $contador_5_9;
+    
+}
  
  //para metacognitivo
  //para conocer si esta planificado el metacognitivo
@@ -361,6 +395,18 @@ function contador_diferenciacion($planUnidadId,$numCaracteresOk){
             <li class="zoom"><a href="#" onclick="ver_detalle('5.8.-');">5.8.- Estudiantes con talento sobresaliente
                 <i class="<?=$iconoOk;?>" title="" style="color: green;"></i>
             </li>
+
+             <!--para 5.9 COMPETENCIAS ODS-->
+             <li class="zoom"><a href="#" onclick="ver_detalle('5.9.-');">5.9.- Competencias para ODS
+            <?php                   
+                    if ($contador_5_9==0)
+                    { $iconoColor = $colorNotOk;}
+                    else
+                    { $iconoColor = $colorOk;}
+                    ?>
+                    <i class="<?=$iconoOk;?>" title="FALTA INGRESAR DATOS" style="color: <?=$iconoColor;?>;"></i>
+                    </a>            
+            </li>     
             
         </ul>
     </li>

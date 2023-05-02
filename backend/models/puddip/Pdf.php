@@ -24,6 +24,7 @@ use DateTime;
 use backend\models\helpers\HelperGeneral;
 use backend\models\helpers\Scripts;
 use backend\models\lms\LmsColaborativo;
+use backend\models\PudDip;
 use backend\models\ScholarisClase;
 
 class Pdf extends \yii\db\ActiveRecord{
@@ -522,7 +523,7 @@ class Pdf extends \yii\db\ActiveRecord{
         $html.='<tr>';
         $html.='<td class="border" width="30%" style="background-color:'.$colorCabeceraFondo.';"><b>ENFOQUES DEL APRENDIZAJE: </b></td>';
         $html.='<td class="border" width="35%" style="background-color:'.$colorCabeceraFondo.';"><b>EVALUACIÓN FORMATIVA: </b></td> ';
-        $html.='<td class="border" width="35%" style="background-color:'.$colorCabeceraFondo.';"><b>EVALUACIÓN SUMATIVA: </b></td>';
+        $html.='<td class="border" width="35%" style="background-color:'.$colorCabeceraFondo.';" colspan="2"><b>EVALUACIÓN SUMATIVA: </b></td>';
         $html.='</tr>';
         
         $html.='<tr>';
@@ -530,7 +531,7 @@ class Pdf extends \yii\db\ActiveRecord{
         $html.='<td class="border" >';
             if($enfoqueEvaluacion){$html.= ''.$enfoqueEvaluacion->formativa;}
         $html.='</td>';
-        $html.='<td class="border" >';
+        $html.='<td class="border" colspan="2">';
             if($enfoqueEvaluacion){$html.= ''.$enfoqueEvaluacion->sumativa;}
         $html.='</td>';
         $html.='</tr>';
@@ -538,18 +539,18 @@ class Pdf extends \yii\db\ActiveRecord{
         $html.='<tr>                       
                     <td class="border" style="background-color:'.$colorCabeceraFondo.';"><b>METACOGNICIÓN: </b></td> 
                     <td class="border" style="background-color:'.$colorCabeceraFondo.';"><b>DIFERENCIACIÓN: </b></td>
-                    <td class="border" style="background-color:'.$colorCabeceraFondo.';"><b>ESTUDIANTE CON NEE: </b></td>                                                  
+                    <td class="border" style="background-color:'.$colorCabeceraFondo.';" colspan="2"><b>ESTUDIANTE CON NEE: </b></td>                                                  
                 </tr>';
         $html.='<tr >                       
                     <td rowspan="3" class="border">'.$textMetacognicion.'</td>
                     <td rowspan="3" class="border" >'. $textDiferenciacion.'</td>
-                    <td class="border">'.$estudianteNEE.'</td>                       
+                    <td class="border" colspan="2">'.$estudianteNEE.'</td>                       
                 </tr>';                   
         $html.='<tr>                                
-                    <td class="border" style="background-color:'.$colorCabeceraFondo.';"><b>ESTUDIANTES CON TALENTOS SOBRESALIENTES: </b></td> 
+                    <td class="border" style="background-color:'.$colorCabeceraFondo.';" colspan="2"><b>ESTUDIANTES CON TALENTOS SOBRESALIENTES: </b></td> 
                 </tr>'; 
         $html.='<tr>
-                    <td class="border" >'.$estuSobresalientes.'</td> 
+                    <td class="border" colspan="2">'.$estuSobresalientes.'</td> 
                 </tr>'; 
                     //** fila de LENGUA Y APRENDISAJE */
                     $html.=$this->lenguaje_y_aprendizaje_reporte();
@@ -756,16 +757,19 @@ class Pdf extends \yii\db\ActiveRecord{
         $objPlanVertDip = $this->planVertDipl;
         $text_lenguaje = '<b>LENGUAJE Y APRENDIZAJE</b>';
         $text_con_tdc = '<b>CONEXION CON TDC</b>';
+        $text_ods = '<b>COMPETENCIAS PARA ODS</b>';
         $text_con_cas = '<b>CONEXION CON CAS</b>';
        
         $detalle_len_y_aprend = $this->lenguaje_aprendizaje_item();
         $conexion_tdc = $this->conexion_tdc_reporte();
+        $competencias_ods = $this->competencias_ods();
         $conexion_cas = $this->conexion_cas_reporte();
 
         $html ='';       
                     $html.='<tr>';
                         $html.='<td class="border" style="background-color:'.$colorCabeceraFondo.';">'.$text_lenguaje.'</td>'; 
                         $html.='<td class="border" style="background-color:'.$colorCabeceraFondo.';">'.$text_con_tdc.'</td>';   
+                        $html.='<td class="border" style="background-color:'.$colorCabeceraFondo.';">'.$text_ods.'</td>';   
                         $html.='<td class="border" style="background-color:'.$colorCabeceraFondo.';">'.$text_con_cas.'</td>';                       
                     $html.='</tr>';
                     $html.='<tr>';
@@ -775,7 +779,19 @@ class Pdf extends \yii\db\ActiveRecord{
                         $html.='<td class="border">'.$conexion_tdc.'                                                    
                                     <p><b>Información Detallada:</b></p>'.$objPlanVertDip->conexion_tdc.'  
                                </td>';
-                        $html.='<td class="border" >'.$conexion_cas.'                                                    
+                       
+                        $ods = PudDip::find()->where([
+                            'planificacion_bloques_unidad_id' => $this->planBloqueUnidadId,
+                            'codigo' => 'ODS',
+                            'campo_de' => 'escrito'
+                        ])->one();
+                        
+                        $html.='<td class="border">'.$competencias_ods.'  
+                                    <p><b>Información Detallada:</b></p>'.$ods->opcion_texto.'
+                                </td>';
+                       
+                       
+                          $html.='<td class="border" >'.$conexion_cas.'                                                    
                                     <p><b>Información Detallada:</b></p>'.$objPlanVertDip->detalle_cas.'  
                                 </td>';       
                     $html.='</tr>';                   
@@ -900,6 +916,40 @@ class Pdf extends \yii\db\ActiveRecord{
         $resultado = $con->createCommand($query)->queryAll();
         return $resultado;
     } 
+
+     /*** 5.9 Competencias para ODS */
+     private function competencias_ods()
+     {
+         $objPlanVertDip = $this->planVertDipl;        
+         $ods = $this->consultar_competencias_ods($objPlanVertDip->id); 
+         $item = '';
+         $item .= '<ul>';      
+         foreach($ods as $o)
+         {                          
+             if($o->opcion_boolean)
+             {
+                $item.='<li>'.$o->opcion_texto.'</li>';                                           
+             }
+         }
+         $item.='</ul>';  
+        return $item;
+     }
+      //metodo usado para 5.9.- llamada a COMPTENCIAS ODS
+    private function consultar_competencias_ods($planVertDiplId) 
+    {
+        //consulta las competencias ods que han sido marcados con check, mas los que aun no estan marcados
+        $con = Yii::$app->db;
+        $pudDip = \backend\models\PudDip::find()->where([
+            'planificacion_bloques_unidad_id' => $this->planBloqueUnidadId,
+            'codigo' => 'ODS'
+        ])
+        ->orderBy(['id'=>SORT_ASC])
+        ->all();
+        return $pudDip;
+    } 
+
+
+
     //REPORTE: 6 recursos
     private function recursos_reporte()
     {

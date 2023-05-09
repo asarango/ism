@@ -7,6 +7,7 @@ use backend\models\mapaenfoques\AjaxMapaEnfoque;
 use backend\models\MapaEnfoquesPai;
 use backend\models\MapaEnfoquesPaiAprobacion;
 use backend\models\OpInstituteAuthorities;
+use backend\models\pai\PdfMapaEnfoques;
 use backend\models\ScholarisMateria;
 use Yii;
 use yii\web\Controller;
@@ -285,7 +286,7 @@ class MateriasPaiController extends Controller{
 
 
      /**
-     * ACCION PARA APROBAR EL MAPA DE ENFOQUES DE LA MATARIA SELECCIONADA
+     * ACCION PARA APROBAR EL MAPA DE ENFOQUES DE LA MATERIA SELECCIONADA
      * CREADO POR:  Arturo Sarango - 2023-03-16
      * MODIFICADOS: Arturo Sarango - 2023-03-16
      */
@@ -300,5 +301,16 @@ class MateriasPaiController extends Controller{
 
         return $this->redirect(['lista-asignaturas']);
      }
+
+
+     /**
+     * ACCION PARA PDF DEL MAPA DE ENFOQUES DE LA MATARIA SELECCIONADA
+     * CREADO POR:  Arturo Sarango - 2023-05-02
+     * MODIFICADOS: Arturo Sarango - 2023-05-02
+     */
+    public function actionPdf(){
+        $materiaId = $_GET['materia_id'];
+        new PdfMapaEnfoques($materiaId);
+    }
 
 }

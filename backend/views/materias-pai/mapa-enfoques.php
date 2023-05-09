@@ -97,10 +97,21 @@ $this->params['breadcrumbs'][] = $this->title;
                     |
                 </div> <!-- fin de menu izquierda -->
 
+                <!-- inicio de menu derecha -->
                 <div class="col-lg-6 col-md-6" style="text-align: right;">
-                    <!-- inicio de menu derecha -->
-
-                </div><!-- fin de menu derecha -->
+                    |
+                    <?=
+                    Html::a(
+                        '<span class="badge rounded-pill" style="background-color: #ff9e18">
+                            <i class="fa fa-briefcase" aria-hidden="true"></i> Convertir a pdf
+                        </span>',
+                        ['pdf', 'materia_id' => $materia->id],
+                        ['class' => 'link']
+                    );
+                    ?>                    
+                    |
+                </div>
+                <!-- fin de menu derecha -->
             </div>
             <!-- finaliza menu menu  -->
 

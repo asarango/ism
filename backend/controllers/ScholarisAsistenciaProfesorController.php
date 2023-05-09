@@ -72,6 +72,7 @@ class ScholarisAsistenciaProfesorController extends Controller {
      * @return mixed
      */
     public function actionIndex() 
+    
     {
         $usuario = Yii::$app->user->identity->usuario;
         $periodoId = Yii::$app->user->identity->periodo_id;

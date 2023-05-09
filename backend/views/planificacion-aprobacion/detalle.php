@@ -78,11 +78,19 @@ $this->params['breadcrumbs'][] = $this->title;
 
                     if ($seccionCode == 'DIPL') {
                         ?>
-                            <iframe width="100%"
+                        <iframe width="100%"
+                                    height="600"
+                                    src="<?= Url::toRoute(['plan-vertical-diploma/pdf', 
+                                        'cabecera_id' => $cabecera->id]) ?>">
+                            </iframe>
+
+
+
+                            <!-- <iframe width="100%"
                                     height="600"
                                     src="<?= Url::toRoute(['planificacion-bloques-unidad/pdf-pv-dp', 
                                         'cabecera_id' => $cabecera->id]) ?>">
-                            </iframe>
+                            </iframe> -->
                         <?php
                     } else {
                     ?>

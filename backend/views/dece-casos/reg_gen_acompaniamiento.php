@@ -73,39 +73,44 @@ $modelUsuariosDeces = OpInstituteAuthorities::find()
     <div class="m-0 vh-50 row justify-content-center align-items-center">
         <div class="card shadow col-lg-12 col-md-12">
             <div class=" row align-items-center p-2">
-                <div class="col-lg-1">
+                <div class="col-lg-1 col-md-1">
                     <img src="../ISM/main/images/submenu/firma-electronica.png" width="" class="img-thumbnail">
                 </div>
 
-                <div class="col-lg-11">
-                    <h3>REGISTRO GENERAL DE ACOMPAÑAMIENTO</h3>
+                <div class="col-lg-8 col-md-8" align="left">
+                    <h3><b>REGISTRO GENERAL DE ACOMPAÑAMIENTO</b></h3>
                 </div>
-
-                <!-- FIN DE CABECERA -->
-
+                <div class="col-lg-3 col-md-3" align="right">
                 <?=
                 Html::a(
                     '<span class="badge rounded-pill" style="background-color:#9e28b5"><i class="fa fa-briefcase" aria-hidden="true"></i> Dece - Casos</span>',
-                    ['dece-casos/historico', 'id' => '1'],
-                    ['class' => 'link']
+                    ['index']
                 );
                 ?>
-                <?=
+                <!-- <?=
                 Html::a(
                     '<span class="badge rounded-pill" style="background-color:#9e28b5"><i class="fa fa-briefcase" aria-hidden="true"></i> Registro General Acompañamiento</span>',
                     ['reg-gen-acompaniamiento'],
                     ['class' => 'link']
                 );
-                ?>
+                ?> -->
+                </div>
+
+
+
+                <!-- FIN DE CABECERA -->
+
+                
+                
                 <hr>
 
             </div>
             <div class="">
                 <div class="row ">
-                    <div class="col-lg-2">
+                    <div class="col-lg-1 col-md-1">
                         PSICÓLOGO DEL NIVEL:
                     </div>
-                    <div class="col-lg-4">
+                    <div class="col-lg-3 col-md-3">
                         <select class="form-select" aria-label="Default select example" id="usuario">
                             <option >Seleccione Opción</option>
                             <?php
@@ -117,26 +122,26 @@ $modelUsuariosDeces = OpInstituteAuthorities::find()
                             }
                             ?>                                                     
                         </select>
+
                     </div>
-                </div>
-                <div class="row">
-                    <div class="col-lg-2">
+                    <div class="col-lg-1 col-md-1" align ="right">
                         Fecha de Inicio:
                     </div>
-                    <div class="col-lg-2">
+                    <div class="col-lg-2 col-md-2">
                         <input type="date" class="form-control" id="fecha_inicio"/>
                     </div>
-                    <div class="col-lg-2">
-                        Fecha de Tèrmino:
+                    <div class="col-lg-1 col-md-1" align ="right">
+                        Fecha de Término:
                     </div>
-                    <div class="col-lg-2">
+                    <div class="col-lg-2 col-md-2">
                         <input type="date" class="form-control" id="fecha_fin"/>
                     </div>
-                    <div class="col-lg-2">
-                        <button type="submit" class="btn btn-success" onclick="mostrar_reporte_general()">Buscar</button>
+                    <div class="col-lg-2 col-md-2" align ="center">
+                        <button type="submit" class="btn btn-success" onclick="mostrar_reporte_general()">Buscar</button >
                     </div>
                 </div>
             </div>
+        </div>
             <br>
             <tr>
             <div id="div_reporte">

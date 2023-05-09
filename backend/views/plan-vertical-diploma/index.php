@@ -91,8 +91,7 @@ $idioma = $cabecera->ismAreaMateria->idioma;
                         ['planificacion-bloques-unidad/index1', 'id' => $cabecera->id]
                     );
                     ?>
-                    |
-                    <?php
+                   <?php
                     echo Html::a(
                         '<span class="badge rounded-pill" style="background-color: #ab0a3d"><i class="fas fa-file-pdf"></i> Convertir a PDF</span>',
                         ['pdf', 'cabecera_id' => $cabecera->id],

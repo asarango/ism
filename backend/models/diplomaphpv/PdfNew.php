@@ -102,10 +102,7 @@ class PdfNew extends \yii\db\ActiveRecord
     }
     private function firmas()
     {
-        $html = <<<EOD
-        <br>
-        <br>
-        <table width="100%" cellspacing="0" cellpadding="5">         
+        $html = '<table width="100%" cellspacing="0" cellpadding="5">         
             <tr> 
                 <td class="fondoGrisNormal border">ELABORADO POR:</td>
                 <td class="fondoGrisNormal border">APROBADO POR:</td>                              
@@ -124,8 +121,8 @@ class PdfNew extends \yii\db\ActiveRecord
                 <td class="border">Fecha:</td>                
                 <td class="border">Fecha:</td>                
             </tr> 
-        </table> 
-        EOD;
+        </table>';
+
         return $html;
     }
 

@@ -101,21 +101,21 @@ class PlanificacionVerticalPaiDescriptoresController extends Controller{
         $criteriosDisponibles   = $this->consulta_disponibles($planBloqueUnidadId, $areaId, $courseTemplateId,$esInterdisciplinar);
         $criteriosSeleccionados = $this->consulta_seleccionados($planBloqueUnidadId,$esInterdisciplinar);
 
-         
+        $idioma = $bloqueUnidad->planCabecera->ismAreaMateria->idioma;
 
-        $conceptosClaveDisponibles      = $this->consulta_conceptos_clave_disponibles($planBloqueUnidadId);
+        $conceptosClaveDisponibles      = $this->consulta_conceptos_clave_disponibles($planBloqueUnidadId, $idioma);
         $conceptosClaveSeleccionados    = PlanificacionVerticalPaiOpciones::find()->where([
             'plan_unidad_id' => $planBloqueUnidadId,
             'tipo' => 'concepto_clave'
         ])->all();
 
-        $conceptosRelacionadosDisponibles   = $this->consulta_conceptos_relacionados_disponibles($materiaId, $planBloqueUnidadId);
+        $conceptosRelacionadosDisponibles   = $this->consulta_conceptos_relacionados_disponibles($materiaId, $planBloqueUnidadId, $idioma);
         $conceptosRelacionadosSeleccionados = PlanificacionVerticalPaiOpciones::find()->where([
               'plan_unidad_id' => $planBloqueUnidadId,
               'tipo' => 'concepto_relacionado'
           ])->all();
 
-        $contextoGlobalDisponibles = $this->consulta_contexto_global($planBloqueUnidadId);
+        $contextoGlobalDisponibles = $this->consulta_contexto_global($planBloqueUnidadId, $idioma);
         $contextoGlobalDisponiblesCabeceras = $this->consulta_contexto_global_cabeceras($planBloqueUnidadId);
         $contextoGlobalSeleccionados = PlanificacionVerticalPaiOpciones::find()->where([
             'plan_unidad_id' => $planBloqueUnidadId,
@@ -124,7 +124,7 @@ class PlanificacionVerticalPaiDescriptoresController extends Controller{
 
         
 
-        $habilidadesDisponibles = $this->consulta_habilidades_disponibles($planBloqueUnidadId, $courseTemplateId, $periodoId);
+        $habilidadesDisponibles = $this->consulta_habilidades_disponibles($planBloqueUnidadId, $courseTemplateId, $periodoId, $idioma);
         // echo '<pre>';
         // print_r($habilidadesDisponibles);
         // die();
@@ -149,6 +149,9 @@ class PlanificacionVerticalPaiDescriptoresController extends Controller{
             array_push($temario, $subtitulo);
         }
 
+        // echo '<pre>';
+        // print_r($grupoMateria);
+        // die();
 
          return $this->render('index1', [
              'bloqueUnidad' => $bloqueUnidad,
@@ -166,6 +169,7 @@ class PlanificacionVerticalPaiDescriptoresController extends Controller{
              'pestana' => $pestana,
              'temario' => $temario,
              'grupoMateria'=>$grupoMateria,
+             'idioma' => $idioma
          ]);
     }
 
@@ -179,18 +183,28 @@ class PlanificacionVerticalPaiDescriptoresController extends Controller{
         return $res;
     }
 
-    private function consulta_conceptos_relacionados_disponibles($materiaId, $planBloqueUnidadId){
+    private function consulta_conceptos_relacionados_disponibles($materiaId, $planBloqueUnidadId, $idioma){
+
+        if($idioma == 'es'){
+            $contenido = 'contenido_es';
+        }elseif($idioma = 'en'){
+            $contenido = 'contenido_en';
+        }else{
+            $contenido = 'contenido_fr';
+        }
+
+
         $con = Yii::$app->db;
         $query = "select 	id, ism_materia_id, contenido_es, contenido_en, contenido_fr, estado
         from 	scholaris_materia_conceptos_relacionados_pai r
         where 	r.ism_materia_id = $materiaId
                 and r.estado = true
-                and contenido_es not in (
+                and $contenido not in (
                     select 	contenido
         from 	planificacion_vertical_pai_opciones
         where 	plan_unidad_id = $planBloqueUnidadId
                 and tipo = 'concepto_relacionado'
-                and contenido = r.contenido_es
+                and contenido = $contenido
                 );";
 
         $res = $con->createCommand($query)->queryAll();
@@ -217,7 +231,7 @@ class PlanificacionVerticalPaiDescriptoresController extends Controller{
                                 select descriptor_id from planificacion_vertical_pai_descriptores where descriptor_id = da.id and plan_unidad_id = $planBloqueUnidadId
                             )
                             and icl.es_interdisciplinar = '$esInterdisciplinar'
-                            and ild.es_interdisciplinar = '$esInterdisciplinar'
+                            --and ild.es_interdisciplinar = '$esInterdisciplinar'
                     ";
         if($esInterdisciplinar ==0)
         {
@@ -249,7 +263,7 @@ class PlanificacionVerticalPaiDescriptoresController extends Controller{
                             select descriptor_id from planificacion_vertical_pai_descriptores where descriptor_id = da.id and plan_unidad_id = $planBloqueUnidadId
                         )
                         and icl.es_interdisciplinar = '$esInterdisciplinar'
-                        and ild.es_interdisciplinar = '$esInterdisciplinar'
+                        --and ild.es_interdisciplinar = '$esInterdisciplinar'
                 order by criterio,codigo;";
         }
 
@@ -286,15 +300,25 @@ class PlanificacionVerticalPaiDescriptoresController extends Controller{
     }
 
 
-    private function consulta_conceptos_clave_disponibles($planBloqueUnidadId){
+    private function consulta_conceptos_clave_disponibles($planBloqueUnidadId, $idioma){
+
+        if($idioma == 'es'){
+            $campoContenidoIdioma = 'contenido_es';
+        }elseif($idioma == 'en'){
+            $campoContenidoIdioma = 'contenido_en';
+        }else{
+            $campoContenidoIdioma = 'contenido_fr';
+        }
+
+
         $con    = Yii::$app->db;
         $query  = "select 	id, tipo, contenido_es, contenido_en, contenido_fr, estado
                     from 	contenido_pai_opciones op
                     where 	op.tipo = 'concepto_clave'
                             and estado = true
-                            and contenido_es not in(
+                            and $campoContenidoIdioma not in(
                                 select contenido from planificacion_vertical_pai_opciones where
-                                contenido = op.contenido_es
+                                contenido = $campoContenidoIdioma
                                 and plan_unidad_id = $planBloqueUnidadId
                                 and tipo = op.tipo
                             );";
@@ -304,7 +328,16 @@ class PlanificacionVerticalPaiDescriptoresController extends Controller{
         return $res;
     }
 
-    private function consulta_contexto_global($planBloqueUnidadId){
+    private function consulta_contexto_global($planBloqueUnidadId, $idioma){
+
+            if($idioma == 'es'){
+                $campoContenido = 'contenido_es';
+            }elseif($idioma == 'en'){
+                $campoContenido = 'contenido_en';
+            }else{
+                $campoContenido = 'contenido_fr';
+            }
+
             $con    = Yii::$app->db;
             $query  = "select 	id, tipo, contenido_es, contenido_en, contenido_fr, estado,sub_contenido
                         from 	contenido_pai_opciones op
@@ -312,7 +345,7 @@ class PlanificacionVerticalPaiDescriptoresController extends Controller{
                                 and estado = true
                                 and sub_contenido not in(
                                     select sub_contenido from planificacion_vertical_pai_opciones where
-                                    contenido = op.contenido_es
+                                    contenido = $campoContenido
                                     and plan_unidad_id = $planBloqueUnidadId
                                     and tipo = op.tipo
                             ) order by contenido_es,sub_contenido;";
@@ -336,23 +369,57 @@ class PlanificacionVerticalPaiDescriptoresController extends Controller{
     return $res;
 }
 
-    private function consulta_habilidades_disponibles($planBloqueUnidadId, $opCourseTemplateId, $periodoId){
+    private function consulta_habilidades_disponibles($planBloqueUnidadId, $opCourseTemplateId, $periodoId, $idioma){
+
+        if($idioma == 'es'){
+            $titulo1 = 'es_titulo1';
+            $titulo2 = 'es_titulo2';
+            $subtitulo = 'es_subtitulo';
+            $exploracion = 'es_exploracion';
+        }elseif($idioma == 'en'){
+            $titulo1 = 'en_titulo1';
+            $titulo2 = 'en_titulo2';
+            $subtitulo = 'en_subtitulo';
+            $exploracion = 'en_exploracion';
+        }else{
+            $titulo1 = 'fr_titulo1';
+            $titulo2 = 'fr_titulo2';
+            $subtitulo = 'fr_subtitulo';
+            $exploracion = 'fr_exploracion';
+        }
+
         $con = Yii::$app->db;
+        // $query = "select 	c.id, c.es_titulo1, c.orden_titulo2, c.es_titulo2, c.es_subtitulo, c.es_exploracion
+        //         , c.en_titulo1, c.en_titulo2, c.en_subtitulo, c.en_exploracion
+        //         , c.fr_titulo1, c.fr_titulo2, c.fr_subtitulo, c.fr_exploracion
+        // from 	mapa_enfoques_pai me
+        //         inner join contenido_pai_habilidades c on c.id = me.pai_habilidad_id
+        // where 	me.course_template_id = $opCourseTemplateId
+        //         and me.periodo_id = $periodoId
+        //         and me.estado = true
+        //         and c.es_exploracion not in (
+        //                         select 	contenido
+        //                         from 	planificacion_vertical_pai_opciones
+        //                         where 	plan_unidad_id = $planBloqueUnidadId
+        //                                 and tipo = 'habilidad_enfoque'
+        //                                 and contenido = c.es_exploracion
+        //         ) order by c.es_titulo2, c.es_exploracion ;";
+
         $query = "select 	c.id, c.es_titulo1, c.orden_titulo2, c.es_titulo2, c.es_subtitulo, c.es_exploracion
-                , c.en_titulo1, c.en_titulo2, c.en_subtitulo, c.en_exploracion, c.fr_titulo1
-                , c.fr_titulo2, c.fr_subtitulo, c.fr_exploracion
-        from 	mapa_enfoques_pai me
-                inner join contenido_pai_habilidades c on c.id = me.pai_habilidad_id
-        where 	me.course_template_id = $opCourseTemplateId
-                and me.periodo_id = $periodoId
-                and me.estado = true
-                and c.es_exploracion not in (
-                                select 	contenido
-                                from 	planificacion_vertical_pai_opciones
-                                where 	plan_unidad_id = $planBloqueUnidadId
-                                        and tipo = 'habilidad_enfoque'
-                                        and contenido = c.es_exploracion
-                ) order by c.es_titulo2, c.es_exploracion ;";
+        , c.en_titulo1, c.en_titulo2, c.en_subtitulo, c.en_exploracion
+        , c.fr_titulo1, c.fr_titulo2, c.fr_subtitulo, c.fr_exploracion
+from 	mapa_enfoques_pai me
+        inner join contenido_pai_habilidades c on c.id = me.pai_habilidad_id
+where 	me.course_template_id = $opCourseTemplateId
+        and me.periodo_id = $periodoId
+        and me.estado = true
+        and c.$exploracion not in (
+                        select 	contenido
+                        from 	planificacion_vertical_pai_opciones
+                        where 	plan_unidad_id = $planBloqueUnidadId
+                                and tipo = 'habilidad_enfoque'
+                                and contenido = c.$exploracion
+        ) order by c.$titulo2, c.$exploracion ;";
 
                 // echo '<pre>';
                 // print_r($query);

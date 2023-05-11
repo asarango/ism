@@ -37,17 +37,36 @@ $condicion = $condicionClass->aprobacion_planificacion($estado, $isOpen, $bloque
                     <tbody>
 
                         <?php
+                        // echo "<pre>";
+                        // print_r($contextoGlobalDisponibles);
+                        // die();
+
                         foreach ($contextoGlobalDisponiblesCabeceras as $disponibles) {
+                            
+                            if ($idioma == 'es') {
+                                $contenido = $disponibles['contenido_es'];
+                            } else if ($idioma == 'en') {
+                                $contenido = isset($disponibles['contenido_en']) ;
+                            } else {
+                                $contenido = $disponibles['contenido_fr'];
+                            }   
                         ?>
                             <tr style="background-color:#ff9e18;">
                                 <td><strong style="violet"><?= $disponibles['contenido_es'] ?> </strong></td>
                             </tr>
                             <?php
                             foreach ($contextoGlobalDisponibles as $disponibles1) {
-                            ?>
+                                if ($idioma == 'es') {
+                                    $contenido1 = $disponibles1['contenido_es'];
+                                } else if ($idioma == 'en') {
+                                    $contenido1 = $disponibles1['contenido_en'];
+                                } else {
+                                    $contenido1 = $disponibles1['contenido_fr'];
+                                }
+                                ?>
 
                                 <?php
-                                if ($disponibles['contenido_es'] == $disponibles1['contenido_es']) {
+                                if ($contenido == $contenido1) {
                                 ?>
                                     <tr>
                                         <td style="width:30px; text-align:justify">
@@ -59,7 +78,7 @@ $condicion = $condicionClass->aprobacion_planificacion($estado, $isOpen, $bloque
                                                     'tipo' => $disponibles1['tipo'],
                                                     'tipo2' => 'CONTEXTO GOBAL',
                                                     'id_relacion' => $disponibles1['id'],
-                                                    'contenido' => $disponibles1['contenido_es'],
+                                                    'contenido' => $contenido1,
                                                     'sub_contenido' => $disponibles1['sub_contenido'],
                                                     'pestana' => 'contexto_global'
                                                 ],

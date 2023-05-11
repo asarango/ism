@@ -73,17 +73,24 @@ $condicion = $condicionClass->aprobacion_planificacion($estado,$isOpen,$bloqueUn
                 <tbody>
                     <?php
                     foreach ($conceptosClaveDisponibles as $disponibles) {
+                        if ($idioma == 'es') {
+                            $contenido = $disponibles['contenido_es'];
+                        } else if ($idioma == 'en') {
+                            $contenido = $disponibles['contenido_en'];
+                        } else {
+                            $contenido = $disponibles['contenido_fr'];
+                        }
                     ?>
                         <tr>
                             <td style="width:30px">
                                 <?= 
                                     Html::a(
-                                        '<strong>'.$disponibles['contenido_es'].'</strong>',
+                                        '<strong>'.$contenido.'</strong>',
                                         ['asignar-contenido','plan_unidad_id' =>$bloqueUnidad->id,
                                             'tipo' => $disponibles['tipo'],
                                             'tipo2' => 'CONCEPTO CLAVE',
                                             'id_relacion' => $disponibles['id'],
-                                            'contenido' => $disponibles['contenido_es'],
+                                            'contenido' => $contenido,
                                             'pestana' => 'concepto_clave'],
                                         ['class' => 'link']
                                     );

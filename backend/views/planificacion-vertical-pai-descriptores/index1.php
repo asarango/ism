@@ -221,8 +221,12 @@ $condicion = $condicionClass->aprobacion_planificacion($estado,$isOpen,$bloqueUn
 
                     <li class="nav-item" role="presentation">
                         <button class="nav-link <?= $habilidadesActive ?> " id="habilidades-tab" data-bs-toggle="tab" data-bs-target="#habilidades" 
-                                type="button" role="tab" aria-controls="habilidades"  style="border-radius: 50% 0% 0 0" 
-                                aria-selected="false">Habilidades de enfoques del aprendizaje
+                                type="button" role="tab" 
+                                aria-controls="habilidades"  
+                                style="border-radius: 50% 0% 0 0" 
+                                aria-selected="false"
+                                title="Verificar opciones del mapa de enfoque"
+                                >* Habilidades de enfoques del aprendizaje
                                     <?php
                                     if (count($habilidadesSeleccionadas) == 0) {
                                         echo '<span class="badge rounded-pill bg-danger">
@@ -252,7 +256,8 @@ $condicion = $condicionClass->aprobacion_planificacion($estado,$isOpen,$bloqueUn
                                 [
                                     'bloqueUnidad' => $bloqueUnidad,
                                     'conceptosClaveDisponibles' => $conceptosClaveDisponibles,
-                                    'conceptosClaveSeleccionados' => $conceptosClaveSeleccionados
+                                    'conceptosClaveSeleccionados' => $conceptosClaveSeleccionados,
+                                    'idioma'=>$idioma
                                 ]
                         );
                         ?>
@@ -262,11 +267,16 @@ $condicion = $condicionClass->aprobacion_planificacion($estado,$isOpen,$bloqueUn
                     <div class="tab-pane fade <?= $showConceptosRelacionadosActive ?> " id="profile" role="tabpanel" aria-labelledby="profile-tab">
                         <!-- Manda a la view: planifificacion-vertical-pai/concepto-relacionado.php -->
                         <?php
+                        // echo"<pre>";
+                        //    print_r($conceptosRelacionadosDisponibles);
+                        //    die();
                         echo $this->render('concepto-relacionado',
                                 [
                                     'bloqueUnidad' => $bloqueUnidad,
                                     'conceptosRelacionadosDisponibles' => $conceptosRelacionadosDisponibles,
-                                    'conceptosRelacionadosSeleccionados' => $conceptosRelacionadosSeleccionados
+                                    'conceptosRelacionadosSeleccionados' => $conceptosRelacionadosSeleccionados,
+                                    'idioma'=>$idioma
+                                   
                                 ]
                         );
                         ?>
@@ -276,12 +286,16 @@ $condicion = $condicionClass->aprobacion_planificacion($estado,$isOpen,$bloqueUn
                     <div class="tab-pane fade <?= $showContextoGlobalActive ?> " id="contact" role="tabpanel" aria-labelledby="contact-tab">
                         <!-- Manda a la view: planifificacion-vertical-pai/contexto-global.php -->
                         <?php
+                        // echo"<pre>";
+                        //   print_r($contextoGlobalDisponibles);
+                        //   die();
                         echo $this->render('contexto-global',
                                 [
                                     'bloqueUnidad' => $bloqueUnidad,
                                     'contextoGlobalDisponibles' => $contextoGlobalDisponibles,
                                     'contextoGlobalSeleccionados' => $contextoGlobalSeleccionados,
                                     'contextoGlobalDisponiblesCabeceras'=>$contextoGlobalDisponiblesCabeceras,
+                                    'idioma'=>$idioma
                         ]);
                         ?>
                     </div>

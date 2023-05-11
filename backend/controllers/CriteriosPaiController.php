@@ -129,6 +129,7 @@ class CriteriosPaiController extends Controller {
                             ,cli.nombre_espanol 
                             ,des.nombre as descriptor
                             ,ild.descripcion 
+                            ,cli.es_interdisciplinar
                     from 	ism_criterio_descriptor_area dis
                             inner join op_course_template tem on tem.id = dis.id_curso 
                             inner join ism_area area on area.id = dis.id_area 

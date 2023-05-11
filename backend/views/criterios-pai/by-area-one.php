@@ -16,6 +16,7 @@ use yii\helpers\Url;
                     <th class="text-center">CRITERIO DESCRIPCIÓN</th>
                     <th class="text-center">DESCR</th>
                     <th class="text-center">DESCRIPTOR</th>
+                    <th class="text-center">INTERD</th>
                     <th class="text-center">ACCIONES</th>
                 </tr>
             </thead>
@@ -31,6 +32,7 @@ use yii\helpers\Url;
                             <td><?= $cri['nombre_espanol'] ?></td>
                             <td class="text-center"><?= $cri['descriptor'] ?></td>
                             <td><?= $cri['descripcion'] ?></td>
+                            <td><?= $cri['es_interdisciplinar'] ?></td>
                             <td class="text-center">
                                 <a href="#" onclick="delete_dis(<?= $cri['id'] ?>)" style="color: #ab0a3d">Delete</a>
                             </td>

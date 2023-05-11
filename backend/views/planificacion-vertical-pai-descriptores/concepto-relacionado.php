@@ -14,7 +14,11 @@ use yii\grid\GridView;
 $condicionClass = new backend\models\helpers\Condiciones;
 $estado = $bloqueUnidad->planCabecera->estado;
 $isOpen = $bloqueUnidad->is_open;
-$condicion = $condicionClass->aprobacion_planificacion($estado,$isOpen,$bloqueUnidad->settings_status);
+$condicion = $condicionClass->aprobacion_planificacion($estado, $isOpen, $bloqueUnidad->settings_status);
+// echo "<pre>";
+// print_r($conceptosRelacionadosDisponibles);
+// die();
+// 
 ?>
 
 
@@ -24,63 +28,58 @@ $condicion = $condicionClass->aprobacion_planificacion($estado,$isOpen,$bloqueUn
         <hr>
         <?php
         if ($condicion == false) {
-            ?>
+        ?>
             <!-- Aqui se muestran los conceptos -->
             <div id="global">
                 <h6>Esta planificación está <?= $estado ?></h6>
             </div>
-            <?php
+        <?php
         } else {
-            ?>
+        ?>
             <!-- Aqui se muestran los conceptos -->
             <div id="global">
                 <table class="table table-hover my-text-medium">
                     <thead>
                         <tr>
-                            <th scope="col" style="width:10px" >CONTENIDO</th>
+                            <th scope="col" style="width:10px">CONTENIDO</th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php
                         foreach ($conceptosRelacionadosDisponibles as $disponible) {
-                            ?>
+                            if ($idioma == 'es') {
+                                $contenido = $disponible['contenido_es'];
+                            } else if ($idioma == 'en') {
+                                $contenido = $disponible['contenido_en'];
+                            } else {
+                                $contenido = $disponible['contenido_fr'];
+                            }
+                        ?>
                             <tr>
-
-                                <?php
-//                                if ($bloqueUnidad->planCabecera->scholarisMateria->language_code == 'ES') {
+                                <td>
+                                    <?=
+                                    Html::a(
+                                        '<strong>' . $contenido . '</strong>',
+                                        [
+                                            'asignar-contenido', 'plan_unidad_id' => $bloqueUnidad->id,
+                                            'tipo' => 'concepto_relacionado',
+                                            'tipo2' => 'CONCEPTOS RELACIONADOS',
+                                            'id_relacion' => $disponible['id'],
+                                            'contenido' => $contenido,
+                                            'pestana' => 'conceptos_relacionados'
+                                        ],
+                                        ['class' => 'link']
+                                    );
                                     ?>
-                                    <td>
-                                        <?=
-                                        Html::a(
-                                                '<strong>' . $disponible['contenido_es'] . '</strong>',
-                                                ['asignar-contenido', 'plan_unidad_id' => $bloqueUnidad->id,
-                                                    'tipo' => 'concepto_relacionado',
-                                                    'tipo2' => 'CONCEPTOS RELACIONADOS',
-                                                    'id_relacion' => $disponible['id'],
-                                                    'contenido' => $disponible['contenido_es'],
-                                                    'pestana' => 'conceptos_relacionados'],
-                                                ['class' => 'link']
-                                        );
-                                        ?>
-                                    </td>
-                                    
-                                    <?php                                 
-                                  
-
-//                                }
-                                ?>
-
-                                    
-                                
-
+                                </td>
                             </tr>
-                            <?php
+                        <?php
                         }
                         ?>
                     </tbody>
-                </table>                  
+                </table>
             </div>
-            <?php
+        <?php
         }
         ?>
 
@@ -98,13 +97,13 @@ $condicion = $condicionClass->aprobacion_planificacion($estado,$isOpen,$bloqueUn
                         <th scope="col" style="text-align:center">CONTENIDO</th>
                         <?php
                         if ($condicion == false) {
-                            ?>
+                        ?>
 
-                            <?php
+                        <?php
                         } else {
-                            ?>
+                        ?>
                             <th scope="col">ACCIÓN</th>
-                            <?php
+                        <?php
                         }
                         ?>
 
@@ -114,34 +113,34 @@ $condicion = $condicionClass->aprobacion_planificacion($estado,$isOpen,$bloqueUn
                     <?php
                     $contador = 1;
                     foreach ($conceptosRelacionadosSeleccionados as $seleccionados) {
-                        ?>
+                    ?>
                         <tr>
                             <th style="width:20px"><?= $contador ?></th>
                             <td style="text-align:center"><?= '<strong>' . $seleccionados['contenido'] . '</strong>' ?></td>
                             <?php
                             if ($condicion == false) {
-                                ?>
-                            
-                                <?php
+                            ?>
+
+                            <?php
                             } else {
-                                ?>
-                            <td>
-                                <?=
-                                Html::a(
+                            ?>
+                                <td>
+                                    <?=
+                                    Html::a(
                                         '<i class="far fa-trash-alt" style="color:red"></i>',
                                         [
                                             'quitar-contenido', 'id' => $seleccionados['id'],
                                             'pestana' => 'conceptos_relacionados'
                                         ],
                                         ['class' => 'link']
-                                );
-                                ?>
-                            </td>
-                                <?php
+                                    );
+                                    ?>
+                                </td>
+                            <?php
                             }
                             ?>
                         </tr>
-                        <?php
+                    <?php
                         $contador = $contador + 1;
                     }
                     ?>

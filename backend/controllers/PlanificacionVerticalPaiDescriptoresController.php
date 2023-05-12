@@ -124,7 +124,7 @@ class PlanificacionVerticalPaiDescriptoresController extends Controller{
 
         
 
-        $habilidadesDisponibles = $this->consulta_habilidades_disponibles($planBloqueUnidadId, $courseTemplateId, $periodoId, $idioma);
+        $habilidadesDisponibles = $this->consulta_habilidades_disponibles($planBloqueUnidadId, $courseTemplateId, $periodoId, $idioma, $materiaId);
         // echo '<pre>';
         // print_r($habilidadesDisponibles);
         // die();
@@ -379,7 +379,7 @@ class PlanificacionVerticalPaiDescriptoresController extends Controller{
     return $res;
 }
 
-    private function consulta_habilidades_disponibles($planBloqueUnidadId, $opCourseTemplateId, $periodoId, $idioma){
+    private function consulta_habilidades_disponibles($planBloqueUnidadId, $opCourseTemplateId, $periodoId, $idioma, $materiaId){
 
         if($idioma == 'es'){
             $titulo1 = 'es_titulo1';
@@ -423,6 +423,7 @@ from 	mapa_enfoques_pai me
 where 	me.course_template_id = $opCourseTemplateId
         and me.periodo_id = $periodoId
         and me.estado = true
+        and me.materia_id = $materiaId
         and c.$exploracion not in (
                         select 	contenido
                         from 	planificacion_vertical_pai_opciones

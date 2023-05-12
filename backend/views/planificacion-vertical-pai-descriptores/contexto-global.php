@@ -38,48 +38,55 @@ $condicion = $condicionClass->aprobacion_planificacion($estado, $isOpen, $bloque
 
                         <?php
                         // echo "<pre>";
-                        // print_r($contextoGlobalDisponibles);
+                        // print_r($contextoGlobalDisponiblesCabeceras);
                         // die();
-
                         foreach ($contextoGlobalDisponiblesCabeceras as $disponibles) {
-                            
                             if ($idioma == 'es') {
                                 $contenido = $disponibles['contenido_es'];
                             } else if ($idioma == 'en') {
-                                $contenido = isset($disponibles['contenido_en']) ;
+                                $contenido = $disponibles['contenido_en'];
                             } else {
                                 $contenido = $disponibles['contenido_fr'];
-                            }   
+                            }
                         ?>
                             <tr style="background-color:#ff9e18;">
-                                <td><strong style="violet"><?= $disponibles['contenido_es'] ?> </strong></td>
+                                <td><strong style="violet"><?= $contenido ?> </strong></td>
                             </tr>
                             <?php
+                            // echo '<pre>';
+                            // print_r($contextoGlobalDisponibles);
+                            // die();
+                            
                             foreach ($contextoGlobalDisponibles as $disponibles1) {
                                 if ($idioma == 'es') {
                                     $contenido1 = $disponibles1['contenido_es'];
+                                    $subcontenido=$disponibles1['sub_contenido'];
+                                    
                                 } else if ($idioma == 'en') {
                                     $contenido1 = $disponibles1['contenido_en'];
+                                    $subcontenido=$disponibles1['sub_contenido_en'];
                                 } else {
                                     $contenido1 = $disponibles1['contenido_fr'];
+                                    $subcontenido=$disponibles1['sub_contenido_fr'];
                                 }
-                                ?>
-
-                                <?php
+                                
+                                // comparamos variable padre con  variable hijo para 
+                                // realizar el listado correctro por cabecera del 
+                                // contexto global                                 
                                 if ($contenido == $contenido1) {
                                 ?>
                                     <tr>
                                         <td style="width:30px; text-align:justify">
                                             <?=
                                             Html::a(
-                                                '<span > * ' . $disponibles1['sub_contenido'] . '</span>',
+                                                '<span > * ' . $subcontenido . '</span>',
                                                 [
                                                     'asignar-contenido', 'plan_unidad_id' => $bloqueUnidad->id,
                                                     'tipo' => $disponibles1['tipo'],
                                                     'tipo2' => 'CONTEXTO GOBAL',
                                                     'id_relacion' => $disponibles1['id'],
                                                     'contenido' => $contenido1,
-                                                    'sub_contenido' => $disponibles1['sub_contenido'],
+                                                    'sub_contenido' => $subcontenido,
                                                     'pestana' => 'contexto_global'
                                                 ],
                                                 ['class' => 'link']
@@ -101,15 +108,27 @@ $condicion = $condicionClass->aprobacion_planificacion($estado, $isOpen, $bloque
 
     </div>
 
+     <!-- INICIO DE BLOQUE SELECCIONADOS -->
+
     <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8 border border-1 border-warning">
         <h4 style="text-align:center">SELECCIONADOS</h4>
         <hr>
         <!-- Tabla que muestra conceptos seleccionados -->
         <div>
             <?php
+            // echo "<pre>";
+            // print_r($contextoGlobalDisponiblesCabeceras);
+            // die();
             foreach ($contextoGlobalDisponiblesCabeceras as $disponibles) {
+                if ($idioma == 'es') {
+                    $contenido = $disponibles['contenido_es'];
+                } else if ($idioma == 'en') {
+                    $contenido = $disponibles['contenido_en'];
+                } else {
+                    $contenido = $disponibles['contenido_fr'];
+                }
             ?>
-                <p style="background-color:#ff9e18;color:black"><?= $disponibles['contenido_es'] ?> </p>
+                <p style="background-color:#ff9e18;color:black"><?= $contenido ?> </p>
                 
                 <table class="table table-hover my-text-medium">
                     <thead>
@@ -133,20 +152,22 @@ $condicion = $condicionClass->aprobacion_planificacion($estado, $isOpen, $bloque
                     <tbody>
 
                         <?php
-                        $contador = 1;
+                        $contador = 0;
+                        // echo "<pre>";
+                        // print_r($contextoGlobalSeleccionados);
+                        // die();
                         foreach ($contextoGlobalSeleccionados as $seleccionado) {
+                            $contador++;
                         ?>
                             <?php
-                            if ($disponibles['contenido_es'] == $seleccionado['contenido']) {
+                            if ($contenido == $seleccionado['contenido']) {
                             ?>
                                 <tr>
                                     <td><?= $contador ?></td>
                                     <td style="text-align:left;"><?= $seleccionado['contenido'] . ' ' . $seleccionado['sub_contenido'] ?></td>
                                     <?php
                                     if ($condicion == false) {
-                                    ?>
-
-                                    <?php
+                                    // DESDE EL TRUE NO HACE NADA
                                     } else {
                                     ?>
                                         <td>
@@ -166,7 +187,6 @@ $condicion = $condicionClass->aprobacion_planificacion($estado, $isOpen, $bloque
                                     ?>
                                 </tr>
                         <?php
-                                $contador = $contador + 1;
                             }
                         }
 

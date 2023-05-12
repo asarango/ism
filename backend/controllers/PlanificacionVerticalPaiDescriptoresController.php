@@ -332,18 +332,22 @@ class PlanificacionVerticalPaiDescriptoresController extends Controller{
 
             if($idioma == 'es'){
                 $campoContenido = 'contenido_es';
+                $campoSubcontenido = 'sub_contenido';
             }elseif($idioma == 'en'){
                 $campoContenido = 'contenido_en';
+                $campoSubcontenido = 'sub_contenido_en';
             }else{
                 $campoContenido = 'contenido_fr';
+                $campoSubcontenido = 'sub_contenido_fr';
             }
 
             $con    = Yii::$app->db;
-            $query  = "select 	id, tipo, contenido_es, contenido_en, contenido_fr, estado,sub_contenido
+            $query  = "select 	id, tipo, contenido_es, contenido_en, contenido_fr, estado
+                        , sub_contenido, sub_contenido_en, sub_contenido_fr
                         from 	contenido_pai_opciones op
                         where 	op.tipo = 'contexto_global'
                                 and estado = true
-                                and sub_contenido not in(
+                                and $campoSubcontenido not in(
                                     select sub_contenido from planificacion_vertical_pai_opciones where
                                     contenido = $campoContenido
                                     and plan_unidad_id = $planBloqueUnidadId
@@ -355,13 +359,19 @@ class PlanificacionVerticalPaiDescriptoresController extends Controller{
         $res = $con->createCommand($query)->queryAll();
         return $res;
     }
+    
     private function consulta_contexto_global_cabeceras($planBloqueUnidadId){
         $con    = Yii::$app->db;
-        $query  = "select 	 distinct contenido_es
+        $query  = "select 	 contenido_es
+                            ,contenido_en 
+                            ,contenido_fr 
                     from 	contenido_pai_opciones op
                     where 	op.tipo = 'contexto_global'
-                            and estado = true
-                            order by contenido_es;";
+                        and estado = true
+                    group by contenido_es
+                            ,contenido_en 
+                            ,contenido_fr 
+                        order by contenido_es; ";
     // echo '<pre>';
     // print_r($query );
     // die();

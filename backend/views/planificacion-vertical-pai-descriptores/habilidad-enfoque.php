@@ -36,23 +36,51 @@ $condicion = $condicionClass->aprobacion_planificacion($estado,$isOpen,$bloqueUn
                     </thead>
                     <tbody>
                         <?php
+                        // echo "<pre>";
+                        // print_r($habilidadesDisponibles);
+                        // die();
                         foreach ($habilidadesDisponibles as $disponible) {
+                            switch($idioma){
+                                case "es":
+                                    $contenid = $disponible['es_titulo1'];
+                                    $contenido = $disponible['es_titulo2'];
+                                    $contenido1 = $disponible['es_subtitulo'];
+                                    $contenido2 = $disponible['es_exploracion'];
+                                    $contenido3 = $disponible['orden_titulo2'];
+                                    break;
+                                case "en":
+                                    $contenid = $disponible['en_titulo1'];
+                                    $contenido = $disponible['en_titulo2'];
+                                    $contenido1 = $disponible['en_subtitulo'];
+                                    $contenido2 = $disponible['en_exploracion'];
+                                    $contenido3 = $disponible['orden_titulo2'];
+                                    break;
+                                case "fr":
+                                    $contenid = $disponible['fr_titulo1'];
+                                    $contenido = $disponible['fr_titulo2'];
+                                    $contenido1 = $disponible['fr_subtitulo'];
+                                    $contenido2 = $disponible['fr_exploracion'];
+                                    $contenido3 = $disponible['orden_titulo2'];
+                                    break;
+                                
+                                }
+                                                       
                             ?>
                             <tr>
                                 <td>
                                     <?=
-                                    '<strong>' . $disponible['orden_titulo2'] . '.- ' . $disponible['es_titulo2'] . '</strong>'
+                                    '<strong>' . $disponible['orden_titulo2'] . '.- ' . $contenido . '</strong>'
                                     ?>
                                 </td>
                                 <td>
                                     <?=
                                     Html::a(
-                                            '<strong>' . $disponible['es_exploracion'] . '</strong>',
+                                            '<strong>' . $contenido2 . '</strong>',
                                             ['asignar-contenido', 'plan_unidad_id' => $bloqueUnidad->id,
                                                 'tipo' => 'habilidad_enfoque',
-                                                'tipo2' => $disponible['es_titulo2'],
+                                                'tipo2' => $contenido,
                                                 'id_relacion' => $disponible['id'],
-                                                'contenido' => $disponible['es_exploracion'],
+                                                'contenido' => $contenido2,
                                                 'pestana' => 'habilidad_enfoque'
                                             ],
                                             ['class' => 'link']

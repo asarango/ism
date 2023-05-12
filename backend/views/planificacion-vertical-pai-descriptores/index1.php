@@ -362,7 +362,8 @@ $condicion = $condicionClass->aprobacion_planificacion($estado,$isOpen,$bloqueUn
                                 [
                                     'bloqueUnidad' => $bloqueUnidad,
                                     'habilidadesDisponibles' => $habilidadesDisponibles,
-                                    'habilidadesSeleccionadas' => $habilidadesSeleccionadas
+                                    'habilidadesSeleccionadas' => $habilidadesSeleccionadas,
+                                    'idioma'=>$idioma
                                 ]
                         );
                         ?>

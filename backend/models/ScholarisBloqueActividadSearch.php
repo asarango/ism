@@ -19,7 +19,9 @@ class ScholarisBloqueActividadSearch extends ScholarisBloqueActividad
     {
         return [
             [['id', 'create_uid', 'write_uid', 'orden', 'dias_laborados','instituto_id'], 'integer'],
-            [['name', 'create_date', 'write_date', 'quimestre', 'tipo', 'desde', 'hasta', 'scholaris_periodo_codigo', 'tipo_bloque', 'estado', 'abreviatura', 'tipo_uso', 'bloque_inicia', 'bloque_finaliza'], 'safe'],
+            [['name', 'create_date', 'write_date', 'quimestre', 'tipo', 'desde', 'hasta', 
+                'scholaris_periodo_codigo', 'tipo_bloque', 'estado', 'abreviatura', 
+                'tipo_uso', 'bloque_inicia', 'bloque_finaliza', 'codigo'], 'safe'],
         ];
     }
 
@@ -85,6 +87,7 @@ class ScholarisBloqueActividadSearch extends ScholarisBloqueActividad
             ->andFilterWhere(['ilike', 'tipo_bloque', $this->tipo_bloque])
             ->andFilterWhere(['ilike', 'estado', $this->estado])
             ->andFilterWhere(['ilike', 'abreviatura', $this->abreviatura])
+            ->andFilterWhere(['ilike', 'codigo', $this->codigo])
             ->andFilterWhere(['ilike', 'tipo_uso', $this->tipo_uso]);
 
         return $dataProvider;

@@ -66,12 +66,13 @@ class ScholarisBloqueActividad extends \yii\db\ActiveRecord
         return [
             [['name'], 'required'],
             [['create_uid', 'write_uid', 'orden', 'dias_laborados', 'instituto_id'], 'default', 'value' => null],
-            [['create_uid', 'write_uid', 'orden', 'dias_laborados', 'instituto_id'], 'integer'],
+            [['create_uid', 'write_uid', 'orden', 'dias_laborados', 'instituto_id', 'quimestre_id'], 'integer'],
             [['create_date', 'write_date', 'desde', 'hasta', 'bloque_inicia', 'bloque_finaliza', 'fecha_aprobacion_pud', 'fecha_aprobacion_pca'], 'safe'],
             [['name'], 'string', 'max' => 50],
             [['quimestre', 'tipo', 'scholaris_periodo_codigo', 'tipo_bloque'], 'string', 'max' => 20],
             [['estado', 'tipo_uso', 'codigo_tipo_calificacion'], 'string', 'max' => 30],
             [['abreviatura'], 'string', 'max' => 5],
+            [['codigo'], 'string', 'max' => 10],
             [['instituto_id'], 'exist', 'skipOnError' => true, 'targetClass' => OpInstitute::className(), 'targetAttribute' => ['instituto_id' => 'id']],
             [['codigo_tipo_calificacion'], 'exist', 'skipOnError' => true, 'targetClass' => ScholarisBloqueComoCalifica::className(), 'targetAttribute' => ['codigo_tipo_calificacion' => 'codigo']],
             [['scholaris_periodo_codigo'], 'exist', 'skipOnError' => true, 'targetClass' => ScholarisPeriodo::className(), 'targetAttribute' => ['scholaris_periodo_codigo' => 'codigo']],
@@ -90,6 +91,7 @@ class ScholarisBloqueActividad extends \yii\db\ActiveRecord
             'create_date' => 'Create Date',
             'write_uid' => 'Write Uid',
             'write_date' => 'Write Date',
+            'quimestre_id' => 'Quimestre Id',
             'quimestre' => 'Quimestre',
             'tipo' => 'Tipo',
             'desde' => 'Desde',
@@ -107,6 +109,7 @@ class ScholarisBloqueActividad extends \yii\db\ActiveRecord
             'codigo_tipo_calificacion' => 'Codigo Tipo Calificacion',
             'fecha_aprobacion_pud' => 'Fecha Aprobacion Pud',
             'fecha_aprobacion_pca' => 'Fecha Aprobacion Pca',
+            'codigo' => 'Código'
         ];
     }
 
@@ -239,7 +242,17 @@ class ScholarisBloqueActividad extends \yii\db\ActiveRecord
     }
 
 
+    /** Métodos ingresados sin Gii */
     public function getUso(){        
         return $this->hasOne(ScholarisBloqueComparte::className(), ['valor' => 'tipo_uso']);
     }
+
+    public function getQuimestre(){
+        return $this->hasOne(ScholarisQuimestre::className(), ['id' => 'quimestre_id']);
+    }
+
+
+    /** Fin de Métodos ingresados sin Gii */
+
+
 }

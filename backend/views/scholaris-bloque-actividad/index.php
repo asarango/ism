@@ -128,6 +128,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         'quimestre',
                         'tipo_bloque',
                         'orden',
+                        'codigo',
                         'name',
                         'abreviatura',
                         'desde',

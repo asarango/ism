@@ -162,7 +162,8 @@ class HelperGeneral extends ActiveRecord{
         return $resp;
     }
     public function query_asignaturas_x_nivel($nivelId)
-    {    
+    {            
+
         $periodoId = Yii::$app->user->identity->periodo_id;
         $usuarioLog = Yii::$app->user->identity->usuario;   
         // $query = "select 	cab.id
@@ -332,6 +333,17 @@ class HelperGeneral extends ActiveRecord{
 
         $resp = $con->createCommand($query)->queryAll();      
         return $resp;
+    }
+
+
+    public function truncarNota($numero, $digito) {
+        $raiz = 100;
+        $multiplicado = $numero * $raiz;
+        $extrae = explode('.', $multiplicado);
+        $entero = $extrae[0];
+        $resultado = $entero / $raiz;
+
+        return $resultado;
     }
     
     

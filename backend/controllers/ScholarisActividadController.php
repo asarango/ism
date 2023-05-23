@@ -4,6 +4,8 @@ namespace backend\controllers;
 
 use backend\models\Lms;
 use backend\models\LmsActividad;
+use backend\models\LmsActividadXArchivo;
+use backend\models\notas\RegistraNotas;
 use backend\models\ResUsers;
 use backend\models\ScholarisActividadDescriptor;
 use backend\models\ScholarisBloqueActividad;
@@ -361,13 +363,15 @@ class ScholarisActividadController extends Controller
      * @param integer $id
      * @return ScholarisActividad the loaded model
      * @throws NotFoundHttpException if the model cannot be found
+     * MÉTODO ACTUALIZADO POR Arturo Sarango el 2023-05-15
+     * (se coloca información del pequeño LMS)
      */
     public function actionActividad($actividad)
     {        
         $sentencia = new \backend\models\SentenciasNotas();
         $modelActividad = \backend\models\ScholarisActividad::find()
             ->where(['id' => $actividad])
-            ->one();       
+            ->one();     
         
         $modelCalificaciones = ScholarisCalificaciones::find()
             ->where(['idactividad' => $actividad])
@@ -435,6 +439,16 @@ class ScholarisActividadController extends Controller
                      
         }
 
+        /***
+         * envia los datos del tipo LMS pequeño
+         */
+        $lmsActividad = LmsActividad::findOne($modelActividad->lms_actvidad_id);
+        $materialApoyo = LmsActividadXArchivo::find()->where(['lms_actividad_id' => $modelActividad->lms_actvidad_id])->all();
+
+         /**************************** */
+
+
+
         if($modelActividad->tipo_calificacion == 'P'){
             return $this->render('actividad', [
                 'modelActividad' => $modelActividad,
@@ -447,7 +461,9 @@ class ScholarisActividadController extends Controller
                 'modelCalificaciones2' => $modelCalificaciones2, 
                 'noAsignados' => $noAsignados,  
                 'asignados' => $asignados ,
-                'model'=>  $model     
+                'model'=>  $model,
+                'lmsActividad' => $lmsActividad,
+                'materialApoyo' => $materialApoyo     
             ]);
         }else{
 
@@ -461,7 +477,9 @@ class ScholarisActividadController extends Controller
                 'modelCalificaciones2' => $modelCalificaciones2,
                 'noAsignados' => $noAsignados,  
                 'asignados' => $asignados ,
-                'model'=>  $model            
+                'model'=>  $model,
+                'lmsActividad' => $lmsActividad,
+                'materialApoyo' => $materialApoyo
             ]);
         }        
     }
@@ -828,6 +846,7 @@ class ScholarisActividadController extends Controller
        
         $nota = $_POST['nota'];
         $notaId = $_POST['notaId'];
+        $grupoId = $_POST['grupo_id'];
         $user = Yii::$app->user->identity->usuario;
         $idPeriodo = \yii::$app->user->identity->periodo_id;
       
@@ -853,21 +872,25 @@ class ScholarisActividadController extends Controller
         ->where(['codigo_tipo_actividad'=>$modelActividad->tipo_actividad_id]) 
         ->one();
     
+
+        /***Proceso mediante clases para registrar notas en los reportes*/
+        $scores = new RegistraNotas($grupoId, $notaId, $nota);
+        /***Fin de proceso mediante clases para registrar notas en los reportes */
+
         
         //proceso de guardado        
         //2.- Se ejecuta funcion para insertar promedios de insumos
-        $con = Yii::$app->db;       
+        // $con = Yii::$app->db;       
 
-        $query = "select insert_lib_promedio_insumo ($modelGrupoAlumnoClase->id,$idBloque,$modelGrupoCalifiaciones->id,$idPeriodo,'$user');";
-        $con->createCommand($query)->execute();     
-        $query = "select insert_lib_bloques_grupo_clase ($modelGrupoAlumnoClase->id,$idBloque,$idPeriodo,'$user','$tipo_uso');";
-        $con->createCommand($query)->execute();   
-        //$query = "select insert_promedios_lib_bloques_grupo_clase ($modelGrupoAlumnoClase->id,$idPeriodo,'$user');"; se reemplaza por la de abajo solicita esos parametros el SP
-        $query = "select insert_promedios_lib_bloques_grupo_clase ($modelGrupoAlumnoClase->id,$idPeriodo,'$user', '$tipo_uso');";
-        $con->createCommand($query)->execute(); 
+        // $query = "select insert_lib_promedio_insumo ($modelGrupoAlumnoClase->id,$idBloque,$modelGrupoCalifiaciones->id,$idPeriodo,'$user');";
+        // $con->createCommand($query)->execute();     
+        // $query = "select insert_lib_bloques_grupo_clase ($modelGrupoAlumnoClase->id,$idBloque,$idPeriodo,'$user','$tipo_uso');";
+        // $con->createCommand($query)->execute();   
+        // $query = "select insert_promedios_lib_bloques_grupo_clase ($modelGrupoAlumnoClase->id,$idPeriodo,'$user', '$tipo_uso');";
+        // $con->createCommand($query)->execute(); 
 
 
-        $this->actualizaParcial($notaId);       
+        // $this->actualizaParcial($notaId);       
     }
 
     protected function actualizaParcial($notaId)
@@ -1638,5 +1661,19 @@ class ScholarisActividadController extends Controller
      */
 
 
+     public function actionDownload(){
+        $model = ScholarisParametrosOpciones::find()->where([
+            'codigo' => 'pathfiles'
+        ])->one();
+
+        $path = $model->valor.$_GET['path'];
+
+        try{
+            return Yii::$app->response->sendFile($path)->send();
+        }catch(\Exception $ex ){
+            echo 'No existe el archivo!!!';
+        }
+        
+     }
 
 }

@@ -312,6 +312,7 @@ $modelPudBitacora = PudAprobacionBitacora::find()
             //idPvd_Op: esta variable toma dos valores de id's, de dos tablas diferentes
             // tablas: planificacion vertical diploma relacion tdc, cuando elimina
             // tablas: planificacion opciones, cuando agrega
+            // alert(accion_update_op);
             var url = buscar_url(accion_update_op);
             params = {
                 id_plani_vert_dip: id_pvd,

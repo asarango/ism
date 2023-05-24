@@ -8,7 +8,7 @@ use yii\helpers\Url;
 /* @var $searchModel app\models\ScholarisActividadSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Actividad #: '.$modelActividad->id.' | '. $modelActividad->title;
+$this->title = 'Actividad #: ' . $modelActividad->id . ' | ' . $modelActividad->title;
 
 ?>
 
@@ -17,15 +17,18 @@ $this->title = 'Actividad #: '.$modelActividad->id.' | '. $modelActividad->title
 <div class="scholaris-actividad-index">
     <div class="m-0 vh-50 row justify-content-center align-items-center">
         <div class="card shadow col-lg-10 col-md-10">
-            <div class=" row align-items-center p-2">
+            <div class=" row " style="margin-top: 10px;">
                 <div class="col-lg-1">
-                    <h4><img src="ISM/main/images/submenu/retroalimentacion.png" width="64px" style="" class="img-thumbnail"></h4>
+                    <h4><img src="../ISM/main/images/submenu/retroalimentacion.png" width="64px" style=""
+                            class="img-thumbnail"></h4>
                 </div>
-                <div class="col-lg-11">
-                    <h4><?= Html::encode($this->title) ?></h4>
+                <div class="col-lg-6">
+                    <h5>
+                        <?= Html::encode($this->title) ?>
+                    </h5>
                     <p>(
                         <?=
-                        ' <small>' . $modelActividad->clase->ismAreaMateria->materia->nombre .
+                            ' <small>' . $modelActividad->clase->ismAreaMateria->materia->nombre .
                             ' - ' .
                             'Clase #:' . $modelActividad->clase->id .
                             ' - ' .
@@ -37,103 +40,95 @@ $this->title = 'Actividad #: '.$modelActividad->id.' | '. $modelActividad->title
                         ?>
                         )
                     </p>
-                </div>
-            </div>
-            <hr>
 
-            <div class="row">
-                <div class="col-lg-6 col-md-6">
-                    |
-                    <?php echo Html::a(
+                </div>
+                <div class="col-lg-5 col-md-5" style="text-align: right;">
+                <?php echo Html::a(
                         '<span class="badge rounded-pill" style="background-color: #898b8d"><i class="fas fa-chart-line"></i> DETALLE - ACTIVIDAD</span>',
-                        ['actividad', "actividad" => $modelActividad->id],
+                        ['scholaris-actividad/calificar', "id" => $modelActividad->id],
                         ['class' => '', 'title' => 'DETALLE -ACTIVIDAD']
                     ); ?>
                     |
-                    
-
-
-                </div>
-                <!-- fin de primeros botones -->
-                
-                <!--botones derecha-->
-                <div class="col-lg-6 col-md-6" style="text-align: right;">
-                    |
-                        <?php echo Html::a(
-                        '<span class="badge rounded-pill bg-cuarto"><i class="fa fa-plus-circle" aria-hidden="true"></i> Califiación detallada</span>',
+                    <?php echo Html::a(
+                        '<span class="badge rounded-pill bg-cuarto"><i class="fa fa-plus-circle" aria-hidden="true"></i> Calificación Detallada</span>',
                         ['calificacion/index1', "actividad_id" => $modelActividad->id],
                         ['class' => '', 'title' => '']
                     ); ?>
-                    |
-                </div> <!-- Fin de botones derecha -->
-            </div><!-- FIN DE BOTONES DE ACCION Y NAVEGACIÓN -->
 
-            <!-- comienza cuerpo  -->            
-            <div class="row" style="margin-top: 20px;">
-                
+
+                </div>
+                <hr>
+            </div>
+            <!-- FIN DE BOTONES DE ACCION Y NAVEGACIÓN -->
+
+            <!-- comienza cuerpo  -->
+            <div class="row" style="margin-top: 5px;">
+
                 <div class="col-lg-4 col-md-4" style="text-align: left">
                     <?php
-                      if($anterior){
-                          echo Html::a('<i class="fas fa-backward"></i> '.$anterior['student'], ['index1',
-                                'actividad_id' => $modelActividad->id,
-                                'actual' => $anterior['student']
-                              ]);
-                      }
+                    if ($anterior) {
+                        echo Html::a('<i class="fas fa-backward"></i> ' . $anterior['student'], [
+                            'index1',
+                            'actividad_id' => $modelActividad->id,
+                            'actual' => $anterior['student']
+                        ]);
+                    }
                     ?>
                 </div>
                 <div class="col-lg-4 col-md-4">
                     <?php
-                      if($actual){
-                          echo '<h6><b>'.$actual['student'].'</b></h6>';
-                      }
-                     //Html::a('')
+                    if ($actual) {
+                        echo '<h6><b>' . $actual['student'] . '</b></h6>';
+                    }
+                    //Html::a('')
                     ?>
                 </div>
                 <div class="col-lg-4 col-md-4" style="text-align: right">
                     <?php
-                      if($siguiente){
-                      
-                          echo Html::a($siguiente['student'].' <i class="fas fa-forward"></i>', ['index1',
-                                'actividad_id' => $modelActividad->id,
-                                'actual' => $siguiente['student']
-                              ]);
-                      
-                      }                     
+                    if ($siguiente) {
+
+                        echo Html::a($siguiente['student'] . ' <i class="fas fa-forward"></i>', [
+                            'index1',
+                            'actividad_id' => $modelActividad->id,
+                            'actual' => $siguiente['student']
+                        ]);
+
+                    }
                     ?>
                 </div>
-                
-                
-                
-            </div>            
+
+
+
+
+            </div>
             <!-- finaliza cuerpo -->
         </div>
     </div>
 </div>
 
 <script>
-    $(function() 
-    {
-      $('.input').keyup(function(e) {
-        if(e.keyCode==38)//38 para arriba
-          mover(e,-1);
-        if(e.keyCode==40)//40 para abajo
-          mover(e,1);
-      });
+    $(function () {
+        $('.input').keyup(function (e) {
+            if (e.keyCode == 38)//38 para arriba
+                mover(e, -1);
+            if (e.keyCode == 40)//40 para abajo
+                mover(e, 1);
+        });
     });
 
 
-function mover(event, to) {
-   let list = $('input');
-   let index = list.index($(event.target));
-   index = Math.max(0,index + to);
-   list.eq(index).focus();
-}
+    function mover(event, to) {
+        let list = $('input');
+        let index = list.index($(event.target));
+        index = Math.max(0, index + to);
+        list.eq(index).focus();
+    }
 </script>
 
 <script>
-    
-    
-    
+
+
+
     document.getElementById("calificar").focus();
 
     function cambiarNota(id) {
@@ -147,11 +142,11 @@ function mover(event, to) {
             var url = "<?= Url::to(['registra']) ?>";
 
             $.post(
-                    url,
-                    {nota: nota, notaId: id},
-                    function (result) {
-                        $("#res").html(result);
-                    }
+                url,
+                { nota: nota, notaId: id },
+                function (result) {
+                    $("#res").html(result);
+                }
             );
         } else {
             alert("La calificación debe estar ente " + minima + " y " + maxima);

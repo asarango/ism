@@ -171,8 +171,8 @@ class PudDipController extends Controller {
             case '5.6.-':
                 $respuesta = $this->get_accion_conexion_cas($planUnidadId);
                 break;
-            case '5.6.1.-':
-                $respuesta = $this->get_accion_conexion_cas($planUnidadId);
+            // case '5.6.1.-':
+            //     $respuesta = $this->get_accion_conexion_cas($planUnidadId);
             case '5.7.-':
                 $respuesta = $this->get_accion_nee($planUnidadId);
                 break;
@@ -336,12 +336,14 @@ class PudDipController extends Controller {
         $tipoProc = $_GET['tipo_proceso'];
         $accion_update = $_GET['accion'];
 
+        $accionUpdate = $accion_update = $_GET['accion'] == '5.6.1.-' ? '5.6.-' : $_GET['accion'];
+
         $this->insertUpdateConexionCas($idPvd, $idPvd_Op, $tipoProc);
         //guarda el porcentaje de avance del pud dip
         $model = PlanificacionVerticalDiploma::find()->where([
                     'id' => $idPvd
                 ])->one();
-        $model->ultima_seccion = $accion_update;
+        $model->ultima_seccion = $accionUpdate;
         $model->save();
         $this->pud_dip_actualiza_porcentaje_avance($model);
     }
@@ -1315,6 +1317,10 @@ class PudDipController extends Controller {
         $planifVertDipl = PlanificacionVerticalDiploma::find()->where([
                     'planificacion_bloque_unidad_id' => $planBloqueUnidad->id
                 ])->one();
+
+        $planifVertDipl->ultima_seccion = $accion_update;        
+        $planifVertDipl->save();
+        
         $modelPlanifVertDiplTDC = $this->consultar_conexion_cas_ckeck($planifVertDipl->id);
 
         $itemConexionCas = '';
@@ -1332,7 +1338,8 @@ class PudDipController extends Controller {
                 $activarEnlace = $this->consultaRespuestaEnvio($planifVertDipl->id);
                 if ($activarEnlace == 1) {
                     $itemConexionCas .= '<td>';
-                    $itemConexionCas .= '<a href="#"   class="far fa-thumbs-up" style="color: #0a1f8f" onclick="update_campos_check(' . $planifVertDipl->id . ',' . $idPvdOp . ',\'' . $accion_update_op . '\',\'' . $quitar . '\')"></a>';
+                    $itemConexionCas .= '<a href="#"   class="far fa-thumbs-up" style="color: #0a1f8f" 
+                    onclick="update_campos_check(' . $planifVertDipl->id . ',' . $idPvdOp . ',\'' . $accion_update_op . '\',\'' . $quitar . '\')"></a>';
                     $itemConexionCas .= '</td>';
                 } else {
                     $itemConexionCas .= '<td>';
@@ -1364,6 +1371,7 @@ class PudDipController extends Controller {
             }
         }
         $itemConexionCas .= "</table>";
+
         $selectcion = $this->mostrar_campo_viene_de($planifVertDipl->id, $itemConexionCas, $titulo, $accion_update, $textoCab);
         $texto = $this->mostrar_campo_simple($planifVertDipl->id, $planifVertDipl->detalle_cas, $titulo2, $accion_update, "");
 

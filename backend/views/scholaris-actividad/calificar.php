@@ -28,7 +28,7 @@ $this->title = 'Actividad #: ' . $modelActividad->id . ' | ' . $modelActividad->
                     <h4><img src="../ISM/main/images/submenu/retroalimentacion.png" width="64px" class="img-thumbnail">
                     </h4>
                 </div>
-                <div class="col-lg-7 col-md-7">
+                <div class="col-lg-6 col-md-6">
                     <h4>
                         <?= Html::encode($this->title) ?>
                     </h4>
@@ -50,10 +50,10 @@ $this->title = 'Actividad #: ' . $modelActividad->id . ' | ' . $modelActividad->
                 </div>
 
                 <!-- botones de la derecha fila 1 -->
-                <div class="col-lg-4 col-md-4" style="text-align: right;">
+                <div class="col-lg-5 col-md-5 col-ms-5 col-xs-5" style="text-align: right;">
 
-                    <?php echo Html::a(
-                        '<span class="badge rounded-pill" style="background-color: #898b8d"><i class="fas fa-chart-line"></i>  DETALLE - ACTIVIDAD</span>',
+                <?php echo Html::a(
+                        '<span class="badge rounded-pill" style="background-color: #898b8d"><i class="fas fa-chart-line"></i> DETALLE - ACTIVIDAD</span>',
                         ['actividad', "actividad" => $modelActividad->id],
                         ['class' => '', 'title' => 'DETALLE -ACTIVIDAD']
                     ); ?>

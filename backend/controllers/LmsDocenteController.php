@@ -134,6 +134,8 @@ class LmsDocenteController extends Controller
                 order by doc.fecha, hor.numero;";
 
         $res = $con->createCommand($query)->queryAll();
+        // echo $query;
+        // die();
         return $res;
     }
 

@@ -235,8 +235,8 @@ class HelperGeneral extends ActiveRecord{
     
     
     public function get_dia_fecha($fecha){
-        $dias = array('Domingo','Lunes','Martes','Miercoles','Jueves','Viernes','Sabado');
-        $dia = $dias[date('N', strtotime($fecha))];
+        $dias = array('Domingo','Lunes','Martes','Miercoles','Jueves','Viernes','Sabado');        
+        $dia = isset($dias[date('N', strtotime($fecha))]) ? $dias[date('N', strtotime($fecha))] : 1;        
         
         return $dia;        
     }

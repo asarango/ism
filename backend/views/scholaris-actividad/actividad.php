@@ -79,6 +79,7 @@ $modelActividadConsulta = new ScholarisArchivosprofesor();
 
                 <div class="col-lg-5 col-md-5" style="text-align: right;">
                     <?php
+                     
                     echo Html::a(
                         '<span class="badge rounded-pill" style="background-color: #898b8d"><i class="fa fa-plus-circle" aria-hidden="true">
                         </i> Mis Asignaturas</span>',

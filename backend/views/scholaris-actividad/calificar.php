@@ -24,14 +24,21 @@ $this->title = 'Actividad #: ' . $modelActividad->id . ' | ' . $modelActividad->
     <div class="m-0 vh-50 row justify-content-center align-items-center">
         <div class="card shadow col-lg-8 col-md-8">
             <div class=" row " style="margin-top: 10px;">
-                <div class="col-lg-1 col-md-1">
+                <div class="col-lg-1 col-md-1 col-ms-1 col-xs-1">
                     <h4><img src="../ISM/main/images/submenu/retroalimentacion.png" width="64px" class="img-thumbnail">
                     </h4>
                 </div>
-                <div class="col-lg-6 col-md-6">
-                    <h4>
+                <?php
+                if ($modelActividad->calificado == true) {
+                    $calificado = '<i class="fas fa-check-square fa-md" style="color: #3bb073;"></i>';
+                } else {
+                    $calificado = '<i class="fas fa-times-circle fa-lg" style="color: #c1331a;"></i>';
+                }
+                ?>
+                <div class="col-lg-9 col-md-9">
+                    <h5>
                         <?= Html::encode($this->title) ?>
-                    </h4>
+                    </h5>
                     <p>(
                         <?=
                             ' <small>' . $modelActividad->clase->ismAreaMateria->materia->nombre .
@@ -41,7 +48,7 @@ $this->title = 'Actividad #: ' . $modelActividad->id . ' | ' . $modelActividad->
                             $modelActividad->clase->paralelo->course->name . ' - ' . $modelActividad->clase->paralelo->name . ' / ' .
                             //$modelActividad->clase->paralelo->name . ' / ' .
                             $modelActividad->clase->profesor->last_name . ' ' . $modelActividad->clase->profesor->x_first_name . ' / ' .
-                            'Es calificado: ' . $modelActividad->calificado . ' / ' .
+                            'Es calificado: ' . $calificado . ' / ' .
                             'Tipo de actividad: ' . $modelActividad->tipo_calificacion .
                             '</small>';
                         ?>
@@ -49,19 +56,13 @@ $this->title = 'Actividad #: ' . $modelActividad->id . ' | ' . $modelActividad->
                     </p>
                 </div>
 
-                <!-- botones de la derecha fila 1 -->
-                <div class="col-lg-5 col-md-5 col-ms-5 col-xs-5" style="text-align: right;">
+                <!-- boton de la derecha fila 1 -->
+                <div class="col-lg-2 col-md-2 col-ms-2 col-xs-2" style="text-align: right;">
 
-                <?php echo Html::a(
-                        '<span class="badge rounded-pill" style="background-color: #898b8d"><i class="fas fa-chart-line"></i> DETALLE - ACTIVIDAD</span>',
-                        ['actividad', "actividad" => $modelActividad->id],
-                        ['class' => '', 'title' => 'DETALLE -ACTIVIDAD']
-                    ); ?>
-                    |
                     <?php echo Html::a(
-                        '<span class="badge rounded-pill bg-cuarto"><i class="fa fa-plus-circle" aria-hidden="true"></i> Calificación Detallada</span>',
-                        ['calificacion/index1', "actividad_id" => $modelActividad->id],
-                        ['class' => '', 'title' => 'Calificación Detallada']
+                        '<span class="badge rounded-pill" style="background-color: #800080"><i class="fas fa-chart-line"></i> Detalle - Actividad</span>',
+                        ['actividad', "actividad" => $modelActividad->id],
+                        ['class' => '', 'title' => ' Detalle - Actividad']
                     ); ?>
                 </div>
                 <hr>
@@ -102,7 +103,13 @@ $this->title = 'Actividad #: ' . $modelActividad->id . ' | ' . $modelActividad->
                             echo '<tr>';
                             echo '<td>' . $cont . '</td>';
                             $cont = $cont + 1; //contador de numeros de alumnos
-                            echo '<td>' . $grupo['last_name'] . ' ' . $grupo['first_name'] . ' ' . $grupo['middle_name'] . '</td>';
+                            echo '<td>';
+                            echo Html::a($grupo['last_name'] . ' ' . $grupo['first_name'] . ' ' . $grupo['middle_name'], [
+                                'calificacion/index1',
+                                'actividad_id' => $modelActividad->id,
+                                'grupo_id' => $grupoId
+                            ]);
+                            echo '</td>';
 
                             foreach ($modelCalificaciones as $notas) {
                                 if ($grupo['alumno_id'] == $notas->idalumno) {

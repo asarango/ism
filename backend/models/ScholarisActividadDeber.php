@@ -15,6 +15,7 @@ use Yii;
  * @property string $creado_fecha
  * @property string $actualizado_por
  * @property string $actualizado_fecha
+ * @property string $observacion
  *
  * @property OpStudent $alumno
  * @property ScholarisActividad $actividad
@@ -39,6 +40,7 @@ class ScholarisActividadDeber extends \yii\db\ActiveRecord
             [['actividad_id', 'alumno_id'], 'default', 'value' => null],
             [['actividad_id', 'alumno_id'], 'integer'],
             [['creado_fecha', 'actualizado_fecha'], 'safe'],
+            [['observacion'], 'string'],
             [['archivo'], 'string', 'max' => 150],
             [['creado_por', 'actualizado_por'], 'string', 'max' => 200],
             [['alumno_id'], 'exist', 'skipOnError' => true, 'targetClass' => OpStudent::className(), 'targetAttribute' => ['alumno_id' => 'id']],
@@ -60,6 +62,7 @@ class ScholarisActividadDeber extends \yii\db\ActiveRecord
             'creado_fecha' => 'Creado Fecha',
             'actualizado_por' => 'Actualizado Por',
             'actualizado_fecha' => 'Actualizado Fecha',
+            'observacion' => 'Observacion',
         ];
     }
 

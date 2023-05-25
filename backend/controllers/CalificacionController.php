@@ -2,6 +2,8 @@
 
 namespace backend\controllers;
 
+use backend\models\ScholarisActividadDeber;
+use backend\models\ScholarisGrupoAlumnoClase;
 use Yii;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
@@ -61,26 +63,13 @@ class CalificacionController extends Controller {
     }
     
     public function actionIndex1(){
-        $periodoId = \Yii::$app->user->identity->periodo_id;
-        $actividadId = $_GET['actividad_id'];
+        $periodoId      = \Yii::$app->user->identity->periodo_id;
+        $actividadId    = $_GET['actividad_id'];
+        $grupoId       = $_GET['grupo_id'];
         $modelActividad = \backend\models\ScholarisActividad::findOne($actividadId);
         $claseId = $modelActividad->paralelo_id;
-        
-//        toma le nombre del estudiante actual
-        if(isset($_GET['actual'])){
-            $nombre = $_GET['actual'];
-            $actual = $this->get_actual_x_nombre($claseId, $periodoId, $nombre);
-        }else{
-            $actual = $this->get_actual_primero($claseId, $periodoId);
-            $nombre = $actual['student'];
-        }
-//        fin toma le nombre del estudiante actual
-        
-        $siguiente = $this->get_siguiente($claseId, $periodoId, $nombre);
-        $anterior = $this->get_anterior($claseId, $periodoId, $nombre);
-        
-//        print_r($anterior);
-//        die();
+
+        $group = ScholarisGrupoAlumnoClase::findOne($grupoId);
         
         $modelMinimo = \backend\models\ScholarisParametrosOpciones::find()
             ->where(['codigo' => 'califminima'])
@@ -89,15 +78,18 @@ class CalificacionController extends Controller {
         $modelMaximo = \backend\models\ScholarisParametrosOpciones::find()
             ->where(['codigo' => 'califmmaxima'])
             ->one();
+
+        /*** toma el deber */
+        $deber = ScholarisActividadDeber::find()->where(['alumno_id' => $grupoId, 'actividad_id' => $actividadId])->one();
+        /*** fin de toma el deber */
+        // echo $group->estudiante_id;
         
         return $this->render('index',[
-            'actual'            => $actual,
-            'siguiente'         => $siguiente,
-            'anterior'          => $anterior,
-            'actual'            => $actual,
             'modelActividad'    => $modelActividad,
             'modelMinimo'       => $modelMinimo,
-            'modelMaximo'       => $modelMaximo
+            'modelMaximo'       => $modelMaximo,
+            'group'             => $group,
+            'deber'             => $deber
         ]);
         
     }

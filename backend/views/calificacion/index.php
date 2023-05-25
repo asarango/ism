@@ -1,5 +1,6 @@
 <?php
 
+use backend\models\OpStudent;
 use yii\helpers\Html;
 use yii\grid\GridView;
 use yii\helpers\Url;
@@ -9,6 +10,10 @@ use yii\helpers\Url;
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 $this->title = 'Actividad #: ' . $modelActividad->id . ' | ' . $modelActividad->title;
+
+// echo "<pre>";
+// print_r($group);
+// die();
 
 ?>
 
@@ -22,7 +27,14 @@ $this->title = 'Actividad #: ' . $modelActividad->id . ' | ' . $modelActividad->
                     <h4><img src="../ISM/main/images/submenu/retroalimentacion.png" width="64px" style=""
                             class="img-thumbnail"></h4>
                 </div>
-                <div class="col-lg-6">
+                <?php
+                if ($modelActividad->calificado == true) {
+                    $calificado = '<i class="fas fa-check-square fa-md" style="color: #3bb073;"></i>';
+                } else {
+                    $calificado = '<i class="fas fa-times-circle fa-lg" style="color: #c1331a;"></i>';
+                }
+                ?>
+                <div class="col-lg-9 col-md-9">
                     <h5>
                         <?= Html::encode($this->title) ?>
                     </h5>
@@ -34,7 +46,7 @@ $this->title = 'Actividad #: ' . $modelActividad->id . ' | ' . $modelActividad->
                             ' - ' .
                             $modelActividad->clase->paralelo->course->name . ' - ' . $modelActividad->clase->paralelo->name . ' / ' .
                             $modelActividad->clase->profesor->last_name . ' ' . $modelActividad->clase->profesor->x_first_name . ' / ' .
-                            'Es calificado: ' . $modelActividad->calificado . ' / ' .
+                            'Es calificado: ' . $calificado . ' / ' .
                             'Tipo de actividad: ' . $modelActividad->tipo_calificacion .
                             '</small>';
                         ?>
@@ -42,18 +54,18 @@ $this->title = 'Actividad #: ' . $modelActividad->id . ' | ' . $modelActividad->
                     </p>
 
                 </div>
-                <div class="col-lg-5 col-md-5" style="text-align: right;">
-                <?php echo Html::a(
-                        '<span class="badge rounded-pill" style="background-color: #898b8d"><i class="fas fa-chart-line"></i> DETALLE - ACTIVIDAD</span>',
+                <div class="col-lg-2 col-md-2" style="text-align: right;">
+                    <?php echo Html::a(
+                        '<span class="badge rounded-pill" style="background-color: #800080"><i class="fas fa-chart-line"></i> Detalle - Actividad</span>',
                         ['scholaris-actividad/calificar', "id" => $modelActividad->id],
-                        ['class' => '', 'title' => 'DETALLE -ACTIVIDAD']
+                        ['class' => '', 'title' => ' Detalle - Actividad']
                     ); ?>
-                    |
+                    <!-- |
                     <?php echo Html::a(
                         '<span class="badge rounded-pill bg-cuarto"><i class="fa fa-plus-circle" aria-hidden="true"></i> Calificación Detallada</span>',
                         ['calificacion/index1', "actividad_id" => $modelActividad->id],
                         ['class' => '', 'title' => '']
-                    ); ?>
+                    ); ?> -->
 
 
                 </div>
@@ -62,43 +74,16 @@ $this->title = 'Actividad #: ' . $modelActividad->id . ' | ' . $modelActividad->
             <!-- FIN DE BOTONES DE ACCION Y NAVEGACIÓN -->
 
             <!-- comienza cuerpo  -->
-            <div class="row" style="margin-top: 5px;">
+            <div class="row" style="margin-top: 0px;">
 
-                <div class="col-lg-4 col-md-4" style="text-align: left">
-                    <?php
-                    if ($anterior) {
-                        echo Html::a('<i class="fas fa-backward"></i> ' . $anterior['student'], [
-                            'index1',
-                            'actividad_id' => $modelActividad->id,
-                            'actual' => $anterior['student']
-                        ]);
-                    }
+                <div class="col-lg-12 col-md-12 text-quinto" style="text-align: center;">
+                    <?=
+                        '<h5>' . $group->alumno->last_name . " " . $group->alumno->first_name . " " .
+                        $group->alumno->middle_name . '</h5>';
                     ?>
                 </div>
-                <div class="col-lg-4 col-md-4">
-                    <?php
-                    if ($actual) {
-                        echo '<h6><b>' . $actual['student'] . '</b></h6>';
-                    }
-                    //Html::a('')
-                    ?>
-                </div>
-                <div class="col-lg-4 col-md-4" style="text-align: right">
-                    <?php
-                    if ($siguiente) {
-
-                        echo Html::a($siguiente['student'] . ' <i class="fas fa-forward"></i>', [
-                            'index1',
-                            'actividad_id' => $modelActividad->id,
-                            'actual' => $siguiente['student']
-                        ]);
-
-                    }
-                    ?>
-                </div>
-
-
-
+            </div>
+            <div class="row" style="margin-top: 0px;">
 
             </div>
             <!-- finaliza cuerpo -->

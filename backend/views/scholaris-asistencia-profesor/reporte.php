@@ -16,17 +16,17 @@ $modelPlanOpciones = PlanificacionOpciones::find()
 ->where(['tipo'=>'REPORTE POWER BI','categoria'=>'NOTAS_PROFESOR'])
 ->one();
 //configuracion URL
-$filterPowerBi="&filter=view_reporte_notas_profesor/usuario_docente eq '$usuario'";
+$filterPowerBi="&filter=view_reporte_notas_profesor/usuario_docente eq '$usuario'/periodo_id '$periodoId'";
 $linkReporte = $modelPlanOpciones->opcion.$filterPowerBi;
 ?>
 <div class="scholaris-asistencia-profesor-reporte">    
     <div class="card" >
         <div class="card-header ">
             <div class="row">
-                <div class="col-lg-2 col-md-2">
-                    <h4><img src="ISM/main/images/submenu/diagrama.png" width="50px" class="img-thumbnail"></h4>
+                <div class="col-lg-1 col-md-1">
+                    <h4><img src="../ISM/main/images/submenu/diagrama.png" width="50px" class="img-thumbnail"></h4>
                 </div>
-                <div class="col-lg-5 col-md-5">
+                <div class="col-lg-5 col-md-5" style="margin-top: 15px;">
                     <h4><?= Html::encode("$this->title") ?></h4>
                 </div>
             </div>

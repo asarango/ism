@@ -7,196 +7,197 @@ use yii\grid\GridView;
 /* @var $searchModel app\models\ScholarisAsistenciaProfesorSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Mis actividades de hoy';
+$this->title = '¡Mis Actividades!';
+
+// // echo"<pre>";
+// // print_r ($this);
+// // die();
 ?>
 
 <div class="scholaris-asistencia-profesor-index" style="padding-left: 40px; padding-right: 40px">
 
     <div class="m-0 vh-50 row justify-content-center align-items-center">
-        <div class="card shadow col-lg-10col-md-10">
+        <div class="card shadow col-lg-11 col-md-11">
             <div class=" row align-items-center p-2">
                 <div class="col-lg-1">
-                    <h4><img src="../ISM/main/images/submenu/actividad-fisica.png" width="64px" style="" class="img-thumbnail"></h4>
+                    <h4><img src="../ISM/main/images/submenu/actividad-fisica.png" width="64px" style=""
+                            class="img-thumbnail"></h4>
                 </div>
-                <div class="col-lg-11">
-                    <h4><?= Html::encode($this->title) ?></h4>
+                <div class="col-lg-3">
+                    <h2>
+                        <?= Html::encode($this->title) ?>
+                    </h2>
                 </div>
-            </div>
-            <hr>
+                <!-- botones -->
+                <div class="col-lg-8" style="text-align: right;margin-top: 10px;">
+                    <p>
+                        <!-- <?=
+                            Html::a(
+                                '<span class="badge rounded-pill" style="background-color: #0a1f8f"><i class="fa fa-briefcase" aria-hidden="true"></i> Inicio</span>',
+                                ['site/index'],
+                                ['class' => 'link']
+                            );
+                        ?>
+                        | -->
+                        <?php
 
-            <p>
-                |
-                <?=
-                Html::a(
-                    '<span class="badge rounded-pill" style="background-color: #0a1f8f"><i class="fa fa-briefcase" aria-hidden="true"></i> Inicio</span>',
-                    ['site/index'],
-                    ['class' => 'link']
-                );
-                ?>
-                |
-                <?php
+                        if ($tienePrescolar) {
+                            echo Html::a(
+                                '<span class="badge rounded-pill" style="background-color: #9e28b5">
+                                <i class="fa fa-briefcase" aria-hidden="true"></i> Mis clases KIDS
+                                </span>',
+                                ['kids-menu/index1'],
+                                ['class' => 'link']
+                            );
 
-                if ($tienePrescolar) {
-                    echo Html::a(
-                        '<span class="badge rounded-pill" style="background-color: #9e28b5">
-                    <i class="fa fa-briefcase" aria-hidden="true"></i> Mis clases KIDS
-                </span>',
-                        ['kids-menu/index1'],
-                        ['class' => 'link']
-                    );
+                            echo ' | ';
+                        }
 
-                    echo ' | ';
-                }
-
-                if ($tieneOtras) {
-                    echo Html::a(
-                        '<span class="badge rounded-pill" style="background-color: #ff9e18">
+                        if ($tieneOtras) {
+                            echo Html::a(
+                                '<span class="badge rounded-pill" style="background-color: #ff9e18">
                             <i class="fa fa-briefcase" aria-hidden="true"></i> Mis clases
                          </span>',
-                        ['profesor-inicio/index'],
-                        ['class' => 'link']
-                    );
-                    echo ' | ';
-                    
-                }
-                ?>
-                <?=
-                Html::a(
-                    '<span class="badge rounded-pill" style="background-color: black"><i class="fa fa-briefcase" aria-hidden="true"></i> Reporte </span>',
-                    ['reporte'],
-                    ['class' => 'link','target'=>'_blanck']
-                );
-                ?>
-                
-                |
-                <?=
-                Html::a(
-                    '<span class="badge rounded-pill" style="background-color: #9e28b5">
+                                ['profesor-inicio/index'],
+                                ['class' => 'link']
+                            );
+                            echo ' | ';
+
+                        }
+                        ?>
+                        <?=
+                            Html::a(
+                                '<span class="badge rounded-pill" style="background-color: black"><i class="fa fa-briefcase" aria-hidden="true"></i> Reporte </span>',
+                                ['reporte'],
+                                ['class' => 'link', 'target' => '_blanck']
+                            );
+                        ?>
+
+                        |
+                        <?=
+                            Html::a(
+                                '<span class="badge rounded-pill" style="background-color: #9e28b5">
                         <i class="fa fa-briefcase" aria-hidden="true"></i> Mis Insumos
                     </span>',
-                    ['insumos'],
-                    ['class' => 'link']
-                );
-                ?>
+                                ['insumos'],
+                                ['class' => 'link']
+                            );
+                        ?>
 
-                |
-                <?=
-                Html::a(
-                    '<span class="badge rounded-pill" style="background-color: #65b2e8">
+                        |
+                        <?=
+                            Html::a(
+                                '<span class="badge rounded-pill" style="background-color: #65b2e8">
                         <i class="fa fa-briefcase" aria-hidden="true"></i> Mi plan semanal
                     </span>',
-                    ['/plan-semanal-docente/index'],
-                    ['class' => 'link']
-                );
-                ?>
+                                ['/plan-semanal-docente/index'],
+                                ['class' => 'link']
+                            );
+                        ?>
 
-                |
-                <?=
-                Html::a(
-                    '<span class="badge rounded-pill" style="background-color: #898b8d">
+                        |
+                        <?=
+                            Html::a(
+                                '<span class="badge rounded-pill" style="background-color: #898b8d">
                         <i class="fa fa-briefcase" aria-hidden="true"></i> Mi Horario
                     </span>',
-                    ['horario-docente'],
-                    ['class' => 'link']
-                );
-                ?>
+                                ['horario-docente'],
+                                ['class' => 'link']
+                            );
+                        ?>
 
-|
-                <?=
-                Html::a(
-                    '<span class="badge rounded-pill" style="background-color: #ab0a3d">
-                        <i class="fa fa-briefcase" aria-hidden="true"></i> Mis Novedades
-                    </span>',
-                    ['scholaris-asistencia-alumnos-novedades/index1'],
-                    ['class' => 'link']
-                );
-                ?>
-               
-            </p>
-
+                        |
+                        <?=
+                            Html::a(
+                                '<span class="badge rounded-pill" style="background-color: #ab0a3d">
+                        <i class="fa fa-briefcase" aria-hidden="true"></i> Mis Novedades</span>',
+                                ['scholaris-asistencia-alumnos-novedades/index1'],
+                                ['class' => 'link']
+                            );
+                        ?>
+                    </p>
+                </div>
+                <hr>
+            </div>
             <!--comienza cuerpo de documento-->
+            <div class="col-lg-11" style="margin-left:45px;">
+                <div class="table table-responsive" style="margin-top: -20px;">
+                    <!-- <table class="table table-striped table-condensed table-hover" id="table-asistencias"> -->
+                    <table class="table table-striped table-condensed table-hover" id="table-asistencias">
+                        <thead>
+                            <tr bgcolor="ff9e18" class="text-center">
 
-            
-            <div class="table table-responsive">
-                <!-- <table class="table table-striped table-condensed table-hover" id="table-asistencias"> -->
-                <table class="table table-striped table-condensed table-hover" id="table-asistencias">
-                    <thead>
-                        <tr bgcolor="ff9e18" class="text-center">
-                            
-                            <th>ASIGNATURA</th>
-                            <th>CURSO</th>
-                            <th>PARALELO</th>
-                            <th>HORA</th>
-                            <th>DESDE</th>
-                            <th>HASTA</th>
-                            <th>INGRESA</th>
-                            <th>ACCIONES</th>
-                            <th>CLASE</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php
-                        // echo '<pre>';
-                        // print_r($model);
-                        // die();
-
-                        foreach ($model as $data) 
-                        {                            
-                            echo '<tr>';
-                                
-                                echo '<td>' . $data['materia']. '</td>';
+                                <th>ASIGNATURA</th>
+                                <th>CURSO</th>
+                                <th>PARALELO</th>
+                                <th>HORA</th>
+                                <th>DESDE</th>
+                                <th>HASTA</th>
+                                <th>INGRESA</th>
+                                <th>ACCIONES</th>
+                                <th>CLASE</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php
+                            // echo '<pre>';
+                            // print_r($model);
+                            // die();
+                            foreach ($model as $data) {
+                                echo '<tr>';
+                                echo '<td>' . $data['materia'] . '</td>';
                                 echo '<td>' . $data['curso'] . '</td>';
                                 echo '<td class="text-center">' . $data['paralelo'] . '</td>';
                                 echo '<td>' . $data['hora'] . '</td>';
                                 echo '<td class="text-center">' . $data['desde'] . '</td>';
                                 echo '<td class="text-center">' . $data['hasta'] . '</td>';
                                 echo '<td class="text-center">' . $data['hora_ingresa'] . '</td>';
-                                echo '<td class="text-center">'; 
-                                    if ($data['hora_ingresa']) 
-                                    {
-                                        echo Html::a('<i class="fas fa-person-booth"></i> Ingresar', 
+                                echo '<td class="text-center">';
+                                if ($data['hora_ingresa']) {
+                                    echo Html::a(
+                                        '<i class="fas fa-person-booth"></i> Ingresar',
                                         [
                                             '/comportamiento/index',
                                             "id" => $data['asistencia_id']
-                                        ], ['class' => 'link', 'style' => 'color: #898b8d']);
-                                    } 
-                                    else {
-                                        echo Html::a('<i class="fas fa-user-clock btn_registrar"> Registrar</i>', 
-                                                [
-                                                    'registrar',
-                                                    'clase' => $data['clase_id'],
-                                                    'hora' => $data['hora_id']
-                                                ], 
-                                                [
-                                                    'class' => 'link',
-                                                    'style' => 'color: #0a1f8f',
-                                                    //'id' => 'btn-registrar'.$data['detalle_id'],
-                                                    'onclick' => 'bloque_btn_registrar()'
-                                                ]);
-                                        echo '<i class="fas fa-spinner fa-spin btn-sppiner" style="display: none"></i>';
-                                    }
+                                        ],
+                                        ['class' => 'link', 'style' => 'color: #898b8d']
+                                    );
+                                } else {
+                                    echo Html::a(
+                                        '<i class="fas fa-user-clock btn_registrar"> Registrar</i>',
+                                        [
+                                            'registrar',
+                                            'clase' => $data['clase_id'],
+                                            'hora' => $data['hora_id']
+                                        ],
+                                        [
+                                            'class' => 'link',
+                                            'style' => 'color: #0a1f8f',
+                                            //'id' => 'btn-registrar'.$data['detalle_id'],
+                                            'onclick' => 'bloque_btn_registrar()'
+                                        ]
+                                    );
+                                    echo '<i class="fas fa-spinner fa-spin btn-sppiner" style="display: none"></i>';
+                                }
                                 echo '<td class="text-center">' . $data['clase_id'] . '</td>';
                                 echo '</td>';
-                            echo '</tr>';                            
-                        }
-                        
-                        
-                        ?>
-                    </tbody>                   
-                </table>
-               
+                                echo '</tr>';
+                            }
+                            ?>
+                        </tbody>
+                    </table>
+
+                </div>
             </div>
-
             <!--finaliza cuerpo de documento-->
-
-
         </div>
     </div>
 
 </div>
 
 
-<script src="https://code.jquery.com/jquery-2.2.4.js" integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI=" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-2.2.4.js" integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI="
+    crossorigin="anonymous"></script>
 <!--<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jsgrid/1.5.3/jsgrid.min.js"></script>-->
 <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.js"></script>
 <script>
@@ -224,9 +225,9 @@ $this->title = 'Mis actividades de hoy';
 
     });
 
-       function alerta() {
-           alert('Registrado exitosamente!!!');
-       }
+    function alerta() {
+        alert('Registrado exitosamente!!!');
+    }
 
     function bloque_btn_registrar() {
 

@@ -48,12 +48,18 @@ $modelActividadConsulta = new ScholarisArchivosprofesor();
 <div class="scholaris-actividad-index">
     <div class="m-0 vh-50 row justify-content-center align-items-center">
         <div class="card shadow col-lg-10">
-
             <div class=" row" style="margin-top:10px;">
                 <div class="col-lg-1 col-md-1">
                     <h4><img src="../ISM/main/images/submenu/retroalimentacion.png" width="64px" class="img-thumbnail">
                     </h4>
                 </div>
+                <?php
+                if ($modelActividad->calificado == true) {
+                    $calificado = '<i class="fas fa-check-square fa-md" style="color: #3bb073;"></i>';
+                } else {
+                    $calificado = '<i class="fas fa-times-circle fa-lg" style="color: #c1331a;"></i>';
+                }
+                ?>
                 <div class="col-lg-6 col-md-6">
                     <h4>
                         <?= Html::encode($this->title) ?>
@@ -66,25 +72,21 @@ $modelActividadConsulta = new ScholarisArchivosprofesor();
                             ' - ' .
                             $modelActividad->clase->paralelo->course->name . ' - ' . $modelActividad->clase->paralelo->name . ' / ' .
                             $modelActividad->clase->profesor->last_name . ' ' . $modelActividad->clase->profesor->x_first_name . ' / ' .
-                            'Es calificado: ' . $modelActividad->calificado . ' / ' .
+                            'Es calificado: ' . $calificado . ' / ' .
                             'Tipo de actividad: ' . $modelActividad->tipo_calificacion .
                             '</small>';
-                        ?>
-
-                        )
+                        ?>  )
                     </p>
-
-
                 </div>
 
                 <div class="col-lg-5 col-md-5" style="text-align: right;">
                     <?php
-                     
+
                     echo Html::a(
                         '<span class="badge rounded-pill" style="background-color: #898b8d"><i class="fa fa-plus-circle" aria-hidden="true">
                         </i> Mis Asignaturas</span>',
                         ['profesor-inicio/index'],
-                        ['class' => '', 'title' => 'MIS ASIGNATURAS']
+                        ['class' => '', 'title' => 'Mis Asignaturas']
                     );
                     ?>
                     |
@@ -118,16 +120,15 @@ $modelActividadConsulta = new ScholarisArchivosprofesor();
                             'update',
                             "id" => $modelActividad->id
                         ], ['class' => 'link', 'target' => 'blank']);
-
-                        echo '|';
-
-                        echo Html::a('<span class="badge rounded-pill" style="background-color: red"><i class="far fa-trash-alt"></i> Eliminar</span>', [
-                            'eliminar',
-                            "id" => $modelActividad->id
-                        ], ['class' => 'link', 'target' => 'blank']);
-
                     }
 
+                    ?>
+                    |
+                    <?php
+                    echo Html::a('<span class="badge rounded-pill" style="background-color: red"><i class="far fa-trash-alt"></i> Eliminar</span>', [
+                        'eliminar',
+                        "id" => $modelActividad->id
+                    ], ['class' => 'link', 'target' => 'blank']);
                     ?>
                 </div>
                 <hr>
@@ -272,16 +273,17 @@ $modelActividadConsulta = new ScholarisArchivosprofesor();
                                         </div>
                                         <div class="col-md-10">
                                             <div class="card-body">
-                                                
+
                                                 <h6 class="card-title text-cuarto"><b>
-                                                <?= Html::a(
-                                                '<img src="../ISM/main/images/submenu/icono-descarga.png" width="25px">',
-                                                [
-                                                    'download',
-                                                    "path" => $material->archivo, 
-                                                ],
-                                                ['target' => '_blank', 'title' => 'Clic para Descargar']
-                                            ) ?>   <?= $material->alias_archivo ?>
+                                                        <?= Html::a(
+                                                            '<img src="../ISM/main/images/submenu/icono-descarga.png" width="25px">',
+                                                            [
+                                                                'download',
+                                                                "path" => $material->archivo,
+                                                            ],
+                                                            ['target' => '_blank', 'title' => 'Clic para Descargar']
+                                                        ) ?>
+                                                        <?= $material->alias_archivo ?>
                                                     </b>
                                                 </h6>
                                                 <p class="card-text"></p>

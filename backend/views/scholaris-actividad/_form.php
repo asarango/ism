@@ -28,7 +28,7 @@ $usuario = $modelUsuarios->id;
         <?php $form = ActiveForm::begin(); ?>
 
 
-        <!--ocultos--> 
+        <!--ocultos-->
 
         <?= $form->field($model, 'create_date')->hiddenInput()->label(FALSE) ?>
 
@@ -73,43 +73,48 @@ $usuario = $modelUsuarios->id;
 
         <?= $form->field($model, 'descripcion_archivo')->hiddenInput()->label(FALSE) ?>
 
-        <?= $form->field($model, 'tipo_calificacion')->hiddenInput(['maxlength' => true])->label(FALSE) ?>    
+        <?= $form->field($model, 'tipo_calificacion')->hiddenInput(['maxlength' => true])->label(FALSE) ?>
 
         <!--fin ocultos-->
 
-        <?= $form->field($model, 'inicio')->textInput()->label('Fecha de entrega') ?>
+        <div style="margin-top: 10px;">
+            <?= $form->field($model, 'inicio')->textInput()->label('Fecha de entrega') ?>
+        </div>
 
 
-        <?php
-        $listData = ArrayHelper::map($horas, 'id', 'sigla');
-        echo $form->field($model, 'hora_id')->dropDownList($listData, ['prompt' => 'Seleccione Hora...'])
-        ?>
+        <div style="margin-top: 10px;">
+            <?php
+            $listData = ArrayHelper::map($horas, 'id', 'sigla');
+            echo $form->field($model, 'hora_id')->dropDownList($listData, ['prompt' => 'Seleccione Hora'])
+                ?>
+        </div>
 
-        <?= $form->field($model, 'title')->textInput(['maxlength' => true]) ?>
-
-
-        <?php
-        if ($model->tipo_calificacion == 'N') {
-            $lista = ScholarisTipoActividad::find()
+        <div style="margin-top: 10px;">
+            <?= $form->field($model, 'title')->textInput(['maxlength' => true]) ?>
+        </div>
+        <div style="margin-top: 10px;">
+            <?php
+            if ($model->tipo_calificacion == 'N') {
+                $lista = ScholarisTipoActividad::find()
                     ->andFilterWhere(['not in', 'nombre_pai', ['SUMATIVA', 'FORMATIVA']])
                     ->andWhere(['activo' => true])
                     ->orderBy("orden")
                     ->all();
-            $listData = ArrayHelper::map($lista, 'id', 'nombre_nacional');
+                $listData = ArrayHelper::map($lista, 'id', 'nombre_nacional');
 
-            echo $form->field($model, 'tipo_actividad_id')->widget(Select2::className(), [
-                'data' => $listData,
-                'options' => ['placeholder' => 'Seleccione Insumo...'],
-                'pluginLoading' => false,
-                'pluginOptions' => [
-                    'allowClear' => false
-                ],
-            ]);
-        } else {
-            echo $form->field($model, 'tipo_actividad_id')->hiddenInput()->label(FALSE);
-        }
-        ?>
-
+                echo $form->field($model, 'tipo_actividad_id')->widget(Select2::className(), [
+                    'data' => $listData,
+                    'options' => ['placeholder' => 'Seleccione Insumo...'],
+                    'pluginLoading' => false,
+                    'pluginOptions' => [
+                        'allowClear' => false
+                    ],
+                ]);
+            } else {
+                echo $form->field($model, 'tipo_actividad_id')->hiddenInput()->label(FALSE);
+            }
+            ?>
+        </div>
 
         <!-- <?= $form->field($model, 'videoconfecia')->hiddenInput()->label('Link de videoconferencia') ?>
 
@@ -117,10 +122,13 @@ $usuario = $modelUsuarios->id;
 
         <?= $form->field($model, 'link_aula_virtual')->hiddenInput()->label('Link de aula virtual') ?> -->
 
+        <div style="margin-top: 10px;">
+            <?= $form->field($model, 'descripcion')->textarea(['rows' => '3']) ?>
+        </div>
 
-        <?= $form->field($model, 'descripcion')->textarea(['rows' => '3']) ?>
-
-        <?= $form->field($model, 'tareas')->textarea(['rows' => '3']) ?>
+        <div style="margin-top: 10px;">
+            <?= $form->field($model, 'tareas')->textarea(['rows' => '3']) ?>
+        </div>
 
         <?php
         if (count($modelCalificaciones) > 0) {
@@ -133,8 +141,8 @@ $usuario = $modelUsuarios->id;
         }
         ?>
 
-        <div class="form-group">
-            <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
+        <div class="form-group" style="margin-top: 15px;margin-bottom: -10px">
+            <?= Html::submitButton('Guardar', ['class' => 'btn btn-success']) ?>
         </div>
 
         <?php ActiveForm::end(); ?>

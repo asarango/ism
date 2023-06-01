@@ -19,16 +19,10 @@ $this->title = 'Perfiles de usuario';
                 <div class="col-lg-1">
                     <h4><img src="../ISM/main/images/submenu/curriculum.png" width="64px" style="" class="img-thumbnail"></h4>
                 </div>
-                <div class="col-lg-11">
-                    <h4><?= Html::encode($this->title) ?></h4>
+                <div class="col-lg-7">
+                    <h3><?= Html::encode($this->title) ?></h3>
                 </div>
-            </div>
-            <hr>
-
-
-            <div class="row">
-                <div class="col-lg-10 col-md-10">
-                    |
+                <div class="col-lg-4 col-md-4" style="margin-top: -10px; text-align: right;">
                     <?= Html::a(
                         '<span class="badge rounded-pill" style="background-color: #ab0a3d"><i class="far fa-file"></i> Inicio</span>',
                         ['site/index'],
@@ -40,10 +34,13 @@ $this->title = 'Perfiles de usuario';
                         ['operacion/index'],
                         ['class' => 'link']
                     ); ?>
-                    |
                 </div>
+                <hr>
+            </div>
 
-                <div class="col-lg-2 col-md-2" style="text-align: right;">
+
+            <div class="row">
+                <div style="text-align: right; margin-top: -10px;">
                     <?= Html::a('<i class="far fa-plus-square"> Crear perfil de usuario</i>', ['create'], ['class' => 'link']) ?>
                 </div>
             </div>

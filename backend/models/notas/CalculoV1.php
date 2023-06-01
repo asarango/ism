@@ -407,7 +407,8 @@ class CalculoV1{
                     from 	lib_bloques_grupo_clase lib
                             inner join scholaris_bloque_actividad blo on blo.id = lib.bloque_id 
                     where 	lib.grupo_id = $this->grupoId
-                            and blo.tipo_bloque = 'QUIMESTRAL';";
+                            and blo.codigo in ('Q1', 'Q2');";
+
         $resSuma = $con->createCommand($query)->queryOne();
 
         $promedio = $resSuma['nota_fq'];
@@ -452,13 +453,27 @@ class CalculoV1{
 
     private function get_bloque_id($codigo){
 
-        $bloque = ScholarisBloqueActividad::find()->where([
-            'tipo_uso'      => $this->uso,
-            'quimestre_id'  => $this->quimestreId,
-            'codigo'        => $codigo
-        ])->one();
+        if($codigo == 'FQ'){
+            $con = Yii::$app->db;
+            $query = "select 	blo.id 
+            from 	scholaris_bloque_actividad blo
+                    inner join scholaris_quimestre qui on qui.id = blo.quimestre_id 
+            where 	blo.codigo = 'FQ' 
+                    and blo.tipo_uso = '8'
+                    and qui.scholaris_periodo_id = 1;";
+            $res = $con->createCommand($query)->queryOne();
 
-        return $bloque->id;
+            return $res['id'];
+
+        }else{
+            $bloque = ScholarisBloqueActividad::find()->where([
+                'tipo_uso'      => $this->uso,
+                'quimestre_id'  => $this->quimestreId,
+                'codigo'        => $codigo
+            ])->one();
+
+            return $bloque->id;
+        }                
     }
 
 }

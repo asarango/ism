@@ -1,6 +1,7 @@
 <?php
 
 use backend\models\OpStudent;
+use Mpdf\Tag\Input;
 use yii\helpers\Html;
 use yii\grid\GridView;
 use yii\helpers\Url;
@@ -12,12 +13,23 @@ use yii\helpers\Url;
 $this->title = 'Actividad #: ' . $modelActividad->id . ' | ' . $modelActividad->title;
 
 // echo "<pre>";
-// print_r($group);
+// print_r($modelActividad);
 // die();
+
 
 ?>
 
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+<link rel="stylesheet" type="text/css" href="pdf_viewer.css">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://mozilla.github.io/pdf.js/build/pdf.js"></script>
+<!-- JS HTML2CANVAS  -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.5.0-beta4/html2canvas.min.js"></script>
+
 
 <div class="scholaris-actividad-index">
     <div class="m-0 vh-50 row justify-content-center align-items-center">
@@ -83,15 +95,216 @@ $this->title = 'Actividad #: ' . $modelActividad->id . ' | ' . $modelActividad->
                     ?>
                 </div>
             </div>
-            <div class="row" style="margin-top: 0px;">
 
+            <!-- *****inicio pdf***** -->
+
+             <div class=" row " style="margin: 10px;">
+                   <table class="table table-striped">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Actividad</th>
+                                <th scope="col">Calificación</th>
+                                <th scope="col">Observaciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            <?php
+                            $actividad=0;
+                            $actividad=$actividad+1;
+                            $fecha_hoy=date("dd-mm-YY");
+                            if($fecha_hoy > $modelActividad->bloque->desde && $fecha_hoy < $modelActividad->bloque->hasta){
+                                $estado ="ABIERTO";
+                            }else{$estado = "CERRADO";}
+                            foreach ($calificaciones as $calificar) {
+                                $calificacionId=$calificar['calificacion_id'];
+                                echo '<tr>
+                                    <th scope="row" valign="middle">'.$actividad.'</th>
+                                    <td valign="middle">' . $calificar['nombre_nacional'] . '</td>';
+                                    echo '<td>';
+                                    if($estado=="ABIERTO"){
+                                    echo '<input type="text" class="form-control" 
+                                            id="al'. $calificacionId.'" 
+                                            value="' . $calificar['calificacion'] . '" 
+                                            onchange="cambiarNota('.$calificar['calificacion_id'].')">';
+                                    }else 
+                                    {
+                                        echo $calificar['calificacion'];
+                                    }
+                                    echo '</td>';
+                                    
+                                    echo '<td>';
+                                    if($estado=="ABIERTO"){
+                                    echo '<input type="text" class="form-control" 
+                                            id="observacion'. $calificacionId.'" 
+                                            value="' . $calificar['observacion'] . '"
+                                            onchange="cambiarNota('.$calificar['calificacion_id'].')">';
+                                    }else
+                                    {
+                                        echo $calificar["observacion"];
+                                    }
+                                    echo '</td>';
+                                echo '</tr>';
+                            }
+                            ?>
+                            </tbody>
+                             
+                        </table>
+                    </table>
+                </div>
+            <div class="row" style="margin-top: 0px;">
+                <!-- <div class=" row " style="margin: 10px;">
+                    <div class="form-floating mb-1 col-lg-1 col-md-11">
+                        <input type="number" min="10" max="100" class="form-control" id="floatingInput"
+                            value="100">
+                        <label for="floatingInput">Calificación</label>
+                    </div>
+                    <div class="form-floating mb-1 col-lg-10 col-md-10">
+                        <input type="string" class="form-control" id="floatingInput" placeholder="Password">
+                        <label for="floatingPassword">Observaciones</label>
+                    </div>
+
+                </div> -->
+                <div>
+                    <!-- **para subir archivo pdf simple**
+                    <embed src="/files/students/10/5361xx.pdf" type="application/pdf"
+                    width="100%" height="600px" /> -->
+
+                    <div id="pdf-viewer-container">
+                        <canvas id="pdf-canvas"></canvas>
+                    </div>
+
+
+
+                    <div id="target-element">
+                        <!-- Contenido de la etiqueta que deseas capturar -->
+                    </div>
+
+                    <script>
+                        //llamado de ajax
+
+                        // URL del archivo PDF
+                        var pdfUrl = '/files/students/10/Plan Semanal 30.pdf';
+
+                        // Variables para el lienzo de dibujo
+                        var drawingCanvas = document.getElementById('pdf-canvas');
+                        var drawingContext = drawingCanvas.getContext('2d');
+                        var isDrawing = false;
+                        var lastX = 0;
+                        var lastY = 0;
+
+                        // Carga del archivo PDF
+                        pdfjsLib.getDocument(pdfUrl).promise.then(function (pdf) {
+                            // Obtiene la primera página del PDF
+                            pdf.getPage(1).then(function (page) {
+                                var scale = 1.75;
+                                var viewport = page.getViewport({
+                                    scale: scale
+                                });
+
+                                // Crea un lienzo en el elemento <canvas> para renderizar la página del PDF
+                                var canvas = document.getElementById('pdf-canvas');
+                                var context = canvas.getContext('2d');
+                                canvas.width = viewport.width;
+                                canvas.height = viewport.height;
+
+                                // Renderiza la página en el lienzo
+                                var renderContext = {
+                                    canvasContext: context,
+                                    viewport: viewport
+                                };
+                                page.render(renderContext);
+
+                                // Agrega eventos para el dibujo en el lienzo de dibujo
+                                drawingCanvas.addEventListener('mousedown', startDrawing);
+                                drawingCanvas.addEventListener('mousemove', draw);
+                                drawingCanvas.addEventListener('mouseup', endDrawing);
+                                drawingCanvas.addEventListener('mouseout', endDrawing);
+                            });
+                        });
+
+                        function startDrawing(e) {
+                            isDrawing = true;
+                            [lastX, lastY] = [e.offsetX, e.offsetY];
+                        }
+
+                        function draw(e) {
+                            if (!isDrawing) return;
+                            drawingContext.beginPath();
+                            drawingContext.moveTo(lastX, lastY);
+                            drawingContext.lineTo(e.offsetX, e.offsetY);
+                            drawingContext.strokeStyle = 'red';
+                            drawingContext.lineWidth = 2;
+                            drawingContext.stroke();
+                            [lastX, lastY] = [e.offsetX, e.offsetY];
+                        }
+
+                        function endDrawing() {
+                            isDrawing = false;
+                        }
+
+                        // function capturar(){
+                        //     // alert('capturando');
+                        //     var targetElement = document.getElementById('target-element');
+                        //     var canvas = document.querySelector('#pdf-canvas');
+                        //     var context = canvas.getContext('2d');
+                        //     // Establecer el tamaño del lienzo igual al tamaño de la etiqueta
+                        //     canvas.width = targetElement.offsetWidth;
+                        //     canvas.height = targetElement.offsetHeight;
+                        //     // Dibujar la etiqueta en el lienzo
+                        //     context.drawImage(targetElement, 0, 0);
+
+                        //     var screenshotDataURL = canvas.toDataURL('image/jpeg',1.0);
+
+                        //     window.open(screenshotDataURL);
+                        // }
+
+                        //Para tomar foto del google maps    
+                        function capturar() {
+                            //        alert('clicn en crear');
+
+                            html2canvas($("#pdf-viewer-container"), {
+                                useCORS: true,
+                                onrendered: function (canvas) {
+                                    var myImage = canvas.toDataURL("image/png");
+                                    guarda_imagen_div(myImage);
+                                    // $("#mapa-google").hide();
+
+                                    //console.log(myImage);
+                                    // $("#txt_imagen64_div").val(myImage);
+                                }
+                            });
+                        }
+
+                        function guarda_imagen_div(myImage) {
+                            var url = 'guardar_imagen.php';
+                            var params = {
+                                myImage
+                            };
+                            //console.log(params);return false;
+
+                            $.ajax({
+                                url: url,
+                                data: params,
+                                type: 'POST',
+                                success: function () {
+                                    //alert('Imagen guardada!');
+                                }
+                            });
+                        }
+                    </script>
+
+
+                </div>
+
+
+                <!-- fin pdf -->
             </div>
-            <!-- finaliza cuerpo -->
         </div>
     </div>
-</div>
 
-<script>
+    <script>
     $(function () {
         $('.input').keyup(function (e) {
             if (e.keyCode == 38)//38 para arriba
@@ -119,25 +332,27 @@ $this->title = 'Actividad #: ' . $modelActividad->id . ' | ' . $modelActividad->
     function cambiarNota(id) {
         var idx = '#al' + id;
         var nota = $(idx).val();
-
-        var minima = <?= $modelMinimo->valor ?>;
-        var maxima = <?= $modelMaximo->valor ?>;
-
-        if (nota >= minima && nota <= maxima) {
-            var url = "<?= Url::to(['registra']) ?>";
-
-            $.post(
-                url,
-                { nota: nota, notaId: id },
-                function (result) {
-                    $("#res").html(result);
-                }
-            );
-        } else {
-            alert("La calificación debe estar ente " + minima + " y " + maxima);
-            location.reload();
+        var obs='#observacion'+ id;
+        var obs2=$(obs).val();
+        var group=<?=$group->id?>;
+        // alert(group);
+        var url = '<?= Url::to(['update-score']) ?>';
+        params = {
+            calificacion_id: id,
+            nota: nota,
+            observacion: obs2,
+            group_id:group 
         }
+        $.ajax({
+            data: params,
+            url: url,
+            type: 'POST',
+            success: function() {
+                // alert("cambio exitoso");
+            }
+        });
 
+        
     }
 
     function NumCheck(e, field) {

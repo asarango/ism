@@ -7,7 +7,7 @@ use yii\widgets\DetailView;
 /* @var $this yii\web\View */
 /* @var $model app\models\ScholarisAsistenciaProfesor */
 
-$this->title = 'Reporte Power BI';
+$this->title = 'Reporte Notas Docente';
 $this->params['breadcrumbs'][] = ['label' => 'Scholaris Asistencia Profesors', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 
@@ -18,6 +18,9 @@ $modelPlanOpciones = PlanificacionOpciones::find()
 //configuracion URL
 $filterPowerBi="&filter=view_reporte_notas_profesor/usuario_docente eq '$usuario'/periodo_id '$periodoId'";
 $linkReporte = $modelPlanOpciones->opcion.$filterPowerBi;
+
+//echo $linkReporte;
+
 ?>
 <div class="scholaris-asistencia-profesor-reporte">    
     <div class="card" >

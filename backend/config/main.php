@@ -64,6 +64,9 @@ return [
             'allowedIPs' => ['*'],
             //'password' => '123456'
         ],
+        'pdfjs' => [
+            'class' => '\yii2assets\pdfjs\Module',
+        ],
     ],
     
     

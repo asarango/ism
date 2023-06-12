@@ -2,13 +2,17 @@
 
 namespace backend\controllers;
 
+use backend\models\notas\RegistraNotas;
 use backend\models\ScholarisActividadDeber;
+use backend\models\ScholarisCalificaciones;
 use backend\models\ScholarisGrupoAlumnoClase;
+
 use Yii;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
+use yii\web\Response;
 
 /**
  * ScholarisActividadController implements the CRUD actions for ScholarisActividad model.
@@ -63,11 +67,15 @@ class CalificacionController extends Controller {
     }
     
     public function actionIndex1(){
+              
+        
         $periodoId      = \Yii::$app->user->identity->periodo_id;
         $actividadId    = $_GET['actividad_id'];
         $grupoId       = $_GET['grupo_id'];
         $modelActividad = \backend\models\ScholarisActividad::findOne($actividadId);
         $claseId = $modelActividad->paralelo_id;
+
+        
 
         $group = ScholarisGrupoAlumnoClase::findOne($grupoId);
         
@@ -82,16 +90,33 @@ class CalificacionController extends Controller {
         /*** toma el deber */
         $deber = ScholarisActividadDeber::find()->where(['alumno_id' => $grupoId, 'actividad_id' => $actividadId])->one();
         /*** fin de toma el deber */
-        // echo $group->estudiante_id;
+        
+        $calificaciones = $this->get_scores($actividadId, $group->estudiante_id);
         
         return $this->render('index',[
             'modelActividad'    => $modelActividad,
             'modelMinimo'       => $modelMinimo,
             'modelMaximo'       => $modelMaximo,
             'group'             => $group,
-            'deber'             => $deber
+            'deber'             => $deber,
+            'calificaciones'    => $calificaciones
         ]);
         
+    }
+
+    private function get_scores($actividadId, $studentId){
+        $con = Yii::$app->db;
+        $query = "select 	tip.nombre_nacional 
+                            ,cal.calificacion 
+                            ,cal.observacion 
+                            ,cal.id as calificacion_id
+                    from 	scholaris_calificaciones cal
+                            inner join scholaris_tipo_actividad tip on tip.id = cal.idtipoactividad  
+                    where 	cal.idactividad = $actividadId 		
+                            and cal.idalumno = $studentId
+                    order by tip.id;";
+        $res = $con->createCommand($query)->queryAll();
+        return $res;
     }
     
     
@@ -159,6 +184,29 @@ class CalificacionController extends Controller {
         //echo $query;
         $res = $con->createCommand($query)->queryOne();
         return $res;
+    }
+
+
+
+    public function actionUpdateScore(){
+
+        $id             = $_POST['calificacion_id'];
+        $nota           = $_POST['nota'];
+        $observacion    = $_POST['observacion'];
+        $grupoId        = $_POST['group_id'];
+
+
+        $model = ScholarisCalificaciones::findOne($id);
+        $model->calificacion = $nota;
+        $model->observacion = $observacion;
+        $model->save();
+
+
+        
+         /***Proceso mediante clases para registrar notas en los reportes*/
+         new RegistraNotas($grupoId, $id, $nota);
+         /***Fin de proceso mediante clases para registrar notas en los reportes */
+
     }
     
 }

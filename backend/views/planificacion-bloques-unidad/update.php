@@ -26,47 +26,46 @@ $estado = $model->planCabecera->estado;
         <div class="card shadow col-lg-10 col-md-10">
             <div class=" row align-items-center p-2">
                 <div class="col-lg-1">
-                    <h4><img src="../ISM/main/images/submenu/herramientas-para-reparar.png" width="64px" style="" class="img-thumbnail"></h4>
+                    <h4><img src="../ISM/main/images/submenu/herramientas-para-reparar.png" width="64px" style=""
+                            class="img-thumbnail"></h4>
                 </div>
-                <div class="col-lg-11">
-                    <h4><?= Html::encode($this->title) ?></h4>
+                <div class="col-lg-8">
+                    <h5>
+                        <?= Html::encode($this->title) ?>
+                    </h5>
                     <small>
                         (
                         <?=
-                        $model->planCabecera->ismAreaMateria->materia->nombre . ' - ' . $model->unit_title . ' / ' . $model->curriculoBloque->last_name
-                        ?>
+                            $model->planCabecera->ismAreaMateria->materia->nombre . ' - ' . $model->unit_title . ' / ' . $model->curriculoBloque->last_name
+                            ?>
                         )
                     </small>
                 </div>
-            </div><!-- FIN DE CABECERA -->
-
-
-            <!-- inicia menu  -->
-            <div class="row">
-                <div class="col-lg-6 col-md-6">
+                <div class="col-lg-3 col-md-3" style="text-align: right;margin-top:-20px;">
                     <!-- menu izquierda -->
-                    |
                     <?=
-                    Html::a(
+                        Html::a(
                             '<span class="badge rounded-pill" style="background-color: #9e28b5"><i class="fa fa-briefcase" aria-hidden="true"></i> Inicio</span>',
                             ['site/index'],
                             ['class' => 'link']
-                    );
+                        );
                     ?>
 
                     |
 
                     <?=
-                    Html::a(
+                        Html::a(
                             '<span class="badge rounded-pill" style="background-color: #65b2e8"><i class="fa fa-briefcase" aria-hidden="true"></i> Temas</span>',
                             ['index1', 'id' => $model->plan_cabecera_id],
                             ['class' => 'link']
-                    );
+                        );
                     ?>
-
-                    |
                 </div> <!-- fin de menu izquierda -->
+                <hr>
+            </div><!-- FIN DE CABECERA -->
 
+            <!-- inicia menu  -->
+            <div class="row">
                 <div class="col-lg-6 col-md-6" style="text-align: right;">
                     <!-- inicio de menu derecha -->
 
@@ -81,7 +80,7 @@ $estado = $model->planCabecera->estado;
 
                 </div>
 
-                <div class="col-lg-6 col-md-6 card shadow" style="padding: 20px" >
+                <div class="col-lg-6 col-md-6 card shadow" style="padding: 20px">
                     <?php $form = ActiveForm::begin(); ?>
 
                     <div class="row">
@@ -89,29 +88,29 @@ $estado = $model->planCabecera->estado;
                             <?= $form->field($model, 'unit_title')->textInput(['maxlength' => true])->label('Tema de la Unidad') ?>
                             <br>
                             <?= $form->field($model, 'enunciado_indagacion')->textarea(['rows' => '6']) ?>
-                        </div>    
+                        </div>
                         <br>
                         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 
                             <!--Contenidos-->
                             <!--EDITOR DE TEXTO KARTIK-->
-<!--                            <textarea name="contenido" ><?= $model->contenidos ?></textarea>
+                            <!--                            <textarea name="contenido" ><?= $model->contenidos ?></textarea>
                             <script>
                                     CKEDITOR.replace( 'contenido',{
                                         customConfig: '/ckeditor_settings/config.js'                                
                                         } );
                             </script>-->
-                        </div>    
+                        </div>
                     </div>
                     <br>
                     <div class="row">
                         <div class="col-lg-12 col-md-12">
 
                             <?php
-          
+
                             if (
-                                    $model->is_open == 1 &&
-                                    ($estado == 'INICIANDO' || $estado == 'DEVUELTO')
+                                $model->is_open == 1 &&
+                                ($estado == 'INICIANDO' || $estado == 'DEVUELTO')
                             ) {
 
                                 echo $form->field($model, 'settings_status')->radioList([
@@ -127,11 +126,13 @@ $estado = $model->planCabecera->estado;
                                 <?php
                             } else {
                                 ?>
-                                <h6>Esta planificación está.<?= $estado ?>.</h6>
+                                <h6>Esta planificación está.
+                                    <?= $estado ?>.
+                                </h6>
 
                                 <?php
                             }
-                            ?>    
+                            ?>
                         </div>
                     </div>
                     <?php ActiveForm::end(); ?>

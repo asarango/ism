@@ -57,7 +57,7 @@ $idioma = $cabecera->ismAreaMateria->idioma;
         margin-top: 3px;
     }
 </style>
-
+        
 <div class="scholaris-actividad-index">
     <div class="m-0 vh-50 row justify-content-center align-items-center">
         <div class="card shadow col-lg-10">

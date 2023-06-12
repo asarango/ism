@@ -17,31 +17,37 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <div class="m-0 vh-50 row justify-content-center align-items-center">
         <div class="card shadow col-lg-8 col-md-8">
-            <div class=" row align-items-center p-2">
+            <div class=" row align-items-center p-1">
                 <div class="col-lg-1">
-                    <h4><img src="../ISM/main/images/submenu/herramientas-para-reparar.png" width="64px" style="" class="img-thumbnail"></h4>
+                    <h4><img src="../ISM/main/images/submenu/herramientas-para-reparar.png" width="64px" style=""
+                            class="img-thumbnail"></h4>
                 </div>
-                <div class="col-lg-11">
-                    <h4><?= Html::encode($this->title) ?></h4>
+                <div class="col-lg-10">
+                    <h4>
+                        <?= Html::encode($this->title) ?>
+                    </h4>
                 </div>
-            </div><!-- FIN DE CABECERA -->
-            <!-- inicia menu  -->
-            <div class="row">
-                <div class="col-lg-6 col-md-6">
+                <div class="col-lg-1 col-md-1 align-items-right" style="margin-top:-10px;">
                     <!-- menu izquierda -->
-                    |
+
                     <?=
-                    Html::a(
+                        Html::a(
                             '<span class="badge rounded-pill" style="background-color: #9e28b5"><i class="fa fa-briefcase" aria-hidden="true"></i> Inicio</span>',
                             ['site/index'],
                             ['class' => 'link']
-                    );
+                        );
                     ?>
 
-                    |
-                </div> <!-- fin de menu izquierda -->
 
-                <div class="col-lg-6 col-md-6" style="text-align: right;">
+                </div> <!-- fin de menu izquierda -->
+                <hr>
+            </div><!-- FIN DE CABECERA -->
+
+            <!-- inicia menu  -->
+            <div class="row">
+
+
+                <div class="col-lg-6 col-md-6 " style="margin-top:10px;">
                     <!-- inicio de menu derecha -->
 
                 </div><!-- fin de menu derecha -->
@@ -49,15 +55,17 @@ $this->params['breadcrumbs'][] = $this->title;
             <!-- finaliza menu menu  -->
 
             <!-- inicia cuerpo de card -->
-            <div class="row" style="margin-top: 25px;">
-                <select name="niveles" onchange="showAsignaturas()" id="nivel" class="form-control select2 select2-hidden-accessible" style="width: 99%;" tabindex="-1" aria-hidden="true">
-                    <option selected="selected" value="" >Escoja un curso...</option>
+            <div class="row" style="margin-top: -10px;">
+                <select name="niveles" onchange="showAsignaturas()" id="nivel"
+                    class="form-control select2 select2-hidden-accessible" style="width: 99%;" tabindex="-1"
+                    aria-hidden="true">
+                    <option selected="selected" value="">Escoja un curso</option>
                     <?php
                     foreach ($cursos as $nivel) {
                         echo '<option value="' . $nivel['id'] . '">' . $nivel['name'] . '</option>';
                     }
                     ?>
-                </select> 
+                </select>
             </div> <!-- /.form-group -->
 
             <hr>
@@ -79,7 +87,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         </tbody>
                     </table>
                 </div>
-            </div>            
+            </div>
         </div>
         <!-- fin cuerpo de card -->
         <div class="card shadow col-lg-8 col-md-8" style="margin-top: 20px">
@@ -117,7 +125,7 @@ $this->params['breadcrumbs'][] = $this->title;
             data: params,
             url: url,
             type: 'POST',
-            beforeSend: function () {},
+            beforeSend: function () { },
             success: function (response) {
                 $("#table-body").html(response);
                 //console.log(response);

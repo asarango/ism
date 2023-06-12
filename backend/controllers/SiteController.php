@@ -186,14 +186,15 @@ class SiteController extends Controller {
     private function get_submenu($rolId, $menuId) {
         $con = \Yii::$app->db;
         $query = "select 	o.id
-                                ,o.operacion
-                                ,o.nombre
-                                ,o.ruta_icono
+                            ,o.operacion
+                            ,o.nombre
+                            ,o.ruta_icono
+                            ,o.seccion_exclusiva 
                 from 	operacion o
-                                inner join rol_operacion ro on ro.operacion_id = o.id
+                            inner join rol_operacion ro on ro.operacion_id = o.id
                 where 	o.menu_id = $menuId
-                                and ro.rol_id = $rolId
-                                and o.operacion ilike '%-index'
+                            and ro.rol_id = $rolId
+                            and o.operacion ilike '%-index'
                 order by o.nombre;";   
         // echo '<pre>';
         // print_r($query);

@@ -60,8 +60,8 @@ function mostrar_datos_materia($cabecera)
             where i.id_grupo_plan_inter =i2.id 
             and i2.id_bloque = i3.id
             and i.id_ism_area_materia =$id_ism_area_materia
-            and i2.id_periodo =$periodo_id;";    
-  
+            and i2.id_periodo =$periodo_id;";
+
     $resp = $con->createCommand($query)->queryOne();
     return $resp;
 }
@@ -74,51 +74,47 @@ function mostrar_datos_materia($cabecera)
         <div class="card shadow col-lg-10 col-md-10">
             <div class=" row align-items-center p-2">
                 <div class="col-lg-1">
-                    <h4><img src="../ISM/main/images/submenu/herramientas-para-reparar.png" width="64px" class="img-thumbnail"></h4>
+                    <h4><img src="../ISM/main/images/submenu/herramientas-para-reparar.png" width="64px"
+                            class="img-thumbnail"></h4>
                 </div>
-                <div class="col-lg-11">
-                    <h4><?= Html::encode($this->title) ?></h4>
-                    <small>
-                        <?= $cabecera->ismAreaMateria->materia->nombre ?>
-                        (<?= $cabecera->ismAreaMateria->materia->id ?>)
-                        -
-                        <?= $cabecera->ismAreaMateria->mallaArea->periodoMalla->malla->opCourseTemplate->name ?>
-                        (<?= $cabecera->ismAreaMateria->mallaArea->periodoMalla->malla->opCourseTemplate->id ?>)
-                    </small>
+                <div class="col-lg-7">
+                    <h3>
+                        <?= Html::encode($this->title) ?>
+                    </h3>
+                    <font size=3>
+                        <small>
+                            <?= $cabecera->ismAreaMateria->materia->nombre ?>
+                            (
+                            <?= $cabecera->ismAreaMateria->materia->id ?>)
+                            -
+                            <?= $cabecera->ismAreaMateria->mallaArea->periodoMalla->malla->opCourseTemplate->name ?>
+                            (
+                            <?= $cabecera->ismAreaMateria->mallaArea->periodoMalla->malla->opCourseTemplate->id ?>)
+                        </small>
+                    </font>
+                    <!-- INICIO BOTONES DERECHA -->
                 </div>
-            </div>
-            <!-- FIN DE CABECERA -->
-
-
-            <!-- inicia menu  -->
-            <div class="row">
-                <div class="col-lg-6 col-md-6">
-                    <!-- menu izquierda -->
-                    |
+                <div class="col-lg-4 col-md-4" style="text-align: right;">
                     <?=
-                    Html::a(
-                        '<span class="badge rounded-pill" style="background-color: #9e28b5"><i class="fa fa-briefcase" aria-hidden="true"></i> Inicio</span>',
-                        ['site/index'],
-                        ['class' => 'link']
-                    );
+                        Html::a(
+                            '<span class="badge rounded-pill" style="background-color: #9e28b5"><i class="fa fa-briefcase" aria-hidden="true"></i> Inicio</span>',
+                            ['site/index'],
+                            ['class' => 'link']
+                        );
                     ?>
 
                     |
 
                     <?=
-                    Html::a(
-                        '<span class="badge rounded-pill" style="background-color: #65b2e8"><i class="fa fa-briefcase" aria-hidden="true"></i> Selección de Niveles</span>',
-                        ['planificacion-desagregacion-cabecera/index'],
-                        ['class' => 'link']
-                    );
+                        Html::a(
+                            '<span class="badge rounded-pill" style="background-color: #65b2e8"><i class="fa fa-briefcase" aria-hidden="true"></i> Selección de Niveles</span>',
+                            ['planificacion-desagregacion-cabecera/index'],
+                            ['class' => 'link']
+                        );
                     ?>
 
                     |
-                </div> <!-- fin de menu izquierda -->
 
-                <div class="col-lg-6 col-md-6" style="text-align: right;">
-                    <!-- inicio de menu derecha -->
-                    |
                     <?php
                     if ($seccion == 'PAI') {
                         echo Html::a(
@@ -159,7 +155,6 @@ function mostrar_datos_materia($cabecera)
                                 ['plan-vertical-diploma/index1', 'cabecera_id' => $cabecera->id],
                                 ['class' => 'link']
                             );
-                            echo ' | ';
 
                             // echo Html::a(
                             //     '<span class="badge rounded-pill" style="background-color: #ff9e18 "><i class="far fa-file-pdf" aria-hidden="true"></i> PDF Plan Vertical</span>',
@@ -167,7 +162,7 @@ function mostrar_datos_materia($cabecera)
                             //     ['class' => 'link', 'target' => '_blank']
                             // );
                             // echo ' | ';
-
+                    
                             // echo Html::a(
                             //     '<span class="badge rounded-pill" style="background-color: #F08080 "><i class="far fa-file-pdf" aria-hidden="true"></i> PDF Plan Horizontal</span>',
                             //     ['pdf-ph-dp', 'cabecera_id' => $cabecera->id],
@@ -183,13 +178,14 @@ function mostrar_datos_materia($cabecera)
                         }
                     }
                     ?>
-
-                </div><!-- fin de menu derecha -->
+                </div>
+                <!-- FIN BOTONES DERECHA -->
+                <hr>
             </div>
-            <!-- finaliza menu menu  -->
-
+            <!-- FIN DE CABECERA -->
+            
             <!-- inicia cuerpo de card -->
-            <div class="row" style="margin-top: 25px;">
+            <div class="row" style="margin-top: -20px;">
                 <div class="table table-responsive">
                     <table class="table table-condensed table-hover table-striped">
                         <thead>
@@ -208,20 +204,23 @@ function mostrar_datos_materia($cabecera)
                             $contador = 0;
 
                             foreach ($unidades as $unidad) {
-                            ?>
+                                ?>
                                 <tr>
                                     <td class="text-center">
                                         <?php
-                                        if ($grupoMateria) 
-                                        {
+                                        if ($grupoMateria) {
                                             if ($unidad->curriculoBloque->shot_name == $grupoMateria['abreviatura']) {
-                                                echo '<i class="fas fa-users" title="Interdisciplinar" style="color:#ab0a3d;"></i>';                                               
+                                                echo '<i class="fas fa-users" title="Interdisciplinar" style="color:#ab0a3d;"></i>';
                                             }
                                         }
                                         ?>
                                     </td>
-                                    <td class="text-center"><?= $unidad->curriculoBloque->last_name ?></td>
-                                    <td class="text-center"><?= $unidad->unit_title ?></td>
+                                    <td class="text-center">
+                                        <?= $unidad->curriculoBloque->last_name ?>
+                                    </td>
+                                    <td class="text-center">
+                                        <?= $unidad->unit_title ?>
+                                    </td>
                                     <!-- Columna del PUD -->
                                     <td class="text-left">
                                         <?php
@@ -231,18 +230,21 @@ function mostrar_datos_materia($cabecera)
                                             //$icono = '<i class="fas fa-times"  title="PUD PENDIENTE" ></i>';
                                             $icono = '<i class="fas fa-cubes"></i>';
                                             $style = 'color: blue';
-                                            
+
                                             //echo 'Avance: ' . '10000' . '% | &nbsp';
                                             echo 'Interdisciplinar ';
                                             echo Html::a(
                                                 $icono,
-                                                ['ism-respuesta-plan-interdiciplinar/index1', 'plan_bloque_unidad_id' => $unidad->id,
-                                                 'idgrupointer'=>$grupoMateria['idgrupointer']],
+                                                [
+                                                    'ism-respuesta-plan-interdiciplinar/index1',
+                                                    'plan_bloque_unidad_id' => $unidad->id,
+                                                    'idgrupointer' => $grupoMateria['idgrupointer']
+                                                ],
                                                 ['style' => $style]
                                             );
 
-                                        }else{
-                                            
+                                        } else {
+
                                             if ($ismAreaMateria->es_bi) {
                                                 $model = PlanificacionBloquesUnidad::findOne($unidad->id);
                                                 $modelPudAprBit = PudAprobacionBitacora::find()
@@ -292,40 +294,42 @@ function mostrar_datos_materia($cabecera)
                                         ?>
                                     </td>
                                     <!-- fin Columna del PUD -->
-                                    <td class="text-center"><?= $unidad->settings_status ?></td>
+                                    <td class="text-center">
+                                        <?= $unidad->settings_status ?>
+                                    </td>
                                     <td class="text-center">
                                         <!--Si usuario es administrador puede mover "Es Abierto"-->
                                         <?php
                                         if ($perfil == 'Administrador') {
                                             if ($unidad->is_open == 1) {
-                                        ?>
+                                                ?>
                                                 <i class="fas fa-lock-open" style="color: green"></i>
                                                 <!--                                                    <? Html::a(
-                                                                                                            '<i class="fas fa-lock-open"></i>',
-                                                                                                            ['abrir-bloque', 'plan_unidad_id' => $unidad->id],
-                                                                                                            ['style' => 'color: green']
-                                                                                                        ) ?>-->
-                                            <?php
-                                            } else {
-                                            ?>
-                                                <?=
-                                                Html::a(
-                                                    '<i class="fas fa-lock"></i>',
+                                                    '<i class="fas fa-lock-open"></i>',
                                                     ['abrir-bloque', 'plan_unidad_id' => $unidad->id],
-                                                    ['style' => 'color: #ab0a3d']
-                                                )
+                                                    ['style' => 'color: green']
+                                                ) ?>-->
+                                                <?php
+                                            } else {
                                                 ?>
-                                            <?php
+                                                <?=
+                                                    Html::a(
+                                                        '<i class="fas fa-lock"></i>',
+                                                        ['abrir-bloque', 'plan_unidad_id' => $unidad->id],
+                                                        ['style' => 'color: #ab0a3d']
+                                                    )
+                                                    ?>
+                                                <?php
                                             }
                                         } else {
                                             if ($unidad->is_open == 1) {
-                                            ?>
+                                                ?>
                                                 <i class="fas fa-lock-open" style="color: green"></i>
-                                            <?php
+                                                <?php
                                             } else {
-                                            ?>
+                                                ?>
                                                 <i class="fas fa-lock" style="color: #ab0a3d"></i>
-                                        <?php
+                                                <?php
                                             }
                                         }
                                         ?>
@@ -334,24 +338,26 @@ function mostrar_datos_materia($cabecera)
 
                                         <!-- Boton DropDownList -->
                                         <div class="btn-group" role="group">
-                                            <button type="button" class="btn btn-outline-danger dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" style="font-size: 10px; border-radius: 0px">
+                                            <button type="button" class="btn btn-outline-danger dropdown-toggle"
+                                                data-bs-toggle="dropdown" aria-expanded="false"
+                                                style="font-size: 10px; border-radius: 0px">
                                                 Acciones
                                             </button>
                                             <ul class="dropdown-menu">
                                                 <li>
                                                     <?=
-                                                    Html::a('<i class="fas fa-pencil-alt my-text-medium" style="color: #0a1f8f"> 1.-TITULO BLOQ.</i>', [
-                                                        'update',
-                                                        'unidad_id' => $unidad->id
-                                                    ]);
+                                                        Html::a('<i class="fas fa-pencil-alt my-text-medium" style="color: #0a1f8f"> 1.-TITULO BLOQ.</i>', [
+                                                            'update',
+                                                            'unidad_id' => $unidad->id
+                                                        ]);
                                                     ?>
                                                 </li>
                                                 <li>
                                                     <?=
-                                                    Html::a('<i class="fas fa-list-ol my-text-medium" style="color: #65b2e8"> 2.-TEMARIO</i>', [
-                                                        'contenido',
-                                                        'unidad_id' => $unidad->id
-                                                    ]);
+                                                        Html::a('<i class="fas fa-list-ol my-text-medium" style="color: #65b2e8"> 2.-TEMARIO</i>', [
+                                                            'contenido',
+                                                            'unidad_id' => $unidad->id
+                                                        ]);
                                                     ?>
                                                 </li>
                                                 <li>
@@ -369,19 +375,18 @@ function mostrar_datos_materia($cabecera)
                                                 <li>
                                                     <!-- Aqui muestro botones dependiendo de cada sección -->
                                                     <?php
-                                                    if ($seccion == 'PAI') {      
+                                                    if ($seccion == 'PAI') {
                                                         $arrayGrupoMateria = array();
-                                                        
-                                                        if ($grupoMateria && $unidad->curriculoBloque->shot_name == $grupoMateria['abreviatura']) 
-                                                        {
+
+                                                        if ($grupoMateria && $unidad->curriculoBloque->shot_name == $grupoMateria['abreviatura']) {
                                                             $arrayGrupoMateria = $grupoMateria;
-                                                        }                                                        
+                                                        }
                                                         echo Html::a(
                                                             '<i class="far fa-copy my-text-medium" style="color: #ab0a3d"> 4.-PH-PV</i>',
                                                             [
                                                                 'planificacion-vertical-pai-descriptores/index1',
                                                                 'unidad_id' => $unidad->id,
-                                                                'grupoMateria'=>$arrayGrupoMateria,
+                                                                'grupoMateria' => $arrayGrupoMateria,
                                                             ]
                                                         );
                                                     } elseif ($seccion == 'DIPL') {
@@ -400,7 +405,7 @@ function mostrar_datos_materia($cabecera)
                                     </td>
 
                                 </tr>
-                            <?php
+                                <?php
                                 // Aqui aumento contador si los estados de bloques están "configurado"
                                 if ($unidad['settings_status'] == 'configurado') {
                                     $contador = $contador + 1;
@@ -413,12 +418,12 @@ function mostrar_datos_materia($cabecera)
 
                 <!--<div class="col-lg-6 col-md-6" style="text-align:center" >-->
                 <!--<?
-                    Html::a(
-                        '<i class="fas fa-file-pdf"> Generar PDF - Vertical - Horizontal</i>',
-                        ['pca-materia', 'cabecera_id' => $cabecera->id],
-                        ['class' => 'link', 'style' => 'font-size:15px']
-                    );
-                    ?>-->
+                Html::a(
+                    '<i class="fas fa-file-pdf"> Generar PDF - Vertical - Horizontal</i>',
+                    ['pca-materia', 'cabecera_id' => $cabecera->id],
+                    ['class' => 'link', 'style' => 'font-size:15px']
+                );
+                ?>-->
                 <!--</div>-->
                 <div class="col-lg-12 col-md-12" style="text-align:end; margin-bottom: 5px">
                     <?php
@@ -435,13 +440,13 @@ function mostrar_datos_materia($cabecera)
                         );
                     } else {
                         if ($contador < count($unidades)) {
-                    ?>
+                            ?>
                             <div class="alert alert-dark" role="alert" style="text-align: center">
                                 <strong>Usted debe planificar todos los BLOQUES para enviar al Coordinador</strong>
                                 <br>
                                 <strong>ESTADO CONFIGURACIÓN - 'configurado'</strong>
                             </div>
-                        <?php
+                            <?php
                         }
                     }
 
@@ -450,7 +455,7 @@ function mostrar_datos_materia($cabecera)
                         <div class="alert alert-primary" role="alert" style="text-align: center">
                             <strong>Se ha enviado Planificación al Coordinador</strong>
                         </div>
-                    <?php
+                        <?php
                     }
                     ?>
 
@@ -461,7 +466,7 @@ function mostrar_datos_materia($cabecera)
                             ['envia-coordinador', 'cabecera_id' => $cabecera->id],
                             ['class' => 'btn btn-primary my-text-medium']
                         );
-                    ?>
+                        ?>
                         <div class="alert alert-danger" role="alert" style="text-align: start">
                             <b>
                                 <h5>SE HA SOLICITADO REALIZAR LOS SIGUIENTES CAMBIOS:</h5>
@@ -472,11 +477,11 @@ function mostrar_datos_materia($cabecera)
                         <?php
                     } else {
                         if ($cabecera->estado == 'DEVUELTO') {
-                        ?>
+                            ?>
                             <div class="alert alert-danger" role="alert" style="text-align: start">
                                 <?= $cabecera->revision_coordinacion_observaciones ?>
                             </div>
-                        <?php
+                            <?php
                         }
                     }
 
@@ -493,11 +498,15 @@ function mostrar_datos_materia($cabecera)
                             <hr><!-- separacion para las firmas -->
 
                             <b>Firmas</b><br>
-                            <b>Revisado y aprobado por : </b><?= $firmaAprueba['firmado_por'] ?> el <?= $firmaAprueba['firmado_el'] ?>
+                            <b>Revisado y aprobado por : </b>
+                            <?= $firmaAprueba['firmado_por'] ?> el
+                            <?= $firmaAprueba['firmado_el'] ?>
                             <br />
-                            <b>Elaborado por : </b><?= $firmaElaborado['firmado_por'] ?> el <?= $firmaElaborado['firmado_el'] ?>
+                            <b>Elaborado por : </b>
+                            <?= $firmaElaborado['firmado_por'] ?> el
+                            <?= $firmaElaborado['firmado_el'] ?>
                         </div>
-                    <?php
+                        <?php
                     }
                     ?>
                 </div>

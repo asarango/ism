@@ -29,7 +29,7 @@ $condicion = $condicionClass->aprobacion_planificacion($estado,$isOpen,$bloqueUn
                 <div class="col-lg-1">
                     <h4><img src="../ISM/main/images/submenu/herramientas-para-reparar.png" width="64px" style="" class="img-thumbnail"></h4>
                 </div>
-                <div class="col-lg-11">
+                <div class="col-lg-6">
                     <h4><?= Html::encode($this->title) ?></h4>
                     <small>
                         (

@@ -3,12 +3,12 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 
 // echo "<pre>";
-// print_r($unidades);
+// print_r($vertical);
 // die();
 ?>
 
-<div>
-    <h5 id="datos"><b>Datos Informativos</b></h5>
+<div class="col-lg-12 col-md-12 col-sm-12">
+    <h5 id="datos" style="margin-top: 1rem;"><b>DATOS INFORMATIVOS</b></h5>
     <table width="100%" class="table table-secondary table-bordered; table table-bordered" style="font-size:10px;">
         <tbody>
             <tr>
@@ -51,3 +51,48 @@ use yii\helpers\Url;
         </tbody>
     </table>
     <!-- fin datos informativos -->
+</div>
+
+<?php
+function buscar_respuesta($modelVertical, $campo)
+{
+    foreach ($modelVertical as $plan) {
+        if ($plan->opcion_descripcion == $campo) {
+            ?>
+            <!-- Button trigger modal -->
+            <a data-bs-toggle="modal" data-bs-target="#modal<?= $plan->id ?>">
+                <?php
+                echo $plan->contenido;
+                ?>
+            </a>
+
+            <!-- Modal -->
+            <div class="modal fade" id="modal<?= $plan->id ?>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="exampleModalLabel">Modificando Campo</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <?= Html::beginForm(['update-field'], 'post') ?>
+                        <div class="modal-body">
+                            <input type="hidden" name="id" value="<?= $plan->id ?>">
+                            <div class="form-group">
+                                <label class="form-label"><b>Contenido</b></label>
+                                <textarea name="contenido" class="form-control"><?= $plan->contenido ?></textarea>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                            <?= Html::submitButton('Guardar', ['class' => 'btn btn-primary'] ) ?>
+                        </div>
+                        <?= Html::endForm() ?>
+                    </div>
+                </div>
+            </div>
+            <?php
+
+        }
+    }
+}
+?>

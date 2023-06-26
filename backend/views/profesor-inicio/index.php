@@ -10,6 +10,10 @@ use yii\helpers\Url;
 
 $this->title = 'Mis asignaturas';
 //$this->params['breadcrumbs'][] = $this->title;
+
+// echo '<pre>';
+// print_r($clases);
+// die();
 ?>
 
 

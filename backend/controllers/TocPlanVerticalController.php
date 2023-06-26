@@ -4,6 +4,7 @@ namespace backend\controllers;
 
 use backend\models\ScholarisClase;
 use backend\models\TocPlanUnidad;
+use backend\models\TocPlanUnidadHabilidad;
 use backend\models\TocPlanVertical;
 use Yii;
 use yii\filters\AccessControl;
@@ -68,16 +69,19 @@ class TocPlanVerticalController extends Controller {
      * Actualizado por Arturo Sarango 2023-06-02
     */
     public function actionIndex1() {
-        $classId = $_GET['clase_id'];
+        $classId = $_GET['clase_id'];        
         $this->inyecta_opciones($classId);
         $this->inyecta_unidades($classId);
 
         $vertical = TocPlanVertical::find()->where(['clase_id' => $classId])->all();
-        $unidades = TocPlanUnidad::find()->where(['clase_id' => $classId])->all();
+        $unidades = TocPlanUnidad::find()->where(['clase_id' => $classId])->orderBy('id')->all();
+
+        $this->inyecta_habilidades($unidades);
 
         return $this->render('index', [
             'vertical' => $vertical,
-            'unidades' => $unidades
+            'unidades' => $unidades,
+            'claseId' => $classId
         ]);
     }
 
@@ -146,8 +150,96 @@ class TocPlanVerticalController extends Controller {
      * creado       por: Arturo Sarango  el 2023-06-09
      * actualizado  por: Arturo Sarango  el 2023-06-09
      */
-    public function actionUpdatePud(){
-        print_r($_POST);
+    public function actionUpdateUnits(){
+        if(isset($_GET['id'])){
+            $unidadId = $_GET['id'];
+            $unidad = TocPlanUnidad::findOne($unidadId);
+            return $this->render('update-units', [
+                'unidad' => $unidad
+            ]);
+        }else{
+            $user = Yii::$app->user->identity->usuario;
+            $today = date("Y-m-d H:i:s");
+
+            $id     = $_POST['id'];        
+            $model = TocPlanUnidad::findOne($id);
+            $model->titulo     = $_POST['titulo'];
+            $model->objetivos  = $_POST['objetivos'];
+            $model->conceptos_clave = $_POST['conceptos_clave'];
+            $model->contenido  = $_POST['contenido'];
+            $model->evaluacion_pd = $_POST['evaluacion_pd'];
+            $model->updated = $user;
+            $model->updated_at = $today;
+            $model->save();      
+            return $this->redirect(['index1',
+                'clase_id' => $model->clase_id
+            ]);      
+        }
     }
+
+    /**
+     * METODO PARA DEVOLVER LAS HABLIDADES DE UNIDAD
+     */
+    public function actionHabilidades(){
+        $tocPlanUnidadId = $_GET['id'];
+        $unidad = TocPlanUnidad::findOne($tocPlanUnidadId);
+        $habilidades = TocPlanUnidadHabilidad::find()
+            ->where(['toc_plan_unidad_id' => $tocPlanUnidadId])
+            ->orderBy('id')
+            ->all();
+
+        return $this->render('habilidades', [
+            'unidad' => $unidad,
+            'habilidades' => $habilidades
+        ]);
+    }
+
+    private function inyecta_habilidades($unidades){
+        $user = Yii::$app->user->identity->usuario;
+        $today = date('Y-m-d H:i:s');
+        $con = Yii::$app->db;
+        
+        foreach($unidades as $unidad){
+            $unidadId = $unidad->id;
+            $query = "insert into toc_plan_unidad_habilidad (toc_plan_unidad_id, toc_opciones_id, created, created_at, updated, updated_at)
+                        select 	$unidadId
+                                ,op.id
+                                ,'$user'
+                                ,'$today'
+                                ,'$user'
+                                ,'$today'
+                        from 	toc_opciones op
+                        where 	op.seccion = 'ENFOQUES'
+                                and op.id not in (select toc_opciones_id 
+                                                    from toc_plan_unidad_habilidad
+                                                    where	toc_opciones_id = op.id
+                                                            and toc_plan_unidad_id = $unidadId)
+                        order by op.opcion, op.id;";
+            // echo '<pre>';                        
+            // print_r($query);
+            $con->createCommand($query)->execute();
+        }
+        
+    }
+
+
+    /**
+     * metodo para cambiar la opcion de unidades
+     */
+    public function actionChangeHabilidad(){
+        $id = $_POST['id'];
+        
+        $model = TocPlanUnidadHabilidad::findOne($id);
+
+        if($model->is_active){
+            $model->is_active = false;
+        }else{
+            $model->is_active = true;
+        }
+
+        $model->save();
+    }
+    
+
 
 }

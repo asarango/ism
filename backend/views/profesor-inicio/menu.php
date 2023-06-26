@@ -2,7 +2,7 @@
     <?php
     foreach ($clases as $clase) {
         ?>
-        <li class="list-group-item list-group-item-action  d-flex justify-content-between align-items-start" style="font-size: 10px;">
+        <li class="list-group-item list-group-item-action  d-flex justify-content-between align-items-start" style="font-size: 12px;">
             <div class="ms-2 me-auto">
                 <div class="fw-bold"><?= $clase['materia'] ?></div>
                 <?= $clase['curso'] ?>

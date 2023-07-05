@@ -167,42 +167,54 @@ class DeceCasosController extends Controller
     }
     private function consulta_estudiantes($scholarisPeriodoId, $usuarioLog)
     {
+        $instituteId = Yii::$app->user->identity->instituto_defecto;
         //buscamos si el usuario es coordinador
-        $modelCoordinadorDece = OpInstituteAuthorities::find()
-            ->where(['ilike', 'cargo_descripcion', 'dececoor'])
-            ->andWhere(['usuario' => $usuarioLog])
-            ->one();
+        // $modelCoordinadorDece = OpInstituteAuthorities::find()
+        //     ->where(['ilike', 'cargo_descripcion', 'dececoor'])
+        //     ->andWhere(['usuario' => $usuarioLog])
+        //     ->one();
 
+        // $con = Yii::$app->db;
+        // $query =
+        //     "select  distinct c4.id,concat(c4.last_name, ' ',c4.first_name,' ',c4.middle_name) as student,
+        // concat( c8.name,' ', c7.name ) curso
+        // from scholaris_clase c1 , scholaris_grupo_alumno_clase c2 ,
+        //  op_institute_authorities c3 ,op_student c4 ,op_student_inscription c5, 
+        //  scholaris_op_period_periodo_scholaris c6,op_course_paralelo c7, op_course c8
+        // where c3.usuario  = '$usuarioLog' ";
+        // if ($modelCoordinadorDece) {
+        //     $query .= " and c3.id = c1.coordinador_dece_id";
+        // } else {
+        //     $query .= " and c3.id = c1.dece_dhi_id";
+        // }
+        // $query .= "
+        // and c1.id = c2.clase_id 
+        // and c2.estudiante_id = c4.id 
+        // and c4.id = c5.student_id 
+        // and c5.period_id  = c6.op_id 
+        // and c6.scholaris_id = '$scholarisPeriodoId'
+        // and c7.id = c1.paralelo_id 
+        // and c8.id = c7.course_id 
+        // order by student;";
+        // $res = $con->createCommand($query)->queryAll();
+        // return $res;
         $con = Yii::$app->db;
-        $query =
-            "select  distinct c4.id,concat(c4.last_name, ' ',c4.first_name,' ',c4.middle_name) as student,
-        concat( c8.name,' ', c7.name ) curso
-        from scholaris_clase c1 , scholaris_grupo_alumno_clase c2 ,
-         op_institute_authorities c3 ,op_student c4 ,op_student_inscription c5, 
-         scholaris_op_period_periodo_scholaris c6,op_course_paralelo c7, op_course c8
-        where c3.usuario  = '$usuarioLog' ";
-        if ($modelCoordinadorDece) {
-            $query .= " and c3.id = c1.coordinador_dece_id";
-        } else {
-            $query .= " and c3.id = c1.dece_dhi_id";
-        }
-        $query .= "
-        and c1.id = c2.clase_id 
-        and c2.estudiante_id = c4.id 
-        and c4.id = c5.student_id 
-        and c5.period_id  = c6.op_id 
-        and c6.scholaris_id = '$scholarisPeriodoId'
-        and c7.id = c1.paralelo_id 
-        and c8.id = c7.course_id 
-        order by student;";
-
-
-        $res = $con->createCommand($query)->queryAll();
-
-        // echo '<pre>';
-        // print_r(count($res));
+        $query = "select 	stu.id, concat(stu.last_name, ' ', stu.first_name, ' ', stu.middle_name) as student 
+                            , concat(cur.name, ' ', par.name) as curso 
+                    from 	op_student stu
+                            inner join op_student_inscription ins on ins.student_id = stu.id
+                            inner join op_course_paralelo par on par.id = ins.parallel_id
+                            inner join scholaris_op_period_periodo_scholaris sop on sop.op_id = par.period_id
+                            inner join op_course cur on cur.id = par.course_id 
+                            inner join op_section sec on sec.id = cur.section
+                            inner join op_period ope on ope.id = sec.period_id 
+                    where 	sop.scholaris_id = '$scholarisPeriodoId'
+                            and ins.inscription_state = 'M'
+                            and ope.institute = $instituteId
+                    order by student;";
+        // echo $query;
         // die();
-
+        $res = $con->createCommand($query)->queryAll();
         return $res;
     }
     private function consulta_conteo_por_eje($usuarioLog)
@@ -268,10 +280,6 @@ class DeceCasosController extends Controller
         if ($model->load(Yii::$app->request->post()) && isset($_POST['fecha_inicio'])) {
             $decesPorAlumno = $this->mostrar_dece_y_super_dece_por_alumno($model->id_estudiante);
 
-            // echo '<pre>';
-            // print_r($decesPorAlumno);
-            // die();
-
             $model->id_usuario_dece = $decesPorAlumno['hdi_dece'];
             $model->id_usuario_super_dece = $decesPorAlumno['super_dece'];
             $model->fecha_inicio = $_POST['fecha_inicio'] . ' ' . $hora;
@@ -326,6 +334,8 @@ class DeceCasosController extends Controller
                     and c8.id = c7.course_id 
                     and c4.id = '$id_estudiante'
                     order by student;";
+        // echo $query;
+        // die();
 
         $resp = $con->createCommand($query)->queryOne();
 

@@ -6,7 +6,7 @@ $objHelperGeneral = new HelperGeneral();
 $edad = $objHelperGeneral->obtener_edad_segun_fecha($modelEstudiante->birth_date);
 //fin calculo edad
 ?>
-<h5 style="color:blueviolet"><b>Datos Estudiante</b></h5>
+<h6 style="color:blueviolet"><b>Datos Estudiante</b></h6>
 
 <table class="table table-responsive">
     <tr>

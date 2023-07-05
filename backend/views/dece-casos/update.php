@@ -13,18 +13,18 @@ $this->params['breadcrumbs'][] = ['label' => $model->id, 'url' => ['view', 'id' 
 $this->params['breadcrumbs'][] = 'Update';
 //extraigo ID  de grupo, relacionado al estudiante, para luego cambiar el valor de la clase por cero
 
-if($model->id_clase>0)//si es mayor a cero, biene de leccionario
+if ($model->id_clase > 0) //si es mayor a cero, biene de leccionario
 {
-//llamamos al grupo
-$modelGrupo = ScholarisGrupoAlumnoClase::find()
-->where(['estudiante_id'=>$model->id_estudiante])
-->andWhere(['clase_id'=>$model->id_clase])
-->one();
-//buscamos el leccionario, a travez de la ultima clase, tomada del grupo
-$modelAsistProfesor = ScholarisAsistenciaProfesor::find()
-    ->where(['clase_id' => $modelGrupo->clase->id])
-    ->orderBy(['id' => SORT_DESC])
-    ->one();
+    //llamamos al grupo
+    $modelGrupo = ScholarisGrupoAlumnoClase::find()
+        ->where(['estudiante_id' => $model->id_estudiante])
+        ->andWhere(['clase_id' => $model->id_clase])
+        ->one();
+    //buscamos el leccionario, a travez de la ultima clase, tomada del grupo
+    $modelAsistProfesor = ScholarisAsistenciaProfesor::find()
+        ->where(['clase_id' => $modelGrupo->clase->id])
+        ->orderBy(['id' => SORT_DESC])
+        ->one();
 }
 ?>
 <!--Scripts para que funcionen AJAX de select 2 -->
@@ -34,119 +34,116 @@ $modelAsistProfesor = ScholarisAsistenciaProfesor::find()
 
 <div class="dece-casos-create" style="padding-left: 40px; padding-right: 40px">
     <div class="m-0 vh-50 row justify-content-center align-items-center">
-        <div class="card shadow col-lg-8 col-md-8">
-            <div class=" row align-items-center p-2">                
+        <div class="card shadow col-lg-10 col-md-10">
+            <div class=" row  p-1">
                 <div class="col-lg-1">
-                    <img src="../ISM/main/images/submenu/firma-electronica.png" width="" class="img-thumbnail">                    
-                </div> 
-                <div class="col-lg-3">   
-                       |
+                    <img src="../ISM/main/images/submenu/firma-electronica.png" width="" class="img-thumbnail">
+                </div>
+                <div class="col-lg-7 text-left">
+                    <h4>ACTUALIZACIÓN - CASOS</h4>
+                    <p><small>
+                            <?php $nombreEstudiante = $model->estudiante->last_name . ' ' . $model->estudiante->middle_name . ' ' . $model->estudiante->first_name ?>
+                            <b>Estudiante: </b><span style="color:red">
+                                <?= $nombreEstudiante ?>
+                            </span><br>
+                            <b>Caso No.: </b><span style="color:red"><?= $model->numero_caso ?></span>
+                        </small></p>
+                </div>
+                <div class="col-lg-4" style="text-align: right;">
+
+                    <?=
+                        Html::a(
+                            '<span class="badge rounded-pill" style="background-color: #9e28b5"><i class="fa fa-briefcase" aria-hidden="true"></i> Inicio</span>',
+                            ['site/index'],
+                            ['class' => 'link']
+                        );
+                    ?>
+                    <?php
+                    if ($model->id_clase == 0) //si es igual a cero, biene del dece
+                    {
+                        ?>
+                        |
+                        <?=
+                            Html::a(
+                                '<span class="badge rounded-pill" style="background-color: blue"><i class="fa fa-briefcase" aria-hidden="true"></i> Dece Casos</span>',
+                                ['dece-casos/historico', 'id' => $model->id_estudiante],
+                                ['class' => 'link']
+                            );
+                        ?>
+                        |
+                        <?=
+                            Html::a(
+                                '<span class="badge rounded-pill" style="background-color: grey"><i class="fa fa-briefcase" aria-hidden="true"></i> Nuevo Caso</span>',
+                                ['dece-casos/create', 'id' => $model->id_estudiante, 'id_clase' => $model->id_clase],
+                                ['class' => 'link']
+                            );
+                        ?>
+
+                        <?php
+                    }
+                    ?>
+                    <?php
+                    if ($model->id_clase > 0) //si es mayor a cero, biene de leccionario
+                    {
+                        ?>
+                        <?=
+                            Html::a(
+                                '<span class="badge rounded-pill" style="background-color: #0a1f8f"><i class="fa fa-briefcase" aria-hidden="true"></i>Regresar - Mi Clase</span>',
+                                ['comportamiento/index', 'id' => $modelAsistProfesor->id],
+                                ['class' => 'link']
+                            );
+                        ?>
+                        <?php
+                    }
+                    ?>
+
+                </div>
+
+                <!-- FIN DE CABECERA -->
+                <!-- inicia menu  -->
+                <div class="row">
+                    <div class="col-lg-12 col-md-12" style="text-align: right">
+
+                        <div>
                             <?=
                                 Html::a(
-                                    '<span class="badge rounded-pill" style="background-color: #9e28b5"><i class="fa fa-briefcase" aria-hidden="true"></i> Inicio</span>',
-                                    ['site/index'],
-                                    ['class' => 'link']
+                                    'Acompañamiento',
+                                    ['dece-registro-seguimiento/create', 'id_estudiante' => $model->id_estudiante, 'id_clase' => $model->id_clase, 'id_caso' => $model->id],
+                                    ['class' => 'btn btn-outline-primary']
                                 );
-                            ?>                            
-                            <?php
-                            if ($model->id_clase == 0) //si es igual a cero, biene del dece
-                            {
-                            ?>                            
-                                |
-                                <?=
-                                    Html::a(
-                                        '<span class="badge rounded-pill" style="background-color: blue"><i class="fa fa-briefcase" aria-hidden="true"></i>Dece Casos</span>',
-                                        ['dece-casos/historico','id'=>$model->id_estudiante],
-                                        ['class' => 'link']
-                                    );
-                                ?>                            
-                                |
-                                <?=
-                                    Html::a(
-                                        '<span class="badge rounded-pill" style="background-color: grey"><i class="fa fa-briefcase" aria-hidden="true"></i>Crear Nuevo Caso</span>',
-                                        ['dece-casos/create', 'id' => $model->id_estudiante,'id_clase' =>$model->id_clase ],
-                                        ['class' => 'link']
-                                    );
-                                ?>                            
-                                
-                            <?php
-                            }
                             ?>
-                            <?php
-                            if ($model->id_clase > 0) //si es mayor a cero, biene de leccionario
-                            {
+                            |
+                            <?=
+                                Html::a(
+                                   'Detección',
+                                    ['dece-deteccion/create', 'id_estudiante' => $model->id_estudiante, 'id_clase' => $model->id_clase, 'id_caso' => $model->id],
+                                    ['class' => 'btn btn-outline-secondary']
+                                );
                             ?>
-                                    <?=
-                                    Html::a(
-                                        '<span class="badge rounded-pill" style="background-color: #0a1f8f"><i class="fa fa-briefcase" aria-hidden="true"></i>Regresar - Mi Clase</span>',
-                                        ['comportamiento/index', 'id' => $modelAsistProfesor->id],
-                                        ['class' => 'link']
-                                    );
-                                    ?>
-                            <?php
-                            }
+                            |
+                            <?=
+                                Html::a(
+                                    'Derivación',
+                                    ['dece-derivacion/create', 'id_estudiante' => $model->id_estudiante, 'id_clase' => $model->id_clase, 'id_caso' => $model->id],
+                                    ['class' => 'btn btn-outline-info']
+                                );
                             ?>
-                                       
-                </div> 
-                <div class="col-lg-7 text-left">
-                    <h3>ACTUALIZACIÓN - CASOS</h3>
-                    <?php $nombreEstudiante = $model->estudiante->last_name .' '.$model->estudiante->middle_name . ' ' . $model->estudiante->first_name ?>                           
-                    <h6><b>Estudiante: </b><span style="color:red"><?=$nombreEstudiante?></span><br>
-                    <b>Caso No.: </b><span style="color:red"><?=$model->numero_caso?></span></h6>
-                </div>              
-                <!-- FIN DE CABECERA -->
-                <!-- inicia menu  -->               
-                <div class="row">
-                    <div class="col-lg-10 col-md-10">                       
-                         
-                            <div>
-                                <span style="font-size:12px;">Seleccione Opción</span>
-                                
-                                <br>   
-                                |                         
-                                <?=
-                                    Html::a(
-                                        '<span class="badge rounded-pill" style="background-color:red;font-size:12px;"><i class="fa fa-briefcase" aria-hidden="true"></i>Acompañamiento</span>',
-                                        ['dece-registro-seguimiento/create', 'id_estudiante' => $model->id_estudiante,'id_clase' =>$model->id_clase,'id_caso'=>$model->id ],
-                                        ['class' => 'link']
-                                    );
-                                ?>
-                                |                         
-                                <?=
-                                    Html::a(
-                                        '<span class="badge rounded-pill" style="background-color: red;font-size:12px;"><i class="fa fa-briefcase" aria-hidden="true"></i>Detección</span>',
-                                        ['dece-deteccion/create', 'id_estudiante' => $model->id_estudiante,'id_clase' =>$model->id_clase,'id_caso'=>$model->id ],
-                                        ['class' => 'link']
-                                    );
-                                ?>
-                                |                         
-                                <?=
-                                    Html::a(
-                                        '<span class="badge rounded-pill" style="background-color: red;font-size:12px;"><i class="fa fa-briefcase" aria-hidden="true"></i>Derivación</span>',
-                                        ['dece-derivacion/create', 'id_estudiante' => $model->id_estudiante,'id_clase' =>$model->id_clase,'id_caso'=>$model->id ],
-                                        ['class' => 'link']
-                                    );
-                                ?>
-                                |                         
-                                <?=
-                                    Html::a(
-                                        '<span class="badge rounded-pill" style="background-color: red;font-size:12px;"><i class="fa fa-briefcase" aria-hidden="true"></i>Intervención</span>',
-                                        ['dece-intervencion/create','id_estudiante' => $model->id_estudiante,'id_clase' =>$model->id_clase,'id_caso'=>$model->id ],
-                                        ['class' => 'link']
-                                    );
-                                ?>
-                                </div>  
+                            |
+                            <?=
+                                Html::a(
+                                    'Intervención',
+                                    ['dece-intervencion/create', 'id_estudiante' => $model->id_estudiante, 'id_clase' => $model->id_clase, 'id_caso' => $model->id],
+                                    ['class' => 'btn btn-outline-success']
+                                );
+                            ?>
+                        </div>
                     </div> <!-- fin de menu izquierda -->
 
-                    <div class="col-lg-2 col-md-2" style="text-align: right;">
-                        <!-- inicio de menu derecha -->
 
-                    </div><!-- fin de menu derecha -->
                 </div>
-                <hr>
-                <span style="font-size:15px;">Datos Caso: <?=$model->numero_caso?></span>
+
                 <!-- finaliza menu menu  -->
-                <hr>
+               
 
                 <?= $this->render('_form', [
                     'model' => $model,

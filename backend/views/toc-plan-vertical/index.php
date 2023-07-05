@@ -92,6 +92,14 @@ $this->params['breadcrumbs'][] = $this->title;
                 </div>
                 <!-- INICIO BOTONES DERECHA -->
                 <div class="col-lg-4 col-md-4 col-sm-4" style="text-align: right;">
+                <?=
+                        Html::a(
+                            '<span class="badge rounded-pill" style="background-color: #ab0a3d">
+                            <i class="fa fa-briefcase" aria-hidden="true"></i> PDF</span>',
+                            ['pdf', 'clase_id' =>  $unidades[0]->clase_id],
+                            ['class' => '', 'title' => 'PDF']
+                        );
+                    ?>
                     <?=
                         Html::a(
                             '<span class="badge rounded-pill" style="background-color: #9e28b5">
@@ -111,42 +119,45 @@ $this->params['breadcrumbs'][] = $this->title;
                 <div class="col-lg-2 col-md-2 col-sm-2" style="height: 60vh; background-color: #eee; 
                     font-size: 10px;margin-top:-24px;">
 
-                    <div class=" row align-middle ancho-boton zoom"
+                    <div class=" align-middle ancho-boton zoom"
                         style="border-bottom:solid 1px #ccc;margin-top:5px;">
                         <h6><a href="#datos" class="menuizquierda" style="height: 30px;margin-top:10px;">
                                 DATOS INFORMATIVOS</a></h6>
                     </div>
-                    <div class="row ancho-boton zoom" style=" border-bottom:solid 1px #ccc;margin-top:5px;">
+                    <div class="ancho-boton zoom" style=" border-bottom:solid 1px #ccc;margin-top:5px;">
                         <h6><a href="#plan" class=" menuizquierda">PLAN DE UNIDAD</a></h6>
                     </div>
 
-                    <div class="row ancho-boton zoom" style=" border-bottom:solid 1px #ccc;margin-top:5px;">
+                    <div class="ancho-boton zoom" style=" border-bottom:solid 1px #ccc;margin-top:5px;">
                         <h6><a href="#firma" class="menuizquierda">FIRMAS</a></h6>
                     </div>
-                    <div style="font-size: 12px;margin-top: 13rem;">
+                    <div style="text-align: center;margin-top:5px;">
+                   
                         <?=
                             Html::a(
-                                '<span class="badge rounded-pill" style="background-color: #9e28b5">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler i con-tabler-copy" width="28" height="28" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ffffff" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                '<span class="badge rounded-pill" style="background-color: #65b2e8">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler i con-tabler-copy" width="28" height="28" viewBox="0 0 24 24" 
+                                stroke-width="1.5" stroke="#ffffff" fill="none" stroke-linecap="round" stroke-linejoin="round">
                                 <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
                                 <path d="M8 8m0 2a2 2 0 0 1 2 -2h8a2 2 0 0 1 2 2v8a2 2 0 0 1 -2 2h-8a2 2 0 0 1 -2 -2z" />
                                 <path d="M16 8v-2a2 2 0 0 0 -2 -2h-8a2 2 0 0 0 -2 2v8a2 2 0 0 0 2 2h2" />
                               </svg>COPIAR PLANIFICACIÓN </span>',
-                                ['toc-plan-vertical/update-units', 'id' => $unidades[0]->id],
+                              ['copy', 'clase_id' =>  $unidades[0]->clase_id],
+                              ['class' => '', 'title' => 'COPIAR PLANIFICACIÓN']
                             );
                         ?>
                     </div>
 
                 </div>
-                <div class="col-lg-10 col-md-10 col-sm-10" style="overflow-y: scroll; height: 60vh;margin-top:-24px;">
+                <div class=" col-lg-10 col-md-10 col-sm-10" style="overflow-y: scroll; height: 60vh;margin-top:-24px;">
                     <!-- Inicia tabla de datos informativos -->
-                    <div class="row cursor: pointer col-lg-12 col-md-12 col-sm-12" id="datos">
+                    <div class=" cursor: pointer" id="datos">
                         <?php echo $this->render('_datosinformativos', ['vertical' => $vertical]); ?>
                     </div>
                     <!-- FIN DE TABLA DE DATOS INF -->
 
                     <!-- Inicio PLan de Unidades -->
-                    <div id="plan" class="row ">
+                    <div id="plan" class="">
                         <?php echo $this->render('_unidades', ['unidades' => $unidades, 'claseId' => $claseId ]); ?>
                     </div>
                     <!-- FIN DE PLAN DE UNIDADES      -->

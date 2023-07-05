@@ -10,20 +10,22 @@ use yii\helpers\Url;
 // die(); 
 
 foreach ($unidades as $unidad) {
-    
+
     ?>
     <!-- Inicio Unidades -->
     <hr>
     <div class="" style="margin-top:-5px;">
-        <div class="">
+        <div class="row">
             <p>
-                <h5 style="margin-top: -1rem; margin-bottom: -0.5rem; text-align: left;">
-                    <p class="col-lg-3 col-md-3 col-sm-3 col-lx-3" style="margin-bottom:-1rem"><b><?= $unidad->bloque->name; ?></b></p>
-                    <!-- INICIO BOTONES TABLA -->             
-                    <div class="col-lg-3 col-md-3 col-sm-3 col-lx-3" style="margin-left:9.6rem;margin-top: -1.5rem">
-                        <?=
-                            Html::a(
-                                '<span class="badge rounded-pill" style="background-color: #ff9e18">
+            <h5 style="margin-top: -1rem; margin-bottom: -0.5rem; text-align: left;">
+                <p class="col-lg-3 col-md-3 col-sm-3 col-lx-3" style="margin-bottom:-1rem"><b>
+                        <div style="text-align: left;margin-bottom: -2.5rem;margin-top: 1.5rem">
+                            <?= $unidad->bloque->name; ?>
+                        </div>
+                        <div style="text-align: right;margin-bottom:-2rem;margin-top: .5rem">
+                            <?=
+                                Html::a(
+                                    '<span class="badge rounded-pill" style="background-color: #ff9e18">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-file-description" 
                                 width="16" height="16" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ffffff" fill="none" 
                                 stroke-linecap="round" stroke-linejoin="round">
@@ -33,14 +35,14 @@ foreach ($unidades as $unidad) {
                                 <path d="M9 17h6" />
                                 <path d="M9 13h6" />
                                 </svg></span>',
-                                ['toc-plan-vertical/update-units', 'id' => $unidad['id']],
-                                ['class' => '', 'title' => 'Modificar Plan de Unidad']
-                            );
-                        ?>
-                        |
-                        <?=
-                            Html::a(
-                                '<span class="badge rounded-pill" style="background-color: #ab0a3d "><svg xmlns="http://www.w3.org/2000/svg" 
+                                    ['toc-plan-vertical/update-units', 'id' => $unidad['id']],
+                                    ['class' => '', 'title' => 'Modificar Plan de Unidad']
+                                );
+                            ?>
+                            |
+                            <?=
+                                Html::a(
+                                    '<span class="badge rounded-pill" style="background-color: #ab0a3d "><svg xmlns="http://www.w3.org/2000/svg" 
                                 class="icon icon-tabler icon-tabler-brain" width="16" height="16" viewBox="0 0 24 24" stroke-width="1.5" 
                                 stroke="#ffffff" fill="none" stroke-linecap="round" stroke-linejoin="round">
                                 <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
@@ -50,18 +52,16 @@ foreach ($unidades as $unidad) {
                                 <path d="M19 9.3v-2.8a3.5 3.5 0 0 0 -7 0" />
                                 <path d="M6.5 16a3.5 3.5 0 0 1 0 -7h.5" />
                                 <path d="M5 9.3v-2.8a3.5 3.5 0 0 1 7 0v10" />
-                            </svg></span>', 
-                            ['toc-plan-vertical/habilidades', 'id' => $unidad['id']], 
-                            ['class' => '', 'title' => 'Habilidades IB'] 
-                            );
+                            </svg></span>',
+                                    ['toc-plan-vertical/habilidades', 'id' => $unidad['id']],
+                                    ['class' => '', 'title' => 'Habilidades IB']
+                                );
 
-                        ?>
-
-                    </div>
-                    <div class="col-lg-3 col-md-3 col-sm-3 col-lx-3" style="margin-left: 48.5rem;margin-top: -1.5rem">
-                    <?=
-                            Html::a(
-                                '<span class="badge rounded-pill" style="background-color: #9e28b5 "><svg xmlns="http://www.w3.org/2000/svg" 
+                            ?>
+                            |
+                            <?=
+                                Html::a(
+                                    '<span class="badge rounded-pill" style="background-color: #9e28b5 "><svg xmlns="http://www.w3.org/2000/svg" 
                                                         class="icon icon-tabler icon-tabler-list-details" width="16" height="16" 
                                                         viewBox="0 0 24 24" stroke-width="1.5" stroke="#ffffff" fill="none" 
                                                         stroke-linecap="round" stroke-linejoin="round">
@@ -73,15 +73,15 @@ foreach ($unidades as $unidad) {
                                                         <path d="M3 4m0 1a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v4a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z" />
                                                         <path d="M3 14m0 1a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v4a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z" />
                                                     </svg></span>',
-                                ['toc-plan-unidad-detalle/index1', 'id' => $unidad['id']],
-                                ['class' => '', 'title' => 'Planificacion de Unidad']
-                            );
+                                    ['toc-plan-unidad-detalle/index1', 'id' => $unidad['id']],
+                                    ['class' => '', 'title' => 'Planificacion de Unidad']
+                                );
 
-                        ?>
-                        |
-                        <?=
-                            Html::a(
-                                '<span class="badge rounded-pill" style="background-color: #65b2e8 "><svg 
+                            ?>
+                            |
+                            <?=
+                                Html::a(
+                                    '<span class="badge rounded-pill" style="background-color: #65b2e8 "><svg 
                                 xmlns="http://www.w3.org/2000/svg" 
                                 class="icon icon-tabler icon-tabler-calendar-event" 
                                 width="16" height="16" viewBox="0 0 24 24" 
@@ -95,21 +95,41 @@ foreach ($unidades as $unidad) {
                                 <path d="M4 11l16 0" />
                                 <path d="M8 15h2v2h-2z" />
                                 </svg></span>',
-                                ['planificacion-semanal/index1', 'clase_id' => $claseId, 'bloque_id' => $unidad->bloque_id ],
-                                ['class' => '', 'title' => 'Plan Semanal']
-                            );
-                        ?>
-                    
-                    </div>
-                    <!-- FIN BOTONES TABLA -->
-                </h5>
+                                    ['planificacion-semanal/index1', 'clase_id' => $claseId, 'bloque_id' => $unidad->bloque_id],
+                                    ['class' => '', 'title' => 'Plan Semanal']
+                                );
+                            ?>
+                            |
+                            <?=
+                                Html::a(
+                                    '<span class="badge rounded-pill" style="background-color: #0a1f8f">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler i con-tabler-copy" width="18" height="18" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ffffff" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                <path d="M8 8m0 2a2 2 0 0 1 2 -2h8a2 2 0 0 1 2 2v8a2 2 0 0 1 -2 2h-8a2 2 0 0 1 -2 -2z" />
+                                <path d="M16 8v-2a2 2 0 0 0 -2 -2h-8a2 2 0 0 0 -2 2v8a2 2 0 0 0 2 2h2" />
+                              </svg></span>',
+                                    ['copy', 'clase_id' => $unidades[0]->clase_id],
+                                    ['class' => '', 'title' => 'COPIAR PLANIFICACIÓN']
+                                );
+                            ?>
+
+                        </div>
+                    </b>
+                </p>
+                <div class="col-lg-9 col-md-9 col-sm-9 col-lx-9" style="">
+
+
+                </div>
+                <!-- INICIO BOTONES TABLA -->
+                <!-- FIN BOTONES TABLA -->
+            </h5>
             </p>
         </div>
         <div id="detalle<?= $unidad->id ?>">
             <div>
                 <!-- CONDICIÓN DE ICONOS DE TABLA -->
                 <?php
-                if ($unidad->objetivos == '' || $unidad->objetivos == '<p>none</p>') {
+                if ($unidad->objetivos == '' || $unidad->objetivos == 'none'  || $unidad->objetivos == '<p>none</p>') {
                     $objetivos = Html::a(
                         '<span><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler 
                                 icon-tabler-exclamation-circle" width="40" height="40"
@@ -137,7 +157,7 @@ foreach ($unidades as $unidad) {
                         ['toc-plan-vertical/update-units', 'id' => $unidad['id']]
                     );
                 }
-                if ($unidad->conceptos_clave == '' || $unidad->conceptos_clave == '<p>none</p>') {
+                if ($unidad->conceptos_clave == '' || $unidad->conceptos_clave == 'none' || $unidad->conceptos_clave == '<p>none</p>') {
                     $conceptos_clave = Html::a(
                         '<span><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler 
                                 icon-tabler-exclamation-circle" width="40" height="40"
@@ -166,7 +186,7 @@ foreach ($unidades as $unidad) {
                     );
                 }
 
-                if ($unidad->contenido == '' || $unidad->contenido == '<p>none</p>' ) {
+                if ($unidad->contenido == '' || $unidad->contenido == 'none' || $unidad->contenido == '<p>none</p>') {
                     $contenido = Html::a(
                         '<span><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler 
                                 icon-tabler-exclamation-circle" width="40" height="40"
@@ -195,7 +215,7 @@ foreach ($unidades as $unidad) {
                     );
                 }
 
-                if ($unidad->evaluacion_pd == '' || $unidad->evaluacion_pd == '<p>none</p>') {
+                if ($unidad->evaluacion_pd == '' || $unidad->evaluacion_pd == 'none' || $unidad->evaluacion_pd == '<p>none</p>') {
                     $evaluacion_pd = Html::a(
                         '<span><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler 
                                 icon-tabler-exclamation-circle" width="40" height="40"
@@ -205,7 +225,7 @@ foreach ($unidades as $unidad) {
                                 <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" />
                                 <path d="M12 9v4" />
                                 <path d="M12 16v.01" />
-                              </svg></span>',
+                                </svg></span>',
                         ['toc-plan-vertical/update-units', 'id' => $unidad['id']]
                     );
                 } else {
@@ -230,8 +250,7 @@ foreach ($unidades as $unidad) {
                 <!-- INICIO DE TABLA -->
 
                 <table class="table align-middle">
-                    <thead style="text-align: center;">
-                    </thead>
+
                     <thead>
                         <td width="100px" class="segunda_tabla lin_tabla" style="text-align: center;">
                             TÍTULO DE LA UNIDAD</td>
@@ -254,7 +273,7 @@ foreach ($unidades as $unidad) {
                             <?= $unidad['titulo']; ?>
                         </td>
                         <td class="vertical-align: middle; links bg-color" style="text-align: center;">
-                            <?= $objetivos?>
+                            <?= $objetivos ?>
                         </td>
                         <td class="vertical-align: middle; links bg-color" style="text-align: center;">
                             <?=
@@ -268,7 +287,10 @@ foreach ($unidades as $unidad) {
                                 ?>
                         </td>
                         <td class="bg-color" style="text-align: center;">
-                            <p style="font-size: 1rem;color: #765f5e;"><b><?= contar_habilidades($unidad->id)?></b></p></td>
+                            <p style="font-size: 1rem;color: #765f5e;"><b>
+                                    <?= contar_habilidades($unidad->id) ?>
+                                </b></p>
+                        </td>
                         <td class="vertical-align: middle; links bg-color" style="text-align: center;">
                             <?=
                                 $evaluacion_pd
@@ -276,7 +298,7 @@ foreach ($unidades as $unidad) {
                         </td>
                     </tbody>
                 </table>
-                
+
                 <!-- FIN DE TABLA  -->
                 <!-- <a type="button" class="btn btn-success segunda_tabla boton">Guardar</a>  -->
             </div>
@@ -289,13 +311,13 @@ foreach ($unidades as $unidad) {
 ?>
 
 <?php
-    function contar_habilidades ($unidadId){
-        $habilidades = TocPlanUnidadHabilidad::find()->where([
-            'toc_plan_unidad_id' => $unidadId , 
-            'is_active' => true    
-        ])->all();
-        return count($habilidades);
-    }
+function contar_habilidades($unidadId)
+{
+    $habilidades = TocPlanUnidadHabilidad::find()->where([
+        'toc_plan_unidad_id' => $unidadId,
+        'is_active' => true
+    ])->all();
+    return count($habilidades);
+}
 
 ?>
-

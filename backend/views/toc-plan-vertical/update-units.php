@@ -117,7 +117,7 @@ use yii\widgets\ActiveForm;
                         }
                     </script>
 
-                    <div class="form-group" style="margin-top:1.5rem; margin-bottom:1rem;">
+                    <div class="form-group" style="margin-top:1rem; margin-bottom:1rem;">
                         <?= Html::submitButton('Guardar', ['class' => 'btn btn-success'] ); ?>                     
                     </div>
 

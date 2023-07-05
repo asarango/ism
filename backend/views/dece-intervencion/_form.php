@@ -40,7 +40,7 @@ $modelIntCompromiso = new DeceIntervencionCompromiso();
         <div class="row p-4 ">
             <div class="card col-lg-5 col-ms-5">
                 <!-- RENDERIZA A LA VISTA datos_estudiante.php -->
-                <h3 style="color:blueviolet"><b>Datos Estudiante</b></h3>
+                <h4 style="color:blueviolet"><b>Datos Estudiante</b></h4>
                 <table class="table table-responsive">
                     <tr>
                         <td><b>No. Caso: </b></td>
@@ -153,9 +153,9 @@ $modelIntCompromiso = new DeceIntervencionCompromiso();
                 <div class="row">
                     <div class="col-lg-6">
                         <?php if ($model->isNewRecord) { ?>
-                            <h5 style="color:blueviolet"><b>Intervención</b></h5>
+                            <h4 style="color:blueviolet"><b>Intervención</b></h4>
                         <?php } else { ?>
-                            <h3 style="color:blueviolet"><b>Intervención No. <?= $model->numero_intervencion ?></b></h3>
+                            <h4 style="color:blueviolet"><b>Intervención No. <?= $model->numero_intervencion ?></b></h4>
                             <h6 style="color:blueviolet"><b>Fecha Creación: <?= $model->fecha_intervencion ?></b></h6>
                         <?php } ?>
                     </div>

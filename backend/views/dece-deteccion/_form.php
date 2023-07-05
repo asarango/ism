@@ -1,3 +1,4 @@
+-form dece deteccion
 <?php
 
 use backend\models\DeceDeteccion;
@@ -27,7 +28,7 @@ if ($model->isNewRecord) {
     $model->nombre_estudiante = $array_datos_estudiante['student'];
     $model->anio = $array_datos_estudiante['curso'];
     $model->paralelo = $array_datos_estudiante['paralelo'];
-    $model->nombre_quien_reporta =$resUser->partner->name;
+    $model->nombre_quien_reporta = $resUser->partner->name;
     $model->cedula = $resUser->partner->numero_identificacion;
     $model->cargo = 'Psicólogo';
 }
@@ -40,6 +41,10 @@ $modelRegDeteccion = DeceDeteccion::find()
     ->where(['id_caso' => $model->id_caso])
     ->orderBy(['numero_deteccion' => SORT_ASC])
     ->all();
+
+// echo '<pre>';
+// print_r($model);
+// die
 ?>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
@@ -50,126 +55,25 @@ $modelRegDeteccion = DeceDeteccion::find()
 
 <div class="dece-deteccion-form">
     <div class="m-0 vh-50 row justify-content-center align-items-center">
-        <div class="row p-4 ">
-
-            <div class="card col-lg-4 col-ms-4">
+        <div class="row">
+            <div class="card col-lg-4 col-ms-4" style="margin-bottom: 10px;">
                 <!-- RENDERIZA A LA VISTA datos_estudiante.php -->
-                <h5 style="color:blueviolet"><b>Datos Estudiante</b></h5>
-                <table class="table table-responsive">
-                    <tr>
-                        <td><b>No. Caso: <?php echo '<pre>'; ?></b></td>
-                        <td><?= $model->caso->numero_caso ?></td>
-                    </tr>
-                    <tr>
-                        <td><b>Alumno: </b></td>
-                        <td><?= $modelEstudiante->first_name . ' ' . $modelEstudiante->middle_name . ' ' . $modelEstudiante->last_name ?></td>
-                    </tr>
-                    <?php
-                    //calcual la edad
-                    $objHelperGeneral = new HelperGeneral();
-                    $edad =  $objHelperGeneral->obtener_edad_segun_fecha($modelEstudiante->birth_date);
-                    ?>
-                    <tr>
-                        <td><b>Fecha Nacimiento: </b></td>
-                        <td><?= $modelEstudiante->birth_date . ' (' . $edad . ' años)'  ?></td>
-                    </tr>
-                    <tr>
-                        <td><b>Representante: </b></td>
-                        <td><?= $modelRepresentante->name ?></td>
-                    </tr>
-                    <tr>
-                        <td><b>Email Representante: </b></td>
-                        <td><?= $modelRepresentante->email ?></td>
-                    </tr>
-                    <tr>
-                        <td><b>Telèfono: </b></td>
-                        <td><?= $modelRepresentante->phone . ' - ' . $modelRepresentante->mobile . ' - ' . $modelRepresentante->x_work_phone ?></td>
-                    </tr>
-                </table>
-                <h3 style="color:red">Histórico Detección</h3>
-                <div style="overflow-x:scroll;overflow-y:scroll;">
-                    <table class="table table-success table-striped table-bordered my-text-small">
-                        <tr class="table-primary">
-                            <td>No.</td>
-                            <td>Fecha Creación</td>
-                            <td>Editar</td>
-                            <td>Ver</td>
-                        </tr>
-                        <?php if ($modelRegDeteccion) {
-                            foreach ($modelRegDeteccion as $modelReg) {
-                        ?>
-                                <tr>
-                                    <td><?= $modelReg->numero_deteccion ?></td>
-                                    <td><?= $modelReg->fecha_reporte ?></td>
-
-                                    <td>
-                                        <?=
-                                        Html::a(
-                                            '<i class="fa fa-edit" aria-hidden="true"></i>',
-                                            ['dece-deteccion/update', 'id' => $modelReg->id],
-                                            ['class' => 'link']
-                                        );
-                                        ?>
-                                    </td>
-                                    <td>
-                                        <!--boton VER  boton llama modal -->
-                                        <button type="button" class="rounded-pill" data-bs-toggle="modal" data-bs-target="<?php echo "#staticBackdrop$modelReg->id"; ?>">
-                                            <i class="fas fa-glasses" style="color:blueviolet;"></i>
-                                        </button>
-                                        <!-- Modal -->
-                                        <div class="modal fade" id="<?php echo "staticBackdrop$modelReg->id"; ?>" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                                            <div class="modal-dialog modal-dialog-scrollable modal-xl">
-                                                <div class="modal-content">
-                                                    <div class="modal-header">
-                                                        <h5 class="modal-title" id="staticBackdropLabel"><b>Derivación No: <?= $modelReg->id ?></b></h5>
-                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                    </div>
-                                                    <div class="modal-body">
-                                                        <table class="table table-striped table-hover" style="font-size:15px;">
-                                                            <tr>
-                                                                <td><b>Fecha Creación: </b></td>
-                                                                <td><?= $modelReg->fecha_reporte ?></td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td><b>Nombre Quien Reporta: </b></td>
-                                                                <td><?= $modelReg->nombre_quien_reporta ?></td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td><b>Hora Aproximada: </b></td>
-                                                                <td><?= $modelReg->hora_aproximada ?></td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td><b>Descripción del Hecho: </b></td>
-                                                                <td><?= $modelReg->descripcion_del_hecho ?></td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td><b>Acciones Realizadas: </b></td>
-                                                                <td><?= $modelReg->acciones_realizadas ?></td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td><b>Listar Evidencias: </b></td>
-                                                                <td><?= $modelReg->lista_evidencias ?></td>
-                                                            </tr>
-                                                        </table>
-                                                    </div>
-                                                    <div class="modal-footer">
-                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                        <?php
-                            } //fin for
-                        } //fin if
-                        ?>
-                    </table>
+                <div class="row">
+                    <?= $this->render('_datos-estudiante', [
+                        'model' => $model,
+                        'modelEstudiante' => $modelEstudiante,
+                        'modelRepresentante' => $modelRepresentante
+                    ]) ?>
                 </div>
-            </div>
-            <div class="card col-lg-8 col-ms-8">
+                <div class="row">
+                    <!-- RENDERIZA A LA VISTA historico_deteccion.php -->
+                    <?= $this->render('_historico-deteccion', [
+                        'model' => $model,
+                        'modelRegDeteccion' => $modelRegDeteccion
+                    ]) ?>
+                </div>
 
+                <div class="card col-lg-8 col-ms-8">
 
                 <?php $form = ActiveForm::begin(); ?>
 
@@ -182,10 +86,8 @@ $modelRegDeteccion = DeceDeteccion::find()
 
                 <!-- <?= $form->field($model, 'numero_caso')->textInput() ?> -->
 
-
-
-                <div class="row ">
-                    <h5 style="color:blueviolet;"><b>DATOS INFORMATIVOS GENERALES</b></h5>
+                <div class=" row ">
+                    <h5 style=" color:blueviolet;"><b>DATOS INFORMATIVOS GENERALES</b></h5>
 
                     <div class="col-lg-6">
                         <?= $form->field($model, 'nombre_estudiante')->textInput(['maxlength' => true, 'readonly' => true]) ?>
@@ -195,34 +97,35 @@ $modelRegDeteccion = DeceDeteccion::find()
                     </div>
                     <div class="col-lg-3">
                         <?= $form->field($model, 'paralelo')->textInput(['maxlength' => true, 'readonly' => true]) ?>
-                    </div>             
+                    </div>
                 </div>
-
                 <br>
                 <div class="row">
                     <h5 style="color:blueviolet;">PERSONA QUE REPORTA</h5>
                     <div class="row">
                         <div class="col-lg-5">
                             <label for="exampleInputEmail1" class="form-label">Fecha</label>
-                            <input type="date" id="fecha_reporte" class="form-control" name="fecha_reporte" require="true" value="<?= substr($model->fecha_reporte, 0, 10); ?>">
+                            <input type="date" id="fecha_reporte" class="form-control" name="fecha_reporte"
+                                require="true" value="<?= substr($model->fecha_reporte, 0, 10); ?>">
 
                         </div>
                     </div>
-                    <div class="row">                      
-                            <div class="col-lg-5">
-                                <?= $form->field($model, 'nombre_quien_reporta')->textInput(['maxlength' => true, 'readonly' => true]) ?>
-                            </div>
-                            <div class="col-lg-3">
-                                <?= $form->field($model, 'cedula')->textInput(['maxlength' => true, 'readonly' => true]) ?>
-                            </div>
-                            <div class="col-lg-4">
-                                <?= $form->field($model, 'cargo')->textInput(['maxlength' => true]) ?>
-                            </div>                    
+                    <div class="row">
+                        <div class="col-lg-5">
+                            <?= $form->field($model, 'nombre_quien_reporta')->textInput(['maxlength' => true, 'readonly' => true]) ?>
+                        </div>
+                        <div class="col-lg-3">
+                            <?= $form->field($model, 'cedula')->textInput(['maxlength' => true, 'readonly' => true]) ?>
+                        </div>
+                        <div class="col-lg-4">
+                            <?= $form->field($model, 'cargo')->textInput(['maxlength' => true]) ?>
+                        </div>
                     </div>
                 </div>
                 <br>
                 <div class="row">
-                    <h5 style="color:blueviolet;">DESCRIPCIÓN DEL HECHO (qué paso, quienes se involucran, dónde, cuándo)</h5>
+                    <h5 style="color:blueviolet;">DESCRIPCIÓN DEL HECHO (qué paso, quienes se involucran, dónde, cuándo)
+                    </h5>
                     <div class="row">
                         <?= $form->field($model, 'hora_aproximada')->textInput(['maxlength' => true]) ?>
                     </div>
@@ -233,7 +136,7 @@ $modelRegDeteccion = DeceDeteccion::find()
                         </script> -->
                     </div>
                     <div class="row">
-                        <?= $form->field($model, 'acciones_realizadas')->textarea(['rows' => 6])  ?>
+                        <?= $form->field($model, 'acciones_realizadas')->textarea(['rows' => 6]) ?>
                         <!-- <script>
                             CKEDITOR.replace("decedeteccion-acciones_realizadas");
                         </script> -->

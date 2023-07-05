@@ -119,7 +119,7 @@ if($bandera=='descripcion_unidad'){
     return'ACTIVIDADES PRINCIPALES';
 }elseif($bandera=='evaluacion_pd'){
     return 'EVALUACIÓN';
-}elseif($bandera==''){
+}elseif($bandera=='diferenciacion'){
     return 'DIFERENCIACIÓN';
 }elseif($bandera=='enfoques_aprendizaje'){
     return 'ENFOQUES DEL APRENDIZAJE';  

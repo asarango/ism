@@ -379,7 +379,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     <div class="row" style="align-items: center;">
                         <div class="col-lg-1 col-md-1" style=" text-align: center; ">
                             <?=
-                                boton_update($unidad['id'], 'evaluacion_pd', 'diferenciacion') //cambiar encabezado --revizar para navegar hacia arriba
+                                boton_update($unidad['id'], 'diferenciacion', 'diferenciacion') //cambiar encabezado --revizar para navegar hacia arriba
                                 ?>
                         </div>
                         <div class="col-lg-11 col-md-11 menuizquierda" id="diferenciacion" style="margin-top: 0.5rem">
@@ -387,7 +387,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         </div>
                         <div class="row" style="margin: 0.5rem;">
                             <div class="col-lg-11 col-md-11 cajastexto">
-                                <?= $pud['evaluacion_pd'] ?>
+                                <?= $pud['diferenciacion'] ?>
                             </div>
                         </div>
                         <hr>

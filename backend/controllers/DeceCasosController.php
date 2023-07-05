@@ -113,6 +113,9 @@ class DeceCasosController extends Controller
             $query = "select distinct id_estudiante from dece_casos dc where id_usuario_dece  = '$user';";
         }
 
+        // echo $query;
+        
+
         $usuariosCasos = $con->createCommand($query)->queryAll();
 
         $arrayCasos = array();
@@ -309,7 +312,7 @@ class DeceCasosController extends Controller
         $query = " select  distinct c4.id,concat(c4.last_name, ' ',c4.first_name,' ',c4.middle_name) as student,
                     concat( c8.name,' ', c7.name ) curso, 
                     (select usuario from op_institute_authorities a where a.id=c1.coordinador_dece_id) super_dece,
-                    (select usuario from op_institute_authorities a where a.id=c1.dece_dhi_id) hdi_dece,
+                    (select usuario from op_institute_authorities a where a.id=c1.dece_dhi_id) hdi_dece
                     from scholaris_clase c1 , scholaris_grupo_alumno_clase c2 ,
                     op_student c4 ,op_student_inscription c5, 
                     scholaris_op_period_periodo_scholaris c6,op_course_paralelo c7, op_course c8

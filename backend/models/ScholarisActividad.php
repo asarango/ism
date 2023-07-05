@@ -71,9 +71,12 @@ class ScholarisActividad extends \yii\db\ActiveRecord
     {
         return [
             [['create_date', 'write_date', 'inicio', 'fin', 'fecha_revision'], 'safe'],
-            [['create_uid', 'write_uid', 'tipo_actividad_id', 'bloque_actividad_id', 'paralelo_id', 'materia_id', 'hora_id', 'actividad_original', 'semana_id', 'destreza_id'], 'default', 'value' => null],
-            [['create_uid', 'write_uid', 'tipo_actividad_id', 'bloque_actividad_id', 'paralelo_id', 'materia_id', 'hora_id', 'actividad_original', 'semana_id', 'destreza_id', 'lms_actividad_id'], 'integer'],
-            [['descripcion', 'archivo', 'descripcion_archivo', 'momento_detalle', 'observacion_nee', 'comentario_revisa', 'respuesta_revisa', 'codigo'], 'string'],
+            [['create_uid', 'write_uid', 'tipo_actividad_id', 'bloque_actividad_id', 
+                'paralelo_id', 'materia_id', 'hora_id', 'actividad_original', 'semana_id', 'destreza_id'], 'default', 'value' => null],
+            [['create_uid', 'write_uid', 'tipo_actividad_id', 'bloque_actividad_id', 
+                'paralelo_id', 'materia_id', 'hora_id', 'actividad_original', 'semana_id', 
+                'destreza_id', 'lms_actvidad_id', 'plan_semanal_id'], 'integer'],
+            [['descripcion', 'archivo', 'descripcion_archivo', 'momento_detalle', 'observacion_nee', 'comentario_revisa', 'respuesta_revisa'], 'string'],
             [['inicio', 'fin', 'tipo_actividad_id', 'bloque_actividad_id', 'paralelo_id'], 'required'],
             [['con_nee', 'es_aprobado', 'es_heredado_lms', 'estado'], 'boolean'],
             [['title', 'tareas'], 'string', 'max' => 255],
@@ -134,9 +137,10 @@ class ScholarisActividad extends \yii\db\ActiveRecord
             'comentario_revisa' => 'Comentario Revisa',
             'respuesta_revisa' => 'Respuesta Revisa',
             'estado' => 'Estado',
-            'lms_actividad_id' => 'Lms Actividad',
+            'lms_actvidad_id' => 'Lms Actividad',
             'es_heredado_lms' => 'Es heredado de lms',
-            'codigo' => 'Código'
+            // 'codigo' => 'Código',
+            'plan_semanal_id' => 'Plan Semanal',
         ];
     }
 
@@ -194,5 +198,14 @@ class ScholarisActividad extends \yii\db\ActiveRecord
 
     public function getHora(){
         return $this->hasOne(ScholarisHorariov2Hora::className(), ['id' => 'hora_id']);
+    }
+
+
+
+    /****
+     * Propios
+     */
+    public function getPlanSemanal(){
+        return $this->hasOne(PlanificacionSemanal::className(), ['id' => 'plan_semanal_id']);
     }
 }

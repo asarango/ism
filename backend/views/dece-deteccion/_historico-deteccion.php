@@ -1,6 +1,13 @@
 <?php
+use backend\models\DeceDeteccion;
+use yii\helpers\Html;
+use yii\widgets\ActiveForm;
+use backend\models\helpers\HelperGeneral;
+use backend\models\OpParent;
+use backend\models\OpStudent;
+use backend\models\ResPartner;
 ?>
-<h3 style="color:red">Histórico Detección</h3>
+<h4 style="color:red">Histórico Detección</h4>
                 <div style="overflow-x:scroll;overflow-y:scroll;">
                     <table class="table table-success table-striped table-bordered my-text-small">
                         <tr class="table-primary">

@@ -10,9 +10,7 @@ use function Symfony\Component\String\s;
 /* @var $this yii\web\View */
 /* @var $model backend\models\PlanificacionSemanal */
 
-echo"<pre>";
-print_r($tipoActividades);   
-die();
+
 
 $this->title = 'Modificar Planificacion Semanal ';
 ?>

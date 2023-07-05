@@ -1,4 +1,3 @@
--form dece deteccion
 <?php
 
 use backend\models\DeceDeteccion;
@@ -72,8 +71,10 @@ $modelRegDeteccion = DeceDeteccion::find()
                         'modelRegDeteccion' => $modelRegDeteccion
                     ]) ?>
                 </div>
+            
 
-                <div class="card col-lg-8 col-ms-8">
+
+            <div class="card col-lg-8 col-ms-8" style="padding: 5px;margin-bottom: 10px">
 
                 <?php $form = ActiveForm::begin(); ?>
 
@@ -87,7 +88,7 @@ $modelRegDeteccion = DeceDeteccion::find()
                 <!-- <?= $form->field($model, 'numero_caso')->textInput() ?> -->
 
                 <div class=" row ">
-                    <h5 style=" color:blueviolet;"><b>DATOS INFORMATIVOS GENERALES</b></h5>
+                    <h6 style=" color:blueviolet;"><b>DATOS INFORMATIVOS GENERALES</b></h6>
 
                     <div class="col-lg-6">
                         <?= $form->field($model, 'nombre_estudiante')->textInput(['maxlength' => true, 'readonly' => true]) ?>
@@ -101,7 +102,7 @@ $modelRegDeteccion = DeceDeteccion::find()
                 </div>
                 <br>
                 <div class="row">
-                    <h5 style="color:blueviolet;">PERSONA QUE REPORTA</h5>
+                    <h6 style="color:blueviolet;">PERSONA QUE REPORTA</h6>
                     <div class="row">
                         <div class="col-lg-5">
                             <label for="exampleInputEmail1" class="form-label">Fecha</label>
@@ -124,8 +125,8 @@ $modelRegDeteccion = DeceDeteccion::find()
                 </div>
                 <br>
                 <div class="row">
-                    <h5 style="color:blueviolet;">DESCRIPCIÓN DEL HECHO (qué paso, quienes se involucran, dónde, cuándo)
-                    </h5>
+                    <h6 style="color:blueviolet;">DESCRIPCIÓN DEL HECHO (qué paso, quienes se involucran, dónde, cuándo)
+                    </h6>
                     <div class="row">
                         <?= $form->field($model, 'hora_aproximada')->textInput(['maxlength' => true]) ?>
                     </div>
@@ -144,7 +145,7 @@ $modelRegDeteccion = DeceDeteccion::find()
                 </div>
                 <br>
                 <div class="row">
-                    <h5 style="color:blueviolet;">ENLISTE LAS EVIDENCIAS</h5>
+                    <h6 style="color:blueviolet;">ENLISTE LAS EVIDENCIAS</h6>
                     <div class="row">
                         <?= $form->field($model, 'lista_evidencias')->textarea(['rows' => 6]) ?>
                         <script>
@@ -156,7 +157,7 @@ $modelRegDeteccion = DeceDeteccion::find()
 
                 <!-- <?= $form->field($model, 'path_archivos')->textInput(['maxlength' => true]) ?> -->
 
-                <div class="form-group">
+                <div class="form-group" style="padding: 5px;">
                     <?= Html::submitButton('GUARDAR', ['class' => 'btn btn-success']) ?>
                 </div>
 

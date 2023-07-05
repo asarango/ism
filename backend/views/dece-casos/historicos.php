@@ -157,7 +157,7 @@ $modelPathArchivo = PlanificacionOpciones::find()
                                     </td>
                                     <td>
                                         <?= Html::a(
-                                            '<span class="badge  rounded-pill" style="background-color:blue;">Crear Casos</span>',
+                                            '<span class="badge  rounded-pill" style="background-color:blue;"> Crear Casos</span>',
                                             ['create','idEstudiante'=>$model->id_estudiante],
                                             ['class' => 'link']
                                         ); ?>

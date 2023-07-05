@@ -7,11 +7,11 @@ use yii\grid\GridView;
 /* @var $searchModel backend\models\DeceCasosSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Dece Casos';
+$this->title = 'Incidente/Caso';
 $this->params['breadcrumbs'][] = $this->title;
 
 // echo "<pre>";
-// print_r($casos);
+// print_r($estudiantes);
 // die();
 ?>
 <!--Scripts para que funcionen AJAX de select 2 -->

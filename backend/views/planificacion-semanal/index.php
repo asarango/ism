@@ -130,11 +130,15 @@ $this->params['breadcrumbs'][] = $this->title;
                                             echo '<td>' . obtenerIcono($semTotal, 'tema') . '</td>';
                                             echo '<td>' . obtenerIcono($semTotal, 'actividades') . '</td>';
                                             echo '<td>' . obtenerIcono($semTotal, 'diferenciacion_nee') . '</td>';
-                                            echo '<td>' . obtener_total_insumos($semTotal->id, $semTotal->hora_id).'</td>';
+                                            echo '<td>';
+                                            obtener_total_insumos($semTotal->id, $semTotal->hora_id);
+                                            echo '</td>';
                                             echo '<td>' . obtenerIcono($semTotal, 'recursos') . '</td>';
                                             echo '<td>' . generarBotonEdicion('update', $semTotal->id) . '</td>';
                                             echo '<td>' . BotonTarea($semTotal->id) . '</td>';
+                                            echo '</tr>';
                                         }
+
                                         ?>
                                     </tbody>
                                 </table>
@@ -270,7 +274,8 @@ function obtenerIcono($semTotal, $campo)
 ?>
 
 <?php
-function BotonTarea($id) {
+function BotonTarea($id)
+{
     return Html::a(
         '<span class="badge rounded-pill" style="background-color: #ab0a3d; font-size: 12px;"><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clipboard-plus" width="16" height="16" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ffffff" fill="none" stroke-linecap="round" stroke-linejoin="round">
             <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
@@ -286,14 +291,19 @@ function BotonTarea($id) {
 ?>
 
 <?php
-function contarTipoActividades($tipoActividades) {
+function contarTipoActividades($tipoActividades)
+{
     return count($tipoActividades);
 }
 
-function imprimirCantidadTipoActividades($cantidad) {
+function imprimirCantidadTipoActividades($cantidad)
+{
     echo 'La cantidad de datos inyectados en $tipoActividades es: ' . $cantidad;
 }
 ?>
+
+
+
 <?php
 function obtener_total_insumos($planSemanalId,$horaId) {
     $actividad = ScholarisActividad::find()

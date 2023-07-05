@@ -3,12 +3,16 @@
 namespace backend\controllers;
 
 use backend\models\ScholarisClase;
+use backend\models\toc\PdfTocAnual;
+use backend\models\toc\TocCopy;
 use backend\models\TocPlanUnidad;
+use backend\models\TocPlanUnidadDetalle;
 use backend\models\TocPlanUnidadHabilidad;
 use backend\models\TocPlanVertical;
 use Yii;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
+use yii\helpers\BaseUrl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 
@@ -115,6 +119,7 @@ class TocPlanVerticalController extends Controller {
                     from 	toc_opciones op
                     where 	op.planificacion = 'VERTICAL'
                             and estado = true
+                            and seccion <> 'APRENDIZAJE'
                             and descripcion not in (select 	opcion_descripcion 
                                 from 	toc_plan_vertical
                                 where 	clase_id = $claseId);";
@@ -238,6 +243,64 @@ class TocPlanVerticalController extends Controller {
         }
 
         $model->save();
+    }
+
+
+    /**
+     * MÉTODO PARA REALIZAR LA COPIA DE LOS PLANES DE TOC
+     */
+    public function actionCopy(){
+        $claseId = $_GET['clase_id'];
+        $clase = ScholarisClase::findOne($claseId);
+        $clases = $this->get_clases($clase->ism_area_materia_id, $clase->paralelo->course_id);
+
+        return $this->render('copy', [
+            'clase' => $clase,
+            'clases' => $clases
+        ]);
+    }
+
+    private function get_clases($ismAreaMateriaId, $cursoId){
+
+        $con = Yii::$app->db;
+        $query = "select 	cla.id as clase_id
+                    ,cur.name as curso
+                    ,par.name as paralelo
+                    ,cur.x_institute 
+                    ,cla.idprofesor 
+                    ,concat(fac.x_first_name, ' ', fac.last_name) as docente 
+                    ,concat('toc-plan-vertical/pdf?clase_id=', cla.id) as url
+            from 	scholaris_clase cla
+                    inner join op_course_paralelo par on par.id = cla.paralelo_id 
+                    inner join op_course cur on cur.id = par.course_id 
+                    inner join op_faculty fac on fac.id = cla.idprofesor 
+            where 	cla.ism_area_materia_id = $ismAreaMateriaId
+                    and par.course_id = $cursoId
+            order by par.name;";
+        // echo $query;
+        $res = $con->createCommand($query)->queryAll();
+        return $res;
+    } 
+
+
+    public function actionExecuteCopy(){
+        $claseIdDesde = $_GET['clase_desde'];
+        $claseIdHasta  = $_GET['clase_hasta'];
+        $user = Yii::$app->user->identity->usuario;
+        $today = date('Y-m-d H:i:s');
+        new TocCopy($claseIdDesde, $claseIdHasta);
+        
+        return $this->redirect(['index1', 'clase_id' => $claseIdHasta]);                
+    }
+
+
+    /**
+     * Método para realizar el PDF de Toc
+     */
+    public function actionPdf(){
+        $claseId = $_GET['clase_id'];
+
+        new PdfTocAnual($claseId);
     }
     
 

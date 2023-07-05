@@ -74,23 +74,22 @@ $modelPathArchivo = PlanificacionOpciones::find()
 ?>
 <script src="//cdn.ckeditor.com/4.19.0/full/ckeditor.js"></script>
 
-<div class="dece-casos-create" style="padding-left: 40px; padding-right: 40px">
+<div class="dece-casos-create" style="padding-left: 40px; padding-right: 40px; margin: 10px;">
     <div class="m-0 vh-50 row justify-content-center align-items-center">
         <div class="card shadow col-lg-10 col-md-10">
-            <div class=" row align-items-center p-2">
+            <div class=" row align-items-center p-1">
                 <div class="col-lg-1">
                     <h3><img src="../ISM/main/images/submenu/autismo.png" width="64px" class="img-thumbnail"></h3>                    
                 </div>
                 
-                <div class="col-lg-11">
-                    <span style="text-align: center;"><h3>DECE - CASOS</h3></span>
+                <div class="col-lg-5">
+                    <span style="text-align: left;"><h4>DECE - CASOS</h4></span>
                 </div>
                 <!-- FIN DE CABECERA -->
                 <!-- inicia menu  -->
-                <div class="row">
-                    <div class="col-lg-6 col-md-6">
+                
+                    <div class="col-lg-6 col-md-6" style="text-align: right;">
                         <!-- menu izquierda -->
-                        |
                         <?=
                         Html::a(
                             '<span class="badge rounded-pill" style="background-color: #9e28b5"><i class="fa fa-briefcase" aria-hidden="true"></i> Inicio</span>',
@@ -130,13 +129,7 @@ $modelPathArchivo = PlanificacionOpciones::find()
                         ?>
 
 
-                    </div> <!-- fin de menu izquierda -->
-
-                    <div class="col-lg-6 col-md-6" style="text-align: right;">
-                        <!-- inicio de menu derecha -->
-
-                    </div><!-- fin de menu derecha -->
-                </div>
+                    </div> <!-- fin de menu izquierda -->                
                 <!-- finaliza menu menu  -->
                 <hr>
                 <div class="row">
@@ -159,8 +152,8 @@ $modelPathArchivo = PlanificacionOpciones::find()
                         <div class="row">
                             <table>
                                 <tr>
-                                    <td>
-                                        <h5 style="color:red">Casos</h5>
+                                    <td >
+                                        <h5 style="color:red; margin-left: 10px;"> Casos</h5>
                                     </td>
                                     <td>
                                         <?= Html::a(
@@ -376,7 +369,7 @@ $modelPathArchivo = PlanificacionOpciones::find()
 
                         </div> <!-- fin acompaniamiento -->
                         <div class="row">
-                            ************************************************************************************
+                           <hr>
                             <h6 style="color:red"> Detección</h6>
                             <div style="overflow-x:scroll;overflow-y:scroll;">
                                 <table class="table table-success table-striped table-bordered my-text-small">
@@ -486,7 +479,7 @@ $modelPathArchivo = PlanificacionOpciones::find()
                             </div>
                         </div> <!-- fin Deteccion -->
                         <div class="row">
-                            ************************************************************************************
+                        <hr>
                             <h6 style="color:red"> Derivación</h6>
                             <div style="overflow-x:scroll;overflow-y:scroll;">
                                 <table class="table table-success table-striped table-bordered my-text-small">
@@ -587,7 +580,7 @@ $modelPathArchivo = PlanificacionOpciones::find()
                             </div>
                         </div> <!-- fin Derivacion -->
                         <div class="row">
-                            ************************************************************************************
+                        <hr>
                             <h6 style="color:red"> Intervención</h6>
                             <div style="overflow-x:scroll;overflow-y:scroll;">
                                 <table class="table table-success table-striped table-bordered my-text-small">

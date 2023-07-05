@@ -104,36 +104,48 @@ $listFirmas = DeceSeguimientoFirmas::find()
         <div class="row p-4 ">
             <div class="card col-lg-5 col-ms-5">
                 <!-- RENDERIZA A LA VISTA datos_estudiante.php -->
-                <h3 style="color:blueviolet"><b>Datos Estudiante</b></h3>
+                <h4 style="color:blueviolet"><b>Datos Estudiante</b></h4>
                 <table class="table table-responsive">
                     <tr>
                         <td><b>No. Caso: </b></td>
-                        <td><?= $model->caso->numero_caso ?></td>
+                        <td>
+                            <?= $model->caso->numero_caso ?>
+                        </td>
                     </tr>
                     <tr>
                         <td><b>Alumno: </b></td>
-                        <td><?= $modelEstudiante->last_name . ' ' . $modelEstudiante->first_name . ' ' . $modelEstudiante->middle_name  ?></td>
+                        <td>
+                            <?= $modelEstudiante->last_name . ' ' . $modelEstudiante->first_name . ' ' . $modelEstudiante->middle_name ?>
+                        </td>
                     </tr>
                     <tr>
                         <?php
                         //calcual la edad
                         $objHelperGeneral = new HelperGeneral();
-                        $edad =  $objHelperGeneral->obtener_edad_segun_fecha($modelEstudiante->birth_date);
+                        $edad = $objHelperGeneral->obtener_edad_segun_fecha($modelEstudiante->birth_date);
                         ?>
                         <td><b>Fecha Nacimiento: </b></td>
-                        <td><?= $modelEstudiante->birth_date . ' (' . $edad . ' años)' ?></td>
+                        <td>
+                            <?= $modelEstudiante->birth_date . ' (' . $edad . ' años)' ?>
+                        </td>
                     </tr>
                     <tr>
                         <td><b>Representante: </b></td>
-                        <td><?= $modelRepresentante->name ?></td>
+                        <td>
+                            <?= $modelRepresentante->name ?>
+                        </td>
                     </tr>
                     <tr>
                         <td><b>Email Representante: </b></td>
-                        <td><?= $modelRepresentante->email ?></td>
+                        <td>
+                            <?= $modelRepresentante->email ?>
+                        </td>
                     </tr>
                     <tr>
                         <td><b>Telèfono: </b></td>
-                        <td><?= $modelRepresentante->phone . ' - ' . $modelRepresentante->mobile . ' - ' . $modelRepresentante->x_work_phone ?></td>
+                        <td>
+                            <?= $modelRepresentante->phone . ' - ' . $modelRepresentante->mobile . ' - ' . $modelRepresentante->x_work_phone ?>
+                        </td>
                     </tr>
                 </table>
                 <h3 style="color:red">Histórico Acompañamiento</h3>
@@ -150,72 +162,106 @@ $listFirmas = DeceSeguimientoFirmas::find()
                         </tr>
                         <?php if ($modelRegSeguimiento) {
                             foreach ($modelRegSeguimiento as $modelReg) {
-                        ?>
+                                ?>
                                 <tr>
-                                    <td><?= $modelReg->numero_seguimiento ?></td>
-                                    <td><?= substr($modelReg->fecha_inicio, 0, 10) ?></td>
-                                    <td><?= substr($modelReg->fecha_fin, 0, 10) ?></td>
-                                    <td><?= $modelReg->estado ?></td>
-                                    <td><?= $modelReg->motivo ?></td>
+                                    <td>
+                                        <?= $modelReg->numero_seguimiento ?>
+                                    </td>
+                                    <td>
+                                        <?= substr($modelReg->fecha_inicio, 0, 10) ?>
+                                    </td>
+                                    <td>
+                                        <?= substr($modelReg->fecha_fin, 0, 10) ?>
+                                    </td>
+                                    <td>
+                                        <?= $modelReg->estado ?>
+                                    </td>
+                                    <td>
+                                        <?= $modelReg->motivo ?>
+                                    </td>
                                     <td>
                                         <?=
-                                        Html::a(
-                                            '<i class="fa fa-edit" aria-hidden="true"></i>',
-                                            ['dece-registro-seguimiento/update', 'id' => $modelReg->id],
-                                            ['class' => 'link']
-                                        );
+                                            Html::a(
+                                                '<i class="fa fa-edit" aria-hidden="true"></i>',
+                                                ['dece-registro-seguimiento/update', 'id' => $modelReg->id],
+                                                ['class' => 'link']
+                                            );
                                         ?>
                                     </td>
                                     <td>
                                         <!--boton VER  boton llama modal -->
-                                        <button type="button" class="rounded-pill" data-bs-toggle="modal" data-bs-target="<?php echo "#staticBackdrop$modelReg->id"; ?>">
+                                        <button type="button" class="rounded-pill" data-bs-toggle="modal"
+                                            data-bs-target="<?php echo "#staticBackdrop$modelReg->id"; ?>">
                                             <i class="fas fa-glasses" style="color:blueviolet;"></i>
                                         </button>
                                         <!-- Modal -->
-                                        <div class="modal fade" id="<?php echo "staticBackdrop$modelReg->id"; ?>" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                        <div class="modal fade" id="<?php echo "staticBackdrop$modelReg->id"; ?>"
+                                            data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+                                            aria-labelledby="staticBackdropLabel" aria-hidden="true">
                                             <div class="modal-dialog modal-dialog-scrollable modal-xl">
                                                 <div class="modal-content">
                                                     <div class="modal-header">
-                                                        <h5 class="modal-title" id="staticBackdropLabel"><b>Acompañamiento No: <?= $modelReg->numero_seguimiento ?></b></h5>
-                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                        <h5 class="modal-title" id="staticBackdropLabel"><b>Acompañamiento No:
+                                                                <?= $modelReg->numero_seguimiento ?>
+                                                            </b></h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                            aria-label="Close"></button>
                                                     </div>
                                                     <div class="modal-body">
                                                         <table class="table table-striped table-hover" style="font-size:13px">
                                                             <tr>
                                                                 <td><b>Fecha Creación: </b></td>
-                                                                <td><?= substr($modelReg->fecha_inicio, 0, 10) ?></td>
+                                                                <td>
+                                                                    <?= substr($modelReg->fecha_inicio, 0, 10) ?>
+                                                                </td>
                                                             </tr>
                                                             <tr>
                                                                 <td><b>Última Modificación: </b></td>
-                                                                <td><?= substr($modelReg->fecha_fin, 0, 10)  ?></td>
+                                                                <td>
+                                                                    <?= substr($modelReg->fecha_fin, 0, 10) ?>
+                                                                </td>
                                                             </tr>
                                                             <tr>
                                                                 <td><b>Estado: </b></td>
-                                                                <td><?= $modelReg->estado ?></td>
+                                                                <td>
+                                                                    <?= $modelReg->estado ?>
+                                                                </td>
                                                             </tr>
                                                             <tr>
                                                                 <td><b>Motivo: </b></td>
-                                                                <td><?= $modelReg->motivo ?></td>
+                                                                <td>
+                                                                    <?= $modelReg->motivo ?>
+                                                                </td>
                                                             </tr>
                                                             <tr>
                                                                 <td><b>Pronunciamiento: </b></td>
-                                                                <td><?= $modelReg->pronunciamiento ?></td>
+                                                                <td>
+                                                                    <?= $modelReg->pronunciamiento ?>
+                                                                </td>
                                                             </tr>
                                                             <tr>
                                                                 <td><b>Hora Inicio: </b></td>
-                                                                <td><?= $modelReg->hora_inicio ?></td>
+                                                                <td>
+                                                                    <?= $modelReg->hora_inicio ?>
+                                                                </td>
                                                             </tr>
                                                             <tr>
                                                                 <td><b>Hora Fin: </b></td>
-                                                                <td><?= $modelReg->hora_cierre ?></td>
+                                                                <td>
+                                                                    <?= $modelReg->hora_cierre ?>
+                                                                </td>
                                                             </tr>
                                                             <tr>
                                                                 <td><b>Nombre Quien Lidera: </b></td>
-                                                                <td><?= $modelReg->nombre_quien_lidera ?></td>
+                                                                <td>
+                                                                    <?= $modelReg->nombre_quien_lidera ?>
+                                                                </td>
                                                             </tr>
                                                             <tr>
                                                                 <td><b>Departamento:</b></td>
-                                                                <td><?= $modelReg->departamento ?></td>
+                                                                <td>
+                                                                    <?= $modelReg->departamento ?>
+                                                                </td>
                                                             </tr>
                                                             <tr>
                                                                 <?php $arrayArchivo = array("", "");
@@ -224,14 +270,16 @@ $listFirmas = DeceSeguimientoFirmas::find()
                                                                 }
                                                                 ?>
                                                                 <td><b>Archivo: </b></td>
-                                                                <td><a target="_blank" href="<?= $modelPathArchivo->opcion . $arrayArchivo[0] . '/' . $arrayArchivo[1] ?>">
+                                                                <td><a target="_blank"
+                                                                        href="<?= $modelPathArchivo->opcion . $arrayArchivo[0] . '/' . $arrayArchivo[1] ?>">
                                                                         <?= $arrayArchivo[1] ?>
                                                                     </a></td>
                                                             </tr>
                                                         </table>
                                                     </div>
                                                     <div class="modal-footer">
-                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                        <button type="button" class="btn btn-secondary"
+                                                            data-bs-dismiss="modal">Close</button>
 
                                                     </div>
                                                 </div>
@@ -239,7 +287,7 @@ $listFirmas = DeceSeguimientoFirmas::find()
                                         </div>
                                     </td>
                                 </tr>
-                        <?php
+                                <?php
                             } //fin for
                         } //fin if
                         ?>
@@ -248,10 +296,14 @@ $listFirmas = DeceSeguimientoFirmas::find()
             </div>
             <div class="card col-lg-7 col-ms-7">
                 <?php if ($model->isNewRecord) { ?>
-                    <h3 style="color:blueviolet"><b>Acompañamiento</b></h3>
+                    <h4 style="color:blueviolet"><b>Acompañamiento</b></h4>
                 <?php } else { ?>
-                    <h3 style="color:blueviolet"><b>Acompañamiento No. <?= $model->numero_seguimiento ?></b></h3>
-                    <h6 style="color:blueviolet"><b>Fecha Creación. <?= $model->fecha_inicio ?></b></h6>
+                    <h4 style="color:blueviolet"><b>Acompañamiento No.
+                            <?= $model->numero_seguimiento ?>
+                        </b></h4>
+                    <small style="color:blueviolet"><b>Fecha Creación.
+                            <?= $model->fecha_inicio ?>
+                        </b></small><br>
                 <?php } ?>
 
 
@@ -273,14 +325,16 @@ $listFirmas = DeceSeguimientoFirmas::find()
                     <?php if ($model->isNewRecord) { ?>
 
                         <label for="fecha" class="form-label">Fecha Creación</label>
-                        <input type="date" id="fecha_inicio" class="form-control" name="fecha_inicio" require="true" value="<?= $model->fecha_inicio; ?>">
+                        <input type="date" id="fecha_inicio" class="form-control" name="fecha_inicio" require="true"
+                            value="<?= $model->fecha_inicio; ?>">
 
 
                         <?= $form->field($model, 'fecha_fin')->hiddenInput()->label(false) ?>
                     <?php } else { ?>
 
                         <label for="fechaActualizacion" class="form-label">Fecha Actualización</label>
-                        <input type="date" id="fecha_fin" class="form-control" name="fecha_fin" require="true" value="<?= $model->fecha_fin; ?>">
+                        <input type="date" id="fecha_fin" class="form-control" name="fecha_fin" require="true"
+                            value="<?= $model->fecha_fin; ?>">
 
                         <?= $form->field($model, 'fecha_inicio')->hiddenInput()->label(false) ?>
                     <?php } ?>
@@ -331,71 +385,80 @@ $listFirmas = DeceSeguimientoFirmas::find()
 
                     <?php
                     if (!($model->isNewRecord)) {
-                    ?>
+                        ?>
 
                         <div class="card">
                             <!-- <?php
-                                    // $modelDeceSegAcuerdo = new DeceSeguimientoAcuerdos();
-                                    // echo $this->render('/dece-seguimiento-acuerdos/create', [
-                                    //     'model' => $modelDeceSegAcuerdo,
-                                    //     'id_seguimiento' => $model->id,
-                                    // ]);
-                                    ?> -->
+                            // $modelDeceSegAcuerdo = new DeceSeguimientoAcuerdos();
+                            // echo $this->render('/dece-seguimiento-acuerdos/create', [
+                            //     'model' => $modelDeceSegAcuerdo,
+                            //     'id_seguimiento' => $model->id,
+                            // ]);
+                            ?> -->
                             <br>
-                            <h5>Detalle de Acuerdos</h5>
+                            <h5> Detalle de Acuerdos</h5>
                             <div class="form-control" id="div_crea_acuerdo">
                                 <div class="card">
                                     <div class="card-header" style="background-color:lightblue">
                                         <div class="row">
                                             <div class="col-lg-6">
-                                                <textarea class="form-control" type="text" id="acuerdo_acuerdo" rows="4"placeholder="Acuerdo"></textarea>
+                                                <textarea class="form-control" type="text" id="acuerdo_acuerdo" rows="4"
+                                                    placeholder="Acuerdo"></textarea>
                                             </div>
                                             <div class="col-lg-6">
                                                 <div class="row">
                                                     <div class="col-lg-6">
-                                                        <input class="form-control" type="text" id="responsable_acuerdo" placeholder="Responsable" />
+                                                        <input class="form-control" type="text" id="responsable_acuerdo"
+                                                            placeholder="Responsable" />
                                                     </div>
                                                     <div class="col-lg-6">
-                                                        <input class="form-control" type="date" id="fecha_cumplimiento_acuerdo" placeholder="Fecha max cumplimiento" />
+                                                        <input class="form-control" type="date"
+                                                            id="fecha_cumplimiento_acuerdo"
+                                                            placeholder="Fecha max cumplimiento" />
                                                     </div>
                                                 </div>
                                                 <div class="row">
                                                     <div class="col-lg-6">
-                                                        <select class="form-select" aria-label="Default select example" id="parentesco" >
+                                                        <select class="form-select" aria-label="Default select example"
+                                                            id="parentesco">
                                                             <option value="">Parentesco</option>
                                                             <?php
                                                             foreach ($parentescoList as $item) {
-                                                            ?>
+                                                                ?>
                                                                 <option value="<?= $item->atencion_para ?>"><?= $item->atencion_para ?></option>
-                                                            <?php
+                                                                <?php
                                                             }
                                                             ?>
                                                         </select>
                                                     </div>
                                                     <div class="col-lg-6">
-                                                        <select class="form-select" aria-label="Default select example" id="cargo" aria-placeholder="Parentesco">
+                                                        <select class="form-select" aria-label="Default select example"
+                                                            id="cargo" aria-placeholder="Parentesco">
                                                             <option value=""> Cargo</option>
                                                             <?php
                                                             foreach ($cargoList as $item) {
-                                                            ?>
+                                                                ?>
                                                                 <option value="<?= $item->responsable_seg ?>"><?= $item->responsable_seg ?></option>
-                                                            <?php
+                                                                <?php
                                                             }
                                                             ?>
                                                         </select>
                                                     </div>
-                                                    <div class="row">  
+                                                    <div class="row">
                                                         <div class="col-lg-6">
-                                                            <input class="form-control" type="text" id="cedula" placeholder="Cédula" />
+                                                            <input class="form-control" type="text" id="cedula"
+                                                                placeholder="Cédula" />
                                                         </div>
                                                         <div class="col-lg-6">
-                                                            <button type="button" class="btn btn-primary" id="icono_acuerdo" onclick="guardar_acuerdo()" title="Guardar Acuerdos"><i class="fas fa-save"></i></button>
+                                                            <button type="button" class="btn btn-primary" id="icono_acuerdo"
+                                                                onclick="guardar_acuerdo()" title="Guardar Acuerdos"><i
+                                                                    class="fas fa-save"></i></button>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>                                      
-                                        
+                                        </div>
+
                                     </div>
                                     <div class="card-body" id="div_muestra_acuerdo">
                                         <table class="table table-striped table-success">
@@ -409,30 +472,44 @@ $listFirmas = DeceSeguimientoFirmas::find()
                                             <tbody>
                                                 <?php
                                                 foreach ($listAcuerdos as $acuerdo) {
-                                                ?>
+                                                    ?>
                                                     <tr>
-                                                        <td> <?= $acuerdo->secuencial ?> </td>
-                                                        <td> <?= $acuerdo->acuerdo ?> </td>
-                                                        <td> <?= $acuerdo->responsable ?> </td>
-                                                        <td> <?= substr($acuerdo->fecha_max_cumplimiento, 0, 10) ?> </td>
+                                                        <td>
+                                                            <?= $acuerdo->secuencial ?>
+                                                        </td>
+                                                        <td>
+                                                            <?= $acuerdo->acuerdo ?>
+                                                        </td>
+                                                        <td>
+                                                            <?= $acuerdo->responsable ?>
+                                                        </td>
+                                                        <td>
+                                                            <?= substr($acuerdo->fecha_max_cumplimiento, 0, 10) ?>
+                                                        </td>
                                                         <?php
                                                         if ($acuerdo->cumplio) {
-                                                        ?>
-                                                            <td> <input type="checkbox" id="cumplio_acuerdo" onclick="guardar_acuerdo_cumplido(<?= $acuerdo->id ?>,0)" checked /></td>
-                                                        <?php
+                                                            ?>
+                                                            <td> <input type="checkbox" id="cumplio_acuerdo"
+                                                                    onclick="guardar_acuerdo_cumplido(<?= $acuerdo->id ?>,0)"
+                                                                    checked /></td>
+                                                            <?php
                                                         } else {
-                                                        ?>
-                                                            <td> <input type="checkbox" id="cumplio_acuerdo" onclick="guardar_acuerdo_cumplido(<?= $acuerdo->id ?>,1)" /></td>
-                                                        <?php
+                                                            ?>
+                                                            <td> <input type="checkbox" id="cumplio_acuerdo"
+                                                                    onclick="guardar_acuerdo_cumplido(<?= $acuerdo->id ?>,1)" />
+                                                            </td>
+                                                            <?php
                                                         }
                                                         ?>
                                                         <td>
-                                                            <button type="button" class="btn btn-primary" id="icono_acuerdo" onclick="eliminar_acuerdo(<?= $acuerdo->id ?>)" title="Eliminar Acuerdo">
+                                                            <button type="button" class="btn btn-primary" id="icono_acuerdo"
+                                                                onclick="eliminar_acuerdo(<?= $acuerdo->id ?>)"
+                                                                title="Eliminar Acuerdo">
                                                                 <i class="fas fa-trash-alt" style="color:white;"></i>
                                                             </button>
                                                         </td>
                                                     </tr>
-                                                <?php
+                                                    <?php
                                                 }
                                                 ?>
                                             </tbody>
@@ -441,9 +518,9 @@ $listFirmas = DeceSeguimientoFirmas::find()
                                 </div>
 
                             </div>
-                        <?php
+                            <?php
                     }
-                        ?>
+                    ?>
                         <!-- FIN DETALLE DE ACUERDOS -->
 
 
@@ -451,35 +528,41 @@ $listFirmas = DeceSeguimientoFirmas::find()
 
                         <?php
                         if (!($model->isNewRecord)) {
-                        ?>
+                            ?>
 
                             <div class="card">
 
                                 <br>
-                                <h5>Firmas</h5>
+                                <h5> Firmas</h5>
                                 <div class="form-control" id="div_crea_acuerdo">
                                     <div class="card">
                                         <div class="card-header" style="background-color:lightblue">
                                             <div class="row">
                                                 <div class="col-lg-3">
-                                                    <input class="form-control" type="text" id="firmas_nombre" placeholder="Nombre" />
+                                                    <input class="form-control" type="text" id="firmas_nombre"
+                                                        placeholder="Nombre" />
                                                 </div>
                                                 <div class="col-lg-3">
-                                                    <input class="form-control" type="number" id="firmas_cedula" placeholder="Cédula" />
+                                                    <input class="form-control" type="number" id="firmas_cedula"
+                                                        placeholder="Cédula" />
                                                 </div>
                                                 <div class="col-lg-3">
-                                                    <input class="form-control" type="text" id="firmas_parentesco" placeholder="Parentesco" />
+                                                    <input class="form-control" type="text" id="firmas_parentesco"
+                                                        placeholder="Parentesco" />
                                                 </div>
                                                 <div class="col-lg-2">
-                                                    <input class="form-control" type="text" id="firmas_cargo" placeholder="Cargo" />
+                                                    <input class="form-control" type="text" id="firmas_cargo"
+                                                        placeholder="Cargo" />
                                                 </div>
                                                 <div class="col-lg-1">
-                                                    <button type="button" class="btn btn-primary" id="icono_acuerdo" onclick="guardar_firmas()" title="Guardar Firmas"><i class="fas fa-save"></i></button>
+                                                    <button type="button" class="btn btn-primary" id="icono_acuerdo"
+                                                        onclick="guardar_firmas()" title="Guardar Firmas"><i
+                                                            class="fas fa-save"></i></button>
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="card-body" id="div_muestra_firmas">
-                                            <table class="table table-striped table-success">
+                                            <table class="table table-striped table-success" ">
                                                 <thead>
                                                     <td><b> Nombre </b></td>
                                                     <td><b> Cédula </b></td>
@@ -489,19 +572,29 @@ $listFirmas = DeceSeguimientoFirmas::find()
                                                 <tbody>
                                                     <?php
                                                     foreach ($listFirmas as $firma) {
-                                                    ?>
+                                                        ?>
                                                         <tr>
-                                                            <td> <?= $firma->nombre ?> </td>
-                                                            <td> <?= $firma->cedula ?> </td>
-                                                            <td> <?= $firma->parentesco ?> </td>
-                                                            <td> <?= $firma->cargo ?> </td>
                                                             <td>
-                                                                <button type="button" class="btn btn-primary" id="icono_firmas" onclick="eliminar_firma(<?= $firma->id ?>)" title="Eliminar Firma">
+                                                                <?= $firma->nombre ?>
+                                                            </td>
+                                                            <td>
+                                                                <?= $firma->cedula ?>
+                                                            </td>
+                                                            <td>
+                                                                <?= $firma->parentesco ?>
+                                                            </td>
+                                                            <td>
+                                                                <?= $firma->cargo ?>
+                                                            </td>
+                                                            <td>
+                                                                <button type="button" class="btn btn-primary" id="icono_firmas"
+                                                                    onclick="eliminar_firma(<?= $firma->id ?>)"
+                                                                    title="Eliminar Firma">
                                                                     <i class="fas fa-trash-alt" style="color:white;"></i>
                                                                 </button>
                                                             </td>
                                                         </tr>
-                                                    <?php
+                                                        <?php
                                                     }
                                                     ?>
                                                 </tbody>
@@ -510,9 +603,9 @@ $listFirmas = DeceSeguimientoFirmas::find()
                                     </div>
 
                                 </div>
-                            <?php
+                                <?php
                         }
-                            ?>
+                        ?>
                             <!-- FIN FIRMAS-->
 
 
@@ -535,152 +628,152 @@ $listFirmas = DeceSeguimientoFirmas::find()
                                     </td>
                                 </tr>
                             </table>
-                            <div class="row">
-                                <div class="col-lg-2">
-                                    <div class="form-group">
-                                        <?= Html::submitButton('Guardar', ['class' => 'btn btn-success']) ?>
-                                    </div>
+                            <div class="row" style="margin: 10px;>
+                                <div class=" col-lg-2">
+                                <div class="form-group">
+                                    <?= Html::submitButton('Guardar', ['class' => 'btn btn-success']) ?>
                                 </div>
                             </div>
-                            <?php ActiveForm::end(); ?>
-                            </div>
                         </div>
-
+                        <?php ActiveForm::end(); ?>
+                    </div>
                 </div>
-                <!--div row -->
+
             </div>
+            <!--div row -->
         </div>
+    </div>
 
-        <script>
-            //******   Acuerdos    ******** ///
-            function guardar_acuerdo() {
-                var url = '<?= Url::to(['guardar-acuerdos']) ?>';
+    <script>
+        //******   Acuerdos    ******** ///
+        function guardar_acuerdo() {
+            var url = '<?= Url::to(['guardar-acuerdos']) ?>';
 
-                var secuencial = $('#secuencial_acuerdo').val();
-                var acuerdo = $('#acuerdo_acuerdo').val();
-                var responsable = $('#responsable_acuerdo').val();
-                var cumplio = 0;
-                var fecha_max_cumplimiento = $('#fecha_cumplimiento_acuerdo').val();
-                var id_seguimiento = '<?= $model->id ?>';
-                var parentesco = $("#parentesco").val();
-                var cargo = $("#cargo").val();
-                var cedula = $("#cedula").val();
+            var secuencial = $('#secuencial_acuerdo').val();
+            var acuerdo = $('#acuerdo_acuerdo').val();
+            var responsable = $('#responsable_acuerdo').val();
+            var cumplio = 0;
+            var fecha_max_cumplimiento = $('#fecha_cumplimiento_acuerdo').val();
+            var id_seguimiento = '<?= $model->id ?>';
+            var parentesco = $("#parentesco").val();
+            var cargo = $("#cargo").val();
+            var cedula = $("#cedula").val();
 
-               // alert(cedula)
+            // alert(cedula)
 
-                var params = {
-                    secuencial: secuencial,
-                    acuerdo: acuerdo,
-                    responsable: responsable,
-                    cumplio: cumplio,
-                    fecha_max_cumplimiento: fecha_max_cumplimiento,
-                    id_seguimiento: id_seguimiento,
-                    parentesco: parentesco,
-                    cargo: cargo,
-                    cedula:cedula,
-                }
-
-                $.ajax({
-                    data: params,
-                    url: url,
-                    type: 'POST',
-                    beforeSend: function(response) {},
-                    success: function(response) {
-                        //$('#div_muestra_acuerdo').html(response);
-                        var data = $.parseJSON(response);
-                        $('#div_muestra_acuerdo').html(data.acuerdos);
-                        $('#div_muestra_firmas').html(data.firmas);
-                    }
-
-                });
+            var params = {
+                secuencial: secuencial,
+                acuerdo: acuerdo,
+                responsable: responsable,
+                cumplio: cumplio,
+                fecha_max_cumplimiento: fecha_max_cumplimiento,
+                id_seguimiento: id_seguimiento,
+                parentesco: parentesco,
+                cargo: cargo,
+                cedula: cedula,
             }
 
-            function guardar_acuerdo_cumplido(id_seg_acuerdo, cumplio) {
-                var url = '<?= Url::to(['guardar-acuerdos-cumplido']) ?>';
-
-                var params = {
-                    id_seg_acuerdo: id_seg_acuerdo,
-                    cumplio: cumplio,
+            $.ajax({
+                data: params,
+                url: url,
+                type: 'POST',
+                beforeSend: function (response) { },
+                success: function (response) {
+                    //$('#div_muestra_acuerdo').html(response);
+                    var data = $.parseJSON(response);
+                    $('#div_muestra_acuerdo').html(data.acuerdos);
+                    $('#div_muestra_firmas').html(data.firmas);
                 }
 
-                $.ajax({
-                    data: params,
-                    url: url,
-                    type: 'POST',
-                    beforeSend: function(response) {},
-                    success: function(response) {
-                        $('#div_muestra_acuerdo').html(response);
-                    }
+            });
+        }
 
-                });
+        function guardar_acuerdo_cumplido(id_seg_acuerdo, cumplio) {
+            var url = '<?= Url::to(['guardar-acuerdos-cumplido']) ?>';
+
+            var params = {
+                id_seg_acuerdo: id_seg_acuerdo,
+                cumplio: cumplio,
             }
 
-            function eliminar_acuerdo(id_seg_acuerdo) {
-                var url = '<?= Url::to(['eliminar-acuerdo']) ?>';
-
-                var params = {
-                    id_seg_acuerdo: id_seg_acuerdo,
+            $.ajax({
+                data: params,
+                url: url,
+                type: 'POST',
+                beforeSend: function (response) { },
+                success: function (response) {
+                    $('#div_muestra_acuerdo').html(response);
                 }
 
-                $.ajax({
-                    data: params,
-                    url: url,
-                    type: 'POST',
-                    beforeSend: function(response) {},
-                    success: function(response) {
-                        $('#div_muestra_acuerdo').html(response);
-                    }
-                });
+            });
+        }
+
+        function eliminar_acuerdo(id_seg_acuerdo) {
+            var url = '<?= Url::to(['eliminar-acuerdo']) ?>';
+
+            var params = {
+                id_seg_acuerdo: id_seg_acuerdo,
             }
-            //******  fin  Acuerdos    ******** ///
 
-            //******   firmas    ******** ///
-            function guardar_firmas() {
-                var url = '<?= Url::to(['guardar-firmas']) ?>';
+            $.ajax({
+                data: params,
+                url: url,
+                type: 'POST',
+                beforeSend: function (response) { },
+                success: function (response) {
+                    $('#div_muestra_acuerdo').html(response);
+                }
+            });
+        }
+        //******  fin  Acuerdos    ******** ///
 
-                var nombre = $('#firmas_nombre').val();
-                var cedula = $('#firmas_cedula').val();
-                var parentesco = $('#firmas_parentesco').val();
-                var cargo = $('#firmas_cargo').val();
+        //******   firmas    ******** ///
+        function guardar_firmas() {
+            var url = '<?= Url::to(['guardar-firmas']) ?>';
 
-                var id_seguimiento = '<?= $model->id ?>';
+            var nombre = $('#firmas_nombre').val();
+            var cedula = $('#firmas_cedula').val();
+            var parentesco = $('#firmas_parentesco').val();
+            var cargo = $('#firmas_cargo').val();
 
-                var params = {
-                    nombre: nombre,
-                    cedula: cedula,
-                    parentesco: parentesco,
-                    cargo: cargo,
-                    id_seguimiento: id_seguimiento,
+            var id_seguimiento = '<?= $model->id ?>';
+
+            var params = {
+                nombre: nombre,
+                cedula: cedula,
+                parentesco: parentesco,
+                cargo: cargo,
+                id_seguimiento: id_seguimiento,
+            }
+
+            $.ajax({
+                data: params,
+                url: url,
+                type: 'POST',
+                beforeSend: function (response) { },
+                success: function (response) {
+                    $('#div_muestra_firmas').html(response);
                 }
 
-                $.ajax({
-                    data: params,
-                    url: url,
-                    type: 'POST',
-                    beforeSend: function(response) {},
-                    success: function(response) {
-                        $('#div_muestra_firmas').html(response);
-                    }
+            });
+        }
 
-                });
+        function eliminar_firma(id_seg_firmas) {
+            var url = '<?= Url::to(['eliminar-firmas']) ?>';
+
+            var params = {
+                id_seg_firmas: id_seg_firmas,
             }
 
-            function eliminar_firma(id_seg_firmas) {
-                var url = '<?= Url::to(['eliminar-firmas']) ?>';
-
-                var params = {
-                    id_seg_firmas: id_seg_firmas,
+            $.ajax({
+                data: params,
+                url: url,
+                type: 'POST',
+                beforeSend: function (response) { },
+                success: function (response) {
+                    $('#div_muestra_firmas').html(response);
                 }
-
-                $.ajax({
-                    data: params,
-                    url: url,
-                    type: 'POST',
-                    beforeSend: function(response) {},
-                    success: function(response) {
-                        $('#div_muestra_firmas').html(response);
-                    }
-                });
-            }
+            });
+        }
             //******   fin firmas    ******** ///
-        </script>
+    </script>

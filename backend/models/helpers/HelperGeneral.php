@@ -345,6 +345,9 @@ class HelperGeneral extends ActiveRecord{
 
         return $resultado;
     }
+
+
+    
     
     
 }

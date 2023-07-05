@@ -143,6 +143,9 @@ class DeceDeteccionController extends Controller
         if ($model->load(Yii::$app->request->post())) 
         {
             
+            // print_r($model);
+            // die();
+
             $ultimoNumDeteccion = $this->buscaUltimoNumDeteccion($model->id_caso);
             $model->numero_deteccion = $ultimoNumDeteccion + 1;
             $model->fecha_reporte = $model->fecha_reporte.' '.$hora;

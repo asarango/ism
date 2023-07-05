@@ -80,7 +80,6 @@ $ahora = date('Y-m-d H:i:s');
                 <!-- <script>
                     CKEDITOR.replace("dececasos-detalle");
                 </script> -->
-        d
                 <?= $form->field($model, 'id_usuario')->hiddenInput()->label(false) ?>
                 <br>
 

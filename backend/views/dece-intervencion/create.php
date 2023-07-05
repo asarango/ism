@@ -18,10 +18,15 @@ $this->params['breadcrumbs'][] = $this->title;
         <div class="card shadow col-lg-10 col-md-10">
 
             <div class="row align-items-center p-2">
-                <div class="col-lg-2">
+                <div class="col-lg-1 col-md-1 col-sm-1">
                     <h4><img src="../ISM/main/images/submenu/derivacion2.png" width="100px" class="img-thumbnail"></h4>
                 </div>
-                <div class="col-lg-2">
+                
+                <div class="col-lg-9 col-md-9">
+                    <h4><?= Html::encode($this->title) ?></h4>
+                    <small><?= 'Asociado al Número de Caso: '.$model->caso->numero_caso ?></small>
+                </div>
+                <div class="col-lg-2"style="text-align: right;">
                         <div class=" row align-items-center p-2">
                         <?=
                                 Html::a(
@@ -32,11 +37,8 @@ $this->params['breadcrumbs'][] = $this->title;
                             ?>
                         </div>
                 </div>
-                <div class="col-lg-8">
-                    <h1><?= Html::encode($this->title) ?></h1>
-                    <h3><?= 'Asociado al Número de Caso: '.$model->caso->numero_caso ?></h5>
-                </div>
-            </div>           
+            </div> 
+                      
 
             <?= $this->render('_form', [
                 'model' => $model

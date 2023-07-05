@@ -39,7 +39,7 @@ $user = Yii::$app->user->identity;
     <div class="row p-4 ">
         <div class="card col-lg-5 col-ms-5">
             <!-- RENDERIZA A LA VISTA datos_estudiante.php -->
-            <h3 style="color:blueviolet"><b>Datos Estudiante</b></h3>
+            <h4 style="color:blueviolet"><b>Datos Estudiante</b></h4>
                     <table class="table table-responsive">
                         <tr>
                             <td><b>No. Caso: <?php echo '<pre>'; ?></b></td>
@@ -167,9 +167,9 @@ $user = Yii::$app->user->identity;
         <div class="card col-lg-7 col-ms-7">
                 
                 <?php if($model->isNewRecord){ ?>
-                        <h3 style="color:blueviolet"><b>Derivación</b></h3>
+                        <h4 style="color:blueviolet"><b>Derivación</b></h4>
                       <?php } else {?>
-                        <h3 style="color:blueviolet"><b>Derivación No. <?= $model->numero_derivacion?></b></h3>
+                        <h4 style="color:blueviolet"><b>Derivación No. <?= $model->numero_derivacion?></b></h4>
                         <h6 style="color:blueviolet"><b>Fecha Creación: <?= $model->fecha_derivacion?></b></h6>
                 <?php }?>
 

@@ -88,6 +88,7 @@ class NeeController extends Controller
 
         $query = "select  distinct c4.id,concat(c4.last_name, ' ',c4.first_name,' ',c4.middle_name) as student,
                     concat( c8.name,' ', c7.name ) curso 
+                    ,c7.name as paralelo
                     from scholaris_clase c1 , scholaris_grupo_alumno_clase c2 ,
                         op_institute_authorities c3 ,op_student c4 ,op_student_inscription c5, 
                         scholaris_op_period_periodo_scholaris c6,op_course_paralelo c7, op_course c8
@@ -113,7 +114,8 @@ class NeeController extends Controller
     {
         $con = Yii::$app->db;
         $query = "select  distinct nee.id,concat(c4.last_name, ' ',c4.first_name,' ',c4.middle_name) as student,
-                            concat( c8.name,' ', c7.name ) curso
+                            concat( c8.name,' ', c7.name ) curso,
+                            c7.name as paralelo
                     from 	scholaris_clase c1 
                             ,scholaris_grupo_alumno_clase c2 
                             ,op_institute_authorities c3 
@@ -134,6 +136,8 @@ class NeeController extends Controller
                             and c8.id = c7.course_id
                             and nee.student_id = c5.student_id
                     order by student;";
+        // echo $query;
+        // die();
         $res = $con->createCommand($query)->queryAll();
         
     //    echo $query;

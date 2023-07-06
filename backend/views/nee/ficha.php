@@ -74,14 +74,12 @@ function getIniciales($nombre){
         <div class="card shadow col-lg-12 col-md-12">
             <div class=" row align-items-center p-2"><!-- INICIO DE CABECERA -->
                 <div class="col-lg-1">
-                    <h4><img src="ISM/main/images/submenu/herramientas-para-reparar.png" width="64px" class="img-thumbnail"></h4>
+                    <h4><img src="../ISM/main/images/submenu/herramientas-para-reparar.png" width="64px" class="img-thumbnail"></h4>
                 </div>
                 <div class="col-lg-11">
                     <h4><?= Html::encode($this->title) ?></h4>
                 </div>
             </div><!-- FIN DE CABECERA -->
-
-
             <!-- inicia menu  -->
             <div class="row">
                 <div class="col-lg-6 col-md-6">

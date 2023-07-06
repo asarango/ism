@@ -19,9 +19,9 @@ use yii\widgets\ActiveForm;
             <div class="col-lg-6 col-md-6">
 
                 <!-- Boton Modal Agregar Nee-->
-                <a type="button" class="btn btn-link" style="color:#ab0a3d" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                <!-- <a type="button" class="btn btn-link" style="color:#ab0a3d" data-bs-toggle="modal" data-bs-target="#exampleModal">
                     <i class="fas fa-plus-circle">Agregar datos NEE</i>
-                </a>
+                </a> -->
             </div>
         </div> 
 

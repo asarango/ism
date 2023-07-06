@@ -39,12 +39,12 @@ if ($model->id_clase > 0) //si es mayor a cero, biene de leccionario
         <div class="card shadow col-lg-10 col-md-10">
 
             <div class=" row align-items-center p-2">
-                <div class="col-lg-1">
+                <div class="col-lg-1 col-md-1">
                     <h4><img src="../ISM/main/images/submenu/retroalimentacion.png" width="64px" class="img-thumbnail">
                     </h4>
                 </div>
 
-                <div class="col-lg-9">
+                <div class="col-lg-8 col-md-9">
                     <h4>
                         <?= Html::encode($this->title) ?>
                     </h4>
@@ -52,7 +52,7 @@ if ($model->id_clase > 0) //si es mayor a cero, biene de leccionario
                         <?= 'Asociado al Número de Caso: ' . $model->caso->numero_caso ?>
                     </small>
                 </div>
-                <div class="col-lg-2" style="text-align: right;">
+                <div class="col-lg-3 col-md-3 col-ms-6" style="text-align: right;">
                     <div class="row align-items-center p-2">
                         <p>
                             |

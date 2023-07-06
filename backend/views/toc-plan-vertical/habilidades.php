@@ -44,8 +44,6 @@ use yii\helpers\Url;
         </div>
         <!-- FIN ENCABEZADO -->
 
-
-
         <!-- INICIO FORMULARIO -->
         <div class="card col-lg-12 col-md-12 col-sm-12" style="margin-bottom: 1rem">
             <div style=" margin: 2rem 1.5rem 0.5rem 1.5rem">

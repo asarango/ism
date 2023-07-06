@@ -58,7 +58,7 @@ class DeceIntervencion extends \yii\db\ActiveRecord
             'fecha_intervencion' => 'Fecha Intervención',
             'razon' => 'Razón',
             'otra_area' => 'Otra / Especifique:',
-            'acciones_responsables' => 'Acciones Responsables',
+            'acciones_responsables' => 'Acciones / Responsables',
             'objetivo_general'=>'Objetivo General',
             'id_caso' => 'Id Caso',
             'numero_caso'=>'Número Caso',

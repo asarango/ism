@@ -11,9 +11,9 @@ $this->title = 'Estudiantes NEE';
 //echo '<pre>';
 //print_r($estudiantes);
 //die();
-//echo '<pre>';
-//print_r($nee);
-//die();
+// echo '<pre>';
+// print_r($nee);
+// die();
 ?>
 
 <!--Scripts para que funcionen AJAX de select 2 -->
@@ -27,10 +27,12 @@ $this->title = 'Estudiantes NEE';
         <div class="card shadow col-lg-10 col-md-10">
             <div class=" row align-items-center p-2">
                 <div class="col-lg-1">
-                    <h4><img src="ISM/main/images/submenu/menu.png" width="64px"  class="img-thumbnail"></h4>
+                    <h4><img src="ISM/main/images/submenu/menu.png" width="64px" class="img-thumbnail"></h4>
                 </div>
                 <div class="col-lg-11">
-                    <h4><?= Html::encode($this->title) ?></h4>
+                    <h4>
+                        <?= Html::encode($this->title) ?>
+                    </h4>
                 </div>
             </div><!-- FIN DE CABECERA -->
 
@@ -40,11 +42,11 @@ $this->title = 'Estudiantes NEE';
                     <!-- menu izquierda -->
                     |
                     <?=
-                    Html::a(
+                        Html::a(
                             '<span class="badge rounded-pill" style="background-color: #9e28b5"><i class="fa fa-briefcase" aria-hidden="true"></i> Inicio</span>',
                             ['site/index'],
                             ['class' => 'link']
-                    );
+                        );
                     ?>
 
                     |
@@ -62,22 +64,27 @@ $this->title = 'Estudiantes NEE';
             <div class="row" style="margin-top: 20px">
 
                 <div class="col-lg-12 col-md-12 text-center">
-                    <?= Html::beginForm(['create','pestana' => 'datos_estudiante' ],'post') ?>
+                    <?= Html::beginForm(['create', 'pestana' => 'datos_estudiante'], 'post') ?>
                     <div class="row">
                         <div class="col-lg-10 col-md-10">
-                            <select id="estudiante" name="id" class="form-control select2 select2-hidden-accessible" style="width: 100%;" tabindex="-1" aria-hidden="true">
-                                <option selected="selected" value="" >Escoja un estudiante...</option>
+                            <select id="estudiante" name="id" class="form-control select2 select2-hidden-accessible"
+                                style="width: 100%;" tabindex="-1" aria-hidden="true">
+                                <option selected="selected" value="">Escoja un estudiante...</option>
                                 <?php
                                 foreach ($estudiantes as $estudiante) {
-                                    echo '<option value="' . $estudiante['id'] . '">' . $estudiante['student'].' - '.$estudiante['curso'] . '</option>';
+                                    if (strlen($estudiante['paralelo']) == 1) {
+                                        echo '<option value="' . $estudiante['id'] . '">' . $estudiante['student'] . ' - ' . $estudiante['curso'] . '</option>';
+                                    }
                                 }
                                 ?>
-                            </select> 
+                            </select>
                         </div>
                         <div class="col-lg-2 col-md-2" style="text-align: end">
-                            <?= Html::submitButton('Ingresar NEE', ['class' => 'submit btn btn-primary my-text-medium', 
-                                                                    'style' => 'background-color:#0a1f8f']) 
-                            ?>
+                            <?= Html::submitButton('Ingresar NEE', [
+                                'class' => 'submit btn btn-primary my-text-medium',
+                                'style' => 'background-color:#0a1f8f'
+                            ])
+                                ?>
                         </div>
                     </div>
                     <?= Html::endForm() ?>
@@ -99,22 +106,28 @@ $this->title = 'Estudiantes NEE';
                             <tbody>
                                 <?php
                                 foreach ($nee as $n) {
-                                    ?>
-                                    <tr>
-                                        <td><?=$n['student'] ?> </td>
-                                        <td>
-                                            <?php
+                                    if (strlen($n['paralelo']) == 1) {
+                                        ?>
+                                        <tr>
+                                            <td>
+                                                <?= $n['student'] ?>
+                                            </td>
+                                            <td>
+                                                <?php
                                                 echo Html::a(
                                                     'Ver Ficha',
-                                                    ['ficha','nee_id' => $n['id'] ,
-                                                      'pestana' => 'datos_estudiante'
+                                                    [
+                                                        'ficha',
+                                                        'nee_id' => $n['id'],
+                                                        'pestana' => 'datos_estudiante'
                                                     ],
                                                     ['class' => 'badge rounded-pill bg-warning text-dark']
                                                 );
-                                            ?>
-                                        </td>
-                                    </tr>
-                                    <?php
+                                                ?>
+                                            </td>
+                                        </tr>
+                                        <?php
+                                    }
                                 }
                                 ?>
 

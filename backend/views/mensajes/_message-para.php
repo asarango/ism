@@ -1,30 +1,32 @@
 <?php
 
 // echo '<pre>';
-// print_r($model);
+// print_r($enviados);
 // die();
 
 use yii\helpers\Html;
+
 
 ?>
 
 <div class="row" style="border: solid 1px #eee; margin: 10px; padding: 10px;">
     <!-- inicio de modal de grupos -->
-    <div class="col-lg-6 col-md-6">
+    <div class="col-lg-4 col-md-4">
         <!-- Button trigger modal -->
         <?php
-            if(count($enviados) == 0){
-                ?>
+        if (count($enviados) == 0) {
+            ?>
             <a type="button" class="" data-bs-toggle="modal" data-bs-target="#staticBackdropGroup">
                 <i class="fas fa-users" style="color: #65b2e8"> Add Grupo</i>
             </a>
-                <?php
-            }
+            <?php
+        }
 
-        ?>        
+        ?>
 
         <!-- Modal -->
-        <div class="modal fade" id="staticBackdropGroup" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal fade" id="staticBackdropGroup" data-bs-backdrop="static" data-bs-keyboard="false"
+            tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -35,10 +37,12 @@ use yii\helpers\Html;
                         <div class="">
                             <div class="form-group">
                                 <label class="form-label" for="BusquedaGrupo">Buscar por grupo: ...</label>
-                                <input type="text" name="input_buscar" class="form-control" placeholder="POR GRUPO ..." onkeyup="search_group(this);">
+                                <input type="text" name="input_buscar" class="form-control" placeholder="POR GRUPO ..."
+                                    onkeyup="search_group(this);">
                             </div>
 
-                            <div class="" id="div-respuesta-grupos" style="border: solid 1px #eee; margin-top: 10px; padding: 10px;">
+                            <div class="" id="div-respuesta-grupos"
+                                style="border: solid 1px #eee; margin-top: 10px; padding: 10px;">
 
                             </div>
 
@@ -54,20 +58,67 @@ use yii\helpers\Html;
     </div>
     <!-- fin de modal de grupos -->
 
-    <!-- inicio de modal de individuales -->
-    <div class="col-lg-6 col-md-6" style="text-align: right;">
+    <!-- INCIO ESTUDIANTES -->
+
+    <div class="col-lg-4 col-md-4" style="text-align: right;">
         <!-- Button trigger modal -->
         <?php
-            if(count($enviados) == 0){
-                ?>
-                <a type="button" class="" data-bs-toggle="modal" data-bs-target="#staticBackdropUser">
-                    <i class="fas fa-user" style="color: #ff9e18;"> Add Usuario</i>
-                </a>
-                <?php
-            }
-        ?>        
+        if (count($enviados) == 0) {
+            ?>
+            <a type="button" class="" data-bs-toggle="modal" data-bs-target="#staticBackdropStudent">
+                <i class="fas fa-user" style="color: #ff9e18;"> Add Estudiante</i>
+            </a>
+            <?php
+        }
+        ?>
         <!-- Modal -->
-        <div class="modal fade" id="staticBackdropUser" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal fade" id="staticBackdropStudent" data-bs-backdrop="static" data-bs-keyboard="false"
+            tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="staticBackdropLabel">Agregar estudiante</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="">
+                            <div class="form-group">
+                                <label class="form-label" for="BusquedaStudent">Buscar por estudiante: ...</label>
+                                <input type="text" name="input_buscar_student" class="form-control"
+                                    placeholder="BUSCAR ..." onkeyup="search_student(this);">
+                            </div>
+
+                            <div class="" id="div-respuesta-student"
+                                style="border: solid 1px #eee; margin-top: 10px; padding: 10px;">
+
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- FIN DE ESTUDIANTES -->
+
+    <!-- inicio de modal de individuales -->
+    <div class="col-lg-4 col-md-4" style="text-align: right;">
+        <!-- Button trigger modal -->
+        <?php
+        if (count($enviados) == 0) {
+            ?>
+            <a type="button" class="" data-bs-toggle="modal" data-bs-target="#staticBackdropUser">
+                <i class="fas fa-user" style="color: #ff9e18;"> Add Usuario</i>
+            </a>
+            <?php
+        }
+        ?>
+        <!-- Modal -->
+        <div class="modal fade" id="staticBackdropUser" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+            aria-labelledby="staticBackdropLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -78,10 +129,12 @@ use yii\helpers\Html;
                         <div class="">
                             <div class="form-group">
                                 <label class="form-label" for="BusquedaUser">Buscar por remitente: ...</label>
-                                <input type="text" name="input_buscar_user" class="form-control" placeholder="BUSCAR ..." onkeyup="search_user(this);">
+                                <input type="text" name="input_buscar_user" class="form-control"
+                                    placeholder="BUSCAR ..." onkeyup="search_user(this);">
                             </div>
 
-                            <div class="" id="div-respuesta-users" style="border: solid 1px #eee; margin-top: 10px; padding: 10px;">
+                            <div class="" id="div-respuesta-users"
+                                style="border: solid 1px #eee; margin-top: 10px; padding: 10px;">
 
                             </div>
 
@@ -101,44 +154,63 @@ use yii\helpers\Html;
 <!-- inicia detalle de grupos  -->
 <div class="row" style="border: solid 1px #65b2e8; margin: 10px; padding: 10px;">
     <div class="col-lg-12 col-md-12">
-        <b>A :</b>
-        <?php   
-            foreach ($to as $t) {
-                ?>
-                    <span class="badge rounded-pill" style="background-color: #65b2e8;">
-                        <?= $t['nombre'] ?>
-                        <?php 
-                            if(count($enviados) == 0){
-                                echo Html::a(' <i class="fas fa-trash zoom" style="color: #eee"></i>', [
-                                'acciones',
-                                'message_header_id' => $model->id,
-                                'tipo_busqueda' => 'delete_group',
-                                'word' => 'd',
-                                'group_id' => $t['grupo_id']
-                                ]);
-                            }                         
-                        ?>
-                    </span>
+        <b>Para :</b>
+        <?php
+        foreach ($to as $t) {
+            ?>
+            <span class="badge rounded-pill" style="background-color: #65b2e8;">
+                <?= $t['nombre'] ?>
                 <?php
+                if (count($enviados) == 0) {
+                    echo Html::a(' <i class="fas fa-trash zoom" style="color: #eee"></i>', [
+                        'acciones',
+                        'message_header_id' => $model->id,
+                        'tipo_busqueda' => 'delete_group',
+                        'word' => 'd',
+                        'group_id' => $t['grupo_id']
+                    ]);
                 }
-                foreach ($toUsers as $tu) {
                 ?>
-                    <span class="badge rounded-pill" style="background-color: #ff9e18;">
-                        <?= $tu['name'] ?>
-                        <?php
-                            if(count($enviados) == 0){ 
-                                echo Html::a(' <i class="fas fa-trash zoom" style="color: #eee"></i>', [
-                                'acciones',
-                                'message_header_id' => $model->id,
-                                'tipo_busqueda' => 'delete_para',
-                                'word' => 'd',
-                                'para_id' => $tu['id']
-                                ]);
-                            }
-                        ?>
-                    </span>
+            </span>
+            <?php
+        }
+        foreach ($toUsers as $tu) {
+            ?>
+            <span class="badge rounded-pill" style="background-color: #ff9e18;">
+                <?= $tu['name'] ?>
                 <?php
-                }              
+                if (count($enviados) == 0) {
+                    echo Html::a(' <i class="fas fa-trash zoom" style="color: #eee"></i>', [
+                        'acciones',
+                        'message_header_id' => $model->id,
+                        'tipo_busqueda' => 'delete_para',
+                        'word' => 'd',
+                        'para_id' => $tu['id']
+                    ]);
+                }
+                ?>
+            </span>
+            <?php
+        }
+
+        foreach ($toStudents as $ts) {
+            ?>
+            <span class="badge rounded-pill" style="background-color: #ff9e18;">
+                <?= $ts['name'] ?>
+                <?php
+                if (count($enviados) == 0) {
+                    echo Html::a(' <i class="fas fa-trash zoom" style="color: #eee"></i>', [
+                        'acciones',
+                        'message_header_id' => $model->id,
+                        'tipo_busqueda' => 'delete_para',
+                        'word' => 'd',
+                        'para_id' => $ts['id']
+                    ]);
+                }
+                ?>
+            </span>
+            <?php
+        }
         ?>
     </div>
 </div>
@@ -149,7 +221,9 @@ use yii\helpers\Html;
 <div class="row" style="border: solid 1px #9e28b5; margin: 10px; padding: 10px; color: #9e28b5">
     <div class="col-lg-12 col-md-12">
         <b>Total de remitentes:</b>
-        <h1><?= count($para) ?></h1>
+        <h1>
+            <?= count($para) ?>
+        </h1>
     </div>
 </div>
 <!-- fin de totales -->
@@ -171,12 +245,12 @@ use yii\helpers\Html;
                 ],
                 ['class' => 'btn btn-outline-success']
             );
-        }else if(count($enviados) > 0){
+        } else if (count($enviados) > 0) {
             echo '<b style="color: green">
                     <img src="ISM/main/images/actions/feliz.gif" width="100px">
                     Su notificación fue enviada con éxito!!!
                 </b>';
-        }else{
+        } else {
             echo '<b style="color: #898b8d">Debe ingresar remitentes para poder enviar el mensaje</b>';
         }
         ?>
@@ -202,8 +276,8 @@ use yii\helpers\Html;
             data: params,
             url: url,
             type: 'GET',
-            beforeSend: function() {},
-            success: function(resp) {
+            beforeSend: function () { },
+            success: function (resp) {
                 //console.log(resp);
                 $('#div-respuesta-grupos').html(resp);
             }
@@ -226,10 +300,33 @@ use yii\helpers\Html;
             data: params,
             url: url,
             type: 'GET',
-            beforeSend: function() {},
-            success: function(resp) {
+            beforeSend: function () { },
+            success: function (resp) {
                 //console.log(resp);
                 $('#div-respuesta-users').html(resp);
+            }
+        });
+    }
+
+    function search_student(obj) {
+
+        word = obj.value;
+        var url = '<?= \yii\helpers\Url::to(['acciones']) ?>';
+
+        var params = {
+            'message_header_id': messageId,
+            'tipo_busqueda': 'search_student',
+            'word': word
+        };
+
+        $.ajax({
+            data: params,
+            url: url,
+            type: 'GET',
+            beforeSend: function () { },
+            success: function (resp) {
+                //console.log(resp);
+                $('#div-respuesta-student').html(resp);
             }
         });
     }

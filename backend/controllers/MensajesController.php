@@ -203,11 +203,13 @@ class MensajesController extends Controller
 
         $to = $this->get_to($id);
         $toUsers = $this->get_to_users($id);
+        $toStudents = $this->get_to_students($id);
 
         return $this->render('view', [
             'model' => $model,
             'to' => $to,
             'toUsers' => $toUsers,
+            'toStudents' => $toStudents,
             'para' => $para,
             'totalEnviado' => $totalEnviado,
             'enviados' => $enviados
@@ -224,6 +226,18 @@ class MensajesController extends Controller
                     where 	par.message_id = $messageHeaderId
                             and par.grupo_id is null
                     order 	by rp.name;";
+        $res = $con->createCommand($query)->queryAll();
+        return $res;
+    }
+
+
+    private function get_to_students($messageHeaderId){
+        $con = Yii::$app->db;
+        $query = "select 	para.id, para.para_usuario, rp.name
+                    from 	message_para para
+                            inner join op_student os on os.x_institutional_email = para.para_usuario 
+                            inner join res_partner rp on rp.id = os.partner_id 
+                    where 	para.message_id = $messageHeaderId;";
         $res = $con->createCommand($query)->queryAll();
         return $res;
     }
@@ -288,6 +302,9 @@ class MensajesController extends Controller
             $model->save();
             
             return $this->redirect(['view','id' => $messageHeaderId]); 
+        }else if($tipoBusqueda == 'search_student'){
+            $groups = $this->search_students($periodoId, $messageHeaderId, $word);
+            return $groups;
         }
                 
     }
@@ -364,6 +381,34 @@ class MensajesController extends Controller
 
         $html .= $this->renderPartial('_ajax-grupos',[
             'groups'    => $res,
+            'messageId' => $messageId
+        ]);
+        
+        return $html;
+
+    } 
+
+
+
+
+    private function search_students($periodoId, $messageId, $word){
+        $con = Yii::$app->db;
+        $query = "select 	concat(os.last_name,' ', os.first_name,' ', middle_name) as student, os.x_institutional_email  
+        from 	op_student os 
+        where 	last_name ilike 'apolo arev%'
+                or first_name ilike 'apolo arev%'
+                or middle_name ilike 'apolo arev%'
+                or x_institutional_email ilike 'apolo arev%'
+                and os.x_institutional_email not in (select 	par.para_usuario  
+                from 	message_para par
+                        inner join message_header mh on mh.id = par.message_id 
+                where 	mh.id = $messageId);";
+                                            
+        $res = $con->createCommand($query)->queryAll();
+        $html = '';
+
+        $html .= $this->renderPartial('_ajax-students',[
+            'students'    => $res,
             'messageId' => $messageId
         ]);
         

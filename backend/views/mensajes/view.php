@@ -16,17 +16,17 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <div class="m-0 vh-50 row justify-content-center align-items-center">
         <div class="card shadow col-lg-10 col-md-10">
-            <div class=" row align-items-center p-2">
+            <div class=" row align-items-center p-1">
                 <div class="col-lg-1">
-                    <h4><img src="ISM/main/images/submenu/herramientas-para-reparar.png" width="64px" style="" class="img-thumbnail"></h4>
+                    <h4><img src="../ISM/main/images/submenu/herramientas-para-reparar.png" width="64px" style="" class="img-thumbnail"></h4>
                 </div>
                 <div class="col-lg-7">
-                    <h6><?= Html::encode($this->title) ?></h6>
+                    <h5><?= Html::encode($this->title) ?></h5>
 
                 </div>
                 <div class="col-lg-4 col-md-4" style="text-align: right;">
                     <!-- menu derecha -->
-                    |
+                    
                     <?=
                     Html::a(
                         '<span class="badge rounded-pill" style="background-color: #ff9e18"><i class="fa fa-briefcase" aria-hidden="true"></i> Volver a notificaciones</span>',
@@ -35,7 +35,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     );
                     ?>
 
-                    |
+                    
                 </div> <!-- fin de menu derecha -->
             </div><!-- FIN DE CABECERA -->
 
@@ -52,14 +52,17 @@ $this->params['breadcrumbs'][] = $this->title;
                         <?php
                             if(count($enviados)==0){
                                 ?>
-                                <div class="row" style="border: solid 1px #eee; margin: 10px; padding-top: 5px;">
+                                <div class="row" style="border: solid 1px #eee; margin: 10px;">
                                     <p>
+                                        <div class="col-lg-6 col-md-6">
                                         <?= Html::a(
                                             '<i class="fas fa-edit"> Actualizar</i>',
                                             ['update', 'id' => $model->id],
                                             ['class' => '', 'style' => 'color: #0a1f8f']
                                         ) ?>
-                                        |
+                                        </div>
+                                    
+                                        <div class="col-lg-6 col-md-6" style="text-align: right;">
                                         <?=
                                         Html::a('<i class="fas fa-trash-alt"> Eliminar</i>', ['eliminar', 'id' => $model->id], [
                                             'class' => '',
@@ -70,6 +73,8 @@ $this->params['breadcrumbs'][] = $this->title;
                                             ],
                                         ])
                                         ?>
+                                        </div>
+                                        
                                     </p>
 
                                 </div>
@@ -113,6 +118,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                     'model' => $model,
                                     'to' => $to,
                                     'toUsers' => $toUsers,
+                                    'toStudents' => $toStudents,
                                     'para' => $para,
                                     'totalEnviado' => $totalEnviado,
                                     'enviados' => $enviados

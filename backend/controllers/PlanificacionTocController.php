@@ -104,6 +104,7 @@ class PlanificacionTocController extends Controller {
                                 or mat.nombre ilike 'Teoría del conocimiento'
                             )
                     order by cur.name, par.name;";
+    
         $res = $con->createCommand($query)->queryAll();
         return $res;
     }

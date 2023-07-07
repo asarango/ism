@@ -9,6 +9,9 @@ use yii\widgets\ActiveForm;
 
 $this->title = 'Novedades de comportamiento ';
 //$this->params['breadcrumbs'][] = $this->title;
+// echo '<pre>';
+// print_r($modelCompDetalle);
+// die();
 
 ?>
 

@@ -17,7 +17,7 @@ use yii\helpers\Html;
         if (count($enviados) == 0) {
             ?>
             <a type="button" class="" data-bs-toggle="modal" data-bs-target="#staticBackdropGroup">
-                <i class="fas fa-users" style="color: #65b2e8"> Add Grupo</i>
+                <i class="fas fa-users" style="color: #65b2e8"> Agregar Grupo</i>
             </a>
             <?php
         }
@@ -30,7 +30,7 @@ use yii\helpers\Html;
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="staticBackdropLabel">Agregar grupo</h5>
+                        <h6 class="modal-title" id="staticBackdropLabel">Agregar grupo</h6>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
@@ -60,14 +60,20 @@ use yii\helpers\Html;
 
     <!-- INCIO ESTUDIANTES -->
 
-    <div class="col-lg-4 col-md-4" style="text-align: right;">
+    <div class="col-lg-4 col-md-4" >
         <!-- Button trigger modal -->
         <?php
         if (count($enviados) == 0) {
             ?>
-            <a type="button" class="" data-bs-toggle="modal" data-bs-target="#staticBackdropStudent">
-                <i class="fas fa-user" style="color: #ff9e18;"> Add Estudiante</i>
-            </a>
+            <button type="button" class="" data-bs-toggle="modal" data-bs-target="#staticBackdropStudent">
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-school" width="28" height="28" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ff9e18" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                    <path d="M22 9l-10 -4l-10 4l10 4l10 -4v6" />
+                    <path d="M6 10.6v5.4a6 3 0 0 0 12 0v-5.4" />
+                </svg>
+                Agregar Estudiante
+            </button>
+
             <?php
         }
         ?>
@@ -111,7 +117,7 @@ use yii\helpers\Html;
         if (count($enviados) == 0) {
             ?>
             <a type="button" class="" data-bs-toggle="modal" data-bs-target="#staticBackdropUser">
-                <i class="fas fa-user" style="color: #ff9e18;"> Add Usuario</i>
+                <i class="fas fa-user" style="color: #ff9e18;"> Agregar Personal</i>
             </a>
             <?php
         }
@@ -247,7 +253,7 @@ use yii\helpers\Html;
             );
         } else if (count($enviados) > 0) {
             echo '<b style="color: green">
-                    <img src="ISM/main/images/actions/feliz.gif" width="100px">
+                    <img src="../ISM/main/images/actions/feliz.gif" width="100px">
                     Su notificación fue enviada con éxito!!!
                 </b>';
         } else {

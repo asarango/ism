@@ -30,11 +30,10 @@ $this->params['breadcrumbs'][] = $this->title;
         <div class="card shadow col-lg-8 col-md-8">
             <div class=" row align-items-center p-2">
                 <div class="col-lg-1">
-                    <h4><img src="ISM/main/images/submenu/herramientas-para-reparar.png" width="64px" style="" class="img-thumbnail"></h4>
+                    <h4><img src="../ISM/main/images/submenu/herramientas-para-reparar.png" width="64px" style="" class="img-thumbnail"></h4>
                 </div>
                 <div class="col-lg-7">
                     <h6><?= Html::encode($this->title) ?></h6>
-
                 </div>
                 <div class="col-lg-4 col-md-4" style="text-align: right;">
                     <!-- menu derecha -->                    
@@ -46,7 +45,6 @@ $this->params['breadcrumbs'][] = $this->title;
                             ['class' => 'link']
                     );
                     ?>
-                    
                     |                    
                 </div> <!-- fin de menu derecha -->
             </div><!-- FIN DE CABECERA -->

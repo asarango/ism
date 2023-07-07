@@ -39,7 +39,7 @@ $conteoNovedadesEspecificas = conteo_estudiante_por_novedad($modelAsistencia->id
 $numEstFaltaJustificada = conteo_novedades_especiale($conteoNovedadesEspecificas, '1b');
 $numEstFaltaInjustificada = conteo_novedades_especiale($conteoNovedadesEspecificas, '1ch');
 $numEstAtrasoJustificada = conteo_novedades_especiale($conteoNovedadesEspecificas, '1a');
-$numEstAtrasoInjustificada = conteo_novedades_especiale($conteoNovedadesEspecificas, '1d');
+$numEstAtrasoInjustificada = conteo_novedades_especiale($conteoNovedadesEspecificas, '1b');
 
 function conteo_estudiante_por_novedad($id_asistencia_profesor)
 {
@@ -295,7 +295,7 @@ function conteo_novedades_especiale($array, $codigo)
                                         echo '<td class="text-center">' . $alumno['student_state'] . '</td>';
                                     }
 
-
+                                    
                                     //******** ESTUDIANTES  *****************//
                                     echo '<td>' . $alumno['last_name'] . ' ' . $alumno['first_name'] . '</td>';
 
@@ -342,7 +342,7 @@ function conteo_novedades_especiale($array, $codigo)
                                     $fi = "1ch";
                                     $fj = '1b';
                                     $ai = '1a';
-                                    $aj = '1d';
+                                    $aj = '1b';
                                     $neutro = '';
                                     $colorIcono = 'green';
 

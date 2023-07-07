@@ -304,8 +304,8 @@ class TocPlanUnidadDetalleController extends Controller
         $model = TocOpciones::find()
             ->where(['seccion' => 'APRENDIZAJE'])
             ->orderBy(['opcion' => SORT_DESC])
-            ->one();            
-        $ultimo = $model->opcion+1;
+            ->one();      
+        $ultimo = isset($model->opcion) ? $model->opcion+1 : 1;      
         
         $insert = $this->insert_aprendizaje($ultimo, $descripcion);
 

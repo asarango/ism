@@ -24,18 +24,12 @@ $this->params['breadcrumbs'][] = $this->title;
                 <div class="col-lg-1">
                     <h4><img src="../ISM/main/images/submenu/herramientas-para-reparar.png" width="64px" style="" class="img-thumbnail"></h4>
                 </div>
-                <div class="col-lg-11">
+                <div class="col-lg-7" >
                     <h4><?= Html::encode($this->title) ?></h4>
 
                 </div>
-            </div><!-- FIN DE CABECERA -->
-
-
-            <!-- inicia menu  -->
-            <div class="row">
-                <div class="col-lg-6 col-md-6">
-                    <!-- menu izquierda -->
-                    |
+                <div class="col-lg-4 col-md-4" style="text-align: right;">
+                    <!-- botones derecha -->
                     <?=
                     Html::a(
                         '<span class="badge rounded-pill" style="background-color: #9e28b5"><i class="fa fa-briefcase" aria-hidden="true"></i> Inicio</span>',
@@ -43,13 +37,6 @@ $this->params['breadcrumbs'][] = $this->title;
                         ['class' => 'link']
                     );
                     ?>
-
-                    |
-
-
-                </div> <!-- fin de menu izquierda -->
-
-                <div class="col-lg-6 col-md-6" style="text-align: right;">
                     |
                     <?=
                     Html::a(
@@ -69,15 +56,15 @@ $this->params['breadcrumbs'][] = $this->title;
                         ['class' => 'link']
                     );
                     ?>
-
-                    |
+                    <!-- fin botones derecha -->
                 </div>
-                <!-- fin de menu derecha -->
-            </div>
-            <!-- finaliza menu menu  -->
+                <hr>
+            </div><!-- FIN DE CABECERA -->
+
+
 
             <!-- inicia cuerpo de card -->
-            <div class="row" style="margin-top: 10px; margin-left: 60px">
+            <div class="row" style="margin: -1.2rem 1rem 1rem 1rem;">
 
                 <?=
                 GridView::widget([

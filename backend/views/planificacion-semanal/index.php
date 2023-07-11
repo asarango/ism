@@ -305,12 +305,57 @@ function imprimirCantidadTipoActividades($cantidad)
 
 
 <?php
-function obtener_total_insumos($planSemanalId,$horaId) {
+function obtener_total_insumos($planSemanalId, $horaId)
+{
     $actividad = ScholarisActividad::find()
-    ->where(['plan_semanal_id' => $planSemanalId,
-    'hora_id' => $horaId
-    ])
-    ->all();
-    return count($actividad);
+        ->where([
+            'plan_semanal_id' => $planSemanalId,
+            'hora_id' => $horaId
+        ])
+        ->all();
+    $totalActividades = count($actividad);
+    if ($totalActividades == 0) {
+        echo '<a data-bs-toggle="modal" data-bs-target="#modalTarea" class="icon-link">';
+        echo '<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-circle-0-filled" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ffffff" fill="none" stroke-linecap="round" stroke-linejoin="round">';
+        echo '<path stroke="none" d="M0 0h24v24H0z" fill="none"/>';
+        echo '<path d="M12 2c5.523 0 10 4.477 10 10s-4.477 10 -10 10s-10 -4.477 -10 -10s4.477 -10 10 -10zm0 5a3 3 0 0 0 -2.995 2.824l-.005 .176v4l.005 .176a3 3 0 0 0 5.99 0l.005 -.176v-4l-.005 -.176a3 3 0 0 0 -2.995 -2.824zm0 2a1 1 0 0 1 .993 .883l.007 .117v4l-.007 .117a1 1 0 0 1 -1.986 0l-.007 -.117v-4l.007 -.117a1 1 0 0 1 .993 -.883z" stroke-width="0" fill="currentColor" />';
+        echo '</svg>';
+        echo '</a>';
+    } elseif ($totalActividades == 1) {
+        echo '<a data-bs-toggle="modal" data-bs-target="#modalTarea" class="icon-link">';
+        echo '<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-circle-1-filled" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#fffff" fill="none" stroke-linecap="round" stroke-linejoin="round">';
+        echo '<path stroke="none" d="M0 0h24v24H0z" fill="none"/>';
+        echo '<path d="M12 2c5.523 0 10 4.477 10 10s-4.477 10 -10 10s-10 -4.477 -10 -10s4.477 -10 10 -10zm.994 5.886c-.083 -.777 -1.008 -1.16 -1.617 -.67l-.084 .077l-2 2l-.083 .094a1 1 0 0 0 0 1.226l.083 .094l.094 .083a1 1 0 0 0 1.226 0l.094 -.083l.293 -.293v5.586l.007 .117a1 1 0 0 0 1.986 0l.007 -.117v-8l-.006 -.114z" stroke-width="0" fill="currentColor" />';
+        echo '</svg>';
+        echo '</a>';
+    } elseif ($totalActividades == 2) {
+        echo '<a data-bs-toggle="modal" data-bs-target="#modalTarea" class="icon-link">';
+        echo '<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-circle-2-filled" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ffffff" fill="none" stroke-linecap="round" stroke-linejoin="round">';
+        echo '<path stroke="none" d="M0 0h24v24H0z" fill="none"/>';
+        echo '<path d="M12 2c5.523 0 10 4.477 10 10s-4.477 10 -10 10s-10 -4.477 -10 -10s4.477 -10 10 -10zm1 5h-3l-.117 .007a1 1 0 0 0 0 1.986l.117 .007h3v2h-2l-.15 .005a2 2 0 0 0 -1.844 1.838l-.006 .157v2l.005 .15a2 2 0 0 0 1.838 1.844l.157 .006h3l.117 -.007a1 1 0 0 0 0 -1.986l-.117 -.007h-3v-2h2l.15 -.005a2 2 0 0 0 1.844 -1.838l.006 -.157v-2l-.005 -.15a2 2 0 0 0 -1.838 -1.844l-.157 -.006z" stroke-width="0" fill="currentColor" />';
+        echo '</svg>';
+        echo '</a>';
+    } elseif ($totalActividades == 3) {
+        echo '<a data-bs-toggle="modal" data-bs-target="#modalTarea" class="icon-link">';
+        echo '<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-circle-3-filled" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ffffff" fill="none" stroke-linecap="round" stroke-linejoin="round">';
+        echo '<path stroke="none" d="M0 0h24v24H0z" fill="none"/>';
+        echo '<path d="M12 2c5.523 0 10 4.477 10 10s-4.477 10 -10 10s-10 -4.477 -10 -10s4.477 -10 10 -10zm1 5h-2l-.15 .005a2 2 0 0 0 -1.85 1.995a1 1 0 0 0 1.974 .23l.02 -.113l.006 -.117h2v2h-2l-.133 .007c-1.111 .12 -1.154 1.73 -.128 1.965l.128 .021l.133 .007h2v2h-2l-.007 -.117a1 1 0 0 0 -1.993 .117a2 2 0 0 0 1.85 1.995l.15 .005h2l.15 -.005a2 2 0 0 0 1.844 -1.838l.006 -.157v-2l-.005 -.15a1.988 1.988 0 0 0 -.17 -.667l-.075 -.152l-.019 -.032l.02 -.03a2.01 2.01 0 0 0 .242 -.795l.007 -.174v-2l-.005 -.15a2 2 0 0 0 -1.838 -1.844l-.157 -.006z" stroke-width="0" fill="currentColor" />';
+        echo '</svg>';
+        echo '</a>';
+    } elseif ($totalActividades == 4) {
+        echo '<a data-bs-toggle="modal" data-bs-target="#modalTarea" class="icon-link">';
+        echo '<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-circle-4-filled" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ffffff" fill="none" stroke-linecap="round" stroke-linejoin="round">';
+        echo '<path stroke="none" d="M0 0h24v24H0z" fill="none"/>';
+        echo '<path d="M12 2c5.523 0 10 4.477 10 10s-4.477 10 -10 10s-10 -4.477 -10 -10s4.477 -10 10 -10zm2 5a1 1 0 0 0 -.993 .883l-.007 .117v3h-2v-3l-.007 -.117a1 1 0 0 0 -1.986 0l-.007 .117v3l.005 .15a2 2 0 0 0 1.838 1.844l.157 .006h2v3l.007 .117a1 1 0 0 0 1.986 0l.007 -.117v-8l-.007 -.117a1 1 0 0 0 -.993 -.883z" stroke-width="0" fill="currentColor" />';
+        echo '</svg>';
+        echo '</a>';
+    } elseif ($totalActividades == 5) {
+        echo '<a data-bs-toggle="modal" data-bs-target="#modalTarea" class="icon-link">';
+        echo '<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-circle-5-filled" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ffffff" fill="none" stroke-linecap="round" stroke-linejoin="round">';
+        echo '<path stroke="none" d="M0 0h24v24H0z" fill="none"/>';
+        echo '<path d="M12 2c5.523 0 10 4.477 10 10s-4.477 10 -10 10s-10 -4.477 -10 -10s4.477 -10 10 -10zm2 5h-4a1 1 0 0 0 -.993 .883l-.007 .117v4a1 1 0 0 0 .883 .993l.117 .007h3v2h-2l-.007 -.117a1 1 0 0 0 -1.993 .117a2 2 0 0 0 1.85 1.995l.15 .005h2a2 2 0 0 0 1.995 -1.85l.005 -.15v-2a2 2 0 0 0 -1.85 -1.995l-.15 -.005h-2v-2h3a1 1 0 0 0 .993 -.883l.007 -.117a1 1 0 0 0 -.883 -.993l-.117 -.007z" stroke-width="0" fill="currentColor" />';
+        echo '</svg>';
+        echo '</a>';
+    }
 }
 ?>

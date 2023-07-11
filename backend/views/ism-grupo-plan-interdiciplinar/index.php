@@ -22,31 +22,34 @@ $this->params['breadcrumbs'][] = $this->title;
     <div class="m-0 vh-50 row justify-content-center align-items-center">
         <div class="card shadow col-lg-10 col-md-10">
             <div class=" row align-items-center p-2">
-                <div class="col-lg-2">
+                <div class="col-lg-1">
                     <h4><img src="../ISM/main/images/submenu/reunion.png" width="100px" class="img-thumbnail"></h4>
                 </div>
-                <div class="col-lg-2">
-                        |
-                        <?=
+                <div class="col-lg-9">
+                    <h2>
+                        <?= Html::encode($this->title) ?>
+                    </h2>
+                </div>
+                <div class="col-lg-2" style="text-align: right;">
+                    <?=
                         Html::a(
                             '<span class="badge rounded-pill" style="background-color: #9e28b5"><i class="fa fa-briefcase" aria-hidden="true"></i> Inicio</span>',
                             ['site/index'],
                             ['class' => 'link']
                         );
-                        ?>
-                        |
+                    ?>
+
                 </div>
-                <div class="col-lg-8">
-                    <h2><?= Html::encode($this->title) ?></h2>
-                </div>
+                <hr>
             </div><!-- FIN DE CABECERA -->
-           
+
             <!-- inicia cuerpo de card -->
-            <div class="container" >
-                <div class="row " >
+            <div class="container">
+                <div class="row ">
                     <div class="col ">
-                        <div class="row" style="margin-top: 25px;">
-                            <select name="bloques" id="bloque" class="form-control" style="width: 99%;" tabindex="-1" aria-hidden="true">
+                        <div class="row" style="">
+                            <select name="bloques" id="bloque" class="form-control" style="width: 99%;" tabindex="-1"
+                                aria-hidden="true">
                                 <option selected="selected" value="">Escoja un bloque...</option>
                                 <?php
                                 foreach ($listaBloques as $bloque) {
@@ -57,8 +60,10 @@ $this->params['breadcrumbs'][] = $this->title;
                         </div>
                     </div>
                     <div class="col">
-                        <div class="row" style="margin-top: 25px;">
-                            <select name="niveles" onchange="showAsignaturas()" id="nivel" class="form-control select2 select2-hidden-accessible" style="width: 99%;" tabindex="-1" aria-hidden="true">
+                        <div class="row" style="">
+                            <select name="niveles" onchange="showAsignaturas()" id="nivel"
+                                class="form-control select2 select2-hidden-accessible" style="width: 99%;" tabindex="-1"
+                                aria-hidden="true">
                                 <option selected="selected" value="">Escoja un curso...</option>
                                 <?php
                                 foreach ($cursos as $nivel) {
@@ -71,9 +76,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 </div>
             </div>
             <hr>
-
-
-            <div class="row border">
+            <div class="row border" style="margin-top: 5px;">
                 <div class="col border">
                     <div id="div_tabla_materias" class="table table-responsive">
                         <h6><b>Materias</b></h6>
@@ -83,7 +86,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                     <th class="text-center">Id</th>
                                     <th class="text-center">Asginaturas</th>
                                     <th class="text-center">Grupo</th>
-                                    <th class="text-center">Accion</th>
+                                    <th class="text-center">Acción</th>
                                 </tr>
                             </thead>
                             <tbody id="table-body">
@@ -123,10 +126,10 @@ $this->params['breadcrumbs'][] = $this->title;
                 data: params,
                 url: url,
                 type: 'POST',
-                beforeSend: function() {},
-                success: function(response) {   
-                    $("#div_tabla_materias").html(response);    
-                    mostar_materias_agrupadas();                                    
+                beforeSend: function () { },
+                success: function (response) {
+                    $("#div_tabla_materias").html(response);
+                    mostar_materias_agrupadas();
 
                 }
             });
@@ -144,11 +147,11 @@ $this->params['breadcrumbs'][] = $this->title;
                 data: params,
                 url: url,
                 type: 'POST',
-                beforeSend: function() {},
-                success: function(response) {   
-                    $("#div_tabla_materias").html(response);   
-                                                       
-   
+                beforeSend: function () { },
+                success: function (response) {
+                    $("#div_tabla_materias").html(response);
+
+
                 }
             });
         }
@@ -170,22 +173,21 @@ $this->params['breadcrumbs'][] = $this->title;
                 data: params,
                 url: url,
                 type: 'POST',
-                beforeSend: function() {},
-                success: function(response) {
-                    showAsignaturas2(); 
-                    $("#div_tabla_grupos").html(response);      
-                                  
+                beforeSend: function () { },
+                success: function (response) {
+                    showAsignaturas2();
+                    $("#div_tabla_grupos").html(response);
+
                 }
             });
         }
-        function mostar_materias_agrupadas() 
-        {
+        function mostar_materias_agrupadas() {
             var idcurso = $('#nivel').val();
             var idbloque = $("#bloque").val();
 
             var url = '<?= Url::to(['materias-agrupadas']) ?>';
-           
-            var params = {               
+
+            var params = {
                 idbloque: idbloque,
                 idcurso: idcurso,
             };
@@ -194,17 +196,16 @@ $this->params['breadcrumbs'][] = $this->title;
                 data: params,
                 url: url,
                 type: 'POST',
-                beforeSend: function() {},
-                success: function(response) {
-                    $("#div_tabla_grupos").html(response);                                      
+                beforeSend: function () { },
+                success: function (response) {
+                    $("#div_tabla_grupos").html(response);
                 }
             });
         }
-        function eliminar_materia(idMateria) 
-        {
+        function eliminar_materia(idMateria) {
             var url = '<?= Url::to(['eliminar-materia']) ?>';
-           
-            var params = {               
+
+            var params = {
                 idMateria: idMateria,
             };
 
@@ -212,8 +213,8 @@ $this->params['breadcrumbs'][] = $this->title;
                 data: params,
                 url: url,
                 type: 'POST',
-                beforeSend: function() {},
-                success: function(response) {
+                beforeSend: function () { },
+                success: function (response) {
                     showAsignaturas2();
                     mostar_materias_agrupadas();
 
@@ -221,25 +222,24 @@ $this->params['breadcrumbs'][] = $this->title;
             });
 
         }
-        function eliminar_grupo(idGrupo) 
-        {   
+        function eliminar_grupo(idGrupo) {
             var idcurso = $('#nivel').val();
             var idbloque = $("#bloque").val();
 
             var url = '<?= Url::to(['eliminar-grupo-materia']) ?>';
-           
-            var params = {               
+
+            var params = {
                 idbloque: idbloque,
                 idcurso: idcurso,
-                idGrupo:idGrupo,
+                idGrupo: idGrupo,
             };
 
             $.ajax({
                 data: params,
                 url: url,
                 type: 'POST',
-                beforeSend: function() {},
-                success: function(response) {
+                beforeSend: function () { },
+                success: function (response) {
                     showAsignaturas2();
                     mostar_materias_agrupadas();
 

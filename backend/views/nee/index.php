@@ -29,39 +29,26 @@ $this->title = 'Estudiantes NEE';
                 <div class="col-lg-1">
                     <h4><img src="../ISM/main/images/submenu/menu.png" width="64px" class="img-thumbnail"></h4>
                 </div>
-                <div class="col-lg-11">
+                <div class="col-lg-9">
                     <h4>
                         <?= Html::encode($this->title) ?>
                     </h4>
                 </div>
-            </div><!-- FIN DE CABECERA -->
-
-            <!-- inicia menu  -->
-            <div class="row">
-                <div class="col-lg-6 col-md-6">
-                    <!-- menu izquierda -->
-                    |
-                    <?=
+                <div class="col-lg-2" style="text-align: right;">
+                <?=
                         Html::a(
                             '<span class="badge rounded-pill" style="background-color: #9e28b5"><i class="fa fa-briefcase" aria-hidden="true"></i> Inicio</span>',
                             ['site/index'],
                             ['class' => 'link']
                         );
                     ?>
+                </div>
+                <hr>
+            </div><!-- FIN DE CABECERA -->
 
-                    |
-                </div> <!-- fin de menu izquierda -->
-
-                <div class="col-lg-6 col-md-6" style="text-align: right;">
-                    <!-- inicio de menu derecha -->
-
-                </div><!-- fin de menu derecha -->
-            </div>
-            <!-- finaliza menu menu  -->
-            <hr>
 
             <!--Inicia Card Principal-->
-            <div class="row" style="margin-top: 20px">
+            <div class="row" style="margin-top: -5px;margin-right: 5px;margin-left: 5px;margin-bottom: 5px">
 
                 <div class="col-lg-12 col-md-12 text-center">
                     <?= Html::beginForm(['create', 'pestana' => 'datos_estudiante'], 'post') ?>
@@ -92,7 +79,7 @@ $this->title = 'Estudiantes NEE';
                 </div>
                 <hr>
 
-                <div class="col-lg-12 col-md-12">
+                <div class=" row col-lg-12 col-md-12">
                     <h6 class="my-text-medium">ESTUDIANTES EN SEGUIMIENTO:</h6>
                     <div class="table responsive">
                         <table class="table table-hover table-striped my-text-medium">

@@ -16,9 +16,20 @@ use yii\helpers\Html;
         <?php
         if (count($enviados) == 0) {
             ?>
-            <a type="button" class="" data-bs-toggle="modal" data-bs-target="#staticBackdropGroup">
-                <i class="fas fa-users" style="color: #65b2e8"> Agregar Grupo</i>
-            </a>
+            <button type="button" class="" data-bs-toggle="modal" data-bs-target="#staticBackdropGroup">
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-users-group" width="28"
+                    height="28" viewBox="0 0 24 24" stroke-width="1.5" stroke="#9e28b5" fill="none" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                    <path d="M10 13a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+                    <path d="M8 21v-1a2 2 0 0 1 2 -2h4a2 2 0 0 1 2 2v1" />
+                    <path d="M15 5a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+                    <path d="M17 10h2a2 2 0 0 1 2 2v1" />
+                    <path d="M5 5a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+                    <path d="M3 13v-1a2 2 0 0 1 2 -2h2" />
+                </svg> 
+                Agregar Grupo
+            </button>
             <?php
         }
 
@@ -60,20 +71,21 @@ use yii\helpers\Html;
 
     <!-- INCIO ESTUDIANTES -->
 
-    <div class="col-lg-4 col-md-4" >
+    <div class="col-lg-4 col-md-4">
         <!-- Button trigger modal -->
         <?php
         if (count($enviados) == 0) {
             ?>
             <button type="button" class="" data-bs-toggle="modal" data-bs-target="#staticBackdropStudent">
-                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-school" width="28" height="28" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ff9e18" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-school" width="28" height="28"
+                    viewBox="0 0 24 24" stroke-width="1.5" stroke="#ff9e18" fill="none" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
                     <path d="M22 9l-10 -4l-10 4l10 4l10 -4v6" />
                     <path d="M6 10.6v5.4a6 3 0 0 0 12 0v-5.4" />
                 </svg>
                 Agregar Estudiante
             </button>
-
             <?php
         }
         ?>
@@ -116,9 +128,18 @@ use yii\helpers\Html;
         <?php
         if (count($enviados) == 0) {
             ?>
-            <a type="button" class="" data-bs-toggle="modal" data-bs-target="#staticBackdropUser">
-                <i class="fas fa-user" style="color: #ff9e18;"> Agregar Personal</i>
-            </a>
+            <button type="button" class="" data-bs-toggle="modal" data-bs-target="#staticBackdropUser">
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-users" width="28" height="28"
+                    viewBox="0 0 24 24" stroke-width="1.5" stroke="#65b2e8" fill="none" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                    <path d="M9 7m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0" />
+                    <path d="M3 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                    <path d="M21 21v-2a4 4 0 0 0 -3 -3.85" />
+                </svg>
+                Agregar Personal
+            </button>
             <?php
         }
         ?>

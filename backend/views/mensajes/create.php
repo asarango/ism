@@ -17,7 +17,8 @@ $this->params['breadcrumbs'][] = $this->title;
 //die();
 ?>
 
-<script src="https://code.jquery.com/jquery-2.2.4.js" integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI=" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-2.2.4.js" integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI="
+    crossorigin="anonymous"></script>
 <!--<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jsgrid/1.5.3/jsgrid.min.js"></script>-->
 <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.js"></script>
 <!-- JS y CSS Ckeditor -->
@@ -30,37 +31,38 @@ $this->params['breadcrumbs'][] = $this->title;
         <div class="card shadow col-lg-8 col-md-8">
             <div class=" row align-items-center p-2">
                 <div class="col-lg-1">
-                    <h4><img src="../ISM/main/images/submenu/herramientas-para-reparar.png" width="64px" style="" class="img-thumbnail"></h4>
+                    <h4><img src="../ISM/main/images/submenu/herramientas-para-reparar.png" width="64px" style=""
+                            class="img-thumbnail"></h4>
                 </div>
                 <div class="col-lg-7">
-                    <h6><?= Html::encode($this->title) ?></h6>
+                    <h4>
+                        <?= Html::encode($this->title) ?>
+                    </h4>
 
                 </div>
                 <div class="col-lg-4 col-md-4" style="text-align: right;">
-                    <!-- menu derecha -->                    
-                    |
+                    <!-- menu derecha -->
                     <?=
-                    Html::a(
+                        Html::a(
                             '<span class="badge rounded-pill" style="background-color: #ff9e18"><i class="fa fa-briefcase" aria-hidden="true"></i> Volver a notificaciones</span>',
                             ['index'],
                             ['class' => 'link']
-                    );
+                        );
                     ?>
-                    
-                    |                    
                 </div> <!-- fin de menu derecha -->
+                <hr>
             </div><!-- FIN DE CABECERA -->
 
 
             <!-- inicia cuerpo de card -->
-            <div class="row" style="margin:10px">  
-            
-                    <!-- <div class="col-lg-3 col-md-3">Grupos</div> -->
+            <div class="row card " style="margin: -1rem 1rem 1rem 1rem; padding 5px;">
+
+                <!-- <div class="col-lg-3 col-md-3">Grupos</div> -->
 
 
-                    <?php $form = ActiveForm::begin(); ?>
+                <?php $form = ActiveForm::begin(); ?>
 
-                        <!-- <div class="">                                
+                <!-- <div class="">                                
                                 <div class="card">
                                     <div class="row">                                        
                                         <div class="col-lg-6 col-md-6 p-3">
@@ -92,20 +94,20 @@ $this->params['breadcrumbs'][] = $this->title;
                         </div>
                         <br> -->
 
-                        <?= $form->field($model, 'asunto')->textInput(['maxlength' => true])->label('ASUNTO:'); ?>
+                <?= $form->field($model, 'asunto')->textInput(['maxlength' => true])->label('ASUNTO:'); ?>
 
-                        <br>
-                        <div class="form-group">
-                            <label>NOTIFICACIÓN: </label>
-                            <textarea name="texto" id="texto"></textarea>
-                        </div>
+                <br>
+                <div class="form-group">
+                    <label>NOTIFICACIÓN: </label>
+                    <textarea name="texto" id="texto"></textarea>
+                </div>
 
 
-                        <div class="form-group" style="margin-top: 10px">
-                            <?= Html::submitButton('Grabar', ['class' => 'btn btn-outline-success']) ?>
-                        </div>
-                    <?php ActiveForm::end(); ?>
-               
+                <div class="form-group" style="margin-top: 10px; margin-bottom: 10px;">
+                    <?= Html::submitButton('Grabar', ['class' => 'btn btn-outline-success']) ?>
+                </div>
+                <?php ActiveForm::end(); ?>
+
 
             </div>
             <!-- fin cuerpo de card -->
@@ -128,27 +130,27 @@ $this->params['breadcrumbs'][] = $this->title;
 </script>
 
 <script>
-    function seleccionar_persona(obj){
+    function seleccionar_persona(obj) {
         var nombres = obj.value;
         var url = '<?= Url::to(['helper-ajax-cursos/persona']) ?>';
 
         var params = {
             nombres: nombres
-        }; 
+        };
 
         $.ajax({
             data: params,
             url: url,
             type: 'POST',
-            beforeSend: function(){},
-            success: function(response){
+            beforeSend: function () { },
+            success: function (response) {
                 $('#div-persona').html(response);
             }
         });
 
     }
 
-    function seleccionar_grupos(obj){
+    function seleccionar_grupos(obj) {
         var grupo = obj.value;
         var url = '<?= Url::to(['helper-ajax-cursos/paralelos']) ?>';
 
@@ -160,45 +162,45 @@ $this->params['breadcrumbs'][] = $this->title;
             data: params,
             url: url,
             type: 'POST',
-            beforeSend: function(){},
-            success: function(response){
+            beforeSend: function () { },
+            success: function (response) {
                 $('#div-grupos').html(response);
             }
         });
     }
 
     var arrayPersona = [];
-    function elije_persona(usuario){
-        arrayPersona.push('<option value="'+usuario+'" selected>'+usuario+'</option>');
+    function elije_persona(usuario) {
+        arrayPersona.push('<option value="' + usuario + '" selected>' + usuario + '</option>');
         $("#div-seleccion").html(arrayPersona);
-        
+
     }
 
     var arrayQuien = [];
-    function elije_quien(obj){
+    function elije_quien(obj) {
         var quien = obj.value;
-        arrayQuien.push('<option value="'+quien+'" selected>'+quien+'</option>');
+        arrayQuien.push('<option value="' + quien + '" selected>' + quien + '</option>');
         $('#div-seleccion-quien').html(arrayQuien);
     }
 
     var arrayGrupo = [];
-    function elije_grupo(paralelo){
-        arrayGrupo.push('<option value="'+paralelo+'" selected>'+paralelo+'</option>');
+    function elije_grupo(paralelo) {
+        arrayGrupo.push('<option value="' + paralelo + '" selected>' + paralelo + '</option>');
         $('#div-seleccion-grupos').html(arrayGrupo);
     }
 </script>
 
 <script>
-    function cursos(){        
+    function cursos() {
         var url = '<?= Url::to(['helper-ajax-cursos/cursos']) ?>';
 
         $.ajax({
             url: url,
             type: 'POST',
-            beforeSend: function(){},
-            success: function(response){
+            beforeSend: function () { },
+            success: function (response) {
                 $('#div-cursos').html(response);
-                
+
             }
         });
     }
@@ -207,10 +209,10 @@ $this->params['breadcrumbs'][] = $this->title;
 <!-- SCRIPT PARA SELECT2 -->
 <script>
     buscador();
-    function buscador(){
+    function buscador() {
         $('.select2').select2({
-    closeOnSelect: true
-    });
+            closeOnSelect: true
+        });
     }
 
 </script>

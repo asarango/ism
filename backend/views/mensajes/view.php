@@ -36,7 +36,8 @@ $this->params['breadcrumbs'][] = $this->title;
                     ?>
 
                     
-                </div> <!-- fin de menu derecha -->
+                </div>
+                <hr> <!-- fin de menu derecha -->
             </div><!-- FIN DE CABECERA -->
 
 

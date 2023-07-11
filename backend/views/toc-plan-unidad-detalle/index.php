@@ -180,7 +180,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     <div class="row">
                         <div class="col-lg-6 col-md-6" style="align-items: center; border-right: 1px solid #ccc;margin-bottom: 10px ">
                             <div class="row" style="align-items: center">
-                                <div id="DescripcionUnidad" class="col-lg-12 col-md-12 menuizquierda"
+                                <div id="DescripcionUnidad1" class="col-lg-12 col-md-12 menuizquierda"
                                     style="text-align: CENTER;  ">- DESCRIPCIÓN
                                     GENERAL
                                 </div>
@@ -223,7 +223,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 boton_update($unidad['id'], 'descripcion_unidad', 'DescripcionUnidad')
                                 ?>
                         </div>
-                        <div id="DescripcionUnidad1" style=" text-align: left;"
+                        <div id="DescripcionUnidad2" style=" text-align: left;"
                             class="col-lg-11 col-md-11 menuizquierda">-
                             DESCRIPCIÓN DE LA UNIDAD*
                         </div>

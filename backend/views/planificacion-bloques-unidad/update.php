@@ -64,23 +64,10 @@ $estado = $model->planCabecera->estado;
                 <hr>
             </div><!-- FIN DE CABECERA -->
 
-            <!-- inicia menu  -->
-            <div class="row">
-                <div class="col-lg-6 col-md-6" style="text-align: right;">
-                    <!-- inicio de menu derecha -->
-
-                </div><!-- fin de menu derecha -->
-            </div>
-            <!-- finaliza menu menu  -->
-
             <!-- inicia cuerpo de card -->
-            <div class="row" style="margin: 25px;">
+            <div class="row card" style="margin-top: -5px; margin-right: 1rem; margin-bottom: 1rem; margin-left: 1rem;">
 
-                <div class="col-lg-3 col-md-3">
-
-                </div>
-
-                <div class="col-lg-6 col-md-6 card shadow" style="padding: 20px">
+                <div class="col-lg-12 col-md-12" style="padding: 15px">
                     <?php $form = ActiveForm::begin(); ?>
 
                     <div class="row">

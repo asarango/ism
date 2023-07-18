@@ -74,7 +74,7 @@ class RegistraNotas{
                                 inner join scholaris_actividad act on act.id = cal.idactividad 
                         where	cal.idalumno = $this->alumnoId
                                 and act.bloque_actividad_id = $this->bloqueId
-                                and cal.grupo_numero = $this->grupoCalificacion;";       
+                                and cal.grupo_numero = $this->grupoCalificacion;";                  
             
             $res = $con->createCommand($query)->queryOne();
 
@@ -111,6 +111,7 @@ class RegistraNotas{
          * MÉTODO PARA PROMEDIAR LOS INSUMOS DEL GRUPO ID 
          */
         private function sienta_promedio_bloque_grupo(){
+            
             $con = Yii::$app->db;
             $query = "select 	trunc(avg(nota),2) as nota
             from 	lib_promedios_insumos
@@ -119,15 +120,18 @@ class RegistraNotas{
 
             $res = $con->createCommand($query)->queryOne();
 
-            $model = LibBloquesGrupoClase::find([
-                'grupo_id'      => $this->grupoId,
-                'bloque_id'     => $this->bloqueId                
-            ])->one();
+            $model = LibBloquesGrupoClase::find()
+            ->where([
+                    'grupo_id'      => $this->grupoId,
+                    'bloque_id'     => $this->bloqueId  
+                    ])
+            ->one();
 
             if( $model ){
                 $model->nota        = $res['nota'];
                 $model->updated_at  = $this->ahora;
                 $model->updated     = $this->user;
+                $model->bloque_id   = $this->bloqueId;
                 $model->save();
             }else{
                 $insert = new LibBloquesGrupoClase();

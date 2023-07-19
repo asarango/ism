@@ -96,8 +96,8 @@ use yii\widgets\ActiveForm;
         <div style="margin-bottom: 1rem;margin-top: -2rem">
             <div class="" style="margin:1rem;">
                 <!-- plan_semanal_id -->
-                <input type="plan_semanal_id" name="plan_semanal_id" value="<?= $planificacionSemanalId; ?>">
-                <input type="text" name="bandera" id="input-bandera">
+                <input type="hidden" name="plan_semanal_id" value="<?= $planificacionSemanalId; ?>">
+                <input type="hidden" name="bandera" id="input-bandera">
             </div>
 
             <div class="input-container">
@@ -112,25 +112,26 @@ use yii\widgets\ActiveForm;
                     onchange="showform('file')" style="margin-right: 4rem">
                 <?php echo IconosRecur1('planificacion-semanal-recursos/create.png'); ?>
 
-                <input type="radio" id="icono2" name="icono" value="icono2" class="radio-icon"
+                <input type="radio" id="icono2" name="icono2" value="icono2" class="radio-icon"
                     onchange="showform('link')" style="margin-right: 4rem;margin-left: 4rem;">
                 <?php echo IconosRecur2('planificacion-semanal-recursos/create.png'); ?>
 
-                <input type="radio" id="icono3" name="icono" value="icono3" class="radio-icon"
+                <input type="radio" id="icono3" name="icono3" value="icono3" class="radio-icon"
                     onchange="showform('video-conferencia')" style="margin-right: 4rem;margin-left: 4rem;">
                 <?php echo IconosRecur3('planificacion-semanal-recursos/create.png'); ?>
 
-                <input type="radio" id="icono4" name="icono" value="icono4" class="radio-icon"
+                <input type="radio" id="icono4" name="icono4" value="icono4" class="radio-icon"
                     onchange="showform('texto')" style="margin-right: 4rem;margin-left: 4rem;">
                 <?php echo IconosRecur4('planificacion-semanal-recursos/create.png'); ?>
             </div>
 
             <!-- FORMULARIO DE AGG ARCHIVO -->
-            <div class="formulario">
-                <form method="POST" action="procesar.php">
 
-                    <!-- SUBIR ARCHIVO -->
-                    <label  id="archivos-subidos">
+            <form method="POST" action="procesar.php">
+
+                <!-- SUBIR ARCHIVO -->
+                <div class="formulario" id="formularioArchivo" style="display: none;">
+                    <label id="archivos-subidos">
                         <h5>Agregar un Archivo:</h5>
                     </label>
                     <br>
@@ -142,43 +143,45 @@ use yii\widgets\ActiveForm;
                     <!-- <input type="submit" value="Enviar" class="btn-submit"> -->
                     <button class="btn-borr-arch" type="button" id="borrar-archivos">Borrar todos los archivos</button>
                     <br>
-                    <!-- FIN SUBIR ARCHIVO -->
 
-                    <!-- URL -->
-                    <hr>
-                    <div style="margin-top: 0.5rem">
-                        <label for="url">
-                            <h5>Dirección de la web:</h5>
-                        </label>
-                        <input style="border-radius: 10px;" type="url" id="url" name="url" class="form-input">
-                    </div>
-                    <!-- FIN URL -->
-
-                    <!-- Video-Conferencia -->
-                    <hr>
-                    <div>
-                        <label for="fecha">
-                            <h5>Descripción de la Reunión:</h5>
-                        </label>
-                        <input style="border-radius: 10px;" type="text" id="fecha" name="fecha" class="form-input">
-                    </div>
-                    <!-- fin de Video-Conferencia -->
-
-                    <!-- Descripción General -->
-                    <hr>
-                    <div>
-                        <label for="url">
-                            <h5>Descripción General:</h5>
-                        </label>
-                        <div id="texto"></div>
-                    </div>
-                    <!-- fin Descripción General -->
-                </form>
-
-                <div class="" style="margin-top: 1rem;">
-                    <?= Html::submitButton('Guardar', ['class' => 'btn btn-success', 'style' => 'background-color: #4caf50;  border: none; padding: 9px']) ?>
                 </div>
+                <!-- FIN SUBIR ARCHIVO -->
+
+                <!-- URL -->
+                <!-- <hr> -->
+                <div class="formulario" id="formularioUrl" style="margin-top: 1.3rem; display: none;">
+                    <label for="url">
+                        <h5>Dirección de la web:</h5>
+                    </label>
+                    <input style="border-radius: 10px;" type="url" id="url" name="url" class="form-input">
+                </div>
+                <!-- FIN URL -->
+
+                <!-- Video-Conferencia -->
+                <!-- <hr> -->
+                <div class="formulario" id="formularioVideo" style="display: none;">
+                    <label for="fecha">
+                        <h5>URL de la Reunión:</h5>
+                    </label>
+                    <input style="border-radius: 10px;" type="url" name="video-conferencia" class="form-input">
+                </div>
+                <!-- fin de Video-Conferencia -->
+
+                <!-- Descripción General -->
+                <!-- <hr> -->
+                <div class="formulario" id="formularioDescripcion" style="display: none;margin-top: 1.4rem;">
+                    <label for="url">
+                        <h5>Descripción General:</h5>
+                    </label>
+                    <textarea name="texto" id="texto"></textarea>
+                </div>
+                <!-- fin Descripción General -->
+            </form>
+
+            <div class="" style="margin-top: 1rem;">
+                <?= Html::submitButton('Guardar', ['class' => 'btn btn-success', 'style' => 'background-color: #4caf50;  border: none; padding: 9px']) ?>
             </div>
+
             <!-- FIN FORMULARIO DE AGG ARCHIVO -->
         </div>
     </div>
@@ -207,6 +210,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 ?>
+
+<!-- CONTAR,ELIMINAR ARCHIVOS, CK EDITOR -->
 
 <script>
     ClassicEditor
@@ -245,6 +250,93 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 </script>
 
+<!-- COMPORTAMIENTO DE RADIO BUTTONS -->
+
+<script>
+    var icono1 = document.getElementById('icono1');
+    var icono2 = document.getElementById('icono2');
+    var icono3 = document.getElementById('icono3');
+    var icono4 = document.getElementById('icono4');
+
+    var formularioArchivo = document.getElementById('formularioArchivo');
+    var formularioUrl = document.getElementById('formularioUrl');
+    var formularioVideo = document.getElementById('formularioVideo');
+    var formularioDescripcion = document.getElementById('formularioDescripcion');
+
+    icono1.addEventListener('click', function () {
+        if (formularioArchivo.style.display === 'block') {
+            formularioArchivo.style.display = 'none';
+            icono1.checked = false;
+        } else {
+            formularioArchivo.style.display = 'block';
+            formularioUrl.style.display = 'none';
+            formularioVideo.style.display = 'none';
+            formularioDescripcion.style.display = 'none';
+            icono2.checked = false;
+            icono3.checked = false;
+            icono4.checked = false;
+        }
+    });
+
+    icono2.addEventListener('click', function () {
+        if (formularioUrl.style.display === 'block') {
+            formularioUrl.style.display = 'none';
+            icono2.checked = false;
+        } else {
+            formularioArchivo.style.display = 'none';
+            formularioUrl.style.display = 'block';
+            formularioVideo.style.display = 'none';
+            formularioDescripcion.style.display = 'none';
+            icono1.checked = false;
+            icono3.checked = false;
+            icono4.checked = false;
+        }
+    });
+
+    icono3.addEventListener('click', function () {
+        if (formularioVideo.style.display === 'block') {
+            formularioVideo.style.display = 'none';
+            icono3.checked = false;
+        } else {
+            formularioArchivo.style.display = 'none';
+            formularioUrl.style.display = 'none';
+            formularioVideo.style.display = 'block';
+            formularioDescripcion.style.display = 'none';
+            icono1.checked = false;
+            icono2.checked = false;
+            icono4.checked = false;
+        }
+    });
+
+    icono4.addEventListener('click', function () {
+        if (formularioDescripcion.style.display === 'block') {
+            formularioDescripcion.style.display = 'none';
+            icono4.checked = false;
+        } else {
+            formularioArchivo.style.display = 'none';
+            formularioUrl.style.display = 'none';
+            formularioVideo.style.display = 'none';
+            formularioDescripcion.style.display = 'block';
+            icono1.checked = false;
+            icono2.checked = false;
+            icono3.checked = false;
+        }
+    });
+
+    function showForm(formulario) {
+        if (formulario === 'archivo') {
+            icono1.click();
+        } else if (formulario === 'url') {
+            icono2.click();
+        } else if (formulario === 'video') {
+            icono3.click();
+        } else if (formulario === 'descripcion') {
+            icono4.click();
+        }
+    }
+</script>
+
+<!-- BANDERA -->
 <script>
 
     function showform(bandera) {
@@ -252,6 +344,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
 </script>
+
+<!-- FUNCION DE ICONOS -->
 
 <?php
 

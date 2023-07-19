@@ -28,9 +28,10 @@ $this->title = 'Modificar Planificacion Semanal ';
                     <h4>
                         <?= Html::encode($this->title) ?>
                     </h4>
+
                     <p>
-                        <?= $model->clase->paralelo->course->name . ' '.'"'. $model->clase->paralelo->name .
-                         ''.'"'.'/'.' '. $model->clase->profesor->last_name . ' ' . $model->clase->profesor->x_first_name ?>
+                        <?= $model->clase->paralelo->course->name . ' '.'"'.'B'.'"'.'/'.' Hora de clase:' .$model->hora->nombre. '
+                         '.'"'.'/'.' '. $model->clase->profesor->last_name . ' ' . $model->clase->profesor->x_first_name.'' ?>
                     </p>
                 </div>
                 <!-- <div class="col-lg-3 col-md-3 col-sm-3" style="text-align: right;">

@@ -11,7 +11,7 @@ $this->title = 'Planificación Semanal';
 $this->params['breadcrumbs'][] = $this->title;
 
 // echo "<pre>";
-// print_r($clase);
+// print_r($bloque);
 // die();
 
 ?>
@@ -134,11 +134,11 @@ $this->params['breadcrumbs'][] = $this->title;
                                             echo '</td>';
                                             echo '<td>' . obtenerIcono($semTotal, 'recursos') . '</td>';
                                             echo '<td>' . generarBotonEdicion('update', $semTotal->id) . '</td>';
-                                            echo '<td>' .' | '.  '</td>';
+                                            echo '<td>' . ' | ' . '</td>';
                                             echo '<td>' . BotonTarea($semTotal->id) . '</td>';
-                                            echo '<td>' .' | '.  '</td>';
+                                            echo '<td>' . ' | ' . '</td>';
                                             echo '<td>' . BotonRecursos($semTotal->id) . '</td>';
-                                            
+
                                             echo '</tr>';
                                         }
 
@@ -288,7 +288,7 @@ function BotonTarea($id)
             <path d="M12 12v4" />
         </svg>',
         ['tasks', 'id' => $id],
-        ['class' =>'', 'title' => 'Crear Tarea']
+        ['class' => '', 'title' => 'Crear Tarea']
     );
 }
 ?>
@@ -305,8 +305,8 @@ function BotonRecursos($id)
         <path d="M14 7l6 0" />
         <path d="M17 4l0 6" />
       </svg>',
-        ['planificacion-semanal-recursos/index', 'id' =>$id],
-        ['class' =>'', 'title' => 'Crear Recurso']
+        ['planificacion-semanal-recursos/index', 'id' => $id],
+        ['class' => '', 'title' => 'Crear Recurso']
     );
 }
 ?>

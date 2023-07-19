@@ -35,10 +35,10 @@ class PlanificacionSemanalRecursos extends \yii\db\ActiveRecord
             [['plan_semanal_id', 'tema', 'tipo_recurso', 'url_recurso', 'estado'], 'required'],
             [['plan_semanal_id'], 'default', 'value' => null],
             [['plan_semanal_id'], 'integer'],
+            [['url_recurso'], 'string'],
             [['estado'], 'boolean'],
             [['tema'], 'string', 'max' => 100],
             [['tipo_recurso'], 'string', 'max' => 50],
-            [['url_recurso'], 'string', 'max' => 255],
             [['plan_semanal_id'], 'exist', 'skipOnError' => true, 'targetClass' => PlanificacionSemanal::className(), 'targetAttribute' => ['plan_semanal_id' => 'id']],
         ];
     }

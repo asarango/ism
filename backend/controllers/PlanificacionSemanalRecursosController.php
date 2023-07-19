@@ -75,16 +75,14 @@ class PlanificacionSemanalRecursosController extends Controller
         $planificacionSemanalId = $_GET['id'];
         $userLogin = Yii::$app->user->identity->usuario;
         $planificacionSemanal = PlanificacionSemanal::findOne($planificacionSemanalId);
-        // echo '<pre>'; print_r($planificacionSemanal); die();
-        // print_r($planificacionSemanalId);
-
-        $searchModel = new PlanificacionSemanalRecursosSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams, $userLogin, $planificacionSemanalId);
+        $recursos= PlanificacionSemanalRecursos::find()
+            ->where(['plan_semanal_id' => $planificacionSemanalId])
+            ->orderBy(['id' => SORT_ASC])
+            ->all();
 
         return $this->render('index', [
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
-            'planificacionSemanal' => $planificacionSemanal
+            'planificacionSemanal' => $planificacionSemanal,
+            'recursos' => $recursos
         ]);
     }
 
@@ -111,7 +109,7 @@ class PlanificacionSemanalRecursosController extends Controller
         // echo '<pre>';
         // print_r($_POST);
 
-        if (isset($_POST['plan_semanal_id'])) {
+        if (isset($_POST['plan_semanal_id'])) {           
             // Realizamos la insercion de registro
             // Con este metodo se realizan las preguntas del tipo de recursos
             //que consta en el formulario
@@ -122,9 +120,12 @@ class PlanificacionSemanalRecursosController extends Controller
                 'id' => $_POST['plan_semanal_id']
             ]);
         } else {
+            
             $planificacionSemanalId = $_GET['planificacion_semanal_id'];
+            $planificacionSemanal = PlanificacionSemanal::findOne($planificacionSemanalId);
             return $this->render('create', [
-                'planificacionSemanalId' => $planificacionSemanalId
+                'planificacionSemanalId' => $planificacionSemanalId,
+                'planificacionSemanal' => $planificacionSemanal
             ]);
         }
     }
@@ -138,7 +139,9 @@ class PlanificacionSemanalRecursosController extends Controller
             $fecha=date('YmdHis');
             $nombreArchivo = $_FILES['documento']['name'];
             $rutaArchivo = $_FILES['documento']['tmp_name'];
-            $destino = '/var/www/html/files/docentes/lms/' . $fecha . $nombreArchivo;
+            $destino = 'files/lms/' . $fecha . $nombreArchivo;
+            // echo $destino;
+            // die();
             if(move_uploaded_file($rutaArchivo, $destino)){
                 $planificacionSemanalId=$post['plan_semanal_id'];
                 $planificacionSemanalTema=$post['tema1'];
@@ -171,7 +174,7 @@ class PlanificacionSemanalRecursosController extends Controller
             $planificacionSemanalId=$post['plan_semanal_id'];
             $planificacionSemanalTema=$post['tema1'];
             $planificacionSemanalTipoRecurso=$post['bandera'];
-            $planificacionSemanalVideo=$post['url'];                
+            $planificacionSemanalVideo=$post['video-conferencia'];                
             $model=new PlanificacionSemanalRecursos();
             $model->plan_semanal_id=$planificacionSemanalId;
             $model->tema=$planificacionSemanalTema;
@@ -183,7 +186,7 @@ class PlanificacionSemanalRecursosController extends Controller
             $planificacionSemanalId=$post['plan_semanal_id'];
             $planificacionSemanalTema=$post['tema1'];
             $planificacionSemanalTipoRecurso=$post['bandera'];
-            $planificacionSemanalTexto=$post['url'];                
+            $planificacionSemanalTexto=$post['texto'];                
             $model=new PlanificacionSemanalRecursos();
             $model->plan_semanal_id=$planificacionSemanalId;
             $model->tema=$planificacionSemanalTema;

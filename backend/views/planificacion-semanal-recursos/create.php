@@ -6,18 +6,9 @@ use yii\helpers\Html;
 
 $this->title = 'Create Planificacion Semanal Recursos';
 
-function actionGetParalelo()
-{
-    $paralelo = $this->getParalelo()->one();
-
-    print_r($paralelo); // Imprimir datos utilizando print_r()
-
-    // Otros procesamientos o acciones que desees realizar con los datos del paralelo
-}
-
 
 // echo"<pre>";
-// print_r($paralelo);
+// print_r($planificacionSemanal);
 // die();
 ?>
 <div class="planificacion-semanal-recursos-create">
@@ -33,7 +24,10 @@ function actionGetParalelo()
                         <?= Html::encode($this->title) ?>
                     </h2>
                     <p>
-                    
+                        <?= '<b><small>' . $planificacionSemanal->clase->paralelo->course->name.' '.' '.'"'.
+                        $planificacionSemanal->clase->paralelo->name.'"'.' '.'/'.' Hora de clase:'.' '. $planificacionSemanal->hora->nombre.' '.' '
+                        .'/'.' '.'Docente:'.' '. $planificacionSemanal->clase->profesor->last_name . ' ' 
+                        . $planificacionSemanal->clase->profesor->x_first_name . '</small></b>' ?>
                     </p>
                 </div>
                 <!-- BOTONES DE ACCION -->
@@ -48,7 +42,7 @@ function actionGetParalelo()
                             <path d="M19 22v-6" />
                             <path d="M22 19l-3 -3l-3 3" />
                             </svg> Regresar</span>',
-                            ['planificacion-semanal-recursos/index' ],
+                            ['planificacion-semanal-recursos/index'],
                             ['class' => 'link']
                         );
                     ?>

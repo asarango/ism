@@ -3,6 +3,11 @@
 use yii\helpers\Html;
 use yii\helpers\Url;
 
+// echo '<pre>';
+// print_r($planesSemanalese);
+// die();
+// print_r($paralelos);
+//                                             die();
 ?>
 
 <style>
@@ -67,7 +72,7 @@ use yii\helpers\Url;
                                     <tbody>
                                         <?php
                                         foreach ($semana['actividades'] as $actividad) {
-
+                                          
                                             $inicio     = $actividad['dip_inicio'];
                                             $desarrollo = $actividad['dip_desarrollo'];
                                             $cierre     = $actividad['dip_cierre'];
@@ -93,7 +98,7 @@ use yii\helpers\Url;
 
                                                     <!-- Button trigger modal -->
                                                     <a type="button" class="" data-bs-toggle="modal" data-bs-target="#staticBackdrop<?= $actividad['id'] ?>">
-                                                    <i class="fas fa-edit"></i>
+                                                        <i class="fas fa-edit"></i>
                                                     </a>
 
                                                     <!-- Modal -->
@@ -107,29 +112,29 @@ use yii\helpers\Url;
 
                                                                 <?= Html::beginForm(['form-actividad'], 'get', ['enctype' => 'multipart/form-data']) ?>
                                                                 <div class="modal-body">
-                                                                    
 
-                                                                        <input type="hidden" name="lms_id" value="<?= $actividad['id'] ?>">
-                                                                        <input type="hidden" name="plan_bloque_unidad_id" value="<?= $planUnidadId ?>">
-                                                                        <div class="form-group">
-                                                                        
+
+                                                                    <input type="hidden" name="lms_id" value="<?= $actividad['id'] ?>">
+                                                                    <input type="hidden" name="plan_bloque_unidad_id" value="<?= $planUnidadId ?>">
+                                                                    <div class="form-group">
+
                                                                         <label class="form-label" for="inicio"><b>INICIO:</b></label>
-                                                                            <textarea name="inicio" id="dipinicio<?= $actividad['id'] ?>" cols="30" rows="10" class="form-control"><?= $actividad['dip_inicio'] ?></textarea>
-                                                                        </div>
+                                                                        <textarea name="inicio" id="dipinicio<?= $actividad['id'] ?>" cols="30" rows="10" class="form-control"><?= $actividad['dip_inicio'] ?></textarea>
+                                                                    </div>
 
-                                                                        <div class="form-group" style="margin-top: 20px;">
-                                                                            <label class="form-label" for="desarrollo"><b>DESARROLLO:</b></label>
-                                                                            <textarea name="desarrollo" id="dipdesarrollo<?= $actividad['id'] ?>" cols="30" rows="10" class="form-control"><?= $actividad['dip_desarrollo'] ?></textarea>
-                                                                        </div>
+                                                                    <div class="form-group" style="margin-top: 20px;">
+                                                                        <label class="form-label" for="desarrollo"><b>DESARROLLO:</b></label>
+                                                                        <textarea name="desarrollo" id="dipdesarrollo<?= $actividad['id'] ?>" cols="30" rows="10" class="form-control"><?= $actividad['dip_desarrollo'] ?></textarea>
+                                                                    </div>
 
 
-                                                                        <div class="form-group" style="margin-top: 20px;">
-                                                                            <label class="form-label" for="cierre"><b>CIERRE:</b></label>
-                                                                            <textarea name="cierre" id="dipcierre<?= $actividad['id'] ?>" cols="30" rows="10" class="form-control"><?= $actividad['dip_cierre'] ?></textarea>
-                                                                        </div>
-                                                                    
+                                                                    <div class="form-group" style="margin-top: 20px;">
+                                                                        <label class="form-label" for="cierre"><b>CIERRE:</b></label>
+                                                                        <textarea name="cierre" id="dipcierre<?= $actividad['id'] ?>" cols="30" rows="10" class="form-control"><?= $actividad['dip_cierre'] ?></textarea>
+                                                                    </div>
 
-                                                                    
+
+
                                                                 </div>
                                                                 <div class="modal-footer">
                                                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
@@ -140,23 +145,47 @@ use yii\helpers\Url;
                                                         </div>
                                                     </div>
                                                     <script>
-                                                        CKEDITOR.replace("dipinicio<?= $actividad['id'] ?>", { customConfig: "/ckeditor_settings/config.js" })
-                                                        CKEDITOR.replace("dipdesarrollo<?= $actividad['id'] ?>", { customConfig: "/ckeditor_settings/config.js" })
-                                                        CKEDITOR.replace("dipcierre<?= $actividad['id'] ?>", { customConfig: "/ckeditor_settings/config.js" })
+                                                        CKEDITOR.replace("dipinicio<?= $actividad['id'] ?>", {
+                                                            customConfig: "/ckeditor_settings/config.js"
+                                                        })
+                                                        CKEDITOR.replace("dipdesarrollo<?= $actividad['id'] ?>", {
+                                                            customConfig: "/ckeditor_settings/config.js"
+                                                        })
+                                                        CKEDITOR.replace("dipcierre<?= $actividad['id'] ?>", {
+                                                            customConfig: "/ckeditor_settings/config.js"
+                                                        })
                                                     </script>
                                                     <!-- fin de modal -->
 
 
                                                 </td>
 
-                                                <td>
-                                                    <?=
-                                                        Html::a('<i class="fas fa-tasks"></i>',['lms-actividad/index1',
-                                                            'lms_id' => $actividad['id'],
-                                                            'plan_bloque_unidad_id' => $planUnidadId,
-                                                            'action-back' => 'pud-dip/index1'
-                                                        ]);
+                                                <td style="padding: 0%; text-align: center; ;">
+                                                    <button type="button" class="btn btn-outline " data-bs-toggle="modal" data-bs-target="#paralelosModal">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-list-check" width="12" height="12" viewBox="0 0 24 24" stroke-width="3" stroke="#0d6efd" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                                            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                                            <path d="M3.5 5.5l1.5 1.5l2.5 -2.5" />
+                                                            <path d="M3.5 11.5l1.5 1.5l2.5 -2.5" />
+                                                            <path d="M3.5 17.5l1.5 1.5l2.5 -2.5" />
+                                                            <path d="M11 6l9 0" />
+                                                            <path d="M11 12l9 0" />
+                                                            <path d="M11 18l9 0" />
+                                                        </svg>
+                                                    </button>
+                                                    <?= ""
+                                                    // Html::a(
+                                                    //     '<i class="fas fa-tasks"></i>',
+                                                    //     [
+                                                    //         'planificacion-semanal/mis-clases',
+                                                    //         'lms_id' => $actividad['id'],
+                                                    //         'plan_bloque_unidad_id' => $planUnidadId,
+                                                    //         'action-back' => 'pud-dip/index1'
+                                                    //     ]
+
+                                                    // );
                                                     ?>
+
+
                                                 </td>
                                             </tr>
                                         <?php
@@ -164,6 +193,47 @@ use yii\helpers\Url;
                                         ?>
                                     </tbody>
                                 </table>
+                            </div>
+                            <div class="modal" tabindex="-1" id="paralelosModal">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-certificate" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="#00264a" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                                    <path d="M15 15m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0" />
+                                                    <path d="M13 17.5v4.5l2 -1.5l2 1.5v-4.5" />
+                                                    <path d="M10 19h-5a2 2 0 0 1 -2 -2v-10c0 -1.1 .9 -2 2 -2h14a2 2 0 0 1 2 2v10a2 2 0 0 1 -1 1.73" />
+                                                    <path d="M6 9l12 0" />
+                                                    <path d="M6 12l3 0" />
+                                                    <path d="M6 15l2 0" />
+                                                </svg>
+                                                Escoja un paralelo
+                                            </h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p>
+                                            <?php
+                                            
+                                            foreach($paralelos as $paralelo){ 
+                                           
+                                                echo Html::a('<lu style="padding-left: 5px; text-align: center"><h4><b>- '.$paralelo['paralelo'].' -<lu><h4><b>', ['redirect-ps', 
+                                                    'lms_id' => $actividad['id'],
+                                                    'clase_id' => $paralelo['clase_id']
+                                                ]);
+                                            }
+                                            
+                                            ?>
+
+                                            </p>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <!-- <button type="button" class="btn btn-secondary">Salir</button> -->
+                                            <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Volver</button>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <!-- finaliza para actividades -->
@@ -198,8 +268,4 @@ use yii\helpers\Url;
 
     //     window.open(url, "MiVentana", "width=800,height=600");
     // }
-
-    
-
-    
 </script>

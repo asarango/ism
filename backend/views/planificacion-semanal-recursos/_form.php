@@ -120,9 +120,9 @@ use yii\widgets\ActiveForm;
                     onchange="showform('video-conferencia')" style="margin-right: 4rem;margin-left: 4rem;">
                 <?php echo IconosRecur3('planificacion-semanal-recursos/create.png'); ?>
 
-                <input type="radio" id="icono4" name="icono4" value="icono4" class="radio-icon"
+                <!-- <input type="radio" id="icono4" name="icono4" value="icono4" class="radio-icon"
                     onchange="showform('texto')" style="margin-right: 4rem;margin-left: 4rem;">
-                <?php echo IconosRecur4('planificacion-semanal-recursos/create.png'); ?>
+                <?php echo IconosRecur4('planificacion-semanal-recursos/create.png'); ?> -->
             </div>
 
             <!-- FORMULARIO DE AGG ARCHIVO -->

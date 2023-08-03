@@ -2,10 +2,11 @@
 
 use yii\helpers\Html;
 use backend\models\TocPlanUnidadHabilidad;
+use backend\models\ScholarisActividad;
 use Mpdf\Tag\Small;
 use Mpdf\Tag\Span;
 use yii\helpers\Url;
-use function Symfony\Component\String\s;
+
 
 /* @var $this yii\web\View */
 /* @var $model backend\models\PlanificacionSemanal */
@@ -13,6 +14,10 @@ use function Symfony\Component\String\s;
 
 
 $this->title = 'Modificar Planificacion Semanal ';
+
+// echo "<pre>";
+// print_r($model);
+// die();
 ?>
 
 
@@ -30,13 +35,28 @@ $this->title = 'Modificar Planificacion Semanal ';
                     </h4>
 
                     <p>
-                        <?= $model->clase->paralelo->course->name . ' '.'"'.'B'.'"'.'/'.' Hora de clase:' .$model->hora->nombre. '
-                         '.'"'.'/'.' '. $model->clase->profesor->last_name . ' ' . $model->clase->profesor->x_first_name.'' ?>
+                        <?= $model->clase->paralelo->course->name . ' ' . '"' . 'B' . '"' . '/' . ' Hora de clase:' . $model->hora->nombre . '
+                         ' . '"' . '/' . ' ' . $model->clase->profesor->last_name . ' ' . $model->clase->profesor->x_first_name . '' ?>
                     </p>
                 </div>
-                <!-- <div class="col-lg-3 col-md-3 col-sm-3" style="text-align: right;">
-                    
-                </div> -->
+                <div class="col-lg-3 col-md-3 col-sm-3" style="text-align: right;">
+                    <?=
+                        Html::a(
+                            '<span class="badge rounded-pill" style="background-color: #ff9e18">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home-up"
+                             width="16" height="16" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ffffff" 
+                             fill="none" stroke-linecap="round" stroke-linejoin="round">
+                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                            <path d="M9 21v-6a2 2 0 0 1 2 -2h2c.641 0 1.212 .302 1.578 .771" />
+                            <path d="M20.136 11.136l-8.136 -8.136l-9 9h2v7a2 2 0 0 0 2 2h6.344" />
+                            <path d="M19 22v-6" />
+                            <path d="M22 19l-3 -3l-3 3" />
+                            </svg> Regresar</span>',
+                            ['planificacion-semanal/index1', 'clase_id' => 1337, 'bloque_id' => 69],
+                            ['class' => '', 'title' => 'Planificación Vertical TOC']
+                        );
+                    ?>
+                </div>
                 <hr>
             </div>
             <div class="row">

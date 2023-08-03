@@ -179,6 +179,8 @@ class CalculoV1{
                             and sba.tipo_uso = '$this->uso'
                             and sba.tipo_bloque = 'PARCIAL'
                             and lib.grupo_id = $this->grupoId";
+        echo $query;
+        die();
         $res = $con->createCommand($query)->queryOne();
 
         if($this->quimestreCodigo == 'QUIMESTRE I'){

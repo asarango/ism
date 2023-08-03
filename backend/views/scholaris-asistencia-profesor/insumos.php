@@ -5,6 +5,10 @@ use yii\helpers\Url;
 use yii\grid\GridView;
 
 $this->title = '¡Mis insumos!';
+
+// echo '<pre>';
+// print_r($clas);
+// die();
 ?>
 
 <!-- JS y CSS Ckeditor -->
@@ -67,9 +71,12 @@ $this->title = '¡Mis insumos!';
                                 ],
                                 'urlCreator' => function ($action, $model, $key) {
                                 if ($action === 'activity') {
+                                    
+                              
+                                    
                                     return \yii\helpers\Url::to(['scholaris-actividad/actividad', 'actividad' => $model->actividad_id]);
                                 }
-                                //                        else if ($action === 'update') {
+                                //                       else if ($action === 'update') {
 //                            return \yii\helpers\Url::to(['update', 'id' => $key]);
 //                        }
                             }

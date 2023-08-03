@@ -9,9 +9,9 @@ use yii\grid\GridView;
 
 $this->title = '¡Mis Actividades!';
 
-// // echo"<pre>";
-// // print_r ($this);
-// // die();
+// echo"<pre>";
+// print_r ($model);
+// die();
 ?>
 
 <div class="scholaris-asistencia-profesor-index" style="padding-left: 40px; padding-right: 40px">
@@ -23,13 +23,13 @@ $this->title = '¡Mis Actividades!';
                     <h4><img src="../ISM/main/images/submenu/actividad-fisica.png" width="64px" style=""
                             class="img-thumbnail"></h4>
                 </div>
-                <div class="col-lg-3">
-                    <h2>
+                <div class="col-lg-2">
+                    <h4>
                         <?= Html::encode($this->title) ?>
-                    </h2>
+                    </h4>
                 </div>
                 <!-- botones -->
-                <div class="col-lg-8" style="text-align: right;margin-top: 10px;">
+                <div class="col-lg-9" style="text-align: right;margin-top: 10px;">
                     <p>
                         <!-- <?=
                             Html::a(
@@ -73,17 +73,7 @@ $this->title = '¡Mis Actividades!';
                             );
                         ?>
 
-                        |
-                        <?=
-                            Html::a(
-                                '<span class="badge rounded-pill" style="background-color: #9e28b5">
-                        <i class="fa fa-briefcase" aria-hidden="true"></i> Mis Insumos
-                    </span>',
-                                ['insumos'],
-                                ['class' => 'link']
-                            );
-                        ?>
-
+                        
                         |
                         <?=
                             Html::a(
@@ -114,7 +104,20 @@ $this->title = '¡Mis Actividades!';
                                 ['scholaris-asistencia-alumnos-novedades/index1'],
                                 ['class' => 'link']
                             );
+                            
                         ?>
+                    
+                        |
+                        <?=
+                            Html::a(
+                                '<span class="badge rounded-pill" style="background-color: #9e28b5">
+                        <i class="fa fa-briefcase" aria-hidden="true"></i> Mis Insumos
+                    </span>',
+                                ['insumos'],
+                                ['class' => 'link']
+                            );
+                        ?>
+                        
                     </p>
                 </div>
                 <hr>

@@ -6,6 +6,7 @@ use backend\models\Lms;
 use backend\models\LmsActividad;
 use backend\models\LmsActividadXArchivo;
 use backend\models\notas\RegistraNotas;
+use backend\models\notas\RegistraNotasV1;
 use backend\models\ResUsers;
 use backend\models\ScholarisActividadDescriptor;
 use backend\models\ScholarisBloqueActividad;
@@ -21,6 +22,7 @@ use backend\models\ScholarisActividadSearch;
 use backend\models\ScholarisArchivosprofesor;
 use backend\models\ScholarisGrupoOrdenCalificacion;
 use backend\models\ScholarisHorariov2Detalle;
+use backend\models\ScholarisPeriodo;
 use backend\models\SentenciasSql;
 use Yii;
 use yii\filters\AccessControl;
@@ -367,34 +369,34 @@ class ScholarisActividadController extends Controller
      * (se coloca información del pequeño LMS)
      */
     public function actionActividad($actividad)
-    {        
+    {
         $sentencia = new \backend\models\SentenciasNotas();
         $modelActividad = \backend\models\ScholarisActividad::find()
             ->where(['id' => $actividad])
-            ->one();     
-        
+            ->one();
+
         $modelCalificaciones = ScholarisCalificaciones::find()
             ->where(['idactividad' => $actividad])
             ->andWhere(['not', ['calificacion' => null]])
-            ->all();        
-        
+            ->all();
+
         $sentencias = new SentenciasSql();
         $modelCalificaciones2 = ScholarisCalificaciones::find()
             ->where(['idactividad' => $actividad])
             ->all();
         //Trae los descriptores que estan asignados a esta actividad y los que no estan asigandos
-        $asignados = $sentencias->criteriosAsignados($modelActividad->bloque_actividad_id,$modelActividad->id);  
-        $noAsignados = $sentencias->criteriosNoAsignados($modelActividad->bloque_actividad_id,$modelActividad->id);        
+        $asignados = $sentencias->criteriosAsignados($modelActividad->bloque_actividad_id, $modelActividad->id);
+        $noAsignados = $sentencias->criteriosNoAsignados($modelActividad->bloque_actividad_id, $modelActividad->id);
         //Revisa atraves de la fecha del bloque si puede o no agregar o quitar descriptores
         $estado = $this->estado($modelActividad->bloque->hasta);
         //tiene la relacion entre la actividad y los descriptores
         $modelCriterios = ScholarisActividadDescriptor::find()
-            ->where(['actividad_id' => $actividad])            
-            ->all();  
-        
+            ->where(['actividad_id' => $actividad])
+            ->all();
+
         //Busca los adjuntos a las tareas por actividad
         $modelArchivos = \backend\models\ScholarisArchivosprofesor::find()->where(['idactividad' => $actividad])->all();
-        
+
         $modelGrupo = \backend\models\ScholarisGrupoAlumnoClase::find()
             ->innerJoin("op_student_inscription i", "i.student_id = scholaris_grupo_alumno_clase.estudiante_id")
             ->where([
@@ -402,7 +404,7 @@ class ScholarisActividadController extends Controller
                 'i.inscription_state' => 'M'
             ])
             ->all();
-        
+
         //Cuenta el Numero de criterios que estan calificados  asociados a una actividad            
         $modelTotalCali = $sentencia->toma_total_calificados($actividad, count($modelGrupo));
         //Cuenta el numero de calificacion con valor nulo, asociadas a una actividad
@@ -417,39 +419,41 @@ class ScholarisActividadController extends Controller
         $modelTotal = $modelTotalCali - $modelTotalCalificados;
 
         $estadisticas = $this->get_valores_estadisticos($modelActividad->paralelo_id);
-        
+
         $model = new ScholarisArchivosprofesor();
         //ingresa en este IF, para generar el update del registro de tareas en una actividad 
         //                                               1 = update      
-        if (isset($_GET['bandera']) && $_GET['bandera']==1)
-        {            
+        if (isset($_GET['bandera']) && $_GET['bandera'] == 1) {
             $idMatApoyo = $_GET['idMatApoyo'];
-            $model = ScholarisArchivosprofesor::findOne($idMatApoyo);             
+            $model = ScholarisArchivosprofesor::findOne($idMatApoyo);
         }
         //ingresa en este IF, para eliminar la tarea asociada a una actividad 
         //                                              2 = delete        
-        if (isset($_GET['bandera']) && $_GET['bandera']==2)
-        {
+        if (isset($_GET['bandera']) && $_GET['bandera'] == 2) {
             $idMatApoyo = $_GET['idMatApoyo'];
             $model = ScholarisArchivosprofesor::findOne($idMatApoyo);
-            if(isset($model)){
+            if (isset($model)) {
                 $model->delete();
-            } 
-            $model = new ScholarisArchivosprofesor();            
-                     
+            }
+            $model = new ScholarisArchivosprofesor();
         }
 
         /***
          * envia los datos del tipo LMS pequeño
          */
-        $lmsActividad = LmsActividad::findOne($modelActividad->lms_actvidad_id);
-        $materialApoyo = LmsActividadXArchivo::find()->where(['lms_actividad_id' => $modelActividad->lms_actvidad_id])->all();
+        // $section = $modelActividad->clase->paralelo->course->section0->code;
+        // if ($section != "DIPL") {
+            $lmsActividad = LmsActividad::findOne($modelActividad->lms_actvidad_id);
+            $materialApoyo = LmsActividadXArchivo::find()->where(['lms_actividad_id' => $modelActividad->lms_actvidad_id])->all();
+        // }else{
+            // echo('lms de diploma');
+        // }
 
-         /**************************** */
+        /**************************** */
 
 
 
-        if($modelActividad->tipo_calificacion == 'P'){
+        if ($modelActividad->tipo_calificacion == 'P') {
             return $this->render('actividad', [
                 'modelActividad' => $modelActividad,
                 'estado' => $estado,
@@ -458,14 +462,14 @@ class ScholarisActividadController extends Controller
                 'modelArchivos' => $modelArchivos,
                 'modelTotal' => $modelTotal,
                 'estadisticas' => $estadisticas,
-                'modelCalificaciones2' => $modelCalificaciones2, 
-                'noAsignados' => $noAsignados,  
-                'asignados' => $asignados ,
-                'model'=>  $model,
+                'modelCalificaciones2' => $modelCalificaciones2,
+                'noAsignados' => $noAsignados,
+                'asignados' => $asignados,
+                'model' =>  $model,
                 'lmsActividad' => $lmsActividad,
-                'materialApoyo' => $materialApoyo     
+                'materialApoyo' => $materialApoyo
             ]);
-        }else{
+        } else {
 
             return $this->render('actividad', [
                 'modelActividad' => $modelActividad,
@@ -475,24 +479,25 @@ class ScholarisActividadController extends Controller
                 'modelArchivos' => $modelArchivos,
                 'modelTotal' => $modelTotal,
                 'modelCalificaciones2' => $modelCalificaciones2,
-                'noAsignados' => $noAsignados,  
-                'asignados' => $asignados ,
-                'model'=>  $model,
+                'noAsignados' => $noAsignados,
+                'asignados' => $asignados,
+                'model' =>  $model,
                 'lmsActividad' => $lmsActividad,
                 'materialApoyo' => $materialApoyo
             ]);
-        }        
+        }
     }
 
 
-    private function get_valores_estadisticos($claseId){
+    private function get_valores_estadisticos($claseId)
+    {
 
         $con = Yii::$app->db;
         $queryCriterios = "select 	c.nombre as criterio
                             from 	ism_criterio c 
                             group by c.nombre
                             order by c.nombre";
-        
+
         $criterios = $con->createCommand($queryCriterios)->queryAll();
 
         $queryCriUsados = "select 	curso, paralelo, docente, materia, clase_id, bloque_id, bloque, tipo_actividad, criterio, total 
@@ -509,7 +514,7 @@ class ScholarisActividadController extends Controller
                             group by b.id, b.abreviatura
                             order by b.orden;";
         $parciales = $con->createCommand($queryParciales)->queryAll();
-        
+
         return array(
             'criterios' => $criterios,
             'criUsados' => $criUsados,
@@ -601,13 +606,13 @@ class ScholarisActividadController extends Controller
                 ->where(['scholaris_calificaciones.idactividad' => $id])
                 ->orderBy('ism_criterio.nombre', 'op_student.last_name', 'op_student.first_name', 'op_student.middle_name')
                 ->all();
-            
+
             $queryIdsCriterios = "select distinct id_criterio
                                 from scholaris_actividad_descriptor s
                                 inner join planificacion_vertical_pai_descriptores d on s.plan_vert_pai_descriptor_id = d.id 
                                 inner join ism_criterio_descriptor_area i on  d.descriptor_id = i.id 
                                 where s.actividad_id = $id;";
-            
+
             $modelCriterios = $con->createCommand($queryIdsCriterios)->queryAll();
 
             $modelCalificarUnitario = ScholarisCalificaciones::find()
@@ -808,15 +813,15 @@ class ScholarisActividadController extends Controller
         $sentencias = new SentenciasSql();
         $modelActividad = \backend\models\ScholarisActividad::find()
             ->where(['id' => $id])
-            ->one();        
+            ->one();
 
-        $tipo = $modelActividad->insumo->nombre_pai; 
+        $tipo = $modelActividad->insumo->nombre_pai;
         $grupo = \backend\models\ScholarisGrupoOrdenCalificacion::find()
             ->where(['codigo_tipo_actividad' => $modelActividad->tipo_actividad_id])
             ->one();
 
-        if ($modelActividad->tipo_calificacion == 'P') {            
-            
+        if ($modelActividad->tipo_calificacion == 'P') {
+
             $con = Yii::$app->db;
             //consulta los criterios asociados a la actividad
             $queryIdCriterios = "select distinct id_criterio
@@ -824,15 +829,22 @@ class ScholarisActividadController extends Controller
                         inner join planificacion_vertical_pai_descriptores d on s.plan_vert_pai_descriptor_id = d.id 
                         inner join ism_criterio_descriptor_area i on  d.descriptor_id = i.id 
                         where s.actividad_id = $id;";
-            
+            echo $queryIdCriterios;
+            die();
+
             $arrayIdCriterios = $con->createCommand($queryIdCriterios)->queryAll();
-            
-            foreach ($arrayIdCriterios as $criterio) {                
-                    if ($tipo == 'SUMATIVA') {
-                    $sentencias->insertarEspaciosCalificacionPaiSumativa($id, $modelActividad->tipo_actividad_id, $criterio['id_criterio'], 
-                                    $modelActividad->paralelo_id, $grupo->grupo_numero);
+
+            foreach ($arrayIdCriterios as $criterio) {
+                if ($tipo == 'SUMATIVA') {
+                    $sentencias->insertarEspaciosCalificacionPaiSumativa(
+                        $id,
+                        $modelActividad->tipo_actividad_id,
+                        $criterio['id_criterio'],
+                        $modelActividad->paralelo_id,
+                        $grupo->grupo_numero
+                    );
                 } else {
-                    $sentencias->insertarEspaciosCalificacionPai($id, $modelActividad->tipo_actividad_id,$criterio['id_criterio'], $modelActividad->paralelo_id);
+                    $sentencias->insertarEspaciosCalificacionPai($id, $modelActividad->tipo_actividad_id, $criterio['id_criterio'], $modelActividad->paralelo_id);
                 }
             }
         } else {
@@ -843,41 +855,45 @@ class ScholarisActividadController extends Controller
 
     public function actionRegistra()
     {
-       
+
         $nota = $_POST['nota'];
         $notaId = $_POST['notaId'];
         $grupoId = $_POST['grupo_id'];
         $user = Yii::$app->user->identity->usuario;
         $idPeriodo = \yii::$app->user->identity->periodo_id;
-      
+
         //$model = \app\models\ScholarisActividad::findOne($id));
         $model = ScholarisCalificaciones::findOne($notaId);
         $model->calificacion = $nota;
         //1.- Se guarda la nota
-        $model->save();  
+        $model->save();
 
         //captura datos para tabla de promedio de insumos (lib_promedios_insumos)
-        $grupo_numero = $model->grupo_numero;  
-        $idAlumno =  $model->idalumno;      
-        $modelActividad = ScholarisActividad::findOne($model->idactividad) ;  
-        $modelBloqueActividad = ScholarisBloqueActividad::findOne($modelActividad->bloque_actividad_id);      
-        $idclase = $modelActividad->paralelo_id; 
+        $grupo_numero = $model->grupo_numero;
+        $idAlumno =  $model->idalumno;
+        $modelActividad = ScholarisActividad::findOne($model->idactividad);
+        $modelBloqueActividad = ScholarisBloqueActividad::findOne($modelActividad->bloque_actividad_id);
+        $idclase = $modelActividad->paralelo_id;
         $idBloque = $modelBloqueActividad->id;
         $tipo_uso = $modelBloqueActividad->tipo_uso;
 
         $modelGrupoAlumnoClase = ScholarisGrupoAlumnoClase::find()
-        ->where(['clase_id'=>$idclase,'estudiante_id'=>$idAlumno])
-        ->one(); 
+            ->where(['clase_id' => $idclase, 'estudiante_id' => $idAlumno])
+            ->one();
         $modelGrupoCalifiaciones = ScholarisGrupoOrdenCalificacion::find()
-        ->where(['codigo_tipo_actividad'=>$modelActividad->tipo_actividad_id]) 
-        ->one();
-    
+            ->where(['codigo_tipo_actividad' => $modelActividad->tipo_actividad_id])
+            ->one();
+
 
         /***Proceso mediante clases para registrar notas en los reportes*/
-        $scores = new RegistraNotas($grupoId, $notaId, $nota);
+        $periodo = ScholarisPeriodo::findOne($idPeriodo);
+        if($periodo->version_calculo_notas == 'V1'){
+            $scores = new RegistraNotasV1($grupoId, $notaId, $nota);
+        }
+        
         /***Fin de proceso mediante clases para registrar notas en los reportes */
 
-        
+
         //proceso de guardado        
         //2.- Se ejecuta funcion para insertar promedios de insumos
         // $con = Yii::$app->db;       
@@ -964,7 +980,7 @@ class ScholarisActividadController extends Controller
 
         $modelActividad = \backend\models\ScholarisActividad::find()
             ->where(['id' => $id])
-            ->one();      
+            ->one();
 
         $modelCalificaciones = ScholarisCalificaciones::find()
             ->where(['idactividad' => $id])
@@ -972,7 +988,7 @@ class ScholarisActividadController extends Controller
 
         $noAsignados = $sentencias->criteriosNoAsignados($modelActividad->clase->course->id, $modelActividad->clase->materia->area_id, $id);
         $asignados = $sentencias->criteriosAsignados($id);
-              
+
 
         return $this->render('criterios', [
             'modelActividad' => $modelActividad,
@@ -984,7 +1000,7 @@ class ScholarisActividadController extends Controller
 
     public function actionAsignarcriterio($id_actividad, $id_plan_vert_descriptor)
     {
-       
+
         $model = new ScholarisActividadDescriptor();
 
         $model->actividad_id = $id_actividad;
@@ -1000,7 +1016,7 @@ class ScholarisActividadController extends Controller
         $periodoId = \Yii::$app->user->identity->periodo_id;
 
         //extraemos ID bloque y clase, por la actividad
-        $modelActividad = ScholarisActividad::findOne($id_actividad);        
+        $modelActividad = ScholarisActividad::findOne($id_actividad);
         $bloque_id = $modelActividad->bloque_actividad_id;
         $clase_id = $modelActividad->paralelo_id;
         //obtenemos nombre bloque
@@ -1009,17 +1025,17 @@ class ScholarisActividadController extends Controller
 
         //extraemos el profesor,a travez de la clase
         $modelScholarisClase = ScholarisClase::find()
-        ->where(['id'=>$clase_id])
-        ->one();       
-        
-        $idProfesor = $modelScholarisClase->idprofesor;  
+            ->where(['id' => $clase_id])
+            ->one();
+
+        $idProfesor = $modelScholarisClase->idprofesor;
         $querryProfesor = "select concat(last_name,' ',x_first_name,' ',middle_name) as nombre  from op_faculty of2 where id = $idProfesor;";
         $nombreProfesor = $con->createCommand($querryProfesor)->queryOne();
 
         //Obtenemos tipo de actividad
-        $modelTipoActividad = ScholarisTipoActividad::findOne($modelActividad->tipo_actividad_id);        
+        $modelTipoActividad = ScholarisTipoActividad::findOne($modelActividad->tipo_actividad_id);
         $nombreActividad =  $modelTipoActividad->nombre_pai;
-        
+
         // echo '<pre>';
         // print_r($modelTipoActividad);
         // die();
@@ -1029,17 +1045,17 @@ class ScholarisActividadController extends Controller
                     from  scholaris_clase c 
                     inner join op_course_paralelo p  on p.id=c.paralelo_id 
                     inner join op_course o on o.id = p.course_id 
-                    where c.id ='.$clase_id;   
-                   
+                    where c.id =' . $clase_id;
+
         $nombreCursoParalelo = $con->createCommand($query)->queryOne();
-        
+
         //obtenemos nombre de la materia
         $queryMateria = 'select m.nombre  as Materia   
                         from  scholaris_clase c 
                         inner join ism_area_materia a on c.ism_area_materia_id  = a.id
                         inner join ism_materia m on a.materia_id  = m.id
-                        where c.id = '.$clase_id; 
-        $materia = $con->createCommand($queryMateria)->queryOne(); 
+                        where c.id = ' . $clase_id;
+        $materia = $con->createCommand($queryMateria)->queryOne();
 
         //busca el criterio que se esta ingresando
         $queryCriterio = "select l.nombre 
@@ -1047,16 +1063,16 @@ class ScholarisActividadController extends Controller
                         inner join ism_criterio_descriptor_area  c on p.descriptor_id = c.id
                         inner join ism_criterio  l on c.id_criterio  = l.id
                         where p.id =$id_plan_vert_descriptor;";
-        $letraCriterio = $con->createCommand($queryCriterio)->queryOne(); 
+        $letraCriterio = $con->createCommand($queryCriterio)->queryOne();
 
         //Insert para ejecucion en la tabla
-        $insertEstadistica = "Insert Into dw_estadisticas_criterios_pai ". 
-        "(curso, paralelo, docente, materia, clase_id, bloque_id,bloque, tipo_actividad, criterio,total, scholaris_periodo_id,id_scholaris_actividad_descriptor) 
-         VALUES ". 
-         "('".$nombreCursoParalelo['curso']."','". $nombreCursoParalelo['paralelo']."','". $nombreProfesor['nombre']."','".
-         $materia['materia']."','".$clase_id ."','". $bloque_id."','". $nombreBloque."','". $nombreActividad."','".$letraCriterio['nombre']."',".'1'.",". $periodoId.",".$idModelSchoActDesc.")";
+        $insertEstadistica = "Insert Into dw_estadisticas_criterios_pai " .
+            "(curso, paralelo, docente, materia, clase_id, bloque_id,bloque, tipo_actividad, criterio,total, scholaris_periodo_id,id_scholaris_actividad_descriptor) 
+         VALUES " .
+            "('" . $nombreCursoParalelo['curso'] . "','" . $nombreCursoParalelo['paralelo'] . "','" . $nombreProfesor['nombre'] . "','" .
+            $materia['materia'] . "','" . $clase_id . "','" . $bloque_id . "','" . $nombreBloque . "','" . $nombreActividad . "','" . $letraCriterio['nombre'] . "'," . '1' . "," . $periodoId . "," . $idModelSchoActDesc . ")";
 
-        $insertar = $con->createCommand($insertEstadistica)->queryOne();  
+        $insertar = $con->createCommand($insertEstadistica)->queryOne();
 
         return $this->redirect([
             'actividad',
@@ -1065,10 +1081,10 @@ class ScholarisActividadController extends Controller
     }
 
     public function actionQuitarcriterio($id)
-    {       
+    {
         //1.- Eliminacion de tabla dw_estadisticas_criterios_pai
         $con = Yii::$app->db;
-        $queryDelete = "delete from  dw_estadisticas_criterios_pai where id_scholaris_actividad_descriptor = ".$id;
+        $queryDelete = "delete from  dw_estadisticas_criterios_pai where id_scholaris_actividad_descriptor = " . $id;
         $delete = $con->createCommand($queryDelete)->queryOne();
 
         //2.- Eliminacion de tabla scholaris_actividad_descriptor
@@ -1078,7 +1094,7 @@ class ScholarisActividadController extends Controller
 
         $actividad = $model->actividad_id;
         $model->delete();
-        
+
         //return $this->redirect(['criterios', 'id' => $actividad]);
         return $this->redirect(['actividad', 'actividad' => $actividad]);
     }
@@ -1187,8 +1203,8 @@ class ScholarisActividadController extends Controller
         $ismAreaMateriaId = $modelActividad->clase->ism_area_materia_id;
         $cursoId = $modelActividad->clase->paralelo->course_id;
         $claseId = $modelActividad->clase->id;
-        
-       
+
+
         $modelClases = $this->get_clases_para_duplicar($ismAreaMateriaId, $cursoId, $claseId);
 
         return $this->render('duplicar', [
@@ -1196,8 +1212,8 @@ class ScholarisActividadController extends Controller
             'modelActividad' => $modelActividad
         ]);
     }
-    
-    
+
+
     /**
      * 
      * @param type $ismAreaMateria
@@ -1205,7 +1221,8 @@ class ScholarisActividadController extends Controller
      * @param type $claseId
      * @return typeMETODO QUE DEVUELVE LAS CLASES PARA DUPLICAR DEL MISMO CURSO Y DE LA MISMA MATERIA
      */
-    private function get_clases_para_duplicar($ismAreaMateriaId, $cursoId, $claseId){
+    private function get_clases_para_duplicar($ismAreaMateriaId, $cursoId, $claseId)
+    {
         $con = \Yii::$app->db;
         $query = "select 	c.id 
                                 ,cur.id as curso_id
@@ -1544,29 +1561,30 @@ class ScholarisActividadController extends Controller
     /**
      * ACCIÓN PARA ENTREGAR LA LISTA DE ACTIVIDADES
      */
-    public function actionLista(){
+    public function actionLista()
+    {
         $claseId        = $_GET['clase_id'];
         $semanaNumero    = $_GET['semana_numero'];
         $detalleHorarioId = $_GET['detalle_horario_id'];
         $lmsId            = $_GET['lms_id'];
-        
-        $data = $this->inserta_actividades_lms($_GET);         
-        
+
+        $data = $this->inserta_actividades_lms($_GET);
+
         $modelClase = ScholarisClase::findOne($claseId);
 
         $actividades = ScholarisActividad::find()
-        ->innerJoin('lms_actividad l','l.id = scholaris_actividad.lms_actvidad_id')
-        ->where([
-            'bloque_actividad_id' => $data['bloque_id'],
-            'l.lms_id' => $lmsId
-        ])
-        ->orderBy('create_date')
-        ->All();
-
-            $temas = Lms::find()->where([
-                'semana_numero' => $semanaNumero,
-                'ism_area_materia_id' => $modelClase->ism_area_materia_id
+            ->innerJoin('lms_actividad l', 'l.id = scholaris_actividad.lms_actvidad_id')
+            ->where([
+                'bloque_actividad_id' => $data['bloque_id'],
+                'l.lms_id' => $lmsId
             ])
+            ->orderBy('create_date')
+            ->All();
+
+        $temas = Lms::find()->where([
+            'semana_numero' => $semanaNumero,
+            'ism_area_materia_id' => $modelClase->ism_area_materia_id
+        ])
             ->orderBy('hora_numero')
             ->all();
 
@@ -1576,7 +1594,7 @@ class ScholarisActividadController extends Controller
 
         $lms = Lms::findOne($lmsId);
 
-        return $this->render('lista',[
+        return $this->render('lista', [
             'actividades'   => $actividades,
             'semanas'       => $semanas,
             'temas'         => $temas,
@@ -1589,34 +1607,34 @@ class ScholarisActividadController extends Controller
             'nombre_semana' => $semanas[0]->nombre_semana,
             'modelClase'    => $modelClase
         ]);
-
     }
 
-    private function inserta_actividades_lms($get){
+    private function inserta_actividades_lms($get)
+    {
         $usuarioLog = Yii::$app->user->identity->usuario;
         $usuario = ResUsers::find()->where(['login' => $usuarioLog])->one();
         $usuarioId = $usuario->id;
-        
+
         $hoy = date('Y-m-d H:i:s');
 
         $modelClase     = ScholarisClase::findOne($get['clase_id']);
         $bloque       = $this->consulta_bloque_id($get['semana_numero'], $modelClase->tipo_usu_bloque);
         $detalleHorario = ScholarisHorariov2Detalle::findOne($get['detalle_horario_id']);
-        
+
         $bloqueId   = $bloque['bloque_id'];
         $semanaId   = $bloque['semana_id'];
         $horaId     = $detalleHorario->hora->id;
-        
-        $this->inserta_actividades($hoy, $usuarioId, $bloqueId, $modelClase->id, $horaId, $semanaId, $get['lms_id']);      
-        
+
+        $this->inserta_actividades($hoy, $usuarioId, $bloqueId, $modelClase->id, $horaId, $semanaId, $get['lms_id']);
+
         return array(
             'bloque_id' => $bloqueId,
             'semana_id' => $semanaId
         );
-
     }
 
-    private function consulta_bloque_id($semanaNumero, $uso){
+    private function consulta_bloque_id($semanaNumero, $uso)
+    {
         $con = Yii::$app->db;
         $query = "select 	blo.id as bloque_id, sem.id as semana_id
                     from	scholaris_bloque_semanas sem
@@ -1628,7 +1646,8 @@ class ScholarisActividadController extends Controller
         return $res;
     }
 
-    private function inserta_actividades($hoy, $usuarioId, $bloqueId, $claseId, $horaId, $semanaId, $lmsId){
+    private function inserta_actividades($hoy, $usuarioId, $bloqueId, $claseId, $horaId, $semanaId, $lmsId)
+    {
         $con = Yii::$app->db;
         $query = "insert into scholaris_actividad (create_date, create_uid, title, descripcion, inicio, fin, tipo_actividad_id, bloque_actividad_id
                             , paralelo_id, calificado, tipo_calificacion, tareas, hora_id, semana_id, lms_actvidad_id, es_heredado_lms, estado)
@@ -1661,19 +1680,18 @@ class ScholarisActividadController extends Controller
      */
 
 
-     public function actionDownload(){
+    public function actionDownload()
+    {
         $model = ScholarisParametrosOpciones::find()->where([
             'codigo' => 'pathfiles'
         ])->one();
 
-        $path = $model->valor.$_GET['path'];
+        $path = $model->valor . $_GET['path'];
 
-        try{
+        try {
             return Yii::$app->response->sendFile($path)->send();
-        }catch(\Exception $ex ){
+        } catch (\Exception $ex) {
             echo 'No existe el archivo!!!';
         }
-        
-     }
-
+    }
 }

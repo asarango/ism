@@ -22,6 +22,9 @@ foreach ($unidades as $unidad) {
                         <div style="text-align: left;margin-bottom: -2.5rem;margin-top: 1.5rem">
                             <?= $unidad->bloque->name; ?>
                         </div>
+
+                        <!-- INICIO BOTONES PARTE SUPERIOR DERECHA DE LA TABLA -->
+
                         <div style="text-align: right;margin-bottom:-2rem;margin-top: .5rem">
                             <?=
                                 Html::a(
@@ -114,6 +117,7 @@ foreach ($unidades as $unidad) {
                             ?>
 
                         </div>
+                        <!-- FIN BOTONES PARTE SUPERIOR DERECHA DE LA TABLA -->
                     </b>
                 </p>
                 <div class="col-lg-9 col-md-9 col-sm-9 col-lx-9" style="">
@@ -129,7 +133,7 @@ foreach ($unidades as $unidad) {
             <div>
                 <!-- CONDICIÓN DE ICONOS DE TABLA -->
                 <?php
-                if ($unidad->objetivos == '' || $unidad->objetivos == 'none'  || $unidad->objetivos == '<p>none</p>') {
+                if ($unidad->objetivos == '' || $unidad->objetivos == 'none' || $unidad->objetivos == '<p>none</p>') {
                     $objetivos = Html::a(
                         '<span><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler 
                                 icon-tabler-exclamation-circle" width="40" height="40"

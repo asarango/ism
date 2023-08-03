@@ -24,10 +24,10 @@ $this->title = 'Create Planificacion Semanal Recursos';
                         <?= Html::encode($this->title) ?>
                     </h2>
                     <p>
-                        <?= '<b><small>' . $planificacionSemanal->clase->paralelo->course->name.' '.' '.'"'.
-                        $planificacionSemanal->clase->paralelo->name.'"'.' '.'/'.' Hora de clase:'.' '. $planificacionSemanal->hora->nombre.' '.' '
-                        .'/'.' '.'Docente:'.' '. $planificacionSemanal->clase->profesor->last_name . ' ' 
-                        . $planificacionSemanal->clase->profesor->x_first_name . '</small></b>' ?>
+                        <?= '<b><small>' . $planificacionSemanal->clase->paralelo->course->name . ' ' . ' ' . '"' .
+                            $planificacionSemanal->clase->paralelo->name . '"' . ' ' . '/' . ' Hora de clase:' . ' ' . $planificacionSemanal->hora->nombre . ' ' . ' '
+                            . '/' . ' ' . 'Docente:' . ' ' . $planificacionSemanal->clase->profesor->last_name . ' '
+                            . $planificacionSemanal->clase->profesor->x_first_name . '/' . ' ' . 'Materia: Teoria del conocimiento' . '</small></b>' ?>
                     </p>
                 </div>
                 <!-- BOTONES DE ACCION -->
@@ -42,7 +42,7 @@ $this->title = 'Create Planificacion Semanal Recursos';
                             <path d="M19 22v-6" />
                             <path d="M22 19l-3 -3l-3 3" />
                             </svg> Regresar</span>',
-                            ['planificacion-semanal-recursos/index'],
+                            ['planificacion-semanal/index1', 'clase_id' => 1337, 'bloque_id' => 69],
                             ['class' => 'link']
                         );
                     ?>

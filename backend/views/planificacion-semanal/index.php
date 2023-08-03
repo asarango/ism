@@ -1,21 +1,57 @@
 <?php
+use backend\models\PlanificacionSemanalRecursos;
 use backend\models\ScholarisActividad;
 use backend\models\TocPlanUnidadHabilidad;
 use Mpdf\Tag\Small;
 use Mpdf\Tag\Span;
 use yii\helpers\Html;
 use yii\helpers\Url;
-use function Symfony\Component\String\s;
 
 $this->title = 'Planificación Semanal';
 $this->params['breadcrumbs'][] = $this->title;
 
 // echo "<pre>";
-// print_r($bloque);
+// print_r($semanas);
 // die();
 
 ?>
 
+<style>
+    .custom-table {
+        border-collapse: collapse;
+        width: 100%;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+    }
+
+    .custom-table th,
+    .custom-table td {
+        padding: 15px;
+        text-align: center;
+        border: 1px solid #e0e0e0;
+    }
+
+    .custom-table th {
+        background-color: #f5f5f5;
+    }
+
+    .custom-table tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
+
+    .custom-table th:first-child,
+    .custom-table td:first-child {
+        border-top-left-radius: 10px;
+        border-bottom-left-radius: 10px;
+    }
+
+    .custom-table th:last-child,
+    .custom-table td:last-child {
+        border-top-right-radius: 10px;
+        border-bottom-right-radius: 10px;
+    }
+</style>
 
 <div class="planificacion-semanal-index">
     <div class="m-0 vh-50 row justify-content-center align-items-center">
@@ -31,9 +67,10 @@ $this->params['breadcrumbs'][] = $this->title;
                     </h4>
                     <p>
                         <?=
-                            '<b><small>' . $clase->paralelo->course->name . ' - ' . ' "' . $clase->paralelo->name .
-                            '"' . ' ' . '-' . ' ' . '(' . $bloque->name . ')' . ' ' . 'Clase #:' . $clase->id .
-                            ' / ' . $clase->profesor->last_name . ' ' . $clase->profesor->x_first_name . '</small></b>'
+                            '<b><small>' . $clase->paralelo->course->name . ' / ' . ' "' . $clase->paralelo->name .
+                            '"' . ' ' . '/' . ' ' . '(' . $bloque->name . ')' . ' ' . 'Clase #:' . $clase->id .
+                            ' / ' . $clase->profesor->last_name . ' ' . $clase->profesor->x_first_name . ' ' . ' ' .
+                            '/' . 'Materia:' . ' ' . $clase->ismAreaMateria->materia->nombre . '</small></b>'
                             ?>
                     </p>
                 </div>
@@ -66,18 +103,20 @@ $this->params['breadcrumbs'][] = $this->title;
                     <b>
                         <?php
                         foreach ($semanas as $sem1) {
+                            $nombreSemana = nombreSemana($sem1->nombre_semana);
                             ?>
-                            <div class="row ancho-boton zoom menuizquierda"
-                                style="border-bottom:solid 1px #ccc;margin-top:5px;">
+                            <div class="card row ancho-boton zoom menuizquierda"
+                                style="border-radius: .5rem; border-bottom:solid 1px #ccc;margin-top:5px;padding:8px;">
                                 <?php
                                 echo Html::a(
-                                    $sem1->nombre_semana,
+                                    $nombreSemana,
                                     [
                                         'planificacion-semanal/index1',
                                         'bloque_id' => $sem1->bloque_id,
                                         'clase_id' => $clase->id,
                                         'semana_defecto' => $sem1->id
                                     ],
+                                    ['style' => 'text-decoration: none; color:#0a1f8f;']
                                 );
                                 ?>
                             </div>
@@ -93,9 +132,11 @@ $this->params['breadcrumbs'][] = $this->title;
                     <div class="row">
                         <div class="col-lg-12 col-md-12">
                             <div style="text-align: left;margin-bottom: 0.5rem;">
-                                <h5><b>
-                                        <?= $semana->nombre_semana ?>
-                                    </b></h5>
+                                <div>
+                                    <h5><b>
+                                            <?= $semana->nombre_semana ?>
+                                        </b></h5>
+                                </div>
                                 <div style="text-align: right;margin-top: -2rem;">
                                     <b>Desde:
                                         <?= $semana->fecha_inicio . ' / ' . 'Hasta: ' . $semana->fecha_finaliza ?>
@@ -107,8 +148,8 @@ $this->params['breadcrumbs'][] = $this->title;
                     <div class="row">
                         <div class="col-lg-12 col-md-12">
                             <div class="table table-responsive">
-                                <table>
-                                    <tbody>
+                                <table class="custom-table">
+                                    <thead>
                                         <tr>
                                             <th width="100px">FECHA</th>
                                             <th width="100px">DÍA</th>
@@ -116,10 +157,12 @@ $this->params['breadcrumbs'][] = $this->title;
                                             <th width="100px">TEMA</th>
                                             <th width="100px">ACTIVIDADES</th>
                                             <th width="100px">DIF. NEE</th>
-                                            <th width="100px">TAREAS</th>
+                                            <th width="100px">INSUMOS</th>
                                             <th width="100px">RECURSOS</th>
-                                            <th width="150px" colspan="5">ACCIÓN</th>
+                                            <th width="150px" colspan="3">ACCIÓN</th>
                                         </tr>
+                                    </thead>
+                                    <tbody>
                                         <?php
                                         foreach ($planSemanal as $semTotal) {
                                             echo '<tr>';
@@ -132,16 +175,15 @@ $this->params['breadcrumbs'][] = $this->title;
                                             echo '<td>';
                                             obtener_total_insumos($semTotal->id, $semTotal->hora_id);
                                             echo '</td>';
-                                            echo '<td>' . obtenerIcono($semTotal, 'recursos') . '</td>';
+                                            echo '<td>';
+                                            obtener_total_recursos($semTotal->id);
+                                            echo '</td>';
                                             echo '<td>' . generarBotonEdicion('update', $semTotal->id) . '</td>';
-                                            echo '<td>' . ' | ' . '</td>';
                                             echo '<td>' . BotonTarea($semTotal->id) . '</td>';
-                                            echo '<td>' . ' | ' . '</td>';
                                             echo '<td>' . BotonRecursos($semTotal->id) . '</td>';
 
                                             echo '</tr>';
                                         }
-
                                         ?>
                                     </tbody>
                                 </table>
@@ -151,54 +193,12 @@ $this->params['breadcrumbs'][] = $this->title;
 
                 </div>
                 <!-- FIN INFO DE SEMANA -->
+
             </div>
 
         </div>
     </div>
 </div>
-
-<?php
-function print_semanas($modelSemanal, $campo)
-{
-    foreach ($modelSemanal as $plan) {
-        if ($plan->opcion_descripcion == $campo) {
-            ?>
-            <!-- Button trigger modal -->
-            <a data-bs-toggle="modal" data-bs-target="#modal<?= $plan->id ?>">
-                <?php
-                echo $plan->contenido;
-                ?>
-            </a>
-
-            <!-- Modal -->
-            <div class="modal fade" id="modal<?= $plan->id ?>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h1 class="modal-title fs-5" id="exampleModalLabel">Modificando Campo</h1>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <?= Html::beginForm(['update-field'], 'post') ?>
-                        <div class="modal-body">
-                            <input type="hidden" name="id" value="<?= $plan->id ?>">
-                            <div class="form-group">
-                                <label class="form-label"><b>Contenido</b></label>
-                                <textarea name="contenido" class="form-control"><?= $plan->contenido ?></textarea>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                            <?= Html::submitButton('Guardar', ['class' => 'btn btn-primary']) ?>
-                        </div>
-                        <?= Html::endForm() ?>
-                    </div>
-                </div>
-            </div>
-            <?php
-        }
-    }
-}
-?>
 
 <?php
 function generarBotonEdicion($url, $id)
@@ -213,29 +213,14 @@ function generarBotonEdicion($url, $id)
                     <path d="M16 5l3 3" />
                     </svg>',
         ['update', 'id' => $id],
-        ['class' => '', 'title' => 'Editar plan semanal']
+        [
+            'class' => '',
+            'title' => 'Editar plan semanal',
+            'style' => 'cursor: pointer; transition: transform 0.3s; display: inline-block;',
+            'onmouseover' => 'this.style.transform = "scale(2)"',
+            'onmouseout' => 'this.style.transform = "scale(1)"',
+        ]
     );
-}
-?>
-<?php
-function generarBotonChecklist($url, $options = [])
-{
-    $defaultOptions = [
-        'class' => '',
-        'title' => '',
-    ];
-    $mergedOptions = array_merge($defaultOptions, $options);
-    $icon = '<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-checklist"
-                width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="#00b341" 
-                fill="none" stroke-linecap="round" stroke-linejoin="round">
-                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                <path d="M9.615 20h-2.615a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h8a2 2 0 0 1 2 2v8" />
-                <path d="M14 19l2 2l4 -4" />
-                <path d="M9 8h4" />
-                <path d="M9 12h2" />
-            </svg>';
-
-    return Html::a($icon, $url, $mergedOptions);
 }
 ?>
 
@@ -288,7 +273,13 @@ function BotonTarea($id)
             <path d="M12 12v4" />
         </svg>',
         ['tasks', 'id' => $id],
-        ['class' => '', 'title' => 'Crear Tarea']
+        [
+            'class' => '',
+            'title' => 'Crear Tarea',
+            'style' => 'cursor: pointer; transition: transform 0.3s; display: inline-block;',
+            'onmouseover' => 'this.style.transform = "scale(2)"',
+            'onmouseout' => 'this.style.transform = "scale(1)"',
+        ]
     );
 }
 ?>
@@ -306,21 +297,64 @@ function BotonRecursos($id)
         <path d="M17 4l0 6" />
       </svg>',
         ['planificacion-semanal-recursos/index', 'id' => $id],
-        ['class' => '', 'title' => 'Crear Recurso']
+        [
+            'class' => '',
+            'title' => 'Crear Recurso',
+            'style' => 'cursor: pointer; transition: transform 0.3s; display: inline-block;',
+            'onmouseover' => 'this.style.transform = "scale(2)"',
+            'onmouseout' => 'this.style.transform = "scale(1)"',
+        ]
     );
 }
 ?>
 
 <?php
-function contarTipoActividades($tipoActividades)
+function nombreSemana($semana)
 {
-    return count($tipoActividades);
+    $semanas = [
+        'S1' => 'Semana N° 1',
+        'S2' => 'Semana N° 2',
+        'S3' => 'Semana N° 3',
+        'S4' => 'Semana N° 4',
+        'S5' => 'Semana N° 5',
+        'S6' => 'Semana N° 6',
+        'S7' => 'Semana N° 7',
+        'S8' => 'Semana N° 8',
+        'S9' => 'Semana N° 9',
+        'S10' => 'Semana N° 10',
+        'Sem11' => 'Semana N° 11',
+        'Sem12' => 'Semana N° 12',
+        'Sem13' => 'Semana N° 13',
+        'Sem14' => 'Semana N° 14',
+        'Sem15' => 'Semana N° 15',
+        'Sem16' => 'Semana N° 16',
+        'Sem17' => 'Semana N° 17',
+        'Sem18' => 'Semana N° 18',
+        'Sem19' => 'Semana N° 19',
+        'Sem20' => 'Semana N° 20',
+        'Sem21' => 'Semana N° 21',
+        'Sem22' => 'Semana N° 22',
+        'Sem23' => 'Semana N° 23',
+        'Sem24' => 'Semana N° 24',
+        'Sem25' => 'Semana N° 25',
+        'Sem26' => 'Semana N° 26',
+        'Sem27' => 'Semana N° 27',
+        'Sem28' => 'Semana N° 28',
+        'Sem29' => 'Semana N° 29',
+        'Sem30' => 'Semana N° 30',
+        'Sem31' => 'Semana N° 31',
+        'Sem32' => 'Semana N° 32',
+        'Sem33' => 'Semana N° 33',
+        'Sem34' => 'Semana N° 34',
+        'Sem35' => 'Semana N° 35',
+        'Sem36' => 'Semana N° 36',
+        'Sem37' => 'Semana N° 37',
+        'Sem38' => 'Semana N° 38',
+    ];
+
+    return isset($semanas[$semana]) ? $semanas[$semana] : 'Semana Desconocida';
 }
 
-function imprimirCantidadTipoActividades($cantidad)
-{
-    echo 'La cantidad de datos inyectados en $tipoActividades es: ' . $cantidad;
-}
 ?>
 
 
@@ -331,7 +365,7 @@ function obtener_total_insumos($planSemanalId, $horaId)
     $actividad = ScholarisActividad::find()
         ->where([
             'plan_semanal_id' => $planSemanalId,
-            'hora_id' => $horaId
+            'hora_id' => $horaId,
         ])
         ->all();
     $totalActividades = count($actividad);
@@ -381,13 +415,13 @@ function obtener_total_insumos($planSemanalId, $horaId)
 }
 ?>
 
+
 <?php
-function obtener_total_recursos($planSemanalId, $horaId)
+function obtener_total_recursos($planSemanalId)
 {
-    $actividad = ScholarisActividad::find()
+    $actividad = PlanificacionSemanalRecursos::find()
         ->where([
             'plan_semanal_id' => $planSemanalId,
-            'hora_id' => $horaId
         ])
         ->all();
     $totalActividades = count($actividad);

@@ -16,8 +16,13 @@ use Yii;
  * @property int $orden Orden
  * @property string $nombre_pai Nombre PAI
  * @property string $tipo
+ * @property bool $activo
+ * @property bool $es_insumo
+ * @property string $categoria
+ * @property string $tipo_aporte
+ * @property string $porcentaje
  *
- * @property ScholarisNotasAutomaticasParcial[] $scholarisNotasAutomaticasParcials
+ * @property LmsActividad[] $lmsActividads
  */
 class ScholarisTipoActividad extends \yii\db\ActiveRecord
 {
@@ -39,9 +44,12 @@ class ScholarisTipoActividad extends \yii\db\ActiveRecord
             [['create_uid', 'write_uid', 'orden'], 'default', 'value' => null],
             [['create_uid', 'write_uid', 'orden'], 'integer'],
             [['create_date', 'write_date'], 'safe'],
+            [['activo', 'es_insumo'], 'boolean'],
+            [['porcentaje'], 'number'],
             [['nombre_nacional', 'nombre_pai'], 'string', 'max' => 50],
             [['tipo'], 'string', 'max' => 1],
-            [['activo'], 'boolean'],
+            [['categoria'], 'string', 'max' => 30],
+            [['tipo_aporte'], 'string', 'max' => 255],
         ];
     }
 
@@ -61,14 +69,18 @@ class ScholarisTipoActividad extends \yii\db\ActiveRecord
             'nombre_pai' => 'Nombre Pai',
             'tipo' => 'Tipo',
             'activo' => 'Activo',
+            'es_insumo' => 'Es Insumo',
+            'categoria' => 'Categoria',
+            'tipo_aporte' => 'Tipo Aporte',
+            'porcentaje' => 'Porcentaje',
         ];
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getScholarisNotasAutomaticasParcials()
+    public function getLmsActividads()
     {
-        return $this->hasMany(ScholarisNotasAutomaticasParcial::className(), ['tipo_actividad_id' => 'id']);
+        return $this->hasMany(LmsActividad::className(), ['tipo_actividad_id' => 'id']);
     }
 }

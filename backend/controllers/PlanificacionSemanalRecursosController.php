@@ -7,6 +7,9 @@ use Illuminate\Support\Facades\Auth;
 use Yii;
 use backend\models\PlanificacionSemanalRecursos;
 use backend\models\PlanificacionSemanalRecursosSearch;
+use backend\models\ScholarisActividad;
+use backend\models\ScholarisParametrosOpciones;
+use Mpdf\Tag\Select;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -72,17 +75,21 @@ class PlanificacionSemanalRecursosController extends Controller
      */
     public function actionIndex()
     {
-        $planificacionSemanalId = $_GET['id'];
+        $planificacionSemanalId = $_GET['id']; // Se recibe parametro de planificacion ID
         $userLogin = Yii::$app->user->identity->usuario;
         $planificacionSemanal = PlanificacionSemanal::findOne($planificacionSemanalId);
         $recursos= PlanificacionSemanalRecursos::find()
             ->where(['plan_semanal_id' => $planificacionSemanalId])
             ->orderBy(['id' => SORT_ASC])
             ->all();
+        $insumos = ScholarisActividad::find()
+            ->where(['plan_semanal_id'=> $planificacionSemanalId])
+            ->all();
 
         return $this->render('index', [
             'planificacionSemanal' => $planificacionSemanal,
-            'recursos' => $recursos
+            'recursos' => $recursos,
+            'insumos' => $insumos,
         ]);
     }
 
@@ -129,6 +136,35 @@ class PlanificacionSemanalRecursosController extends Controller
             ]);
         }
     }
+    private function get_url_repositorio ()
+    {
+        //Obtener el valor de la BDD del dominio donde se guardara el archivo
+        $dominioRepositorio = ScholarisParametrosOpciones::find()
+            ->where([
+                'codigo'=>'dominio'
+            ])
+            ->one();
+        $dominio=$dominioRepositorio->valor;
+        //fin dominio
+
+
+        //Obtener el segundo valor para contruir ruta donde guardar archivo (repositorio)
+        $dominioDirectorio = ScholarisParametrosOpciones::find()
+            ->where([
+                'codigo'=>'repositorio'
+            ])
+            ->one();
+        $repositorio=$dominioDirectorio->valor;
+        //fin repositorio
+        
+        $url=array(
+            'dominio' => $dominio,
+            'repositorio' => $repositorio 
+
+        );
+        return $url;
+    
+    }
     private function guardar_recursos($post)
     {
         // echo '<pre>';
@@ -139,7 +175,9 @@ class PlanificacionSemanalRecursosController extends Controller
             $fecha=date('YmdHis');
             $nombreArchivo = $_FILES['documento']['name'];
             $rutaArchivo = $_FILES['documento']['tmp_name'];
-            $destino = 'files/lms/' . $fecha . $nombreArchivo;
+            $repo = $this->get_url_repositorio(); //solicitamos URL de Repositorio
+            $repositorio=$repo['repositorio'];            
+            $destino = '/var/www/html' . $repositorio . '/' . $fecha . $nombreArchivo;
             // echo $destino;
             // die();
             if(move_uploaded_file($rutaArchivo, $destino)){
@@ -150,7 +188,7 @@ class PlanificacionSemanalRecursosController extends Controller
                 $model->plan_semanal_id=$planificacionSemanalId;
                 $model->tema=$planificacionSemanalTema;
                 $model->tipo_recurso=$planificacionSemanalTipoRecurso;
-                $model->url_recurso=$destino;
+                $model->url_recurso=$repositorio . '/' . $fecha . $nombreArchivo;
                 $model->estado=true;
                 $model->save();
                 
@@ -225,12 +263,15 @@ class PlanificacionSemanalRecursosController extends Controller
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionDelete($id)
-    {
-        $this->findModel($id)->delete();
-
-        return $this->redirect(['index']);
-    }
+    public function actionDelete($id){
+        $recurso = PlanificacionSemanalRecursos::findOne($id);
+        $planSemanalRecursoId= $recurso->plan_semanal_id;
+        $recurso->delete();
+        if($recurso->tipo_recurso=='file'){
+            unlink('/var/www/html' . $recurso->url_recurso);
+        }
+        return $this->redirect(['index','id'=>$planSemanalRecursoId]);
+        }
 
     /**
      * Finds the PlanificacionSemanalRecursos model based on its primary key value.

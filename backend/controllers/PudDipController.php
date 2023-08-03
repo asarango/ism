@@ -672,6 +672,7 @@ class PudDipController extends Controller {
     public function get_accion_semanas($planBloqueUnidadId){
         
         $periodId = Yii::$app->user->identity->periodo_id;
+        $login = Yii::$app->user->identity->usuario;
         $periodo = ScholarisPeriodo::findOne($periodId);
 
         $planUnidad = PlanificacionBloquesUnidad::findOne($planBloqueUnidadId);
@@ -679,8 +680,14 @@ class PudDipController extends Controller {
 
         $ismAreaMateriaId = $planUnidad->planCabecera->ism_area_materia_id;
         $clase = ScholarisClase::find()->where(['ism_area_materia_id' => $ismAreaMateriaId])->one();
+        $courseId = $clase->paralelo->course_id;
+        // echo '<pre>';
+        // print_r($ismAreaMateriaId);
+        // die();
         
         $uso = $clase->tipo_usu_bloque;
+        $paralelos = $this->obtener_paralelos($courseId,$login,$ismAreaMateriaId);
+        
 
         $accion_update = "5.0.-";
 
@@ -704,10 +711,11 @@ class PudDipController extends Controller {
 
         return $this->renderPartial('_semanas',[
             'planesSemanales' => $planesSemanales,
-            'planUnidadId' => $planUnidad->id
+            'planUnidadId' => $planUnidad->id,
+            'paralelos' => $paralelos
         ]);
     }
-
+    
     /**
      * MÉTODO PARA LAS SEMANAS DEL SQL
      * 5.0.- SEMANAS
@@ -734,7 +742,73 @@ class PudDipController extends Controller {
         $res = $con->createCommand($query)->queryAll();
         return $res;
     }
-    
+
+
+     /**
+     * MÉTODO PARA LAS SEMANAS DEL SQL
+     * 5.0.- SEMANAS
+     * Realizado por Arturo Sarango
+     * 2023-03-29
+     * Actualizado por Arturo Sarango
+     * 2023-03-29
+     */
+    private function obtener_paralelos($courseId, $login, $ismAreaMateriaId){
+        $con = Yii::$app->db;
+        $query = " select   sc.id as clase_id, ocp.name  as paralelo 
+                     from   scholaris_clase sc 
+                            inner join op_course_paralelo ocp on ocp.id = sc.paralelo_id 
+                            inner join op_faculty of2 on of2.id  = sc.idprofesor
+                            inner join res_users ru on ru.partner_id = of2.partner_id
+                     where  ocp.course_id = $courseId and ru.login = '$login'
+                            and sc.ism_area_materia_id = $ismAreaMateriaId
+                     order by ocp.name ;";
+        $res =  $con->createCommand($query)->queryAll();
+        return $res;
+    }
+
+    /**
+     * MÉTODO PARA REDIRECCIONAR A PLAN SEMANAL UNITARIO
+     * Realizado por Arturo Sarango
+     * 2023-08-02
+     * Actualizado por Arturo Sarango
+     * 2023-08-02
+     */
+    public function actionRedirectPs(){
+        $lmsId = $_GET['lms_id'];
+        $claseId = $_GET['clase_id'];
+        $periodoId = Yii::$app->user->identity->periodo_id;
+
+        $periodo = ScholarisPeriodo::findOne($periodoId);
+        $periodoCode = $periodo->codigo;
+
+        $lms = Lms::findOne($lmsId);
+        $uso = $lms->tipo_bloque_comparte_valor;
+        $semanaNumero = $lms->semana_numero;
+
+        $bloque = $this->obtener_bloque($uso, $semanaNumero, $periodoCode);
+
+
+        return $this->redirect(['planificacion-semanal/index1',
+            'bloque_id' => $bloque['bloque_id'],
+            'clase_id' => $claseId,
+            'semana_defecto' => $bloque['semana_id']
+        ]);
+    }
+
+
+    private function obtener_bloque($uso, $semanaNumero, $periodoCode){
+        $con = Yii::$app->db;
+        $query = "select 	blo.id as bloque_id
+                            ,sem.id as semana_id
+                    from 	scholaris_bloque_actividad blo
+                            inner join scholaris_bloque_semanas sem on sem.bloque_id = blo.id 
+                    where 	tipo_uso = '$uso'
+                            and sem.semana_numero = $semanaNumero
+                            and blo.scholaris_periodo_codigo = '$periodoCode';";
+        $res = $con->createCommand($query)->queryOne();
+        return $res;
+    }
+
     
     /**
      * 5.1.- Contenido de Evaluaciones

@@ -40,14 +40,61 @@ class PlanificacionSemanalController extends Controller
      * Lists all PlanificacionSemanal models.
      * @return mixed
      */
+
+     public function actionMisClases()
+     {
+        // $bloqueId = $_GET['bloque_id'];
+        // $claseId = $_GET['clase_id'];
+        // echo '<pre>';
+        // print_r($_GET);
+        // die();
+
+        // $bloque = ScholarisBloqueActividad::findOne($bloqueId);
+        // $clase = ScholarisClase::findOne($claseId);
+
+        // $semanas = ScholarisBloqueSemanas::find()
+        // ->where(['bloque_id' => $bloqueId])
+        // ->orderBy('semana_numero')
+        // ->all();
+        // // toma el dato semanal por defecto para presentar la semana
+        // if(isset($_GET['semana_defecto'])){
+        //     $semanaDefectoId = $_GET['semana_defecto'];
+        // }else{
+        //     $semanaDefectoId = $semanas[0]->id;
+        // }
+
+        // $semana = ScholarisBloqueSemanas::findOne($semanaDefectoId);
+        
+        // //Ingresa las horas del plan semanal, según el horario de la clase configurada
+        // new PsIndividual($claseId, $semanaDefectoId);
+                        
+        // // Devuelve el plan semanal
+        // $planSemanal = PlanificacionSemanal::find()->where([
+        //     'clase_id' => $claseId,
+        //     'semana_id' => $semanaDefectoId
+        // ])
+        // ->orderBy('orden_hora_semana')
+        // ->all();
+        // echo '<pre>';
+        // print_r($_GET);
+        // die();
+
+     }
+
+
+
     public function actionIndex1()
     {
 
         $bloqueId = $_GET['bloque_id'];
         $claseId = $_GET['clase_id'];
-
+        
         $bloque = ScholarisBloqueActividad::findOne($bloqueId);
         $clase = ScholarisClase::findOne($claseId);
+
+        // $insumos = ScholarisActividad::find()
+        //     ->where(['plan_semanal_id'=> $planificacionSemanalId])
+        //     ->all();
 
         $semanas = ScholarisBloqueSemanas::find()
         ->where(['bloque_id' => $bloqueId])
@@ -73,6 +120,9 @@ class PlanificacionSemanalController extends Controller
         ])
         ->orderBy('orden_hora_semana')
         ->all();
+        // echo '<pre>';
+        // print_r($planSemanal);
+        // die();
 
 
         // renderiza la vista

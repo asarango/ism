@@ -115,7 +115,7 @@ $this->params['breadcrumbs'][] = $this->title;
             <!-- FIN DE CABECERA -->
 
             <!-- inicia cuerpo de card -->
-            <div class="row">
+            <div class="row d-flex">
                 <div class="col-lg-2 col-md-2 col-sm-2" style="height: 60vh; background-color: #eee; 
                     font-size: 10px;margin-top:-24px;">
 
@@ -131,7 +131,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     <div class="ancho-boton zoom" style=" border-bottom:solid 1px #ccc;margin-top:5px;">
                         <h6><a href="#firma" class="menuizquierda">FIRMAS</a></h6>
                     </div>
-                    <div style="text-align: center;margin-top:5px;">
+                    <div style="text-align: center;margin-top:10px;" class=" d-flex">
                    
                         <?=
                             Html::a(

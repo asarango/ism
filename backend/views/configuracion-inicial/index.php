@@ -119,52 +119,54 @@ $this->params['breadcrumbs'][] = $this->title;
 </style>
 
 <div class="planificacion-semanal-index">
-    <div class="container mt-5 capa">
-        <div class="row">
-            <!-- Columna de Materias -->
-            <div class="col-lg-8">
-                <h1>
-                    <?= Html::encode($this->title)
-                        ?>
-                </h1>
-                <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3">
-                    <?php foreach ($menu as $item): ?>
-                        <div class="col mb-4">
-                            <a href="<?= Url::to(['sincronizar-tabla', 'table' => $item['tabla']]) ?>" class="card-link">
-                                <div class="card <?= ($item['total_edux'] != $item['total_odoo'] && $item['total_odoo'] > $item['total_edux']) ? 'diferente' : '' ?>"
-                                    style="background-color: #ccc">
-                                    <div class="card-body">
-                                        <h5 class="card-title">
-                                            <?= $item['tabla'] ?>
-                                        </h5>
-                                        <p class="card-text">Orden:
-                                            <?= $item['orden'] ?>
-                                        </p>
-                                        <p class="card-text">Total Odoo:
-                                            <?= $item['total_odoo'] ?>
-                                        </p>
-                                        <p class="card-text">Tiene Edux:
-                                            <?= $item['total_edux'] ?>
-                                            <?php if ($item['total_edux'] != $item['total_odoo'] && $item['total_odoo'] > $item['total_edux']): ?>
-                                                <span class="card-advertencia"
-                                                    style="animation-delay: <?= rand(0, 2000) ?>ms"><?= advertencia() ?></span>
-                                            <?php endif; ?>
-                                        </p>
-                                    </div>
-                                </div>
-                            </a>
-                        </div>
-                    <?php endforeach; ?>
+    <div class="m-0 vh-50 row justify-content-center align-items-center">
+        <div class="card shadow col-lg-10 col-md-10 col-sm-10 bg-white"> 
+            <div class="row align-items-center p-2">
+                <div class="col-lg-1 col-md-1">
+                    <h4><img src="../ISM/main/images/submenu/plan.png" width="64px" class="img-thumbnail"></h4>
                 </div>
+                <div class="col-lg-11 col-md-11">
+                    <h1 style="color: black;">
+                        <?= Html::encode($this->title) ?>
+                    </h1>
+                </div>
+                <hr>
             </div>
-
-            <!-- Columna del Calendario -->
+            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3">
+                <?php foreach ($menu as $item): ?>
+                    <div class="col mb-4">
+                        <a href="<?= Url::to(['sincronizar-tabla', 'table' => $item['tabla']]) ?>" class="card-link">
+                            <div class="card <?= ($item['total_edux'] != $item['total_odoo'] && $item['total_odoo'] > $item['total_edux']) ? 'diferente' : '' ?>"
+                                style="background-color: #ccc">
+                                <div class="card-body">
+                                    <h5 class="card-title">
+                                        <?= $item['tabla'] ?>
+                                    </h5>
+                                    <p class="card-text">Orden:
+                                        <?= $item['orden'] ?>
+                                    </p>
+                                    <p class="card-text">Total Odoo:
+                                        <?= $item['total_odoo'] ?>
+                                    </p>
+                                    <p class="card-text">Tiene Edux:
+                                        <?= $item['total_edux'] ?>
+                                        <?php if ($item['total_edux'] != $item['total_odoo'] && $item['total_odoo'] > $item['total_edux']): ?>
+                                            <span class="card-advertencia" style="animation-delay: <?= rand(0, 2000) ?>ms"><?= advertencia() ?></span>
+                                        <?php endif; ?>
+                                    </p>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                <?php endforeach; ?>
+            </div>
             <div class="col-lg-4">
                 <!-- Sección de Próximas Actividades -->
             </div>
         </div>
     </div>
 </div>
+
 
 <script>
     // Lista de colores juveniles predefinidos

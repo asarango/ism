@@ -96,6 +96,20 @@ class ConfiguracionInicialController extends Controller
         $catalogo = array(
             array('orden' => 1, 'tabla' => 'res_partner', 'total_odoo' => 0, 'total_edux' => 0),
             array('orden' => 2, 'tabla' => 'res_users', 'total_odoo' => 0, 'total_edux' => 0),
+            array('orden' => 3, 'tabla' => 'op_course_template', 'total_odoo' => 0, 'total_edux' => 0),
+            array('orden' => 4, 'tabla' => 'op_faculty', 'total_odoo' => 0, 'total_edux' => 0),
+            array('orden' => 5, 'tabla' => 'op_student', 'total_odoo' => 0, 'total_edux' => 0),
+            array('orden' => 6, 'tabla' => 'op_student_inscription', 'total_odoo' => 0, 'total_edux' => 0),
+            array('orden' => 7, 'tabla' => 'op_student_enrollment', 'total_odoo' => 0, 'total_edux' => 0),
+            array('orden' => 8, 'tabla' => 'op_parent', 'total_odoo' => 0, 'total_edux' => 0),
+           
+            array('orden' => 9, 'tabla' => 'op_institute', 'total_odoo' => 0, 'total_edux' => 0),
+            array('orden' => 10, 'tabla' => 'op_period', 'total_odoo' => 0, 'total_edux' => 0),
+            array('orden' => 11, 'tabla' => 'op_section', 'total_odoo' => 0, 'total_edux' => 0),
+            array('orden' => 12, 'tabla' => 'op_course', 'total_odoo' => 0, 'total_edux' => 0),
+            array('orden' => 13, 'tabla' => 'op_course_paralelo', 'total_odoo' => 0, 'total_edux' => 0),
+            //array('orden' => 14, 'tabla' => 'op_parent_op_student_rel', 'total_odoo' => 0, 'total_edux' => 0),
+
         );
         return $catalogo;
     }

@@ -161,6 +161,7 @@ class PlanificacionBloquesUnidadController extends Controller{
                     order by b.code;";
                 
         $con->createCommand($query)->execute();
+        
     }
 
     public function actionUpdate()

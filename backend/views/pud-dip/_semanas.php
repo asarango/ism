@@ -7,7 +7,10 @@ use yii\helpers\Url;
 // print_r($planesSemanalese);
 // die();
 // print_r($paralelos);
-//                                             die();
+//      
+// echo '<pre>';
+// print_r($planUnidadId);
+// die();
 ?>
 
 <style>
@@ -37,11 +40,13 @@ use yii\helpers\Url;
         <?php
         foreach ($planesSemanales as $semana) {
 
-        ?>
+            ?>
             <!-- inicia de card -->
             <div class="card" style="margin-bottom: 15px;">
                 <div class="card-header" style="background-color: #65b2e8; color: white">
-                    <div class="col-lg-2 col-md-2"><?= $semana['nombre_semana'] ?></div>
+                    <div class="col-lg-2 col-md-2">
+                        <?= $semana['nombre_semana'] ?>
+                    </div>
                 </div>
                 <div class="card-body">
                     <div class="row">
@@ -51,9 +56,12 @@ use yii\helpers\Url;
                     </div>
 
                     <div class="row">
-                        <div class="col-lg-2 col-md-2 text-center row-body align-items-center" style="margin-top: 25px; border-right: solid 1px #eee;">
-                            <b>DESDE:</b> <?= $semana['fecha_inicio'] ?><br>
-                            <b>HASTA:</b> <?= $semana['fecha_finaliza'] ?>
+                        <div class="col-lg-2 col-md-2 text-center row-body align-items-center"
+                            style="margin-top: 25px; border-right: solid 1px #eee;">
+                            <b>DESDE:</b>
+                            <?= $semana['fecha_inicio'] ?><br>
+                            <b>HASTA:</b>
+                            <?= $semana['fecha_finaliza'] ?>
                         </div>
 
                         <!-- inicia para actividades -->
@@ -72,23 +80,31 @@ use yii\helpers\Url;
                                     <tbody>
                                         <?php
                                         foreach ($semana['actividades'] as $actividad) {
-                                          
-                                            $inicio     = $actividad['dip_inicio'];
+
+                                            $inicio = $actividad['dip_inicio'];
                                             $desarrollo = $actividad['dip_desarrollo'];
-                                            $cierre     = $actividad['dip_cierre'];
-                                            $lmsId      = $actividad['id'];
+                                            $cierre = $actividad['dip_cierre'];
+                                            $lmsId = $actividad['id'];
 
                                             $checkInicio = strlen($actividad['dip_inicio']) > 10 ? '<i class="fas fa-check-circle" style="color: #0a1f8f"></i>' : '<i class="fas fa-ban" style="color: #ab0a3d"></i>';
                                             $checkDesarrollo = strlen($actividad['dip_desarrollo']) > 10 ? '<i class="fas fa-check-circle" style="color: #0a1f8f"></i>' : '<i class="fas fa-ban" style="color: #ab0a3d"></i>';
                                             $checkCierre = strlen($actividad['dip_cierre']) > 10 ? '<i class="fas fa-check-circle" style="color: #0a1f8f"></i>' : '<i class="fas fa-ban" style="color: #ab0a3d"></i>';
 
                                             $url = Url::to(['form-actividad', 'lms_id' => $lmsId]);
-                                        ?>
+                                            ?>
                                             <tr>
-                                                <td><?= $actividad['hora_numero'] ?></td>
-                                                <td><?= $checkInicio ?></td>
-                                                <td><?= $checkDesarrollo ?></td>
-                                                <td><?= $checkCierre ?></td>
+                                                <td>
+                                                    <?= $actividad['hora_numero'] ?>
+                                                </td>
+                                                <td>
+                                                    <?= $checkInicio ?>
+                                                </td>
+                                                <td>
+                                                    <?= $checkDesarrollo ?>
+                                                </td>
+                                                <td>
+                                                    <?= $checkCierre ?>
+                                                </td>
                                                 <td>
                                                     <!-- Button trigger modal -->
                                                     <!-- <a href="#" data-bs-toggle="modal" data-bs-target="#staticBackdrop"                                                     
@@ -97,47 +113,67 @@ use yii\helpers\Url;
                                                 </a>-->
 
                                                     <!-- Button trigger modal -->
-                                                    <a type="button" class="" data-bs-toggle="modal" data-bs-target="#staticBackdrop<?= $actividad['id'] ?>">
+                                                    <a type="button" class="" data-bs-toggle="modal"
+                                                        data-bs-target="#staticBackdrop<?= $actividad['id'] ?>">
                                                         <i class="fas fa-edit"></i>
                                                     </a>
 
                                                     <!-- Modal -->
-                                                    <div class="modal fade" id="staticBackdrop<?= $actividad['id'] ?>" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                                    <div class="modal fade" id="staticBackdrop<?= $actividad['id'] ?>"
+                                                        data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+                                                        aria-labelledby="staticBackdropLabel" aria-hidden="true">
                                                         <div class="modal-dialog">
                                                             <div class="modal-content">
                                                                 <div class="modal-header">
-                                                                    <h5 class="modal-title" id="staticBackdropLabel">Configurando actividades de la semana</h5>
-                                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                                    <h5 class="modal-title" id="staticBackdropLabel">
+                                                                        Configurando actividades de la semana</h5>
+                                                                    <button type="button" class="btn-close"
+                                                                        data-bs-dismiss="modal" aria-label="Close"></button>
                                                                 </div>
 
                                                                 <?= Html::beginForm(['form-actividad'], 'get', ['enctype' => 'multipart/form-data']) ?>
                                                                 <div class="modal-body">
 
 
-                                                                    <input type="hidden" name="lms_id" value="<?= $actividad['id'] ?>">
-                                                                    <input type="hidden" name="plan_bloque_unidad_id" value="<?= $planUnidadId ?>">
+                                                                    <input type="hidden" name="lms_id"
+                                                                        value="<?= $actividad['id'] ?>">
+                                                                    <input type="hidden" name="plan_bloque_unidad_id"
+                                                                        value="<?= $planUnidadId ?>">
                                                                     <div class="form-group">
 
-                                                                        <label class="form-label" for="inicio"><b>INICIO:</b></label>
-                                                                        <textarea name="inicio" id="dipinicio<?= $actividad['id'] ?>" cols="30" rows="10" class="form-control"><?= $actividad['dip_inicio'] ?></textarea>
+                                                                        <label class="form-label"
+                                                                            for="inicio"><b>INICIO:</b></label>
+                                                                        <textarea name="inicio"
+                                                                            id="dipinicio<?= $actividad['id'] ?>" cols="30"
+                                                                            rows="10"
+                                                                            class="form-control"><?= $actividad['dip_inicio'] ?></textarea>
                                                                     </div>
 
                                                                     <div class="form-group" style="margin-top: 20px;">
-                                                                        <label class="form-label" for="desarrollo"><b>DESARROLLO:</b></label>
-                                                                        <textarea name="desarrollo" id="dipdesarrollo<?= $actividad['id'] ?>" cols="30" rows="10" class="form-control"><?= $actividad['dip_desarrollo'] ?></textarea>
+                                                                        <label class="form-label"
+                                                                            for="desarrollo"><b>DESARROLLO:</b></label>
+                                                                        <textarea name="desarrollo"
+                                                                            id="dipdesarrollo<?= $actividad['id'] ?>" cols="30"
+                                                                            rows="10"
+                                                                            class="form-control"><?= $actividad['dip_desarrollo'] ?></textarea>
                                                                     </div>
 
 
                                                                     <div class="form-group" style="margin-top: 20px;">
-                                                                        <label class="form-label" for="cierre"><b>CIERRE:</b></label>
-                                                                        <textarea name="cierre" id="dipcierre<?= $actividad['id'] ?>" cols="30" rows="10" class="form-control"><?= $actividad['dip_cierre'] ?></textarea>
+                                                                        <label class="form-label"
+                                                                            for="cierre"><b>CIERRE:</b></label>
+                                                                        <textarea name="cierre"
+                                                                            id="dipcierre<?= $actividad['id'] ?>" cols="30"
+                                                                            rows="10"
+                                                                            class="form-control"><?= $actividad['dip_cierre'] ?></textarea>
                                                                     </div>
 
 
 
                                                                 </div>
                                                                 <div class="modal-footer">
-                                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                                                                    <button type="button" class="btn btn-secondary"
+                                                                        data-bs-dismiss="modal">Cerrar</button>
                                                                     <?= Html::submitButton('Grabar', ['class' => 'btn btn-outline-primary']) ?>
                                                                 </div>
                                                                 <?= Html::endForm() ?>
@@ -161,8 +197,12 @@ use yii\helpers\Url;
                                                 </td>
 
                                                 <td style="padding: 0%; text-align: center; ;">
-                                                    <button type="button" class="btn btn-outline " data-bs-toggle="modal" data-bs-target="#paralelosModal">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-list-check" width="12" height="12" viewBox="0 0 24 24" stroke-width="3" stroke="#0d6efd" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                                    <button type="button" class="btn btn-outline " data-bs-toggle="modal"
+                                                        data-bs-target="#paralelosModal">
+                                                        <svg xmlns="http://www.w3.org/2000/svg"
+                                                            class="icon icon-tabler icon-tabler-list-check" width="12"
+                                                            height="12" viewBox="0 0 24 24" stroke-width="3" stroke="#0d6efd"
+                                                            fill="none" stroke-linecap="round" stroke-linejoin="round">
                                                             <path stroke="none" d="M0 0h24v24H0z" fill="none" />
                                                             <path d="M3.5 5.5l1.5 1.5l2.5 -2.5" />
                                                             <path d="M3.5 11.5l1.5 1.5l2.5 -2.5" />
@@ -173,22 +213,22 @@ use yii\helpers\Url;
                                                         </svg>
                                                     </button>
                                                     <?= ""
-                                                    // Html::a(
-                                                    //     '<i class="fas fa-tasks"></i>',
-                                                    //     [
-                                                    //         'planificacion-semanal/mis-clases',
-                                                    //         'lms_id' => $actividad['id'],
-                                                    //         'plan_bloque_unidad_id' => $planUnidadId,
-                                                    //         'action-back' => 'pud-dip/index1'
-                                                    //     ]
-
-                                                    // );
-                                                    ?>
+                                                        // Html::a(
+                                                        //     '<i class="fas fa-tasks"></i>',
+                                                        //     [
+                                                        //         'planificacion-semanal/mis-clases',
+                                                        //         'lms_id' => $actividad['id'],
+                                                        //         'plan_bloque_unidad_id' => $planUnidadId,
+                                                        //         'action-back' => 'pud-dip/index1'
+                                                        //     ]
+                                            
+                                                        // );
+                                                        ?>
 
 
                                                 </td>
                                             </tr>
-                                        <?php
+                                            <?php
                                         }
                                         ?>
                                     </tbody>
@@ -199,38 +239,45 @@ use yii\helpers\Url;
                                     <div class="modal-content">
                                         <div class="modal-header">
                                             <h5 class="modal-title">
-                                                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-certificate" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="#00264a" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                                <svg xmlns="http://www.w3.org/2000/svg"
+                                                    class="icon icon-tabler icon-tabler-certificate" width="24" height="24"
+                                                    viewBox="0 0 24 24" stroke-width="2" stroke="#00264a" fill="none"
+                                                    stroke-linecap="round" stroke-linejoin="round">
                                                     <path stroke="none" d="M0 0h24v24H0z" fill="none" />
                                                     <path d="M15 15m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0" />
                                                     <path d="M13 17.5v4.5l2 -1.5l2 1.5v-4.5" />
-                                                    <path d="M10 19h-5a2 2 0 0 1 -2 -2v-10c0 -1.1 .9 -2 2 -2h14a2 2 0 0 1 2 2v10a2 2 0 0 1 -1 1.73" />
+                                                    <path
+                                                        d="M10 19h-5a2 2 0 0 1 -2 -2v-10c0 -1.1 .9 -2 2 -2h14a2 2 0 0 1 2 2v10a2 2 0 0 1 -1 1.73" />
                                                     <path d="M6 9l12 0" />
                                                     <path d="M6 12l3 0" />
                                                     <path d="M6 15l2 0" />
                                                 </svg>
                                                 Escoja un paralelo
                                             </h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
                                         </div>
                                         <div class="modal-body">
                                             <p>
-                                            <?php
-                                            
-                                            foreach($paralelos as $paralelo){ 
-                                           
-                                                echo Html::a('<lu style="padding-left: 5px; text-align: center"><h4><b>- '.$paralelo['paralelo'].' -<lu><h4><b>', ['redirect-ps', 
-                                                    'lms_id' => $actividad['id'],
-                                                    'clase_id' => $paralelo['clase_id']
-                                                ]);
-                                            }
-                                            
-                                            ?>
+                                                <?php
 
+                                                foreach ($paralelos as $paralelo) {
+
+                                                    echo Html::a('<lu style="padding-left: 5px; text-align: center"><h4><b>- ' . $paralelo['paralelo'] . ' -<lu><h4><b>', [
+                                                        'redirect-ps',
+                                                        'lms_id' => $actividad['id'],
+                                                        'clase_id' => $paralelo['clase_id'],
+                                                        // 'boton_retorno' => "pud-dip/index1?plan_bloque_unidad_id=" . $planUnidadId,
+                                                    ]);
+                                                }
+
+                                                ?>
                                             </p>
                                         </div>
                                         <div class="modal-footer">
                                             <!-- <button type="button" class="btn btn-secondary">Salir</button> -->
-                                            <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Volver</button>
+                                            <button type="button" class="btn btn-primary"
+                                                data-bs-dismiss="modal">Volver</button>
                                         </div>
                                     </div>
                                 </div>
@@ -244,7 +291,8 @@ use yii\helpers\Url;
                                 <?php
                                 foreach ($semana['tareas'] as $tarea) {
                                     echo '<li><b>* </b>' . $tarea['titulo'] . '</li>';
-                                };
+                                }
+                                ;
                                 ?>
                             </ul>
                         </div>
@@ -255,7 +303,7 @@ use yii\helpers\Url;
             </div>
             <!-- fin de card -->
 
-        <?php
+            <?php
         }
 
         ?>

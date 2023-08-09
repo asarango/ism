@@ -16,7 +16,7 @@ $condicionClass = new backend\models\helpers\Condiciones;
 $this->title = $planUnidad->unit_title . ' (' . $planUnidad->curriculoBloque->last_name . ')' . ' - TEMARIO';
 $this->params['breadcrumbs'][] = $this->title;
 //echo '<pre>';
-//print_r($planUnidad);
+//print_r($subtitulos);
 //die();
 $estado = $planUnidad->planCabecera->estado;
 $isOpen = $planUnidad->is_open;
@@ -89,7 +89,7 @@ $arrayVerificacion = array("SI" => "SI", "NO" => "NO", "REPLANIFICADO" => "REPLA
             <div class="row" style="margin: 0.5rem 1rem 1rem 1rem;">
 
                 <!-- Columna que muestra subtitulo1 y subtitulo2 -->
-                <div class="col-lg-6 col-md-6 card">
+                <div class="col-lg-12 col-md-12 card">
                     <div style="text-align: end">
                         <h5 style="text-align: center">
 
@@ -426,11 +426,11 @@ $arrayVerificacion = array("SI" => "SI", "NO" => "NO", "REPLANIFICADO" => "REPLA
                 </div>
 
                 <!--Columna donde muestra contenido-->
-                <div class="col-lg-6 col-md-6 card">
+                <!-- <div class="col-lg-6 col-md-6 card">
                     <div style="text-align: center">
                         <h5>TEMARIO</h5>
                     </div>
-                </div>
+                </div> -->
             </div>
             <!-- fin cuerpo de card -->
         </div>

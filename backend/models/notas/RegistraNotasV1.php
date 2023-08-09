@@ -61,7 +61,7 @@ class RegistraNotasV1{
             $this->ahora        = date('Y-m-d H:i:s');
                 
             $this->sienta_insumos();
-            $this->sienta_promedio_bloque_grupo();
+            // $this->sienta_promedio_bloque_grupo();
             $this->calculo_notas();
             
         }
@@ -111,54 +111,54 @@ class RegistraNotasV1{
         /**
          * MÉTODO PARA PROMEDIAR LOS INSUMOS DEL GRUPO ID 
          */
-        private function sienta_promedio_bloque_grupo(){
+        // private function sienta_promedio_bloque_grupo(){
             
-            $con = Yii::$app->db;
-            $query = "select 	trunc(avg(nota),2) as nota
-            from 	lib_promedios_insumos
-            where 	grupo_id = $this->grupoId
-                    and bloque_id = $this->bloqueId;";
-            // $query = "select 	sum(lib.nota*(tip.porcentaje/100)) as nota 
-            // from 	lib_promedios_insumos lib 
-            //         inner join scholaris_tipo_actividad tip on tip.orden = lib.grupo_calificacion 
-            // where 	lib.grupo_id = $this->grupoId 
-            //         and lib.bloque_id = $this->bloqueId ;";
+        //     $con = Yii::$app->db;
+        //     $query = "select 	trunc(avg(nota),2) as nota
+        //     from 	lib_promedios_insumos
+        //     where 	grupo_id = $this->grupoId
+        //             and bloque_id = $this->bloqueId;";
+        //     // $query = "select 	sum(lib.nota*(tip.porcentaje/100)) as nota 
+        //     // from 	lib_promedios_insumos lib 
+        //     //         inner join scholaris_tipo_actividad tip on tip.orden = lib.grupo_calificacion 
+        //     // where 	lib.grupo_id = $this->grupoId 
+        //     //         and lib.bloque_id = $this->bloqueId ;";
 
-            $res = $con->createCommand($query)->queryOne();
+        //     $res = $con->createCommand($query)->queryOne();
 
-            $model = LibBloquesGrupoClase::find()
-            ->where([
-                    'grupo_id'      => $this->grupoId,
-                    'bloque_id'     => $this->bloqueId  
-                    ])
-            ->one();
+        //     $model = LibBloquesGrupoClase::find()
+        //     ->where([
+        //             'grupo_id'      => $this->grupoId,
+        //             'bloque_id'     => $this->bloqueId  
+        //             ])
+        //     ->one();
 
-            if( $model ){
-                $model->nota        = $res['nota'];
-                $model->updated_at  = $this->ahora;
-                $model->updated     = $this->user;
-                $model->bloque_id   = $this->bloqueId;
-                $model->save();
-            }else{
-                $insert = new LibBloquesGrupoClase();
-                $insert->grupo_id       = $this->grupoId;
-                $insert->bloque_id      = $this->bloqueId;
-                $insert->nota           = $this->nota;
-                $insert->created_at     = $this->ahora;
-                $insert->created        = $this->user;
-                $insert->updated_at     = $this->ahora;
-                $insert->updated        = $this->user;
-                $insert->periodo_id     = $this->periodId;
-                $insert->abreviatura    = $this->modelBloque->codigo;
-                $insert->promedia       = $this->promedia;
-                $insert->imprime        = $this->imprime;
-                $insert->tipo           = $this->tipo;
-                $insert->porcentaje     = $this->porcentaje;
+        //     if( $model ){
+        //         $model->nota        = $res['nota'];
+        //         $model->updated_at  = $this->ahora;
+        //         $model->updated     = $this->user;
+        //         $model->bloque_id   = $this->bloqueId;
+        //         $model->save();
+        //     }else{
+        //         $insert = new LibBloquesGrupoClase();
+        //         $insert->grupo_id       = $this->grupoId;
+        //         $insert->bloque_id      = $this->bloqueId;
+        //         $insert->nota           = $this->nota;
+        //         $insert->created_at     = $this->ahora;
+        //         $insert->created        = $this->user;
+        //         $insert->updated_at     = $this->ahora;
+        //         $insert->updated        = $this->user;
+        //         $insert->periodo_id     = $this->periodId;
+        //         $insert->abreviatura    = $this->modelBloque->codigo;
+        //         $insert->promedia       = $this->promedia;
+        //         $insert->imprime        = $this->imprime;
+        //         $insert->tipo           = $this->tipo;
+        //         $insert->porcentaje     = $this->porcentaje;
 
-                $insert->save();
-            }
+        //         $insert->save();
+        //     }
 
-        }
+        // }
          /** FIN MÉTODO PARA PROMEDIAR LOS INSUMOS DEL GRUPO ID */
 
 

@@ -13,7 +13,7 @@ use yii\helpers\Html;
 $this->title = 'Opciones del plan Vertical Diploma';
 
 // echo '<pre>';
-// print_r($seccion);
+// print_r($arrayConexionesTdc);
 // die();
 ?>
 
@@ -26,7 +26,7 @@ $this->title = 'Opciones del plan Vertical Diploma';
         <div class="card shadow col-lg-8 col-md-8">
             <div class=" row align-items-center p-2">
                 <div class="col-lg-1">
-                    <h4><img src="ISM/main/images/submenu/herramientas-para-reparar.png" width="64px" style="" class="img-thumbnail"></h4>
+                    <h4><img src="../ISM/main/images/submenu/herramientas-para-reparar.png" width="64px" style="" class="img-thumbnail"></h4>
                 </div>
                 <div class="col-lg-11">
                     <h4><?= Html::encode($this->title) ?></h4>
@@ -76,7 +76,7 @@ $this->title = 'Opciones del plan Vertical Diploma';
             <!-- inicia cuerpo de card -->
             <hr>
            
-            <p style="margin-top: 10px;"><b>CONECIONES CON TDC</b></p> 
+            <p style="margin-top: 10px;"><b>CONEXIONES CON TDC</b></p> 
             
             <!--incio de conocimientos-->
             <div class="row">
@@ -94,7 +94,7 @@ $this->title = 'Opciones del plan Vertical Diploma';
             <!--incio de Areas de conocimiento-->
             <div class="row">
                 <div class="col-lg-12 col-md-12">
-                    <p>Áreas de conocimiento</p>
+                    <p><b>Áreas de conocimiento</b></p>
                     <?php
                         $tipoArea = 'Áreas de conocimiento';
                         echo genera_opciones($arrayConexionesTdc, $tipoArea);                           

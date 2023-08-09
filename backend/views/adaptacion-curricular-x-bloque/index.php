@@ -15,13 +15,12 @@ $this->params['breadcrumbs'][] = $this->title;
 
 //llamamos la bloque
 
-$bloque = CurriculoMecBloque::find()->All();
+$bloque = CurriculoMecBloque::find()->where(['is_active'=> true])->All();
 $arrayBloque = ArrayHelper::map($bloque,'id','last_name');
 
 // echo '<pre>';
-// print_r($arrayBloque);
+// print_r($bloque);
 // die();
-
 
 ?>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
@@ -43,7 +42,7 @@ $arrayBloque = ArrayHelper::map($bloque,'id','last_name');
                 <hr>
                 <div>
                     <select id="id_select" onchange="showAsignaturas()" class="form-select" aria-label="Default select example">
-                        <option selected>Seleccione Bloque</option>
+                        <option selected>Seleccione un Trimestre</option>
                         <?php
                             foreach ($bloque as $b) 
                             {
@@ -126,7 +125,6 @@ $arrayBloque = ArrayHelper::map($bloque,'id','last_name');
 
     }
 </script>
-
 
 <!-- SCRIPT PARA SELECT2 -->
 <script>

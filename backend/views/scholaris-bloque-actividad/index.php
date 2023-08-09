@@ -12,6 +12,10 @@ use yii\helpers\Url;
 $this->title = '¡PARCIALES!';
 $this->params['breadcrumbs'][] = $this->title;
 
+// echo "<pre>";
+// print_r($model);
+// die();
+
 ?>
 <div class="scholaris-bloque-semanas-index">
 

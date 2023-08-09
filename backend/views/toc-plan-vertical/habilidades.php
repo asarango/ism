@@ -8,6 +8,43 @@ use yii\helpers\Url;
 // die();
 ?>
 
+<style>
+    .card {
+        margin-bottom: 1rem;
+    }
+
+    .card-content {
+        margin: 2rem 1.5rem 0.5rem 1.5rem;
+    }
+
+    .table {
+        font-size: 12px;
+        margin: 1rem;
+        border-spacing: 0 1rem;
+        border-color: black;
+    }
+
+    .table th {
+        text-align: center;
+    }
+
+    .table h5 {
+        margin-left: 1rem;
+    }
+
+    .table h6 {
+        margin: 0;
+    }
+
+    .table td {
+        font-size: 12px;
+    }
+
+    .table-checkbox {
+        width: 24px;
+        text-align: center;
+    }
+</style>
 
 <!-- INICIO ENCABEZADO -->
 <div class="m-0 vh-50 row justify-content-center align-items-center">
@@ -18,7 +55,7 @@ use yii\helpers\Url;
                         class="img-thumbnail">
                 </h4>
             </div>
-            <div class="col-lg-7 col-md-7 col-sm-7"> 
+            <div class="col-lg-7 col-md-7 col-sm-7">
                 <h3>Habilidades IB</h3>
                 <p>2DO. DE BACHILLERATO " B "</p>
             </div>
@@ -45,49 +82,36 @@ use yii\helpers\Url;
         <!-- FIN ENCABEZADO -->
 
         <!-- INICIO FORMULARIO -->
-        <div class="card col-lg-12 col-md-12 col-sm-12" style="margin-bottom: 1rem">
-            <div style=" margin: 2rem 1.5rem 0.5rem 1.5rem">
-                <div style="margin-left: -2rem; margin-top:-2rem ; margin-bottom: 1rem;">
-                    <?= Html::beginForm(['unidad'], 'post') ?>
+        <div class="card col-lg-12 col-md-12 col-sm-12">
+            <div class="card-content">
+                <table class="table table-secondary table-bordered col-lg-12 col-md-12 col-sm-12">
+                    <tbody>
+                        <tr>
+                            <td colspan="4">
+                                <h5>ENFOQUES DEL APRENDIZAJE (HABILIDADES IB)</h5>
+                            </td>
+                        </tr>
 
-                    <table class="table table-secondary table-bordered; table table-bordered col-lg-12 col-md-12 col-sm-12"
-                        style="font-size:10px;margin: 1rem; border-spacing: 0 1rem;border-color: black;">
-                        <tbody>
-                            <tr>
-                                <td colspan="4">
-                                    <div style="margin-left: 1rem;">
-                                        <h5>ENFOQUES DEL APRENDIZAJE (HABILIDADES IB)</h5>
-                                    </div>
+                        <?php foreach ($habilidades as $habilidad): ?>
+                            <?php
+                            $check = $habilidad->is_active ? "checked" : "";
+                            ?>
+                            <tr class="fondo-campos">
+                                <th>
+                                    <h6>
+                                        <?= $habilidad->tocOpciones->opcion ?>
+                                    </h6>
+                                </th>
+                                <td>
+                                    <?= $habilidad->tocOpciones->descripcion ?>
+                                </td>
+                                <td class="table-checkbox">
+                                    <input onclick="cambia_opcion(<?= $habilidad->id ?>)" type="checkbox" <?= $check ?>>
                                 </td>
                             </tr>
-
-                            <?php
-                            foreach ($habilidades as $habilidad) {
-                                if ($habilidad->is_active == true) {
-                                    $check = "checked ";
-                                } else {
-                                    $check = "";
-                                }
-
-                                ?>
-                                <tr class="fondo-campos">
-                                    <th style="text-align: center;">
-                                        <h6>
-                                            <?= $habilidad->tocOpciones->opcion ?>
-                                            <h6>
-                                    </th>
-                                    <td style="font-size: 12px;">
-                                        <?= $habilidad->tocOpciones->descripcion ?>
-                                    </td>
-                                    <td><input onclick="cambia_opcion(<?= $habilidad->id ?>)" type="checkbox" <?= $check ?>
-                                            name="opcion1" value="opcion1"></td>
-                                </tr>
-                                <?php
-                            }
-                            ?>
-                        </tbody>
-                    </table>
-                </div>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
             </div>
         </div>
         <!-- FIN FORMULARIO -->

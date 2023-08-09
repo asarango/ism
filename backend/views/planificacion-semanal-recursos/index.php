@@ -73,22 +73,22 @@ $this->params['breadcrumbs'][] = $this->title;
                         <?= '<b><small>' . $planificacionSemanal->clase->paralelo->course->name . ' ' . ' ' . '"' .
                             $planificacionSemanal->clase->paralelo->name . '"' . ' ' . '/' . ' Hora de clase:' . ' ' . $planificacionSemanal->hora->nombre . ' ' . ' '
                             . '/' . ' ' . 'Docente:' . ' ' . $planificacionSemanal->clase->profesor->last_name . ' '
-                            . $planificacionSemanal->clase->profesor->x_first_name . '/' . ' ' . 'Materia: Teoria del conocimiento' . '</small></b>' ?>
+                            . $planificacionSemanal->clase->profesor->x_first_name . '</small></b>' ?>
                     </p>
                 </div>
                 <!-- BOTONES -->
                 <div class="col-lg-4 col-md-4" style="text-align: right">
-                    <?= Html::a(
-                        '<span class="badge rounded-pill" style="background-color: #ff9e18"><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home-up" 
-                            width="12" height="12" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ffffff" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                            <path d="M9 21v-6a2 2 0 0 1 2 -2h2c.641 0 1.212 .302 1.578 .771" />
-                            <path d="M20.136 11.136l-8.136 -8.136l-9 9h2v7a2 2 0 0 0 2 2h6.344" />
-                            <path d="M19 22v-6" />
-                            <path d="M22 19l-3 -3l-3 3" />
-                        </svg> Regresar</span>',
-                        ['planificacion-semanal/index1', 'bloque_id' => 69, 'clase_id' => 1337],
-                        ['class' => 'link']
+                    <?= Html::button(
+                        '<span class="badge rounded-pill" style="background-color: #ff9e18"><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home-up"
+                        width="16" height="16" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ffffff" 
+                        fill="none" stroke-linecap="round" stroke-linejoin="round">
+                       <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                       <path d="M9 21v-6a2 2 0 0 1 2 -2h2c.641 0 1.212 .302 1.578 .771" />
+                       <path d="M20.136 11.136l-8.136 -8.136l-9 9h2v7a2 2 0 0 0 2 2h6.344" />
+                       <path d="M19 22v-6" />
+                       <path d="M22 19l-3 -3l-3 3" />
+                       </svg>Regresar</span>',
+                        ['class' => 'btn btn-default', 'onclick' => 'history.go(-1); return false;']
                     ) ?>
                     |
                     <?= Html::a(
@@ -233,7 +233,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                             echo '  function onYouTubeIframeAPIReady() {';
                                             echo '    player = new YT.Player("player", {';
                                             echo '      height: "315",';
-                                            echo '      width: "540",';
+                                            echo '      width: "500",';
                                             echo '      videoId: "' . $videoId . '",';
                                             echo '    });';
                                             echo '  }';
@@ -459,10 +459,14 @@ function obtenerTipoActividad($tipo_actividad_id)
         3 => 'Pruebas de base estructuradas',
         4 => 'Tareas en clase',
         5 => 'Proyectos y/o investigaciones',
+        6 => 'Proyectos y/o investigaciones',
+        7 => 'Exposiciones foros',
         9 => 'Talleres',
         2 => 'Desarrollo de productos',
         8 => 'Se aplica metodología',
         10 => 'Evaluación de base estructurada'
+
+            
     ];
 
     return isset($tipos[$tipo_actividad_id]) ? $tipos[$tipo_actividad_id] : 'Tipo de actividad desconocido';

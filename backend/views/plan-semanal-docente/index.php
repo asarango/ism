@@ -29,7 +29,7 @@ $this->title = 'Plan Semanal';
 
                 <div class="col-lg-3 col-md-3">
                     <select name="" id="select-bloques" onchange="showWeeks(this)" class="form-control">
-                        <option value="">Seleccione Bloque</option>
+                        <option value="">Seleccione Trimestre</option>
                         <?php
                         foreach ($blocks as $block) {
                             ?>

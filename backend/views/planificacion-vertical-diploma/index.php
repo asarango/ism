@@ -14,7 +14,7 @@ $this->title = 'Planificación Vertical Diploma';
 $this->params['breadcrumbs'][] = $this->title;
 
 // echo '<pre>';
-// print_r($seccion);
+// print_r($planVerticalDiplHabilidades);
 // die();
 ?>
 
@@ -190,8 +190,9 @@ function verifica_habilidades($objeto)
 ?>
 
 
-<script src="https://code.jquery.com/jquery-2.2.4.js" integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI="
-    crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-2.2.4.js" integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI="crossorigin="anonymous"></script>
+
+
 <script>
 
     show_habilidades_seleccionadas();

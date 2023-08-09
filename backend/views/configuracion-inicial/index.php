@@ -45,9 +45,7 @@ $this->params['breadcrumbs'][] = $this->title;
         position: relative;
         transition: all 0.3s ease;
         font-size: 16px;
-        /* Tamaño de fuente juvenil, puedes ajustarlo según tu preferencia */
         color: #fff;
-        /* Color de texto blanco en las tarjetas */
     }
 
     .card:hover {
@@ -120,7 +118,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
 <div class="planificacion-semanal-index">
     <div class="m-0 vh-50 row justify-content-center align-items-center">
-        <div class="card shadow col-lg-10 col-md-10 col-sm-10 bg-white"> 
+        <div class="card shadow col-lg-10 col-md-10 col-sm-10 bg-white">
             <div class="row align-items-center p-2">
                 <div class="col-lg-1 col-md-1">
                     <h4><img src="../ISM/main/images/submenu/plan.png" width="64px" class="img-thumbnail"></h4>
@@ -148,7 +146,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                     <p class="card-text">Total Odoo:
                                         <?= $item['total_odoo'] ?>
                                     </p>
-                                    <p class="card-text">Tiene Edux:
+                                    <p class="card-text">Total Edux:
                                         <?= $item['total_edux'] ?>
                                         <?php if ($item['total_edux'] != $item['total_odoo'] && $item['total_odoo'] > $item['total_edux']): ?>
                                             <span class="card-advertencia" style="animation-delay: <?= rand(0, 2000) ?>ms"><?= advertencia() ?></span>

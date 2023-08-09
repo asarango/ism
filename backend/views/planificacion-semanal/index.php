@@ -13,7 +13,10 @@ $this->params['breadcrumbs'][] = $this->title;
 // echo "<pre>";
 // print_r($semanas);
 // die();
+// $referrer = Yii::$app->request->referrer;
 
+// $verticalPlanUrl = Url::to(['toc-plan-vertical/index1', 'clase_id' => $clase->id]);
+// $pudDipUrl = Url::to(['pud-nacional', 'plan_bloque_unidad_id' => $clase->id]);
 ?>
 
 <style>
@@ -87,11 +90,24 @@ $this->params['breadcrumbs'][] = $this->title;
                             <path d="M20.136 11.136l-8.136 -8.136l-9 9h2v7a2 2 0 0 0 2 2h6.344" />
                             <path d="M19 22v-6" />
                             <path d="M22 19l-3 -3l-3 3" />
-                            </svg> Regresar</span>',
+                            </svg> Regresar al Plan V.</span>',
                             ['toc-plan-vertical/index1', 'clase_id' => $clase->id],
-                            ['class' => '', 'title' => 'Planificación Vertical TOC']
+                            ['title' => 'Planificación Vertical TOC']
                         );
                     ?>
+
+                    <?= Html::button(
+                        '<span class="badge rounded-pill" style="background-color: #ff9e18"><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home-up"
+                        width="16" height="16" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ffffff" 
+                        fill="none" stroke-linecap="round" stroke-linejoin="round">
+                       <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                       <path d="M9 21v-6a2 2 0 0 1 2 -2h2c.641 0 1.212 .302 1.578 .771" />
+                       <path d="M20.136 11.136l-8.136 -8.136l-9 9h2v7a2 2 0 0 0 2 2h6.344" />
+                       <path d="M19 22v-6" />
+                       <path d="M22 19l-3 -3l-3 3" />
+                       </svg>PUD</span>',
+                        ['class' => 'btn btn-default', 'onclick' => 'history.go(-1); return false;']
+                    ) ?>
                     <!-- FIN BOTONES DERECHA -->
                 </div>
                 <hr>
@@ -312,16 +328,16 @@ function BotonRecursos($id)
 function nombreSemana($semana)
 {
     $semanas = [
-        'S1' => 'Semana N° 1',
-        'S2' => 'Semana N° 2',
-        'S3' => 'Semana N° 3',
-        'S4' => 'Semana N° 4',
-        'S5' => 'Semana N° 5',
-        'S6' => 'Semana N° 6',
-        'S7' => 'Semana N° 7',
-        'S8' => 'Semana N° 8',
-        'S9' => 'Semana N° 9',
-        'S10' => 'Semana N° 10',
+        'Sem1' => 'Semana N° 1',
+        'Sem2' => 'Semana N° 2',
+        'Sem3' => 'Semana N° 3',
+        'Sem4' => 'Semana N° 4',
+        'Sem5' => 'Semana N° 5',
+        'Sem6' => 'Semana N° 6',
+        'Sem7' => 'Semana N° 7',
+        'Sem8' => 'Semana N° 8',
+        'Sem9' => 'Semana N° 9',
+        'Sem10' => 'Semana N° 10',
         'Sem11' => 'Semana N° 11',
         'Sem12' => 'Semana N° 12',
         'Sem13' => 'Semana N° 13',

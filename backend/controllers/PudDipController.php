@@ -674,26 +674,27 @@ class PudDipController extends Controller {
         $periodId = Yii::$app->user->identity->periodo_id;
         $login = Yii::$app->user->identity->usuario;
         $periodo = ScholarisPeriodo::findOne($periodId);
+        
 
         $planUnidad = PlanificacionBloquesUnidad::findOne($planBloqueUnidadId);
         $bloqueShotName = $planUnidad->curriculoBloque->shot_name;
+        
 
         $ismAreaMateriaId = $planUnidad->planCabecera->ism_area_materia_id;
         $clase = ScholarisClase::find()->where(['ism_area_materia_id' => $ismAreaMateriaId])->one();
         $courseId = $clase->paralelo->course_id;
-        // echo '<pre>';
-        // print_r($ismAreaMateriaId);
-        // die();
+        
         
         $uso = $clase->tipo_usu_bloque;
         $paralelos = $this->obtener_paralelos($courseId,$login,$ismAreaMateriaId);
-        
+                
 
         $accion_update = "5.0.-";
 
         $modelPlanVertical = PlanificacionVerticalDiploma::find()->where(['planificacion_bloque_unidad_id' => $planBloqueUnidadId])->one();
         $modelPlanVertical->ultima_seccion = $accion_update;
         $modelPlanVertical->save();
+        
 
 
         /***Para consultar las semanas e inyectar */
@@ -703,6 +704,7 @@ class PudDipController extends Controller {
             $lms = new LmsColaborativo();
             $lms->inyecta_plan_x_hora($clase->ismAreaMateria->total_horas_semana, $semana['semana_numero'], $clase->ism_area_materia_id, $uso);
             /** Fin de inyección de horas al plan semanal */
+            
         }
         /***Fin consultar las semanas e inyectar */        
 
@@ -739,8 +741,10 @@ class PudDipController extends Controller {
                             and blo.tipo_uso = '$uso'
                             and mbl.shot_name = '$bloqueCurriculoShotName'
                     order by sem.semana_numero;";
+                    
         $res = $con->createCommand($query)->queryAll();
         return $res;
+        
     }
 
 
@@ -1164,6 +1168,8 @@ class PudDipController extends Controller {
     
      /*     * * 5.3.2  DIFERENCIACION */
     private function get_accion_diferenciacion($planBloqueUnidadId) {
+        // print_r($planBloqueUnidadId);
+        // die();
        
         $planBloqueUnidad = PlanificacionBloquesUnidad::findOne($planBloqueUnidadId);
         $accion_update = "5.3.2.-";
@@ -1276,6 +1282,7 @@ class PudDipController extends Controller {
     
     
     public function actionUpdatePudDip(){
+        
         $campoDe = $_POST['campo_de'];
         $id = $_POST['id'];                    
         

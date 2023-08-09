@@ -42,7 +42,7 @@ $existeCurso = false;
 $grupoMateria = mostrar_datos_materia($cabecera);
 
 // echo'<pre>';
-// print_r($grupoMateria);
+// print_r($unidades);
 // die();
 
 /********************************************************************* */
@@ -360,7 +360,7 @@ function mostrar_datos_materia($cabecera)
                                                         ]);
                                                     ?>
                                                 </li>
-                                                <li>
+                                                <!-- <li>
                                                     <?php
                                                     $total = calcula_total_criterios($unidad->id);
                                                     echo Html::a(
@@ -371,7 +371,7 @@ function mostrar_datos_materia($cabecera)
                                                         ]
                                                     );
                                                     ?>
-                                                </li>
+                                                </li> -->
                                                 <li>
                                                     <!-- Aqui muestro botones dependiendo de cada sección -->
                                                     <?php
@@ -382,7 +382,7 @@ function mostrar_datos_materia($cabecera)
                                                             $arrayGrupoMateria = $grupoMateria;
                                                         }
                                                         echo Html::a(
-                                                            '<i class="far fa-copy my-text-medium" style="color: #ab0a3d"> 4.-PH-PV</i>',
+                                                            '<i class="far fa-copy my-text-medium" style="color: #ab0a3d"> 3.-PH-PV</i>',
                                                             [
                                                                 'planificacion-vertical-pai-descriptores/index1',
                                                                 'unidad_id' => $unidad->id,
@@ -391,7 +391,7 @@ function mostrar_datos_materia($cabecera)
                                                         );
                                                     } elseif ($seccion == 'DIPL') {
                                                         echo Html::a(
-                                                            '<i class="far fa-copy my-text-medium" style="color: #ab0a3d"> 4.-PH-PV</i>',
+                                                            '<i class="far fa-copy my-text-medium" style="color: #ab0a3d"> 3.-PH-PV</i>',
                                                             [
                                                                 'planificacion-vertical-diploma/index1',
                                                                 'unidad_id' => $unidad->id

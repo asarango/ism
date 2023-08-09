@@ -86,6 +86,10 @@ class PlanificacionSemanalController extends Controller
     public function actionIndex1()
     {
 
+        // echo '<pre>';
+        // print_r($_GET);
+        // die();
+
         $bloqueId = $_GET['bloque_id'];
         $claseId = $_GET['clase_id'];
         

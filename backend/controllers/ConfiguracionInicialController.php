@@ -108,7 +108,7 @@ class ConfiguracionInicialController extends Controller
             array('orden' => 11, 'tabla' => 'op_section', 'total_odoo' => 0, 'total_edux' => 0),
             array('orden' => 12, 'tabla' => 'op_course', 'total_odoo' => 0, 'total_edux' => 0),
             array('orden' => 13, 'tabla' => 'op_course_paralelo', 'total_odoo' => 0, 'total_edux' => 0),
-            //array('orden' => 14, 'tabla' => 'op_parent_op_student_rel', 'total_odoo' => 0, 'total_edux' => 0),
+            array('orden' => 14, 'tabla' => 'op_parent_op_student_rel', 'total_odoo' => 0, 'total_edux' => 0),
 
         );
         return $catalogo;
@@ -117,8 +117,8 @@ class ConfiguracionInicialController extends Controller
     private function consulta_tabla($tabla)
     {
         $con = Yii::$app->db;
-        $queryEdux = "select  count(id) as total from $tabla;";
-        $queryOdoo = "select count(id) as total from esquema_odoo.$tabla;";
+        $queryEdux = "select  count(*) as total from $tabla;";
+        $queryOdoo = "select count(*) as total from esquema_odoo.$tabla;";
         $resEdux = $con->createCommand($queryEdux)->queryOne();
         $resOdoo = $con->createCommand($queryOdoo)->queryOne();
 

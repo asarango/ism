@@ -17,6 +17,9 @@ use yii\helpers\ArrayHelper;
 /* @var $searchModel backend\models\PlanificacionDesagregacionCabeceraSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
+// echo '<pre>';
+// print_r($planUnidad);
+// die();
 
 $this->title = 'PUD - ' . $planUnidad->curriculoBloque->last_name . ' - ' . $planUnidad->unit_title;
 $this->params['breadcrumbs'][] = $this->title;

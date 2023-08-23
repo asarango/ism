@@ -14,6 +14,7 @@ $this->title = 'Mis asignaturas';
 // echo '<pre>';
 // print_r($clases);
 // die();
+// $alumnos = obtenerAlumnos();
 ?>
 
 
@@ -26,28 +27,89 @@ $this->title = 'Mis asignaturas';
                 <div class="col-lg-1">
                     <h4><img src="../ISM/main/images/submenu/aula.png" width="64px" style="" class="img-thumbnail"></h4>
                 </div>
-                <div class="col-lg-8">
+                <div class="col-lg-7">
                     <h2>
                         <?= Html::encode($this->title) ?>
                     </h2>
                 </div>
-                <div class="col-lg-3 col-md-3" style="text-align: right; margin-top: -10px;">
-                    <?= Html::a('<span class="badge rounded-pill" style="background-color: #ab0a3d"><i class="far fa-file"></i> Inicio</span>', ['site/index'], ['class' => 'link']); ?>
+                <div class="col-lg-4 col-md-3" style="text-align: right; margin-top: -10px;">
+                    <?= Html::a('<span class="badge rounded-pill" style="background-color: #ab0a3d"><i class="far fa-file"></i> Inicio</span>', ['site/index', 'class' => 'link']); ?>
+                    |
+                    <?= Html::a('<span class="badge rounded-pill" style="background-color: #ab0a3d"><i class="far fa-file"></i> Agregar Estudiantes</span>', ['agregar-alumnos', 'clase_id' => $clases[0]['clase_id']]); ?>
                     |
                     <?= Html::a('<span class="badge rounded-pill" style="background-color: #0a1f8f"><i class="fas fa-clock"></i> Leccionario</span>', ['scholaris-asistencia-profesor/index'], ['class' => 'link']); ?>
                 </div>
                 <hr>
             </div>
-              <!-- Fin encabezado -->
+
+            <!-- Fin encabezado -->
 
             <div class="row" style="padding: 0px 10px 10px 10px;">
                 <div style="margin-bottom:20px;">
-                    <div class="row" style="margin-bottom:20px; margin-left: 5px;" >
+                    <div class="row" style="margin-bottom:20px; margin-left: 5px;">
                         <div class="col-lg-5 col-md-5">
                             <?= $this->render('menu', [
                                 'clases' => $clases
                             ]) ?>
+                            <div class="row">
+
+                                <div class="table table-responsive table-bordered">
+                                    <!-- <div style="margin: 1rem 0 1rem 0;">
+                                        <?php
+                                        // $alumnosCount = count($alumnos);
+                                        // echo "Cantidad de alumnos disponibles: " . $alumnosCount;
+                                        ?>
+
+                                    </div>
+                                    <table class="table table-bordered">
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Nombre</th>
+                                        </tr>
+                                        <?php
+                                        // $numeroEstudiante = 1;
+                                        // foreach ($alumnos as $alumno) {
+                                        //     echo '<tr>';
+                                        //     echo '<td>' . $numeroEstudiante . '</td>';
+                                        //     echo '<td>' . $alumno['estudiante'] . '</td>';
+                                        //     echo '</tr>';
+                                        //     $numeroEstudiante++;
+                                        // }
+                                        ?>
+                                    </table> -->
+                                    <table class="table table-condensed table-striped table-hover tamano10">
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>Estudiante</th>
+                                                <th>Curso</th>
+                                            </tr>
+                                        </thead>
+
+                                        <tbody>
+                                            <?php
+                                            // $i = 0;
+                                            // foreach ($modelGrupo as $grupo) {
+                                            //     $i++;
+                                            //     echo '<tr>';
+                                            //     echo '<td>' . $i . '</td>';
+                                            //     echo '<td>' . $grupo['last_name'] . ' ' . $grupo['first_name'] . ' ' . $grupo['middle_name'] . '</td>';
+                                            //     echo '<td>' . $grupo['curso'] . '</td>';
+                                            //     echo '<td>' . $grupo['paralelo'] . '</td>';
+                                            //     echo '<td>' . $grupo['inscription_state'] . '</td>';
+                                            //     echo '<td>';
+                                            //     echo Html::a('<p class="tamano10">Retirar</p>', ['scholaris-clase/retirar', 'grupoId' => $grupo['grupo_id']], ['class' => 'btn btn-link']);
+                                            //     echo '</td>';
+                                            //     echo '</tr>';
+                                            // }
+                                            ?>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                            </div>
                         </div>
+
 
                         <div class="col-lg-7 col-md-7" style="margin-top:5px;text-align: right">
                             <div id="div-detalle" style="display: none; margin-top: 0px;"></div>
@@ -56,10 +118,10 @@ $this->title = 'Mis asignaturas';
                     </div>
                 </div>
             </div>
+
         </div>
     </div>
 </div>
-
 
 <script>
     function muestra_detalle(claseId, accion) {

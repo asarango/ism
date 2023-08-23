@@ -151,7 +151,14 @@ class ConfiguracionInicialController extends Controller
                                 sip_always_transfer  
                         from    esquema_odoo.res_users
                         where   login not in (select login from res_users);";
-        } else {
+        }elseif( $tabla == 'op_parent_op_student_rel'){
+            $queryDelete = "delete from $tabla";
+            $con->createCommand($queryDelete)->execute();
+
+            $query = "insert into $tabla select * from esquema_odoo.$tabla";
+        } 
+        
+        else {
             $query = "insert into $tabla 
                   select * from esquema_odoo.$tabla
                   where id not in (select id from $tabla);";

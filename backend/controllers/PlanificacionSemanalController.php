@@ -2,6 +2,7 @@
 
 namespace backend\controllers;
 
+use backend\models\diploma\PdfPlanSemana;
 use backend\models\plansemanal\PsIndividual;
 use backend\models\ScholarisActividad;
 use backend\models\ScholarisBloqueActividad;
@@ -11,6 +12,9 @@ use backend\models\ScholarisTipoActividad;
 use Yii;
 use backend\models\PlanificacionSemanal;
 use backend\models\PlanificacionSemanalSearch;
+use backend\models\plansemanal\CopyPlanSemanal;
+use backend\models\ScholarisParametrosOpciones;
+use PharIo\Manifest\CopyrightElement;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -219,6 +223,8 @@ class PlanificacionSemanalController extends Controller
         $semana = PlanificacionSemanal::findOne($id); //Para datos de la semana, bloque y clase
         $seccion = $semana->clase->paralelo->course->section0->code;
 
+        $ods = $this->get_ods($id);
+
         // echo $seccion;
         // die();
         if($seccion <> 'PAI'){
@@ -247,8 +253,8 @@ class PlanificacionSemanalController extends Controller
             $tipoAct = ScholarisTipoActividad::findOne($model->tipo_actividad_id);
 
             $model->descripcion        = 'none';
-            $model->inicio              = $semana->fecha;
-            $model->fin                 = $semana->fecha;
+            $model->inicio              = $_POST['inicio'];
+            $model->fin                 = $_POST['fin'];
             $model->bloque_actividad_id = $semana->semana->bloque->id;
             $model->es_aprobado        = false;
             $model->paralelo_id         = $semana->clase_id;
@@ -257,7 +263,6 @@ class PlanificacionSemanalController extends Controller
             $model->tareas              = 'none';
             $model->hora_id             = $semana->hora_id;
             $model->semana_id           = $semana->id;
-
 
             $this->insert_actividad($semana, $model, $tipoAct);
             
@@ -268,8 +273,29 @@ class PlanificacionSemanalController extends Controller
         return $this->render('tasks', [
             'semana' => $semana,
             'model' => $model,
-            'tipoActividades' => $listActividades
+            'tipoActividades' => $listActividades,
+            'ods' => $ods
         ]);
+
+    }
+
+    private function get_ods($planificacionSemanalId){
+        $con = Yii::$app->db;
+        $query = "select 	pud.opcion_texto, pud.id as ods_pud_dip_id
+                    from planificacion_semanal pse
+                    inner join scholaris_bloque_semanas sem on sem.id = pse.semana_id 
+                    inner join scholaris_bloque_actividad blo on blo.id = sem.bloque_id 
+                    inner join curriculo_mec_bloque cbl on cbl.shot_name = blo.abreviatura 
+                    inner join scholaris_clase cla  on cla.id = pse.clase_id 
+                    inner join planificacion_bloques_unidad bun on bun.curriculo_bloque_id = cbl.id
+                    inner join planificacion_desagregacion_cabecera cab on cab.id = bun.plan_cabecera_id 
+                    inner join pud_dip pud  on pud.planificacion_bloques_unidad_id =  bun.id 
+            where 	pse.id = $planificacionSemanalId
+                    and pud.codigo =  'ODS'
+                    and pud.opcion_boolean;";
+
+        $res = $con->createCommand($query)->queryAll();
+        return $res;
 
     }
 
@@ -278,22 +304,102 @@ class PlanificacionSemanalController extends Controller
         $claseId = $semana->clase_id;
         $today = date('Y-m-d H:i:s');
 
+        if(!$model->ods_pud_dip_id){
+            $ods = 0;
+        }else{
+            $ods = $model->ods_pud_dip_id;
+        }
+
         $con = Yii::$app->db;
         $query ="INSERT INTO scholaris_actividad
         (create_date,  create_uid, title, descripcion, inicio, fin, 
                 tipo_actividad_id, bloque_actividad_id, paralelo_id, materia_id, calificado, tipo_calificacion, tareas
                 , hora_id, actividad_original, semana_id, momento_detalle, con_nee, grado_nee, observacion_nee, destreza_id, formativa_sumativa
                 , videoconfecia, respaldo_videoconferencia, link_aula_virtual, es_aprobado, fecha_revision
-                , usuario_revisa, comentario_revisa, respuesta_revisa, lms_actvidad_id, es_heredado_lms, estado, plan_semanal_id)
+                , usuario_revisa, comentario_revisa, respuesta_revisa, lms_actvidad_id, es_heredado_lms, estado, plan_semanal_id
+                , ods_pud_dip_id)
         VALUES('$today', 15488,  '$model->title', 'none', '$model->inicio', '$model->fin', 
                 $tipoAct->id, $bloqueId, $claseId, NULL, 'true', '$model->tipo_calificacion', 'none', 
                 $model->hora_id, NULL, $model->semana_id, NULL, NULL, NULL, NULL, NULL, NULL, 
                 NULL, NULL, NULL, true, NULL, 
-                NULL, NULL, NULL,NULL, true, false, $model->plan_semanal_id);";
+                NULL, NULL, NULL,NULL, true, false, $model->plan_semanal_id, $ods);";
 
-        // echo $query;
-        // die();
         $con->createCommand($query)->execute();
+    }
+
+     /**
+     * MÉTODO PARA REALIZAR LA COPIA DE LOS PLANES SEMANALES
+     */
+    public function actionCopy(){
+        $usuario  = Yii::$app->user->identity->usuario;
+        $periodoId = Yii::$app->user->identity->periodo_id;
+
+        $claseId = $_GET['clase_id'];
+        $semana_id = $_GET['semana_id'];  
+        $bloque_id = $_GET['bloque_id'];
+
+        $urlPdf = ScholarisParametrosOpciones::find()
+                    ->where(['codigo'=> 'rutaspdfplanes'])
+                    ->one()->valor;
+        $clase = ScholarisClase::findOne($claseId);
+        $clases = $this->get_clases($clase->ism_area_materia_id, $clase->paralelo->course_id, $semana_id, $urlPdf,$usuario, $periodoId);       
+                    
+        
+        // $semana = ScholarisBloqueSemanas::findOne($semana_defecto);
+        // $semanas = $this->get_semanas($bloque->clase->ism_area_materia_id, $bloque->clase->paralelo->course_id);
+
+        return $this->render('copy', [
+            'clase' => $clase,
+            'clases' => $clases,
+            'urlPdf' => $urlPdf,
+            'semana_id' => $semana_id,
+            'bloque_id' => $bloque_id
+
+        ]);
+    }
+
+    private function get_clases($ismAreaMateriaId, $cursoId,$semanaId, $urlPdf, $usuario, $periodoId){
+
+        $con = Yii::$app->db;
+        $query = "select 	cla.id as clase_id
+                    ,cur.name as curso
+                    ,par.name as paralelo
+                    ,cur.x_institute 
+                    ,cla.idprofesor 
+                    ,concat(fac.x_first_name, ' ', fac.last_name) as docente 
+                    ,concat('$urlPdf','planificacion-semanal/pdf?clase_id=', cla.id, '&semana_id=', $semanaId, '&usuario=', '$usuario', '&periodo_id=', $periodoId) as url
+            from 	scholaris_clase cla
+                    inner join op_course_paralelo par on par.id = cla.paralelo_id 
+                    inner join op_course cur on cur.id = par.course_id 
+                    inner join op_faculty fac on fac.id = cla.idprofesor 
+            where 	cla.ism_area_materia_id = $ismAreaMateriaId
+                    and par.course_id = $cursoId
+            order by par.name;";
+        $res = $con->createCommand($query)->queryAll();
+        return $res;
+    } 
+
+    public function actionExecuteCopy(){
+        $claseIdDesde = $_GET['clase_desde'];
+        $claseIdHasta  = $_GET['clase_hasta'];
+        $semanaId = $_GET['semana_id'];
+        $bloqueId = $_GET['bloque_id'];
+
+        new CopyPlanSemanal($claseIdDesde, $claseIdHasta, $semanaId);
+        
+        return $this->redirect(['index1', 'bloque_id' => $bloqueId,'clase_id' => $claseIdHasta, 'semana_id' => $semanaId]);                
+    }
+
+    /**
+     * Método para realizar el PDF de Plan Semanal
+     */
+    public function actionPdf(){
+        $claseId = $_GET['clase_id'];
+        $semanaId = $_GET['semana_id'];
+        $usuario =  $_GET['usuario'];
+        $periodoId =  $_GET['periodo_id'];
+
+        new PdfPlanSemana($claseId, $semanaId, $usuario, $periodoId);
     }
 
     /**

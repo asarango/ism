@@ -25,7 +25,8 @@ class ScholarisActividadSearch extends ScholarisActividad
                 'descripcion_archivo', 'color', 'inicio', 'fin', 'a_peso', 'b_peso', 
                 'c_peso', 'd_peso', 'calificado', 'tipo_calificacion', 
                 'tareas', 'momento_detalle', 'formativa_sumativa',
-                'con_nee','grado_nee','observacion_nee','respaldo_videoconferencia', 'link_aula_virtual', 'codigo'], 
+                'con_nee','grado_nee','observacion_nee','respaldo_videoconferencia', 
+                'link_aula_virtual', 'codigo', 'ods_pud_dip_id'], 
             'safe'],
         ];
     }
@@ -84,6 +85,7 @@ class ScholarisActividadSearch extends ScholarisActividad
             'destreza_id' => $this->destreza_id,
             'con_nee' => $this->con_nee,
             'codigo' => $this->codigo,
+            'ods_pud_dip_id' => $this->ods_pud_dip_id,
         ]);
 
         $query->andFilterWhere(['ilike', 'title', $this->title])
@@ -213,6 +215,7 @@ class ScholarisActividadSearch extends ScholarisActividad
             'semana_id' => $this->semana_id,
             'momento_id' => $this->momento_id,
             'destreza_id' => $this->destreza_id,
+            'ods_pud_dip_id' => $this->ods_pud_dip_id,
         ]);
 
         $query->andFilterWhere(['ilike', 'title', $this->title])

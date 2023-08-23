@@ -14,8 +14,7 @@ use Yii;
  *
  * @property Operacion[] $operacions
  */
-class SentenciasClase extends \yii\db\ActiveRecord {
-    
+class SentenciasClase extends \yii\db\ActiveRecord {    
     
     public function get_alumnos_clase($clase, $periodo){
         $con = Yii::$app->db;
@@ -38,17 +37,12 @@ class SentenciasClase extends \yii\db\ActiveRecord {
                                     inner join op_course cur on cur.id = p.course_id
                     where	g.clase_id = $clase
                                 and sp.id = $periodo
-                    order by s.last_name, s.first_name, s.middle_name";        
-        
+                    order by s.last_name, s.first_name, s.middle_name"; 
 //        echo $query;
 //        die();
-        
         $res = $con->createCommand($query)->queryAll();
-        
         return $res;
     }
-
-
     
     public function get_alumnos_curso($clase, $curso){
         $con = Yii::$app->db;
@@ -85,10 +79,8 @@ class SentenciasClase extends \yii\db\ActiveRecord {
                                     ,s.first_name
                                     ,s.middle_name;";
         $res = $con->createCommand($query)->queryAll();
-        return $res;        
+        return $res;
     }
-
-
     
     public function ingresar_alumnos_todos($clase, $paralelo){
         $con = Yii::$app->db;
@@ -99,11 +91,8 @@ class SentenciasClase extends \yii\db\ActiveRecord {
                                     and i.inscription_state = 'M'
                                     and i.student_id not in (select estudiante_id from scholaris_grupo_alumno_clase where clase_id = $clase);";
         
-        $con->createCommand($query)->execute();
-        
+        $con->createCommand($query)->execute();        
     }
-    
-    
     
     public function get_horas_horario($cabecera){
         $con = Yii::$app->db;
@@ -146,16 +135,14 @@ class SentenciasClase extends \yii\db\ActiveRecord {
         $con->createCommand($query)->execute();
         
     }
-    
-    
+        
     public function asignar_clase_horario($clase, $detalle){
         $con = Yii::$app->db;
         $query = "insert into scholaris_horariov2_horario  values($detalle, $clase)";
         $con->createCommand($query)->execute();
         
     }
-    
-    
+        
     public function get_actividades_calificadas_alumnos($grupo){
         $con = Yii::$app->db;
         $query = "select a.bloque_actividad_id
@@ -181,16 +168,11 @@ class SentenciasClase extends \yii\db\ActiveRecord {
         $modelGrupo = ScholarisGrupoAlumnoClase::find()->where(['id' => $grupo])->one();
         
         $con = Yii::$app->db;
-        $query1 = "delete from scholaris_clase_libreta where grupo_id = $grupo;";
-        
-
-        
+        $query1 = "delete from scholaris_clase_libreta where grupo_id = $grupo;";         
         $query2 = "delete from 	scholaris_calificaciones 
                     where	idalumno = $modelGrupo->estudiante_id
                                     and idactividad in (select id from scholaris_actividad where paralelo_id = $modelGrupo->clase_id)";
-        
         $query3 = "delete from scholaris_resumen_parciales where clase_id = $modelGrupo->clase_id and alumno_id = $modelGrupo->estudiante_id;";
-        
         $query4 = "delete from scholaris_calificaciones_parcial where grupo_id = $grupo;";        
         $eliminaParcialCambios = "delete from scholaris_calificaciones_parcial_cambios where grupo_id = $grupo;";        
         $eliminaDeInicial = "delete from scholaris_calificaciones_inicial where grupo_id = $grupo;";        
@@ -201,12 +183,9 @@ class SentenciasClase extends \yii\db\ActiveRecord {
         $con->createCommand($query4)->execute();
         $con->createCommand($eliminaParcialCambios)->execute();
         $con->createCommand($eliminaDeInicial)->execute();
-        $modelGrupo->delete();
-        
-        
+        $modelGrupo->delete(); 
     }
-    
-    
+        
     public function consulta_materias_normales($alumnoId){
         $periodoId = Yii::$app->user->identity->periodo_id;
         $modelPeriodo = ScholarisPeriodo::findOne($periodoId);
@@ -223,10 +202,7 @@ where 	c.periodo_scholaris = '$modelPeriodo->codigo'
 		and g.estudiante_id = $alumnoId
 order by m.name;";
         
-        $res = $con->createCommand($query)->queryAll();
-        
+        $res = $con->createCommand($query)->queryAll();        
         return $res;
     }
-    
-    
 }

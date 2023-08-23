@@ -63,7 +63,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <div class="col-lg-1 col-md-1">
                     <h4><img src="../ISM/main/images/submenu/plan.png" width="64px" class="img-thumbnail"></h4>
                 </div>
-                <div class="col-lg-8 col-md-8">
+                <div class="col-lg-7 col-md-7">
                     <h4>
                         <?= Html::encode($this->title)
                             ?>
@@ -78,7 +78,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     </p>
                 </div>
                 <!-- INICIO BOTONES DERECHA -->
-                <div class="col-lg-3 col-md-3" style="text-align: right;">
+                <div class="col-lg-4 col-md-4" style="text-align: right;">
                     <?=
                         Html::a(
                             '<span class="badge rounded-pill" style="background-color: #ff9e18">
@@ -95,19 +95,30 @@ $this->params['breadcrumbs'][] = $this->title;
                             ['title' => 'Planificación Vertical TOC']
                         );
                     ?>
-
+                    |
                     <?= Html::button(
-                        '<span class="badge rounded-pill" style="background-color: #ff9e18"><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home-up"
-                        width="16" height="16" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ffffff" 
-                        fill="none" stroke-linecap="round" stroke-linejoin="round">
-                       <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                       <path d="M9 21v-6a2 2 0 0 1 2 -2h2c.641 0 1.212 .302 1.578 .771" />
-                       <path d="M20.136 11.136l-8.136 -8.136l-9 9h2v7a2 2 0 0 0 2 2h6.344" />
-                       <path d="M19 22v-6" />
-                       <path d="M22 19l-3 -3l-3 3" />
-                       </svg>PUD</span>',
+                        '<span class="badge rounded-pill" style="background-color: #ab0a3d"><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-arrow-back-up" width="16" height="16" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ffffff" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                        <path d="M9 14l-4 -4l4 -4" />
+                        <path d="M5 10h11a4 4 0 1 1 0 8h-1" />
+                        </svg>PUD</span>',
                         ['class' => 'btn btn-default', 'onclick' => 'history.go(-1); return false;']
                     ) ?>
+                    |
+                    <?=
+                        Html::a(
+                            '<span class="badge rounded-pill" style="background-color: #9e28b5">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copy" width="16" height="16" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ffffff" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                            <path d="M8 8m0 2a2 2 0 0 1 2 -2h8a2 2 0 0 1 2 2v8a2 2 0 0 1 -2 2h-8a2 2 0 0 1 -2 -2z" />
+                            <path d="M16 8v-2a2 2 0 0 0 -2 -2h-8a2 2 0 0 0 -2 2v8a2 2 0 0 0 2 2h2" />
+                            </svg>Copiar Plan S.</span>',
+                            ['copy', 'clase_id' => $clase->id, 
+                            'semana_id' => $planSemanal[0]->semana_id,
+                            'bloque_id' => $semanas[0]->bloque_id],
+                            ['title' => 'Planificación Vertical TOC']
+                        );
+                    ?>
                     <!-- FIN BOTONES DERECHA -->
                 </div>
                 <hr>

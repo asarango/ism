@@ -75,7 +75,7 @@ class ScholarisActividad extends \yii\db\ActiveRecord
                 'paralelo_id', 'materia_id', 'hora_id', 'actividad_original', 'semana_id', 'destreza_id'], 'default', 'value' => null],
             [['create_uid', 'write_uid', 'tipo_actividad_id', 'bloque_actividad_id', 
                 'paralelo_id', 'materia_id', 'hora_id', 'actividad_original', 'semana_id', 
-                'destreza_id', 'lms_actvidad_id', 'plan_semanal_id'], 'integer'],
+                'destreza_id', 'lms_actvidad_id', 'plan_semanal_id', 'ods_pud_dip_id'], 'integer'],
             [['descripcion', 'archivo', 'descripcion_archivo', 'momento_detalle', 'observacion_nee', 'comentario_revisa', 'respuesta_revisa'], 'string'],
             [['inicio', 'fin', 'tipo_actividad_id', 'bloque_actividad_id', 'paralelo_id'], 'required'],
             [['con_nee', 'es_aprobado', 'es_heredado_lms', 'estado'], 'boolean'],
@@ -141,6 +141,7 @@ class ScholarisActividad extends \yii\db\ActiveRecord
             'es_heredado_lms' => 'Es heredado de lms',
             // 'codigo' => 'Código',
             'plan_semanal_id' => 'Plan Semanal',
+            'ods_pud_dip_id' => 'Ods Planificado',
         ];
     }
 

@@ -11,8 +11,10 @@ use backend\models\ScholarisClase;
 use backend\models\ScholarisClaseSearch;
 use backend\models\ScholarisPeriodo;
 use app\models\OpFaculty;
+use backend\models\OpCourseParalelo;
 use backend\models\ResUsers;
 use backend\models\ScholarisBloqueActividad;
+use backend\models\ScholarisGrupoAlumnoClase;
 use backend\models\ScholarisTipoActividad;
 
 /**
@@ -72,7 +74,7 @@ class ProfesorInicioController extends Controller {
      * @return mixed
      */
     public function actionIndex() {
-        
+                
         $usuarioLogueado    = \Yii::$app->user->identity->usuario;
         $periodoId          = Yii::$app->user->identity->periodo_id;
         $periodo            = ScholarisPeriodo::findOne($periodoId);
@@ -82,9 +84,60 @@ class ProfesorInicioController extends Controller {
 
         return $this->render('index',[
             'clases' => $clases
+            
         ]);
     }
-    
+
+    public function actionAgregarAlumnos() {
+        
+        $claseId = $_GET['clase_id'];
+        $clase = ScholarisClase::findOne($claseId);
+        $paraleloId = ScholarisClase::find()->where(['id' => $claseId])->one()->paralelo_id;
+        $coursesId = OpCourseParalelo::find()->where(['id' => $paraleloId])->one()->course_id;
+        $alumnos = $this->listadoAlumnos($claseId, $coursesId);
+        // print_r($alumnos);
+        // $studentId = $_GET['estudiante_id'];
+
+        return $this->render('agregar-alumnos', [
+            'alumnos' => $alumnos,
+            'clase' => $clase
+
+        ]);        
+    }
+
+    // metodo creado 17-08-2024 por Cvera obtener listado de alumnos Diploma del ISM
+    public function listadoAlumnos($claseId, $coursesId) {
+        $con = Yii::$app->db;
+        $query ="   select 	ins.student_id 
+		                    ,$claseId as clase_id
+		                    ,concat(est.last_name, ' ', est.first_name, ' ', est.middle_name) as estudiante 
+		                    ,cur.name as curso
+		                    ,par.name as paralelo
+                    from 	op_student_inscription ins
+                    		inner join  op_course_paralelo par on par.id = ins.parallel_id
+                    		inner join op_student est on est.id = ins.student_id 
+                    		inner join op_course cur on cur.id = par.course_id 
+                    where 	par.course_id = $coursesId
+                    		and ins.student_id not in (select estudiante_id from scholaris_grupo_alumno_clase where clase_id = $claseId)
+                    order by 3;";                    
+        $res = $con->createCommand($query)->queryAll();
+        return $res;
+    }   
+
+    public function actionRegistrarAlumnoClase() {
+        print_r($_POST);
+        $estudianteId = $_POST['estudiante_id'];
+        $claseId = $_POST['clase_id'];
+
+        $model= new ScholarisGrupoAlumnoClase();
+        $model->clase_id = $claseId;
+        $model->estudiante_id = $estudianteId;
+        $model->estado = true;
+        $model->save();
+
+        return $this->redirect(['agregar-alumnos', 'clase_id' => $claseId]);
+        
+    }
 
     public function actionClases() {
 

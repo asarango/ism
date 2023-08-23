@@ -741,7 +741,6 @@ class PudDipController extends Controller {
                             and blo.tipo_uso = '$uso'
                             and mbl.shot_name = '$bloqueCurriculoShotName'
                     order by sem.semana_numero;";
-                    
         $res = $con->createCommand($query)->queryAll();
         return $res;
         

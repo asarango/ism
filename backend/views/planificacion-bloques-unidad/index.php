@@ -77,7 +77,7 @@ function mostrar_datos_materia($cabecera)
                     <h4><img src="../ISM/main/images/submenu/herramientas-para-reparar.png" width="64px"
                             class="img-thumbnail"></h4>
                 </div>
-                <div class="col-lg-7">
+                <div class="col-lg-5">
                     <h3>
                         <?= Html::encode($this->title) ?>
                     </h3>
@@ -94,7 +94,7 @@ function mostrar_datos_materia($cabecera)
                     </font>
                     <!-- INICIO BOTONES DERECHA -->
                 </div>
-                <div class="col-lg-4 col-md-4" style="text-align: right;">
+                <div class="col-lg-6 col-md-6" style="text-align: right;">
                     <?=
                         Html::a(
                             '<span class="badge rounded-pill" style="background-color: #9e28b5"><i class="fa fa-briefcase" aria-hidden="true"></i> Inicio</span>',
@@ -107,7 +107,17 @@ function mostrar_datos_materia($cabecera)
 
                     <?=
                         Html::a(
-                            '<span class="badge rounded-pill" style="background-color: #65b2e8"><i class="fa fa-briefcase" aria-hidden="true"></i> Selección de Niveles</span>',
+                            '<span class="badge rounded-pill" style="background-color: #65b2e8"><i class="fa fa-briefcase" aria-hidden="true"></i>Planificación semanal </span>',
+                            ['planificacion-desagregacion-cabecera/index'],
+                            ['class' => 'link']
+                        );
+                    ?>
+
+                    |
+
+                    <?=
+                        Html::a(
+                            '<span class="badge rounded-pill" style="background-color: #ab0a3d"><i class="fa fa-briefcase" aria-hidden="true"></i> Selección de Niveles</span>',
                             ['planificacion-desagregacion-cabecera/index'],
                             ['class' => 'link']
                         );

@@ -445,13 +445,13 @@ function contador_diferenciacion($planUnidadId, $numCaracteresOk)
     <li>
         <b>7.- REFLEXIÓN</b>
         <ul>
-            <li class="zoom"><a href="#" onclick="ver_detalle('7.1.-');">7.1.- Lo que fuincionó bien
+            <li class="zoom"><a href="#" onclick="ver_detalle('7.1.-');">7.1.- Lo que funcionó bien
                     <i class="<?= $iconoOk; ?>" title="" style="color: green;"></i></a>
             </li>
-            <li class="zoom"><a href="#" onclick="ver_detalle('7.2.-');">7.2.- Lo que nó fuincionó bien
+            <li class="zoom"><a href="#" onclick="ver_detalle('7.2.-');">7.2.- Lo que nó funcionó bien
                     <i class="<?= $iconoOk; ?>" title="" style="color: green;"></i></a>
             </li>
-            <li class="zoom"><a href="#" onclick="ver_detalle('7.3.-');">7.3.- Observaciones, Cambios y sugerencias
+            <li class="zoom"><a href="#" onclick="ver_detalle('7.3.-');">7.3.- Observaciones, cambios y sugerencias
                     <i class="<?= $iconoOk; ?>" title="" style="color: green;"></i></a>
             </li>
 

@@ -228,13 +228,7 @@ class PlanificacionSemanalController extends Controller
         // echo $seccion;
         // die();
         if($seccion <> 'PAI'){
-            $tipoActividades = ScholarisTipoActividad::find()
-            ->where([
-                        'tipo' => 'N',
-                        'activo' => true
-                    ])
-            ->orderBy('orden')
-            ->all();
+            $tipoActividades = $tipoActividades = $this->get_tipos_actividad_nacional();
         }else{
             $tipoActividades = ScholarisTipoActividad::find()
             ->where([
@@ -277,6 +271,18 @@ class PlanificacionSemanalController extends Controller
             'ods' => $ods
         ]);
 
+    }
+
+
+    private function get_tipos_actividad_nacional(){
+        $con = Yii::$app->db;
+        $query = "select id
+                            ,concat(nombre_nacional, ' ( ', categoria, ' / ', tipo_aporte, ' )') as nombre_nacional 
+                    from 	scholaris_tipo_actividad
+                    where 	activo = true and tipo = 'N'
+                    order by orden;";
+        $res = $con->createCommand($query)->queryAll();
+        return $res;
     }
 
     private function get_ods($planificacionSemanalId){

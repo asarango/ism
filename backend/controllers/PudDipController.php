@@ -1735,7 +1735,7 @@ class PudDipController extends Controller {
     private function get_accion_lo_que_funciono($planBloqueUnidad) {
         $planBloqueUnidad = PlanificacionBloquesUnidad::findOne($planBloqueUnidad);
         $accion_update = "7.1.-";
-        $titulo = "7.1.- Lo que funcino";
+        $titulo = "7.1.- Lo que funcionó";
         $planifVertDipl = PlanificacionVerticalDiploma::find()->where([
                     'planificacion_bloque_unidad_id' => $planBloqueUnidad->id
                 ])->one();
@@ -1746,7 +1746,7 @@ class PudDipController extends Controller {
     private function get_accion_lo_que_no_funciono($planBloqueUnidad) {
         $planBloqueUnidad = PlanificacionBloquesUnidad::findOne($planBloqueUnidad);
         $accion_update = "7.2.-";
-        $titulo = "7.2.- Lo que no funcino";
+        $titulo = "7.2.- Lo que no funcionó";
         $planifVertDipl = PlanificacionVerticalDiploma::find()->where([
                     'planificacion_bloque_unidad_id' => $planBloqueUnidad->id
                 ])->one();

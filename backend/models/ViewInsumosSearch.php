@@ -16,7 +16,8 @@ class ViewInsumosSearch extends ViewInsumos
     public function rules()
     {
         return [
-            [['clase_id', 'actividad_id', 'periodo_id', 'total_calificados', 'total_estudiantes', 'semana_numero'], 'integer'],
+            [['clase_id', 'actividad_id', 'periodo_id', 'total_calificados', 
+            'total_estudiantes', 'semana_numero', 'ods_pud_dip_id'], 'integer'],
             [['curso', 'paralelo', 'nombre', 'nombre_nacional', 'inicio', 'title', 'login', 'bloque'], 'safe'],
         ];
     }
@@ -66,7 +67,8 @@ class ViewInsumosSearch extends ViewInsumos
             'periodo_id'        => $this->periodo_id, 
             'total_calificados' => $this->total_calificados, 
             'total_estudiantes' => $this->total_estudiantes,
-            'semana_numero' => $this->semana_numero
+            'semana_numero' => $this->semana_numero,
+            'ods_pud_dip_id' => $this->ods_pud_dip_id
         ]);
 
         $query->andFilterWhere(['ilike', 'nombre', $this->nombre])

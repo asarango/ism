@@ -14,6 +14,7 @@ $this->title = 'Mis asignaturas';
 // echo '<pre>';
 // print_r($clases);
 // die();
+
 // $alumnos = obtenerAlumnos();
 ?>
 
@@ -35,8 +36,8 @@ $this->title = 'Mis asignaturas';
                 <div class="col-lg-4 col-md-3" style="text-align: right; margin-top: -10px;">
                     <?= Html::a('<span class="badge rounded-pill" style="background-color: #ab0a3d"><i class="far fa-file"></i> Inicio</span>', ['site/index', 'class' => 'link']); ?>
                     |
-                    <?= Html::a('<span class="badge rounded-pill" style="background-color: #ab0a3d"><i class="far fa-file"></i> Agregar Estudiantes</span>', ['agregar-alumnos', 'clase_id' => $clases[0]['clase_id']]); ?>
-                    |
+                    <!-- <?= Html::a('<span class="badge rounded-pill" style="background-color: #ab0a3d"><i class="far fa-file"></i> Agregar Estudiantes</span>', ['agregar-alumnos', 'clase_id' => $clases[0]['clase_id']]); ?> -->
+                    <!-- | -->
                     <?= Html::a('<span class="badge rounded-pill" style="background-color: #0a1f8f"><i class="fas fa-clock"></i> Leccionario</span>', ['scholaris-asistencia-profesor/index'], ['class' => 'link']); ?>
                 </div>
                 <hr>
@@ -77,7 +78,7 @@ $this->title = 'Mis asignaturas';
                                         // }
                                         ?>
                                     </table> -->
-                                    <table class="table table-condensed table-striped table-hover tamano10">
+                                    <!-- <table class="table table-condensed table-striped table-hover tamano10">
                                         <thead>
                                             <tr>
                                                 <th>#</th>
@@ -86,7 +87,7 @@ $this->title = 'Mis asignaturas';
                                             </tr>
                                         </thead>
 
-                                        <tbody>
+                                        <tbody> -->
                                             <?php
                                             // $i = 0;
                                             // foreach ($modelGrupo as $grupo) {
@@ -103,8 +104,8 @@ $this->title = 'Mis asignaturas';
                                             //     echo '</tr>';
                                             // }
                                             ?>
-                                        </tbody>
-                                    </table>
+                                    <!-- </tbody>
+                                    </table> -->
                                 </div>
 
                             </div>

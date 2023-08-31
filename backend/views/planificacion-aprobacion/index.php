@@ -8,170 +8,176 @@ use yii\helpers\Url;
 /* @var $searchModel backend\models\PlanificacionDesagregacionCabeceraSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Aprobación de Planificaciones';
+$this->title = 'Aprobación de Planificaciones DPL';
 $this->params['breadcrumbs'][] = $this->title;
 
 // echo '<pre>';
 // print_r($detalle);
-//die();
+// die();
 ?>
+
+<style>
+    body {
+        background-color: #f5f5f5;
+        margin: 0;
+        padding: 0;
+    }
+
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    .course-card {
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+        padding: 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .course-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .course-info {
+        flex: 1;
+        padding-right: 20px;
+    }
+
+    .course-title {
+        font-size: 1.2rem;
+        color: #ab0a3d;
+        margin-bottom: 10px;
+        font-weight: bold;
+    }
+
+    .badge {
+        display: inline-block;
+        padding: 5px 10px;
+        background-color: #f2f2f2;
+        color: #333;
+        font-weight: bold;
+        border-radius: 5px;
+    }
+
+    .action-links {
+        display: flex;
+        align-items: center;
+    }
+
+    .action-link {
+        text-decoration: none;
+        padding: 8px 12px;
+        background-color: #0a1f8f;
+        color: #fff;
+        border-radius: 5px;
+        transition: background-color 0.2s ease;
+        margin-right: 5px;
+    }
+
+    .action-link:hover {
+        background-color: #eee;
+    }
+</style>
+
 <div class="planificacion-aprobacion-index">
 
     <div class="m-0 vh-50 row justify-content-center align-items-center">
-        <div class="card shadow col-lg-10 col-md-10">
+        <div class="card shadow col-lg-8 col-md-8">
             <div class=" row align-items-center p-2">
                 <div class="col-lg-1">
-                    <h4><img src="../ISM/main/images/submenu/files.png" width="64px" style="" class="img-thumbnail"></h4>
+                    <h4><img src="../ISM/main/images/submenu/files.png" width="64px" style="" class="img-thumbnail">
+                    </h4>
                 </div>
-                <div class="col-lg-11">
-                    <h4><?= Html::encode($this->title) ?></h4>
+                <div class="col-lg-10">
+                    <h4>
+                        <b>
+                            <?= Html::encode($this->title) ?>
+                        </b>
+                    </h4>
 
                 </div>
-            </div><!-- FIN DE CABECERA -->
-
-
-            <!-- inicia menu  -->
-            <div class="row">
-                <div class="col-lg-6 col-md-6">
-                    <!-- menu izquierda -->
-                    |
+                <div class="col-lg-1">
                     <?=
-                    Html::a(
-                            '<span class="badge rounded-pill" style="background-color: #9e28b5"><i class="fa fa-briefcase" aria-hidden="true"></i> Inicio</span>',
+                        Html::a(
+                            '<span class="badge rounded-pill" style="background-color: #9e28b5;color: #fff"><i class="fa fa-briefcase" aria-hidden="true"></i> Inicio</span>',
                             ['site/index'],
                             ['class' => 'link']
-                    );
+                        );
                     ?>
-                    |
-                </div> <!-- fin de menu izquierda -->
-
-                <div class="col-lg-6 col-md-6" style="text-align: right;">
-
                 </div>
-                <!-- fin de menu derecha -->
-            </div>
-            <!-- finaliza menu menu  -->
+                <hr>
+            </div><!-- FIN DE CABECERA -->
 
             <!-- inicia cuerpo de card -->
-            <div class="row" style="margin-top: 10px; margin-left: 60px">
 
-                <!--<div class="col-12 col-md-12 border">-->
-                
-                <div class="row">
-                    <div class="col-lg-12 col-md-12" style="text-align: center">
-                        <h6>-- Indicadores --</h6>
-                        <span class="badge rounded-pill bg-success">Aprobados</span>
-                        <span class="badge rounded-pill bg-primary">Devueltos</span>
-                        <span class="badge rounded-pill bg-warning text-dark">Por Revisar</span>
-                        <span class="badge rounded-pill bg-danger">Faltan</span>
-                    </div>
-                </div>
-
-                
-                
-                <div class="row">
+            <div class="container">
                 <?php
-                
-//                echo '<pre>';
-//                print_r($detalle);
-//                //die();
-                
-                foreach ($detalle as $curso) {
+                $mostrarDlp = [14, 15];
+                foreach ($mostrarDlp as $index) {
+                    $curso = $detalle[$index];
                     ?>
-                    
-                    <div class="card  zoom" style="width: 30%; margin: 3px;background-color: #ccc; color: white">
-                        <div class="row g-0">
-                            
-                            <div class="col-md-12">
-                                <div class="card-body" >
-                                    <h6 class="card-title">
-                                        <strong>
-                                            <?php 
-                                            echo Html::a('<img src="../ISM/main/images/submenu/papeles.png" width="30px" class="img-fluid rounded-start" alt="..."> '.
-                                                $curso['curso'].' - '.$curso['code'],
-                                                ['asignaturas',
-                                                    'template_id' => $curso['x_template_id']
-                                                ],
-                                                ['class' => 'btn-link','style' => 'color: #ab0a3d']
-                                            ); 
-                                            ?>
-                                        </strong>
-                                    </h6>
-                                    <strong class="my-text-medium">Total Asignaturas:&nbsp;<span class="badge rounded-pill" style="background-color:#0a1f8f" >
-                                            <?php echo $curso['total_materias'] ?>
-                                    </span></strong>
-
-                                </div>
-                                <div class="card-footer">
-                                    <b>Anuales (Iniciando) -> </b>
-                                        <?php
-                                            foreach ($curso['totales'] as $total) {
-                                                if ($total['estado'] == 'EN_COORDINACION') {
-                                                    ?>
-                                                    <span class="badge rounded-pill bg-warning text-dark"><?= $total['total'] ?></span>
-                                                    <?php
-                                                }
-                                                if ($total['estado'] == 'INICIANDO') {
-                                                    ?>
-                                                    <span class="badge rounded-pill bg-danger"><?= $total['total'] ?></span>
-                                                    <?php
-                                                }
-                                                if ($total['estado'] == 'DEVUELTO') {
-                                                    ?>
-                                                    <span class="badge rounded-pill bg-primary"><?= $total['total'] ?></span>
-                                                    <?php
-                                                }
-                                                if ($total['estado'] == 'APROBADO') {
-                                                    ?>
-                                                    <span class="badge rounded-pill bg-success"><?= $total['total'] ?></span>
-                                                    <?php
-                                                }
-                                            }
-                                            ?>       
-                                                    
-                                        <hr>
-                                        <div class="row">
-                                            <?=
-                                                Html::a('<b style="color: #0a1f8f">* Aprobaciones Planes de Unidades</b>',['pud-aprobacion/index1',
-                                                        'template_id' => $curso['x_template_id']
-                                                    ]);
-                                            ?>
-                                        </div>
-
-
-                                        <div class="row">
-                                            <?php
-                                                if($curso['code'] == 'PAI'){
-                                                    ?>
-                                                    <?=
-                                                Html::a('<b style="color: #9e28b5">* Aprobaciones mapa de enfoques</b>',
-                                                    ['materias-pai/lista-asignaturas']);
-                                            ?>
-
-                                                    <?php
-                                                }
-                                            ?>
-                                        </div>
-
-                                </div>
+                    <div class="course-card">
+                        <div class="course-info">
+                            <div class="course-title">
+                                <?= $curso['curso'] . ' - ' . $curso['code'] ?>
+                            </div>
+                            <div class="badge">
+                                Total Asignaturas:
+                                <?= $curso['total_materias'] ?>
                             </div>
                         </div>
+                        <div class="action-links">
+                            <?=
+                                Html::a('Planificación Vertical', [
+                                    'planificacion-aprobacion/asignaturas',
+                                    'template_id' => $curso['x_template_id']
+                                ], [
+                                    'class' => 'action-link',
+                                    'title' => 'Ver planificacion Vertical'
+                                ]);
+                            ?>
+                            <?=
+                                Html::a('Plan de Unidades', [
+                                    'pud-aprobacion/index1',
+                                    'template_id' => $curso['x_template_id']
+                                ], [
+                                    'class' => 'action-link',
+                                    'title' => 'Ver plan de Unidades'
+                                ]);
+                            ?>
+                            <?=
+                                Html::a('Planificación Semanal', [
+                                    'plan-semanal-docente/index',
+                                    'template_id' => $curso['x_template_id']
+                                ], [
+                                    'class' => 'action-link',
+                                    'title' => 'Ver plan semanal'
+                                ]);
+                            ?>
+                            <?php if ($curso['code'] == 'PAI'): ?>
+                                <?=
+                                    Html::a('Mapa de Enfoques', ['materias-pai/lista-asignaturas'], ['class' => 'action-link']);
+                                ?>
+                            <?php endif; ?>
+                        </div>
                     </div>
-
                     <?php
                 }
                 ?>
-
-
-                </div>
-
             </div>
+
+
             <!-- fin cuerpo de card -->
-
-
 
         </div>
     </div>
 
 </div>
-

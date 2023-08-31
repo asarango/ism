@@ -14,9 +14,10 @@ $this->title = 'Planificaciones - ' . $cabecera->ismAreaMateria->mallaArea->peri
 $this->params['breadcrumbs'][] = $this->title;
 
 //  echo '<pre>';
-//  print_r($cabecera);
-//  print_r($desagregacion);
+//  print_r($template_id);
 //  die();
+
+//  print_r($desagregacion);
 //    print_r($asignaturas[0]->opCourseTemplate->opCourses[0]->name);
 ?>
 <!-- JS y CSS Ckeditor -->
@@ -32,18 +33,13 @@ $this->params['breadcrumbs'][] = $this->title;
                 <div class="col-lg-1">
                     <h4><img src="../ISM/main/images/submenu/herramientas-para-reparar.png" width="64px" style="" class="img-thumbnail"></h4>
                 </div>
-                <div class="col-lg-11">
+                <div class="col-lg-9">
                     <h4><?= Html::encode($this->title) ?></h4>
 
                 </div>
-            </div><!-- FIN DE CABECERA -->
-
-
-            <!-- inicia menu  -->
-            <div class="row">
-                <div class="col-lg-6 col-md-6">
-                    <!-- menu izquierda -->
-                    |
+                <div class="col-lg-2 col-md-2">
+                    <!-- menu derecha -->
+                    
                     <?=
                     Html::a(
                         '<span class="badge rounded-pill" style="background-color: #9e28b5"><i class="fa fa-briefcase" aria-hidden="true"></i> Inicio</span>',
@@ -59,8 +55,14 @@ $this->params['breadcrumbs'][] = $this->title;
                         ['class' => 'link']
                     );
                     ?>
-                    |
-                </div> <!-- fin de menu izquierda -->
+                    
+                </div> <!-- fin de menu derecha -->
+                <hr>
+            </div><!-- FIN DE CABECERA -->
+
+            <!-- inicia menu  -->
+            <div class="row">
+                
 
                 <div class="col-lg-6 col-md-6" style="text-align: right;">
 
@@ -352,10 +354,13 @@ $this->params['breadcrumbs'][] = $this->title;
 
                     <?php
                     $form = ActiveForm::begin([
-                        'action' => Url::to(['detalle', 'cabecera_id' => $cabecera->id]),
+                        'action' => Url::to(['detalle', 'cabecera_id' => $cabecera->id, 'template_id' => $template_id]),
                         'method' => 'post'
+                        
+
                     ]);
                     ?>
+                    <input type="hidden" value="<?= $template_id ?>">
 
                     <!--CKEDITOR-->
                     <!--EDITOR DE TEXTO KARTIK-->
@@ -368,6 +373,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         })
                     </script>
 
+                    
 
                     <?php
                     if ($cabecera->estado == 'APROBADO') {
@@ -384,16 +390,21 @@ $this->params['breadcrumbs'][] = $this->title;
                             Html::submitButton(
                                 'Devolver Planificación',
                                 [
+
+
                                     'class' => 'btn btn-danger my-text-medium'
                                 ]
                             )
                             ?>
                             <hr>
-                            <i class="far fa-hand-point-down" style="font-size: 20px;color: #0a1f8f"></i>
+                            <!-- <i class="far fa-hand-point-down" style="font-size: 20px;color: #0a1f8f"></i> -->
                             <?=
                             Html::a(
                                 '<i class="fas fa-check-circle"> Aprobar Planificación</i>',
-                                ['aprobacion', 'cabecera_id' => $cabecera->id],
+                                ['aprobacion', 'cabecera_id' => $cabecera->id,
+                                 'template_id' => $template_id
+                            
+                            ],
                                 ['class' => 'btn btn-success my-text-medium']
                             );
                             ?>
@@ -413,6 +424,8 @@ $this->params['breadcrumbs'][] = $this->title;
                     <?php
                     }
                     ?>
+
+
 
                 </div>
 

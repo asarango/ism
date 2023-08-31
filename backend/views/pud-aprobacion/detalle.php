@@ -14,6 +14,11 @@ $this->params['breadcrumbs'][] = $this->title;
 
 $user = Yii::$app->user->identity->usuario;
 $hoy = date('Y-m-d H:i:s');
+
+// echo "<pre>";
+// print_r($seccionCode);
+// die();
+
 ?>
 <!-- Jquery AJAX -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
@@ -26,15 +31,22 @@ $hoy = date('Y-m-d H:i:s');
         <div class="card shadow col-lg-12 col-md-12 col-sm-8">
             <div class=" row align-items-center p-2">
                 <div class="col-lg-1">
-                    <h4><img src="ISM/main/images/submenu/herramientas-para-reparar.png" width="64px" style="" class="img-thumbnail"></h4>
+                    <h4><img src="ISM/main/images/submenu/herramientas-para-reparar.png" width="64px" style=""
+                            class="img-thumbnail"></h4>
                 </div>
                 <div class="col-lg-6">
-                    <h4><?= Html::encode($this->title) ?></h4>
-                    <small><?= $dataMateria['curso'] . ' | ' . $dataMateria['materia'] . ' | ' . $dataMateria['last_name'] ?></small>
+                    <h4>
+                        <?= Html::encode($this->title) ?>
+                    </h4>
+                    <small>
+                        <?= $dataMateria['curso'] . ' | ' . $dataMateria['materia'] . ' | ' . $dataMateria['last_name'] ?>
+                    </small>
                 </div>
 
                 <div class="col-lg-5 col-md-5" style="text-align: right;">
-                    <img src="imagenes/iso/iso.png" class="img-thumbnail" width="50px" /> <b> <?= $docIso ?></b>
+                    <img src="imagenes/iso/iso.png" class="img-thumbnail" width="50px" /> <b>
+                        <?= $docIso ?>
+                    </b>
                 </div>
             </div><!-- FIN DE CABECERA -->
 
@@ -45,21 +57,21 @@ $hoy = date('Y-m-d H:i:s');
                     <!-- menu izquierda -->
                     |
                     <?=
-                    Html::a(
+                        Html::a(
                             '<span class="badge rounded-pill" style="background-color: #9e28b5"><i class="fa fa-briefcase" aria-hidden="true"></i> Inicio</span>',
                             ['site/index'],
                             ['class' => 'link']
-                    );
+                        );
                     ?>
 
                     |
 
                     <?=
-                    Html::a(
+                        Html::a(
                             '<span class="badge rounded-pill" style="background-color: #65b2e8"><i class="fa fa-briefcase" aria-hidden="true"></i> Aprobaciones</span>',
                             ['planificacion-aprobacion/index'],
                             ['class' => 'link']
-                    );
+                        );
                     ?>
 
                     |
@@ -76,32 +88,29 @@ $hoy = date('Y-m-d H:i:s');
             <!-- inicia cuerpo de card -->
 
             <div class="row" style="margin-top: 20px">
-                <div class="col-lg-8 col-md-8">       
+                <div class="col-lg-8 col-md-8">
                     <?php
-                        if($seccionCode == 'DIPL'){
-                            ?>
-                            <iframe width="100%"
-                                    height="600"
-                                    src="<?= Url::toRoute(['pud-dip/pdf-pud-dip', 'planificacion_unidad_bloque_id' => $dataMateria['id']]) ?>">
-                            </iframe>
+                    if ($seccionCode == 'DIPL') {
+                        ?>
+                        <iframe width="100%" height="600"
+                            src="<?= Url::toRoute(['pud-dip/pdf-pud-dip', 'planificacion_unidad_bloque_id' => $dataMateria['id']]) ?>">
+                        </iframe>
                         <?php
-                        }elseif($seccionCode == 'PAI'){
-                            ?>
-                            <iframe width="100%"
-                                    height="600"
-                                    src="<?= Url::toRoute(['pud-pai/genera-pdf', 'planificacion_unidad_bloque_id' => $dataMateria['id']]) ?>">
-                            </iframe>
-                            <?php
-                        }elseif($seccionCode == 'BAS'){
-                            ?>
-                            <iframe width="100%"
-                                    height="600"
-                                    src="<?= Url::toRoute(['pud-pep/genera-pdf', 'planificacion_unidad_bloque_id' => $dataMateria['id']]) ?>">
-                            </iframe>
-                            <?php
-                        }                 
+                    } elseif ($seccionCode == 'PAI') {
+                        ?>
+                        <iframe width="100%" height="600"
+                            src="<?= Url::toRoute(['pud-pai/genera-pdf', 'planificacion_unidad_bloque_id' => $dataMateria['id']]) ?>">
+                        </iframe>
+                        <?php
+                    } elseif ($seccionCode == 'BAS') {
+                        ?>
+                        <iframe width="100%" height="600"
+                            src="<?= Url::toRoute(['pud-pep/genera-pdf', 'planificacion_unidad_bloque_id' => $dataMateria['id']]) ?>">
+                        </iframe>
+                        <?php
+                    }
                     ?>
-                    
+
                 </div>
 
 
@@ -109,7 +118,7 @@ $hoy = date('Y-m-d H:i:s');
 
                     <div class="row">
                         <p>
-                            El avance de la planificación es del 
+                            El avance de la planificación es del
                             <b style="border:solid 1px #ccc; border-radius: 50%; padding: 10px">
                                 <?= $dataMateria['avance_porcentaje'] ?>%
                             </b>
@@ -148,24 +157,23 @@ $hoy = date('Y-m-d H:i:s');
                         <?php if ($modelBitacora['estado_jefe_coordinador'] == 'ENVIADO') { ?>
                             <?php
                             $form = ActiveForm::begin([
-                                        'action' => Url::to(['devuelve-aprueba', 'bitacora_id' => $modelBitacora['id']]),
-                                        'method' => 'post'
+                                'action' => Url::to(['devuelve-aprueba', 'bitacora_id' => $modelBitacora['id']]),
+                                'method' => 'post'
                             ]);
                             ?>
 
                             <!--CKEDITOR-->
                             <!--EDITOR DE TEXTO KARTIK-->
                             <textarea name="devolucion" id="editor">
-                                                                
-                            </textarea>
+
+                                    </textarea>
                             <script>
                                 CKEDITOR.replace('editor', {
                                     customConfig: '/ckeditor_settings/config.js'
                                 })
                             </script>
 
-                            <input type="radio" id="huey" name="estado" value="DEVUELTO"
-                                   checked>
+                            <input type="radio" id="huey" name="estado" value="DEVUELTO" checked>
                             <label for="huey">DEVOLVER</label>
 
 
@@ -175,7 +183,7 @@ $hoy = date('Y-m-d H:i:s');
 
 
 
-                            <input type="hidden" name="id" value="<?= $modelBitacora['id'] ?>">
+                            <input type="text" name="id" value="<?= $modelBitacora['id'] ?>">
                             <br />
                             <br />
 
@@ -187,16 +195,16 @@ $hoy = date('Y-m-d H:i:s');
                     <?php } ?>
                 <?php } ?>
 
-            </div> 
+            </div>
             <!--fin de retroalimentacion-->
-            
-            
+
             <div class="row">
                 <div class="col-lg-2 col-md-2"></div>
                 <div class="col-lg-8 col-md-8 text-center">
                     <b><u>BITÁCORA</u></b>
                     <div class="table table-responsive">
                         <table class="table table-condensed">
+
                             <thead>
                                 <tr>
                                     <th>NOTIFICADO</th>
@@ -210,18 +218,18 @@ $hoy = date('Y-m-d H:i:s');
                             </thead>
                             <tbody>
                                 <?php
-                                    foreach ($bitacora as $bita){
-                                        echo '<tr>';
-                                        echo '<td>'.$bita->fecha_notifica.'</td>';
-                                        echo '<td>'.$bita->usuario_notifica.'</td>';
-                                        echo '<td>'.$bita->notificacion.'</td>';
-                                        
-                                        echo '<td>'.$bita->fecha_responde.'</td>';
-                                        echo '<td>'.$bita->usuario_responde.'</td>';
-                                        echo '<td>'.$bita->respuesta.'</td>';                                                                                
-                                        echo '<td>'.$bita->estado_jefe_coordinador.'</td>';                                                                                
-                                        echo '</tr>';
-                                    }
+                                foreach ($bitacora as $bita) {
+                                    echo '<tr>';
+                                    echo '<td>' . $bita->fecha_notifica . '</td>';
+                                    echo '<td>' . $bita->usuario_notifica . '</td>';
+                                    echo '<td>' . $bita->notificacion . '</td>';
+
+                                    echo '<td>' . $bita->fecha_responde . '</td>';
+                                    echo '<td>' . $bita->usuario_responde . '</td>';
+                                    echo '<td>' . $bita->respuesta . '</td>';
+                                    echo '<td>' . $bita->estado_jefe_coordinador . '</td>';
+                                    echo '</tr>';
+                                }
                                 ?>
                             </tbody>
                         </table>
@@ -235,7 +243,3 @@ $hoy = date('Y-m-d H:i:s');
         <!-- fin cuerpo de card -->
     </div>
 </div>
-
-
-
-

@@ -89,11 +89,7 @@ class PlanificacionSemanalController extends Controller
 
     public function actionIndex1()
     {
-
-        // echo '<pre>';
-        // print_r($_GET);
-        // die();
-
+        
         $bloqueId = $_GET['bloque_id'];
         $claseId = $_GET['clase_id'];
         
@@ -256,7 +252,7 @@ class PlanificacionSemanalController extends Controller
             $model->tipo_calificacion   = $tipoAct->tipo;
             $model->tareas              = 'none';
             $model->hora_id             = $semana->hora_id;
-            $model->semana_id           = $semana->id;
+            $model->semana_id           = $semana->semana_id;
 
             $this->insert_actividad($semana, $model, $tipoAct);
             

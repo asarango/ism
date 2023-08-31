@@ -350,8 +350,7 @@ order by dia.numero
                                     inner join scholaris_grupo_orden_calificacion o on o.codigo_nombre_pai = t.nombre_pai
                     where 	g.clase_id = $claseId
                                     and g.estudiante_id not in (select idalumno from scholaris_calificaciones where idalumno = g.estudiante_id and idactividad = $actividad);";
-    //    print_r($query);
-    //    die();
+
         $res = $con->createCommand($query)->queryAll();
         return $res;
     }

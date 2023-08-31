@@ -12,6 +12,10 @@ use backend\models\DeceMotivos;
 use backend\models\DeceRegistroSeguimiento;
 use backend\models\PlanificacionOpciones;
 
+// echo "<pre>";
+// print_r($modelCasosHist);
+// die();
+
 /* @var $this yii\web\View */
 /* @var $model backend\models\DeceCasos */
 /* @var $form yii\widgets\ActiveForm */
@@ -86,6 +90,7 @@ $modelPathArchivo = PlanificacionOpciones::find()
                     <span style="text-align: left;"><h4>DECE - CASOS</h4></span>
                 </div>
                 <!-- FIN DE CABECERA -->
+                
                 <!-- inicia menu  -->
                 
                     <div class="col-lg-6 col-md-6" style="text-align: right;">
@@ -588,6 +593,7 @@ $modelPathArchivo = PlanificacionOpciones::find()
                                         <td><b>No. Caso</b></td>
                                         <td><b>No. Int.</b></td>
                                         <td><b>Fecha Creación</b></td>
+                                        <!-- <td><b>Responsable</b></td> -->
                                         <td><b>Razón</b></td>
                                         <td><b>Objetivo General</b></td>
                                         <td><b>Editar</b></td>

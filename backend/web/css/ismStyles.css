@@ -1,41 +1,42 @@
 .my-btn {
-  border: 2px solid black;
-  background-color: white;
-  color: black;
-  padding: 14px 28px;
-  font-size: 16px;
-  cursor: pointer;
+    border: 2px solid black;
+    background-color: white;
+    color: black;
+    padding: 14px 28px;
+    font-size: 16px;
+    cursor: pointer;
 }
-.my-primary{
-  border-color: #0a1f8f;
-  color: #0a1f8f;
+
+.my-primary {
+    border-color: #0a1f8f;
+    color: #0a1f8f;
 }
 
 .my-primary:hover {
-  background: #0a1f8f;
-  color: white;
+    background: #0a1f8f;
+    color: white;
 }
 
-.shadow-wine{
+.shadow-wine {
     box-shadow: 20px 20px 20px -20px red;
 }
 
 
-.link{
+.link {
     color: #ab0a3d;
 }
 
-.link:hover{
+.link:hover {
     color: #898b8d;
 }
 
 
 /****** PARA MENU ******/
-.menu{
-    display: none; 
-    float: left; 
-    padding: 10px; 
-    margin: 0; 
+.menu {
+    display: none;
+    float: left;
+    padding: 10px;
+    margin: 0;
     position: absolute;
     background-color: #ab0a3d;
     color: white;
@@ -46,39 +47,45 @@
     z-index: 100;
 }
 
-.btn-menu{
+.btn-menu {
     color: white;
     font-size: 10px;
 }
 
-.btn-menu:hover{
+.btn-menu:hover {
     color: #898b8d;
-    font-size: 12px;    
+    font-size: 12px;
 }
+
 /****** fin MENU ******/
 
-.my-card-shadow{
+.my-card-shadow {
     box-shadow: 20px 20px 20px -20px #ccc;
 }
 
 /*** colores texto ***/
 
-.text-color-p{
+.text-color-p {
     color: #ab0a3d;
 }
-.text-color-s{
+
+.text-color-s {
     color: #0a1f8f;
 }
-.text-color-t{
+
+.text-color-t {
     color: #ff9e18;
 }
-.text-color-plomo{
+
+.text-color-plomo {
     color: #898b8d;
 }
-.text-color-kids{
+
+.text-color-kids {
     color: #9e28b5;
 }
-.text-color-online{
+
+.text-color-online {
     color: #65b2e8;
 }
 
@@ -87,31 +94,32 @@
 
 /*tamaños de texto*/
 
-.my-text-small{
+.my-text-small {
     font-size: 10px;
 }
-.my-text-extra-small{
+
+.my-text-extra-small {
     font-size: 8px;
 }
 
-.my-text-medium{
+.my-text-medium {
     font-size: 12px;
 }
 
-.my-text-large{
+.my-text-large {
     font-size: 18px;
 }
 
 /*fin tamaños de texto*/
 
-.inputElegante{
+.inputElegante {
     border: none;
     border-bottom: solid 1px #ccc;
-  }
+}
 
 
-  /*scroll*/
-.my-scroll{
+/*scroll*/
+.my-scroll {
     overflow-y: scroll;
 }
 
@@ -191,48 +199,54 @@ ESTILOS PARA SELECT 2
 */
 
 
-  /* Scroll para table ---- pantalla: Planificacion Vertical Pai-Criterios
+/* Scroll para table ---- pantalla: Planificacion Vertical Pai-Criterios
     url: http://192.168.20.25/educandi/backend/web/index.php?r=planificacion-vertical-pai-descriptores%2Findex1&unidad_id=1
   */
-  #global {
+#global {
     height: 380px;
     overflow-y: auto;
-    box-sizing:border-box;
-  }
+    box-sizing: border-box;
+}
 
-  .box-underline{
-      background-color:red;
-      font-size: 100px;
-  }
-  
-  .scroll-400 {
+.box-underline {
+    background-color: red;
+    font-size: 100px;
+}
+
+.scroll-400 {
     height: 600px;
     overflow-y: auto;
-    box-sizing:border-box;
-  }
-  
-  .card-400{
-      height: 450px;
-  }
-  
-  .zoom {
-  transition: transform .2s; /* Animation */
-  margin: 0 auto;
+    box-sizing: border-box;
+}
+
+.card-400 {
+    height: 450px;
+}
+
+/* decomentar de ser necesario*/ 
+
+/* .zoom {
+    transition: transform .2s;
+    
+    margin: 0 auto;
 }
 
 .zoom:hover {
-  transform: scale(1.1); /* (150% zoom - Note: if the zoom is too large, it will go outside of the viewport) */
-}
+    transform: scale(1.1);
+    /* (150% zoom - Note: if the zoom is too large, it will go outside of the viewport) 
+} */
 
 
-.pagination li{
+
+/* decomentar de ser necesario*/ 
+
+.pagination li {
     font-size: 10px;
     border: solid 1px #eee;
     padding-left: 5px;
     padding-right: 5px;
 }
 
-.grid-view table{
+.grid-view table {
     font-size: 10px;
 }
-  

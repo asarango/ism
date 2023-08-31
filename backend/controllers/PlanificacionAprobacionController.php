@@ -82,7 +82,9 @@ class PlanificacionAprobacionController extends Controller{
             $curso['totales'] = $this->consulta_totales($curso['x_template_id']);
             array_push($detalle, $curso);            
         }           
-
+// echo '<pre>';
+// print_r($detalle);
+// die();
         return $this->render('index', [
             'detalle' => $detalle
         ]);
@@ -178,6 +180,7 @@ class PlanificacionAprobacionController extends Controller{
         $cabecera = PlanificacionDesagregacionCabecera::findOne($cabeceraId);
 
         $estado = $cabecera->estado;
+        print_r($estado);
         $pca = new Pca($cabeceraId);
         $periodoId = Yii::$app->user->identity->periodo_id;
 
@@ -233,7 +236,8 @@ class PlanificacionAprobacionController extends Controller{
             $cabecera->revision_coordinacion_observaciones = $_POST['revision_coordinacion_observaciones'];
             $cabecera->estado = 'DEVUELTO';
             $cabecera->save();
-            return $this->redirect(['detalle', 'cabecera_id' => $cabeceraId]);
+            return $this->redirect(['detalle', 'cabecera_id' => $cabeceraId ,
+             'template_id' => $templateId]);
         }
 
         return $this->render('detalle', [
@@ -336,6 +340,7 @@ class PlanificacionAprobacionController extends Controller{
     public function actionAprobacion(){
         $fechaHoy = date('Y-m-d H:i:s');
         $cabeceraId = $_GET['cabecera_id'];
+        $templateId = $_GET['template_id'];
         $model = PlanificacionDesagregacionCabecera::findOne($cabeceraId);
 
         $model->estado = 'APROBADO';
@@ -343,7 +348,8 @@ class PlanificacionAprobacionController extends Controller{
         $model->save();
 
 
-        return $this->redirect(['detalle', 'cabecera_id' => $cabeceraId]);
+        return $this->redirect(['detalle', 'cabecera_id' => $cabeceraId,
+         'template_id' => $templateId]);
 
     }
 

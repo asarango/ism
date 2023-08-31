@@ -1,7 +1,7 @@
 <?php
 
 //echo '<pre>';
-// print_r($dates);
+// print_r($detail);
 //print_r($hours);
 
 use backend\models\Lms;
@@ -46,7 +46,7 @@ use yii\helpers\Html;
     //inicio de foreach principal de dias y fechas
     $contadorNoPlanificado = 0;
     foreach ($dates as $date) {
-    ?>
+        ?>
 
         <!-- inicio de dia y fecha -->
         <div class="row" style="margin-top: 30px;">
@@ -60,7 +60,7 @@ use yii\helpers\Html;
 
         <?php
         //inicio de horas
-
+    
         foreach ($hours as $hour) {
             if ($date['numero'] == $hour['dia_numero']) {
 
@@ -70,33 +70,41 @@ use yii\helpers\Html;
                     $color = '#9e28b5';
                 }
 
-        ?>
+                ?>
                 <div class="row" style="margin: 0px 50px 50px 50px; 
                     color: <?= $color ?>; 
                     border: solid 1px <?= $color ?>; 
                     ">
                     <nav aria-label="breadcrumb" style="background-color: <?= $color ?>;">
                         <ol class="breadcrumb">
-                            <li class="breadcrumb-item active" aria-current="page" style="color: white;"><?= $hour['hora'] ?></li>
-                            <li class="breadcrumb-item active" aria-current="page" style="color: white;"><?= $hour['curso'] ?></li>
-                            <li class="breadcrumb-item active" aria-current="page" style="color: white;"><?= $hour['materia'] ?></li>
-                            <li class="breadcrumb-item active" aria-current="page" style="color: white;"><?= $hour['responsable_planificacion'] ?></li>
+                            <li class="breadcrumb-item active" aria-current="page" style="color: white;">
+                                <?= $hour['hora'] ?>
+                            </li>
+                            <li class="breadcrumb-item active" aria-current="page" style="color: white;">
+                                <?= $hour['curso'] ?>
+                            </li>
+                            <li class="breadcrumb-item active" aria-current="page" style="color: white;">
+                                <?= $hour['materia'] ?>
+                            </li>
+                            <li class="breadcrumb-item active" aria-current="page" style="color: white;">
+                                <?= $hour['responsable_planificacion'] ?>
+                            </li>
 
                             <li class="breadcrumb-item active" aria-current="page" style="color: white;">
-                                <?= $hour['detalle_id']. ' '.$hour['clase_id'] ?>
-                                </li>
+                                <?= $hour['detalle_id'] . ' ' . $hour['clase_id'] ?>
+                            </li>
                         </ol>
                     </nav>
 
 
                     <?php
                     $detail = get_planification_by_hour($hour['detalle_id'], $hour['clase_id'], $date['fecha']);
-                    
 
-                    if ($detail) {                                            
+
+                    if ($detail) {
 
                         if ($detail['fecha'] == $date['fecha']) {
-                            
+
                             if ($detail['titulo'] == 'NO CONFIGURADO') {
                                 $contadorNoPlanificado++;
                                 echo '<div class="col">';
@@ -151,10 +159,10 @@ use yii\helpers\Html;
                             $contadorNoPlanificado++;
                             echo 'Hora libre';
                         }
-                    
-                    } else{
-                        if($hour['materia'] != 'Desarrollo Humano Integral' && $hour['materia'] != 'Talleres Optativos')
-                        $contadorNoPlanificado++;
+
+                    } else {
+                        if ($hour['materia'] != 'Desarrollo Humano Integral' && $hour['materia'] != 'Talleres Optativos')
+                            $contadorNoPlanificado++;
                         echo '<div class="col">
                                 <img src="../ISM/main/images/actions/no.gif" 
                                      width="50px" style="" class="">Sin planificar</div>';
@@ -163,7 +171,7 @@ use yii\helpers\Html;
                     ?>
                 </div>
 
-        <?php
+                <?php
             }
         }
         //fin de horas
@@ -182,28 +190,30 @@ use yii\helpers\Html;
 
     <div class="btn-whatsapp">
         <?php
-            
-            $state = get_validation_to_send($contadorNoPlanificado, $statesBitacora);
 
-            if($state == 'enviar'){
-                echo Html::a('<img src="../ISM/main/images/states/enviar.png">', ['acciones', 
-                    'action'    => 'enviar',
-                    'week_id'   => $week->id
-                ]);
-            }elseif($state == 'coordinador'){
-                echo '<img src="../ISM/main/images/states/revisando.gif" 
+        $state = get_validation_to_send($contadorNoPlanificado, $statesBitacora);
+
+        if ($state == 'enviar') {
+            echo Html::a('<img src="../ISM/main/images/states/enviar.png">', [
+                'acciones',
+                'action' => 'enviar',
+                'week_id' => $week->id
+            ]);
+        } elseif ($state == 'coordinador') {
+            echo '<img src="../ISM/main/images/states/revisando.gif" 
                         width="80px"
                         style="border-radius: 50px 50px 50px 50px">';
-            }elseif($state == 'devuelto'){
-                echo Html::a('<img src="../ISM/main/images/states/devuelto.gif" width="80px"
-                style="border-radius: 50px 50px 50px 50px">', ['devuelto', 
-                    'week_id'   => $week->id
-                ]);
-            }elseif($state == 'aprobado'){
-                echo '<img src="../ISM/main/images/states/aprobado.gif" 
+        } elseif ($state == 'devuelto') {
+            echo Html::a('<img src="../ISM/main/images/states/devuelto.gif" width="80px"
+                style="border-radius: 50px 50px 50px 50px">', [
+                'devuelto',
+                'week_id' => $week->id
+            ]);
+        } elseif ($state == 'aprobado') {
+            echo '<img src="../ISM/main/images/states/aprobado.gif" 
                         width="80px"
-                        style="border-radius: 50px 50px 50px 50px">';  
-            }      
+                        style="border-radius: 50px 50px 50px 50px">';
+        }
         ?>
     </div>
 
@@ -231,15 +241,16 @@ function get_planification_by_hour($detalleHorarioId, $claseId, $fecha)
     //     echo $query;
     // die();    
     // }
-    
+
 
     $res = $con->createCommand($query)->queryOne();
     return $res;
 }
 
 
-function get_validation_to_send($contadorNoPlanificado, $statesBitacora){
-    if(count($statesBitacora) == 0 && $contadorNoPlanificado == 0){
+function get_validation_to_send($contadorNoPlanificado, $statesBitacora)
+{
+    if (count($statesBitacora) == 0 && $contadorNoPlanificado == 0) {
         return 'enviar';
         exit;
     }
@@ -247,31 +258,31 @@ function get_validation_to_send($contadorNoPlanificado, $statesBitacora){
     $countCoordinador = 0;
     $countDevuelto = 0;
     $countAprobado = 0;
-    foreach($statesBitacora as $bita){
-        if($bita['estado'] == 'COORDINADOR'){
+    foreach ($statesBitacora as $bita) {
+        if ($bita['estado'] == 'COORDINADOR') {
             $countCoordinador++;
-        }elseif($bita['estado'] == 'DEVUELTO'){
+        } elseif ($bita['estado'] == 'DEVUELTO') {
             $countDevuelto++;
-        }elseif($bita['estado'] == 'APROBADO'){
+        } elseif ($bita['estado'] == 'APROBADO') {
             $countAprobado++;
         }
     }
-    
+
     // echo $countCoordinador;
     // echo $countDevuelto;
     // echo $countAprobado;
 
-    if($countDevuelto > 0){
+    if ($countDevuelto > 0) {
         return 'devuelto';
         exit;
     }
 
-    if($countCoordinador > 0){
+    if ($countCoordinador > 0) {
         return 'coordinador';
         exit;
     }
 
-    if($countAprobado > 0){
+    if ($countAprobado > 0) {
         return 'aprobado';
         exit;
     }

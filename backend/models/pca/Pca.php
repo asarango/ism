@@ -28,6 +28,7 @@ class Pca extends ActiveRecord {
         $this->html = '';
 
         $this->cabecera = PlanificacionDesagregacionCabecera::findOne($this->cabeceraId);
+       
         $this->pcaDetalle = PcaDetalle::find()
                 ->where(['desagregacion_cabecera_id' => $this->cabeceraId])
                 ->all();

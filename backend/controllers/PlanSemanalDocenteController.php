@@ -81,6 +81,7 @@ class PlanSemanalDocenteController extends Controller {
         ]);
     }    
 
+    // funcion para obtener los trimestres
     private function get_blocks($user, $periodCode){
         $con = Yii::$app->db;
         $query = "select 	id, name as bloque, blo.orden  
@@ -102,7 +103,7 @@ class PlanSemanalDocenteController extends Controller {
     }
 
 
-
+// se obtiene los datos generales, renderizado a detail-week
     public function actionAcciones(){       
         $user       = Yii::$app->user->identity->usuario;
         $periodId   = Yii::$app->user->identity->periodo_id; 
@@ -141,7 +142,7 @@ class PlanSemanalDocenteController extends Controller {
             $hours = $this->get_hours($user, $periodId);
 
             // echo '<pre>';
-            // print_r($hours);
+            // print_r($statesBitacora);
             // die();
 
             return $this->renderPartial('detail-week', [
@@ -277,11 +278,11 @@ class PlanSemanalDocenteController extends Controller {
                 inner join op_course_paralelo par on par.id = cla.paralelo_id 
         where 	rus.login = '$user'
                 and ipm.scholaris_periodo_id = $periodId
-        group by par.course_id;";        
+        group by par.course_id;";    
 
-        $res = $con->createCommand($query)->queryAll();
-
+        $res = $con->createCommand($query)->queryAll();        
         return $res;
+        
     }
 
 

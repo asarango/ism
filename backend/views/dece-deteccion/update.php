@@ -5,7 +5,7 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model backend\models\DeceDeteccion */
 
-$this->title = 'Actualización - Detección: ' . $model->numero_deteccion;
+$this->title = 'Actualización - Ficha de notificación de alertas: ' . $model->numero_deteccion;
 $this->params['breadcrumbs'][] = ['label' => 'Dece Deteccions', 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $model->id, 'url' => ['view', 'id' => $model->id]];
 $this->params['breadcrumbs'][] = 'Update';

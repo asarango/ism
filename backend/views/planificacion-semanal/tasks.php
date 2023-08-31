@@ -192,19 +192,10 @@ $this->params['breadcrumbs'][] = $this->title;
                             ?>
                         </ul>
 
-
-
-                        <div class="card-ods col-lg-6" style="border-radius: 10px;color: black">
-
-
-
-                        </div>
+                        <button id="quitar-seleccion-button" type="button" class="btn btn-danger">Quitar
+                            selección</button>
                     </div>
-                    <!-- <div class="row" style="margin-top: 10px;">
-                        <div style="justify-content: center;">
 
-                        </div>
-                    </div> -->
                     <div style="margin-top: 1rem">
                         <?= Html::submitButton('Guardar', ['class' => 'btn btn-primary']) ?>
                     </div>
@@ -223,3 +214,83 @@ $this->params['breadcrumbs'][] = $this->title;
         additionalInfo.style.display = this.checked ? 'block' : 'none';
     });
 </script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const quitarSeleccionButton = document.getElementById('quitar-seleccion-button');
+
+        quitarSeleccionButton.addEventListener('click', function () {
+            const radioButtons = document.querySelectorAll('input[type="radio"]');
+
+            radioButtons.forEach(function (radioButton) {
+                radioButton.checked = false;
+            });
+        });
+    });
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const radioButtons = document.querySelectorAll('input[type="radio"]');
+
+        radioButtons.forEach(function (radioButton) {
+            radioButton.addEventListener('change', function () {
+                if (this.checked) {
+                    const confirmMessage = "Estás marcando una competencia ODS. ¿Estás seguro que deseas continuar? En caso de no necesitarlo puedes eliminar la selección con el boton 'Quitar selección'."; ;
+                    const userConfirmed = window.confirm(confirmMessage);
+
+                    if (!userConfirmed) {
+                        this.checked = false; // Desmarca el radio button si el usuario cancela
+                    }
+                }
+            });
+        });
+
+        const quitarSeleccionButton = document.getElementById('quitar-seleccion-button');
+
+        quitarSeleccionButton.addEventListener('click', function () {
+            radioButtons.forEach(function (radioButton) {
+                radioButton.checked = false;
+            });
+        });
+    });
+</script>
+
+
+<!-- Da un mensaje de confirmación en caso de haberse marcado un radio button y enviar el formulario 
+
+ <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const form = document.querySelector('form'); // Cambia esto para seleccionar el formulario adecuado
+
+        form.addEventListener('submit', function (event) {
+            const radioButtons = document.querySelectorAll('input[type="radio"]');
+            let radioButtonChecked = false;
+
+            radioButtons.forEach(function (radioButton) {
+                if (radioButton.checked) {
+                    radioButtonChecked = true;
+                }
+            });
+
+            if (radioButtonChecked) {
+                const confirmMessage = "Has seleccionado un radio button. ¿Estás seguro que deseas continuar?";
+                const userConfirmed = window.confirm(confirmMessage);
+
+                if (!userConfirmed) {
+                    event.preventDefault(); // Cancela el envío del formulario si el usuario cancela
+                }
+            }
+        });
+
+        const quitarSeleccionButton = document.getElementById('quitar-seleccion-button');
+
+        quitarSeleccionButton.addEventListener('click', function () {
+            const radioButtons = document.querySelectorAll('input[type="radio"]');
+
+            radioButtons.forEach(function (radioButton) {
+                radioButton.checked = false;
+            });
+        });
+    });
+</script> -->

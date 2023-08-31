@@ -83,8 +83,7 @@ class ProfesorInicioController extends Controller {
         $clases = $scripts->get_todas_clases_profesor();
 
         return $this->render('index',[
-            'clases' => $clases
-            
+            'clases' => $clases            
         ]);
     }
 
@@ -94,13 +93,19 @@ class ProfesorInicioController extends Controller {
         $clase = ScholarisClase::findOne($claseId);
         $paraleloId = ScholarisClase::find()->where(['id' => $claseId])->one()->paralelo_id;
         $coursesId = OpCourseParalelo::find()->where(['id' => $paraleloId])->one()->course_id;
+        $scripts = new \backend\models\helpers\Scripts();
+        $cabecera = $scripts->get_todas_clases_profesor();
+        
         $alumnos = $this->listadoAlumnos($claseId, $coursesId);
+        $alumnoSeleccionado = $this->getSelectionAlumno($claseId);
         // print_r($alumnos);
         // $studentId = $_GET['estudiante_id'];
 
         return $this->render('agregar-alumnos', [
             'alumnos' => $alumnos,
-            'clase' => $clase
+            'clase' => $clase,
+            'alumnoSeleccionado' => $alumnoSeleccionado,
+            'cabecera' => $cabecera
 
         ]);        
     }
@@ -108,9 +113,9 @@ class ProfesorInicioController extends Controller {
     // metodo creado 17-08-2024 por Cvera obtener listado de alumnos Diploma del ISM
     public function listadoAlumnos($claseId, $coursesId) {
         $con = Yii::$app->db;
-        $query ="   select 	ins.student_id 
+        $query ="   select 	ins.student_id
 		                    ,$claseId as clase_id
-		                    ,concat(est.last_name, ' ', est.first_name, ' ', est.middle_name) as estudiante 
+		                    ,concat(est.last_name, ' ', est.first_name, ' ', est.middle_name) as estudiante
 		                    ,cur.name as curso
 		                    ,par.name as paralelo
                     from 	op_student_inscription ins
@@ -119,7 +124,7 @@ class ProfesorInicioController extends Controller {
                     		inner join op_course cur on cur.id = par.course_id 
                     where 	par.course_id = $coursesId
                     		and ins.student_id not in (select estudiante_id from scholaris_grupo_alumno_clase where clase_id = $claseId)
-                    order by 3;";                    
+                    order by 3;";
         $res = $con->createCommand($query)->queryAll();
         return $res;
     }   
@@ -128,15 +133,27 @@ class ProfesorInicioController extends Controller {
         print_r($_POST);
         $estudianteId = $_POST['estudiante_id'];
         $claseId = $_POST['clase_id'];
-
-        $model= new ScholarisGrupoAlumnoClase();
-        $model->clase_id = $claseId;
-        $model->estudiante_id = $estudianteId;
-        $model->estado = true;
-        $model->save();
+     
+        $con=Yii::$app->db;
+        $query="insert into scholaris_grupo_alumno_clase (clase_id, estudiante_id, estado) 
+        values ($claseId, $estudianteId, true);";
+        $con->createCommand($query)->execute();
 
         return $this->redirect(['agregar-alumnos', 'clase_id' => $claseId]);
         
+    }
+
+    public function getSelectionAlumno($claseId) {
+        $con = Yii::$app->db;
+        $query = "  select gru.id as grupo_id
+                        ,concat(os.last_name,' ',os.first_name ,' ',os.middle_name) as estudiante 
+                    from scholaris_grupo_alumno_clase gru
+                        inner join op_student os on gru.estudiante_id =os.id 
+                    where gru.clase_id = $claseId
+                    order by os.last_name, os.first_name , os.middle_name ; ";
+        $res = $con->createCommand($query)->queryAll();
+        return $res;
+
     }
 
     public function actionClases() {

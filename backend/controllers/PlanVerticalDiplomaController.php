@@ -397,4 +397,14 @@ class PlanVerticalDiplomaController extends Controller
         $cabeceraId = $_GET['cabecera_id'];
         new PdfNew($cabeceraId);
     }
+
+    /** Accion para enviar a coordinacion la planificacion 
+     * Cvera 29-08-2023 */
+    public function actionEnviarCoordinador(){
+        $cabeceraId = $_GET['cabecera_id'];
+        $planificacionCabecera = PlanificacionDesagregacionCabecera::findOne($cabeceraId);
+        $planificacionCabecera->estado = 'EN_COORDINACION';
+        $planificacionCabecera->save();
+        return $this->redirect(['index1', 'cabecera_id' => $_GET['cabecera_id']]);
+    }
 }

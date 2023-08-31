@@ -6,7 +6,7 @@ $this->title = 'Recursos de la clase';
 $this->params['breadcrumbs'][] = $this->title;
 
 // echo"<pre>";
-// print_r($recurso);
+// print_r($planificacionSemanal);
 // die();
 
 ?>
@@ -78,7 +78,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 </div>
                 <!-- BOTONES -->
                 <div class="col-lg-4 col-md-4" style="text-align: right">
-                    <?= Html::button(
+                    <?= Html::a(
                         '<span class="badge rounded-pill" style="background-color: #ff9e18"><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home-up"
                         width="16" height="16" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ffffff" 
                         fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -88,7 +88,11 @@ $this->params['breadcrumbs'][] = $this->title;
                        <path d="M19 22v-6" />
                        <path d="M22 19l-3 -3l-3 3" />
                        </svg>Regresar</span>',
-                        ['class' => 'btn btn-default', 'onclick' => 'history.go(-1); return false;']
+                        [
+                            'planificacion-semanal/index1',
+                            'clase_id' => $planificacionSemanal->clase_id,
+                            'bloque_id' => $bloqueId
+                        ]
                     ) ?>
                     |
                     <?= Html::a(
@@ -466,7 +470,7 @@ function obtenerTipoActividad($tipo_actividad_id)
         8 => 'Se aplica metodología',
         10 => 'Evaluación de base estructurada'
 
-            
+
     ];
 
     return isset($tipos[$tipo_actividad_id]) ? $tipos[$tipo_actividad_id] : 'Tipo de actividad desconocido';

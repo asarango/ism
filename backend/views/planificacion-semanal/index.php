@@ -11,7 +11,7 @@ $this->title = 'Planificación Semanal';
 $this->params['breadcrumbs'][] = $this->title;
 
 // echo "<pre>";
-// print_r($semanas);
+// print_r($semana);
 // die();
 // $referrer = Yii::$app->request->referrer;
 
@@ -90,13 +90,13 @@ $this->params['breadcrumbs'][] = $this->title;
                             <path d="M20.136 11.136l-8.136 -8.136l-9 9h2v7a2 2 0 0 0 2 2h6.344" />
                             <path d="M19 22v-6" />
                             <path d="M22 19l-3 -3l-3 3" />
-                            </svg> Regresar al Plan V.</span>',
-                            ['toc-plan-vertical/index1', 'clase_id' => $clase->id],
+                            </svg> Regresar al PUD</span>',
+                            ['pud-dip/index1', 'plan_bloque_unidad_id' => $semana->bloque_id],
                             ['title' => 'Planificación Vertical TOC']
                         );
                     ?>
-                    |
-                    <?= Html::button(
+                    
+                    <?php Html::button(
                         '<span class="badge rounded-pill" style="background-color: #ab0a3d"><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-arrow-back-up" width="16" height="16" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ffffff" fill="none" stroke-linecap="round" stroke-linejoin="round">
                         <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
                         <path d="M9 14l-4 -4l4 -4" />
@@ -113,9 +113,12 @@ $this->params['breadcrumbs'][] = $this->title;
                             <path d="M8 8m0 2a2 2 0 0 1 2 -2h8a2 2 0 0 1 2 2v8a2 2 0 0 1 -2 2h-8a2 2 0 0 1 -2 -2z" />
                             <path d="M16 8v-2a2 2 0 0 0 -2 -2h-8a2 2 0 0 0 -2 2v8a2 2 0 0 0 2 2h2" />
                             </svg>Copiar Plan S.</span>',
-                            ['copy', 'clase_id' => $clase->id, 
-                            'semana_id' => $planSemanal[0]->semana_id,
-                            'bloque_id' => $semanas[0]->bloque_id],
+                            [
+                                'copy',
+                                'clase_id' => $clase->id,
+                                'semana_id' => $planSemanal[0]->semana_id,
+                                'bloque_id' => $semanas[0]->bloque_id
+                            ],
                             ['title' => 'Planificación Vertical TOC']
                         );
                     ?>
@@ -191,6 +194,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                     </thead>
                                     <tbody>
                                         <?php
+                                        
                                         foreach ($planSemanal as $semTotal) {
                                             echo '<tr>';
                                             echo '<td>' . $semTotal->fecha . '</td>';
@@ -207,7 +211,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                             echo '</td>';
                                             echo '<td>' . generarBotonEdicion('update', $semTotal->id) . '</td>';
                                             echo '<td>' . BotonTarea($semTotal->id) . '</td>';
-                                            echo '<td>' . BotonRecursos($semTotal->id) . '</td>';
+                                            echo '<td>' . BotonRecursos($semTotal->id, $bloque->id) . '</td>';
 
                                             echo '</tr>';
                                         }
@@ -312,7 +316,7 @@ function BotonTarea($id)
 ?>
 
 <?php
-function BotonRecursos($id)
+function BotonRecursos($id, $bloqueId)
 {
     return Html::a(
         '<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-apps" width="16" height="16" viewBox="0 0 24 24" stroke-width="1.5" stroke="#0a1f8f" fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -323,7 +327,11 @@ function BotonRecursos($id)
         <path d="M14 7l6 0" />
         <path d="M17 4l0 6" />
       </svg>',
-        ['planificacion-semanal-recursos/index', 'id' => $id],
+        [
+            'planificacion-semanal-recursos/index',
+            'id' => $id,
+            'bloque_id' => $bloqueId
+        ],
         [
             'class' => '',
             'title' => 'Crear Recurso',

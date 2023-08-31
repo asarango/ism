@@ -13,7 +13,7 @@ use yii\helpers\ArrayHelper;
 $this->title = 'Agregar Alumnos';
 
 // echo "<pre>";
-// print_r($alumnos);
+// print_r($cabecera);
 // die();
 // $alumnos = obtenerAlumnos();
 ?>
@@ -47,9 +47,24 @@ $this->title = 'Agregar Alumnos';
                     <h4>
                         <?= Html::encode($this->title) ?>
                     </h4>
+                    <small>
+                        (
+                        <?=
+                        $cabecera[0]['materia'] . ' - ' .
+                            $cabecera[0]['curso'] . ' ' . $cabecera[0]['paralelo'];
+                        ?>
+                        )
+                    </small>
                 </div>
-                <div class="col-lg-2">
-                    <!-- botones -->
+                <div class="col-lg-2 col-md-2" style="text-align: right;">
+                    <?= Html::button(
+                        '<span class="badge rounded-pill" style="background-color: #ab0a3d"><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-arrow-back-up" width="16" height="16" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ffffff" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                        <path d="M9 14l-4 -4l4 -4" />
+                        <path d="M5 10h11a4 4 0 1 1 0 8h-1" />
+                        </svg>Volver</span>',
+                        ['class' => 'btn btn-default', 'onclick' => 'history.go(-1); return false;']
+                    ) ?>
                 </div>
                 <hr>
             </div>
@@ -86,24 +101,23 @@ $this->title = 'Agregar Alumnos';
                 </div>
 
 
-                <div class="col-lg-6">
+                <div id="alumnosDiv" class="col-lg-6">
 
                     <!-- <button id="mostrarDiv" class="btn btn-warning" style="color: white;">Seleccionar Alumnos</button>
                     <div id="miDiv" > -->
 
                     <div style="margin: 1rem 0 1rem 0; text-align: center;"><b style="font-size: 20px;">Seleccionar Alumnos</b><br>
                         <?php
-                        $alumnosCount = count($alumnos);
-                        echo "Cantidad de alumnos disponibles: " . $alumnosCount;
+                        $alumnosSelec = count($alumnoSeleccionado);
+                        echo "Total alumnos Seleccionados: " . $alumnosSelec;
                         ?>
 
                     </div>
 
                     <?php echo Html::beginForm(['registrar-alumno-clase', 'post']); ?>
-                    <select class="form-control select2 select2-hidden-accessible" 
-                    style="width: 99%;" tabindex="-1" aria-hidden="true" name="estudiante_id" required>
-                    
-                        <option value="" >Escoje un alumno</option>
+                    <select class="form-control select2 select2-hidden-accessible" style="width: 99%;" tabindex="-1" aria-hidden="true" name="estudiante_id" required>
+
+                        <option value="">Escoje un alumno</option>
                         <?php
                         foreach ($alumnos as $alumno) {
                             echo '<option value="' . $alumno['student_id'] . '">' . $alumno['estudiante'] . '</option>';
@@ -122,10 +136,10 @@ $this->title = 'Agregar Alumnos';
                         </tr>
                         <?php
                         $numeroEstudiante = 1;
-                        foreach ($alumnos as $alumno) {
+                        foreach ($alumnoSeleccionado as $alumnos) {
                             echo '<tr>';
                             echo '<td>' . $numeroEstudiante . '</td>';
-                            echo '<td>' . $alumno['estudiante'] . '</td>';
+                            echo '<td>' . $alumnos['estudiante'] . '</td>';
                             echo '</tr>';
                             $numeroEstudiante++;
                         }
@@ -158,4 +172,22 @@ $this->title = 'Agregar Alumnos';
             closeOnSelect: true
         });
     }
+</script>
+
+<script>
+    // Obtener el valor de la variable PHP
+    var todosAlumnos = <?= $clase->todos_alumnos ?>;
+
+    // Función para mostrar u ocultar el div según el valor de todosAlumnos
+    function mostrarOcultarDiv() {
+        var div = document.getElementById("alumnosDiv");
+        if (todosAlumnos === 0) {
+            div.style.display = "block"; // Mostrar el div
+        } else {
+            div.style.display = "none"; // Ocultar el div
+        }
+    }
+
+    //Llamar a la función al cargar la página para configurar el estado inicial
+    window.onload = mostrarOcultarDiv;
 </script>

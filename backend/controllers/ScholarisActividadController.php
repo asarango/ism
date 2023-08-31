@@ -816,6 +816,7 @@ class ScholarisActividadController extends Controller
             ->one();
 
         $tipo = $modelActividad->insumo->nombre_pai;
+
         $grupo = \backend\models\ScholarisGrupoOrdenCalificacion::find()
             ->where(['codigo_tipo_actividad' => $modelActividad->tipo_actividad_id])
             ->one();

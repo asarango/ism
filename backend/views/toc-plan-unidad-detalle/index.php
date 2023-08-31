@@ -275,10 +275,10 @@ $this->params['breadcrumbs'][] = $this->title;
                     <div class="row" style="align-items: center;">
                         <div class="col-lg-1 col-md-1" style=" text-align: center; ">
                             <?=
-                                boton_update($unidad['id'], 'conocimientos_esenciales', 'ConocimientoEsencial')
+                                boton_update($unidad['id'], 'conocimientos_esenciales', 'ConocimientoEscencial')
                                 ?>
                         </div>
-                        <div class="col-lg-11 col-md-11 menuizquierda" id="ConocimientoEsencial"
+                        <div class="col-lg-11 col-md-11 menuizquierda" id="ConocimientoEscencial"
                             style="margin-top: 0.5rem">
                             - CONOCIMIENTOS ESENCIALES
                         </div>

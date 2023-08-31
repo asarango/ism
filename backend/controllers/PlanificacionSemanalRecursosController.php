@@ -76,6 +76,8 @@ class PlanificacionSemanalRecursosController extends Controller
     public function actionIndex()
     {
         $planificacionSemanalId = $_GET['id']; // Se recibe parametro de planificacion ID
+        $bloqueId = $_GET['bloque_id'];
+
         $userLogin = Yii::$app->user->identity->usuario;
         $planificacionSemanal = PlanificacionSemanal::findOne($planificacionSemanalId);
         $recursos= PlanificacionSemanalRecursos::find()
@@ -90,6 +92,7 @@ class PlanificacionSemanalRecursosController extends Controller
             'planificacionSemanal' => $planificacionSemanal,
             'recursos' => $recursos,
             'insumos' => $insumos,
+            'bloqueId' => $bloqueId
         ]);
     }
 
@@ -120,11 +123,17 @@ class PlanificacionSemanalRecursosController extends Controller
             // Realizamos la insercion de registro
             // Con este metodo se realizan las preguntas del tipo de recursos
             //que consta en el formulario
+            
+            $planificacionSemanalId = $_POST['plan_semanal_id'];
+            $planificacionSemanal = PlanificacionSemanal::findOne($planificacionSemanalId);
+            $bloqueId = $planificacionSemanal->semana->bloque_id;
+            
             $this->guardar_recursos($_POST);
 
             // Redireccionamos a index luego de grabar
             return $this->redirect(['index', 
-                'id' => $_POST['plan_semanal_id']
+                'id' => $_POST['plan_semanal_id'],
+                'bloque_id' => $bloqueId
             ]);
         } else {
             

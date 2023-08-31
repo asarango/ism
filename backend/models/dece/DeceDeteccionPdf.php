@@ -113,6 +113,10 @@ class DeceDeteccionPdf extends \yii\db\ActiveRecord
     }
     private function firmas()
     {   
+
+        // $quienReporta = $this->get_person();
+        
+        
         $html=''; 
         $html.='
         <table border="1" width="100%" cellspacing="0" cellpadding="5"> 
@@ -239,7 +243,7 @@ class DeceDeteccionPdf extends \yii\db\ActiveRecord
         <table border="1" width="100%" cellspacing="0" cellpadding="5">  
                 <tr style="background-color:'.$this->colorFondo.'"> 
                         <td colspan="4"  align="center" style="font-size:12">
-                            <b>FICHA DE DETECCIÓN Y REPORTE</b>
+                            <b>FICHA DE NOTIFICACIÓN DE ALERTA</b>
                         </td>
                 </tr>
                 <tr style="background-color:'.$this->colorFondo.'"> 
@@ -310,7 +314,7 @@ class DeceDeteccionPdf extends \yii\db\ActiveRecord
                 </tr>
                 <tr style="background-color:'.$this->colorFondo.'"> 
                         <td colspan="4"  align="left" style="font-size:10">
-                            <b>HORA APROXIMADA: </b>'.$model->hora_aproximada.'
+                            <b>FECHA Y HORA APROXIMADA: </b>'.$model->fecha_hecho.' | '.$model->hora_aproximada.'
                         </td>
                 </tr>               
                 <tr > 
@@ -344,6 +348,18 @@ class DeceDeteccionPdf extends \yii\db\ActiveRecord
         </table>';
       
         return  $html;
+    }
+
+
+    private function get_person($username){
+        $con = Yii::$app->db;
+        $query = "select par.name as person
+                            ,par.numero_identificacion 
+                    from 	res_users rus
+                            inner join res_partner par on par.id = rus.partner_id 
+                    where	rus.login = '$username';";
+        $res = $con->createCommand($query)->queryOne();
+        return $res;
     }
 
 

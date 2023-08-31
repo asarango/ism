@@ -24,6 +24,7 @@ use Yii;
  * @property string $acciones_realizadas
  * @property string $lista_evidencias
  * @property string $path_archivos
+ * @property string $fecha_hecho
  *
  * @property DeceCasos $caso
  * @property OpStudent $estudiante
@@ -47,7 +48,7 @@ class DeceDeteccion extends \yii\db\ActiveRecord
             [['numero_deteccion', 'id_caso', 'numero_caso', 'nombre_estudiante', 'anio', 'paralelo', 'nombre_quien_reporta', 'cargo', 'cedula', 'fecha_reporte', 'descripcion_del_hecho', 'hora_aproximada', 'acciones_realizadas', 'lista_evidencias', 'path_archivos'], 'required'],
             [['numero_deteccion', 'id_estudiante', 'id_caso', 'numero_caso'], 'default', 'value' => null],
             [['numero_deteccion', 'id_estudiante', 'id_caso', 'numero_caso'], 'integer'],
-            [['fecha_reporte'], 'safe'],
+            [['fecha_reporte', 'fecha_hecho'], 'safe'],
             [['lista_evidencias'], 'string'],
             [['nombre_estudiante', 'nombre_quien_reporta', 'path_archivos'], 'string', 'max' => 100],
             [['anio', 'paralelo', 'cargo'], 'string', 'max' => 50],
@@ -81,6 +82,7 @@ class DeceDeteccion extends \yii\db\ActiveRecord
             'acciones_realizadas' => 'Acciones Realizadas',
             'lista_evidencias' => 'Lista Evidencias',
             'path_archivos' => 'Path Archivos',
+            'fecha_hecho' => 'Fecha Hecho',
         ];
     }
 

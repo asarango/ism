@@ -127,7 +127,7 @@ use yii\widgets\ActiveForm;
 
             <!-- FORMULARIO DE AGG ARCHIVO -->
 
-            <form method="POST" action="procesar.php">
+            <!-- <form method="POST" action="procesar.php"> -->
 
                 <!-- SUBIR ARCHIVO -->
                 <div class="formulario" id="formularioArchivo" style="display: none;">
@@ -176,7 +176,7 @@ use yii\widgets\ActiveForm;
                     <textarea name="texto" id="texto"></textarea>
                 </div>
                 <!-- fin Descripción General -->
-            </form>
+            <!-- </form> -->
 
             <div class="" style="margin-top: 1rem;">
                 <?= Html::submitButton('Guardar', ['class' => 'btn btn-success', 'style' => 'background-color: #4caf50;  border: none; padding: 9px']) ?>

@@ -52,7 +52,7 @@ $modelPudBitacora = PudAprobacionBitacora::find()
     ->one();
 
 // echo '<pre>';
-// print_r($);
+// print_r($planUnidad);
 // die();
 ?>
 <!--Scripts para que funcionen AJAX'S-->
@@ -142,9 +142,6 @@ $modelPudBitacora = PudAprobacionBitacora::find()
                     ?>
 
 
-
-
-
                 </div> <!-- fin de menu cabecera izquierda -->
 
                 <!-- inicio de menu cabecera derecha -->
@@ -200,10 +197,10 @@ $modelPudBitacora = PudAprobacionBitacora::find()
 
                     </div>
                 <?php } elseif ($modelPudBitacora->estado_jefe_coordinador == 'ENVIADO' || $modelPudBitacora->estado_jefe_coordinador == 'DEVUELTO') { ?>
-                    <div id="div-detalle" class="col-lg-5 col-md-5" style="border-top: solid 1px #ccc; ">
+                    <div id="div-detalle" class="col-lg-6 col-md-6" style="border-top: solid 1px #ccc; ">
 
                     </div>
-                    <div id="div-novedades" class="col-lg-4 col-md-4 " style="border-top: solid 1px #ccc; ">
+                    <div id="div-novedades" class="col-lg-3 col-md-3 " style="border-top: solid 1px #ccc; ">
                         <div class="" style="align-items: center; display: flex; justify-content: center;">
                             <div class="card" style="width: 100%; margin-top:20px">
                                 <div class="card-header">

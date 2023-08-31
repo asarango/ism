@@ -5,6 +5,7 @@ namespace backend\controllers;
 use backend\models\notas\RegistraNotas;
 use backend\models\ScholarisActividadDeber;
 use backend\models\ScholarisCalificaciones;
+use backend\models\ScholarisCalificacionOds;
 use backend\models\ScholarisGrupoAlumnoClase;
 
 use Yii;
@@ -66,8 +67,7 @@ class CalificacionController extends Controller {
         return true;
     }
     
-    public function actionIndex1(){
-              
+    public function actionIndex1(){           
         
         $periodoId      = \Yii::$app->user->identity->periodo_id;
         $actividadId    = $_GET['actividad_id'];
@@ -92,6 +92,12 @@ class CalificacionController extends Controller {
         /*** fin de toma el deber */
         
         $calificaciones = $this->get_scores($actividadId, $group->estudiante_id);
+
+        /** calificacion ODS */
+        $calificacionOds = ScholarisCalificacionOds::find()->where([
+            'actividad_id' => $modelActividad->id,
+            'grupo_id' => $group->id
+        ])->one();
         
         return $this->render('index',[
             'modelActividad'    => $modelActividad,
@@ -99,7 +105,8 @@ class CalificacionController extends Controller {
             'modelMaximo'       => $modelMaximo,
             'group'             => $group,
             'deber'             => $deber,
-            'calificaciones'    => $calificaciones
+            'calificaciones'    => $calificaciones,
+            'calificacionOds'   => $calificacionOds
         ]);
         
     }
@@ -206,6 +213,44 @@ class CalificacionController extends Controller {
          /***Proceso mediante clases para registrar notas en los reportes*/
          new RegistraNotas($grupoId, $id, $nota);
          /***Fin de proceso mediante clases para registrar notas en los reportes */
+
+    }
+
+
+    /**
+     * MÉTODO PARA  INSERTAR LA CALIFICACION ODS
+     * creado por: Arturo Sarango | 2023-05-25
+     * 
+     * Ingresa las notas ods del estudiante, esta queda relacionado hacia la tabla
+     * scholaris_actividad (id)
+     */
+    public function actionCalificaOds(){
+        print_r($_POST);
+
+        $grupoId            = $_POST['grupo_id'];
+        $actividadId            = $_POST['actividad_id'];
+        $calificacionOds    = $_POST['calificacion_ods'];
+
+        $modelCalificacionOds = ScholarisCalificacionOds::find()->where([
+            'actividad_id' => $actividadId,
+            'grupo_id' => $grupoId
+        ])->one(); 
+
+
+        if(!$modelCalificacionOds){
+            $model = new ScholarisCalificacionOds();
+            $model->actividad_id    = $actividadId;
+            $model->grupo_id        = $grupoId;
+            $model->calificacion    = $calificacionOds;
+            $model->save();
+        }else{
+            $modelCalificacionOds->calificacion = $calificacionOds;
+            $modelCalificacionOds->save();
+        }
+
+        
+
+
 
     }
     

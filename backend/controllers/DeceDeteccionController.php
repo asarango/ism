@@ -191,8 +191,11 @@ class DeceDeteccionController extends Controller
 
         $model = $this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post())) {
             //return $this->redirect(['view', 'id' => $model->id]);
+            $model->fecha_hecho = $_POST['fecha_hecho'];
+            $model->save();
+
             return $this->render('update', [
                 'model' => $model,
                 'resUser'=>$resUser,

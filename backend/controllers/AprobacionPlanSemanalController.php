@@ -62,7 +62,7 @@ class AprobacionPlanSemanalController extends Controller{
     
     
     
-    public function actionIndex(){
+    public function actionIndex1(){
         
         $userLog    = \Yii::$app->user->identity->usuario;
         $periodoId  = \Yii::$app->user->identity->periodo_id;
@@ -73,8 +73,8 @@ class AprobacionPlanSemanalController extends Controller{
         $uso = $docentes[0]['tipo_usu_bloque'];
                 
         $semanas = $this->get_semanas($uso);
-        
-        return $this->render('index',[
+               
+        return $this->render('index1',[
             'docentes' => $docentes,
             'semanas' => $semanas
         ]);

@@ -127,9 +127,20 @@ $modelRegDeteccion = DeceDeteccion::find()
                 <div class="row">
                     <h6 style="color:blueviolet;">DESCRIPCIÓN DEL HECHO (qué paso, quienes se involucran, dónde, cuándo)
                     </h6>
+                    <!-- inicio de fecha y hora del hecho  -->
                     <div class="row">
-                        <?= $form->field($model, 'hora_aproximada')->textInput(['maxlength' => true]) ?>
+                    <div class="col-lg-6 col-md-6">
+                    <label for="exampleInputEmail1" class="form-label">Fecha del hecho</label>
+                            <input type="date" id="fecha_hecho" class="form-control" name="fecha_hecho"
+                                require="true" value="<?= substr($model->fecha_hecho, 0, 10); ?>">
+                        </div>
+                        <div class="col-lg-6 col-md-6">
+                            <?= $form->field($model, 'hora_aproximada')->textInput(['maxlength' => true]) ?>
+                        </div>                                                
                     </div>
+                    <!-- fin de fecha y hora del hecho  -->
+
+
                     <div class="row">
                         <?= $form->field($model, 'descripcion_del_hecho')->textarea(['rows' => 6]) ?>
                         <!-- <script>

@@ -112,8 +112,6 @@ class DeceCasosController extends Controller
         } else {
             $query = "select distinct id_estudiante from dece_casos dc where id_usuario_dece  = '$user';";
         }
-
-        // echo $query;
         
 
         $usuariosCasos = $con->createCommand($query)->queryAll();
@@ -333,9 +331,7 @@ class DeceCasosController extends Controller
                     and c7.id = c1.paralelo_id 
                     and c8.id = c7.course_id 
                     and c4.id = '$id_estudiante'
-                    order by student;";
-        // echo $query;
-        // die();
+                    order by student;";        
 
         $resp = $con->createCommand($query)->queryOne();
 

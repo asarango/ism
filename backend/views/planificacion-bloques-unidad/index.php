@@ -42,7 +42,7 @@ $existeCurso = false;
 $grupoMateria = mostrar_datos_materia($cabecera);
 
 // echo'<pre>';
-// print_r($unidades);
+// print_r($cabecera);
 // die();
 
 /********************************************************************* */
@@ -105,15 +105,14 @@ function mostrar_datos_materia($cabecera)
 
                     |
 
-                    <?=
-                        Html::a(
-                            '<span class="badge rounded-pill" style="background-color: #65b2e8"><i class="fa fa-briefcase" aria-hidden="true"></i>Planificación semanal </span>',
-                            ['planificacion-desagregacion-cabecera/index'],
-                            ['class' => 'link']
-                        );
-                    ?>
+                    <!-- // Html::a(
+                        //     '<span class="badge rounded-pill" style="background-color: #65b2e8"><i class="fa fa-briefcase" aria-hidden="true"></i>Planificación semanal </span>',
+                        //     ['#'],
+                        //     ['class' => 'link']
+                        // ); -->
 
-                    |
+
+                    <!-- | -->
 
                     <?=
                         Html::a(
@@ -122,9 +121,15 @@ function mostrar_datos_materia($cabecera)
                             ['class' => 'link']
                         );
                     ?>
-
                     |
-
+<!--                     
+                        Html::a(
+                            '<span class="badge rounded-pill" style="background-color: #65b2e8"><i class="fa fa-briefcase" aria-hidden="true"></i> Planificación Semanal</span>',
+                            ['planificacion-desagregacion-cabecera/index'],
+                            ['class' => 'link']
+                        );
+                    
+                    | -->
                     <?php
                     if ($seccion == 'PAI') {
                         echo Html::a(
@@ -193,7 +198,7 @@ function mostrar_datos_materia($cabecera)
                 <hr>
             </div>
             <!-- FIN DE CABECERA -->
-            
+
             <!-- inicia cuerpo de card -->
             <div class="row" style="margin-top: -20px;">
                 <div class="table table-responsive">

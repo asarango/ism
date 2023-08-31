@@ -17,6 +17,7 @@ use Yii;
  * @property int $actividad_id
  * @property string $inicio
  * @property string $title
+ * @property int $ods_pud_dip_id
  * @property string $login
  * @property int $periodo_id
  * @property int $total_calificados
@@ -38,8 +39,8 @@ class ViewInsumos extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['clase_id', 'semana_numero', 'actividad_id', 'periodo_id', 'total_calificados', 'total_estudiantes'], 'default', 'value' => null],
-            [['clase_id', 'semana_numero', 'actividad_id', 'periodo_id', 'total_calificados', 'total_estudiantes'], 'integer'],
+            [['clase_id', 'semana_numero', 'actividad_id', 'ods_pud_dip_id', 'periodo_id', 'total_calificados', 'total_estudiantes'], 'default', 'value' => null],
+            [['clase_id', 'semana_numero', 'actividad_id', 'ods_pud_dip_id', 'periodo_id', 'total_calificados', 'total_estudiantes'], 'integer'],
             [['paralelo'], 'string'],
             [['inicio'], 'safe'],
             [['bloque', 'nombre_nacional'], 'string', 'max' => 50],
@@ -66,6 +67,7 @@ class ViewInsumos extends \yii\db\ActiveRecord
             'actividad_id' => 'Actividad ID',
             'inicio' => 'Inicio',
             'title' => 'Title',
+            'ods_pud_dip_id' => 'Ods Pud Dip ID',
             'login' => 'Login',
             'periodo_id' => 'Periodo ID',
             'total_calificados' => 'Total Calificados',

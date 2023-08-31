@@ -18,7 +18,9 @@ class DeceDeteccionSearch extends DeceDeteccion
     {
         return [
             [['id', 'numero_deteccion', 'id_estudiante', 'id_caso', 'numero_caso'], 'integer'],
-            [['nombre_estudiante', 'anio', 'paralelo', 'nombre_quien_reporta', 'cargo', 'cedula', 'fecha_reporte', 'descripcion_del_hecho', 'hora_aproximada', 'acciones_realizadas', 'lista_evidencias', 'path_archivos'], 'safe'],
+            [['nombre_estudiante', 'anio', 'paralelo', 'nombre_quien_reporta', 'cargo', 'cedula', 
+            'fecha_reporte', 'descripcion_del_hecho', 'hora_aproximada', 
+            'acciones_realizadas', 'lista_evidencias', 'path_archivos', 'fecha_hecho'], 'safe'],
         ];
     }
 
@@ -64,6 +66,7 @@ class DeceDeteccionSearch extends DeceDeteccion
             'id_caso' => $this->id_caso,
             'numero_caso' => $this->numero_caso,
             'fecha_reporte' => $this->fecha_reporte,
+            'fecha_hecho' => $this->fecha_hecho,
         ]);
 
         $query->andFilterWhere(['ilike', 'nombre_estudiante', $this->nombre_estudiante])

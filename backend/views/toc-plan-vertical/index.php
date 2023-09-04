@@ -3,7 +3,7 @@
 use yii\helpers\Html;
 use yii\helpers\Url;
 
-$this->title = 'Planificación Vertical TOC';
+$this->title = 'Planificación Vertical TdC';
 $this->params['breadcrumbs'][] = $this->title;
 
 // echo "<pre>";
@@ -86,8 +86,8 @@ $this->params['breadcrumbs'][] = $this->title;
                     <h3>
                         <?= Html::encode($this->title) ?>
                     </h3>
-                    <p><b>2DO. DE BACHILLERATO "
-                            <?php echo $unidades[0]->clase->paralelo->name; ?> "
+                    <p><b><?php echo $unidades[0]->clase->paralelo->course->name ?>
+                           " <?php echo $unidades[0]->clase->paralelo->name ?> "
                         </b></p>
                 </div>
                 <!-- INICIO BOTONES DERECHA -->

@@ -11,7 +11,7 @@ $this->title = 'Incidente/Caso';
 $this->params['breadcrumbs'][] = $this->title;
 
 // echo "<pre>";
-// print_r($estudiantes);
+// print_r($casos);
 // die();
 ?>
 <!--Scripts para que funcionen AJAX de select 2 -->

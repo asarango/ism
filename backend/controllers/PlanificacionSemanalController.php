@@ -221,8 +221,6 @@ class PlanificacionSemanalController extends Controller
 
         $ods = $this->get_ods($id);
 
-        // echo $seccion;
-        // die();
         if($seccion <> 'PAI'){
             $tipoActividades = $tipoActividades = $this->get_tipos_actividad_nacional();
         }else{
@@ -291,6 +289,7 @@ class PlanificacionSemanalController extends Controller
                     inner join scholaris_clase cla  on cla.id = pse.clase_id 
                     inner join planificacion_bloques_unidad bun on bun.curriculo_bloque_id = cbl.id
                     inner join planificacion_desagregacion_cabecera cab on cab.id = bun.plan_cabecera_id 
+                    and cla.ism_area_materia_id = cab.ism_area_materia_id 
                     inner join pud_dip pud  on pud.planificacion_bloques_unidad_id =  bun.id 
             where 	pse.id = $planificacionSemanalId
                     and pud.codigo =  'ODS'

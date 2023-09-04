@@ -57,7 +57,6 @@ use yii\helpers\Url;
             </div>
             <div class="col-lg-7 col-md-7 col-sm-7">
                 <h3>Habilidades IB</h3>
-                <p>2DO. DE BACHILLERATO " B "</p>
             </div>
             <div class="col-lg-4 col-md-4 col-sm-4" style="text-align: right;">
                 <?=

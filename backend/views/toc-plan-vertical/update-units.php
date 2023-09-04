@@ -19,7 +19,7 @@ use yii\widgets\ActiveForm;
                 </div>
                 <div class="col-lg-7 col-md-7 col-ms-7">
                     <h3><b>Modificar plan de unidad</b></h3>
-                    <p>2DO. DE BACHILLERATO " B " / <b><?= $unidad->bloque->name; ?></b></p>
+                    <p><b><?= $unidad->bloque->name; ?></b></p>
                 </div>
                 <div class="col-lg-4 col-md-4 col-ms-4" style="text-align: right;">
                     <?=

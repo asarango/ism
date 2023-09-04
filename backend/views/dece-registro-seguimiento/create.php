@@ -49,38 +49,39 @@ if ($modelGrupo) // si el grupo existe viene de leccionario
                     </h4>
                     <small>
                         <?= 'Asociado al Número de Caso: ' . $model->caso->numero_caso ?>
-</small>
+                    </small>
                 </div>
                 <div class="col-lg-2 col-md-2 ">
-                <div class=" row align-items-center p-2">
-                    <?php
-                    if ($modelGrupo) // si el grupo existe viene de leccionario
-                    {
-                        ?>
-                        <?=
-                            Html::a(
-                                '<span class="badge rounded-pill" style="background-color: #0a1f8f"><i class="fa fa-briefcase" aria-hidden="true"></i> Regresar - Mi Clase</span>',
-                                ['comportamiento/index', 'id' => $modelAsistProfesor->id],
-                                ['class' => 'link']
-                            );
-                        ?>
-
+                    <div class=" row align-items-center p-2">
                         <?php
-                    } else { ?>
-                        <?=
-                            Html::a(
-                                '<span class="badge rounded-pill" style="background-color: #0a1f8f"><i class="fa fa-briefcase" aria-hidden="true"></i>Regresar Caso</span>',
-                                ['dece-casos/update', 'id' => $model->id_caso],
-                                ['class' => 'link']
-                            );
-                        ?>
+                        if ($modelGrupo) // si el grupo existe viene de leccionario
+                        {
+                            ?>
+                            <?=
+                                Html::a(
+                                    '<span class="badge rounded-pill" style="background-color: #0a1f8f"><i class="fa fa-briefcase" aria-hidden="true"></i> Regresar - Mi Clase</span>',
+                                    ['comportamiento/index', 'id' => $modelAsistProfesor->id],
+                                    ['class' => 'link']
+                                );
+                            ?>
 
-                        <?php
-                    } ?>
+                            <?php
+                        } else { ?>
+                            <?=
+                                Html::a(
+                                    '<span class="badge rounded-pill" style="background-color: #0a1f8f"><i class="fa fa-briefcase" aria-hidden="true"></i>Regresar Caso</span>',
+                                    ['dece-casos/update', 'id' => $model->id_caso],
+                                    ['class' => 'link']
+                                );
+                            ?>
+
+                            <?php
+                        } ?>
+                    </div>
                 </div>
+                <hr>
             </div>
-            </div>
-            
+
             <?= $this->render('_form', [
                 'model' => $model,
                 'resUser' => $resUser,

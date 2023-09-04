@@ -180,7 +180,6 @@ class PlanificacionAprobacionController extends Controller{
         $cabecera = PlanificacionDesagregacionCabecera::findOne($cabeceraId);
 
         $estado = $cabecera->estado;
-        print_r($estado);
         $pca = new Pca($cabeceraId);
         $periodoId = Yii::$app->user->identity->periodo_id;
 
@@ -304,7 +303,6 @@ class PlanificacionAprobacionController extends Controller{
         // echo $query;
         // die();
         $res = $con->createCommand($query)->queryAll();
-
         $arregloPhPv = array();
         
         foreach($res as $phPv){
@@ -314,7 +312,6 @@ class PlanificacionAprobacionController extends Controller{
             ])->all();
 
             $phPv['contenidos'] = $contenidos;
-
             array_push($arregloPhPv, $phPv);
         }         
 

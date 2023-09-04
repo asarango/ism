@@ -152,6 +152,7 @@ class ProfesorInicioController extends Controller {
                     where gru.clase_id = $claseId
                     order by os.last_name, os.first_name , os.middle_name ; ";
         $res = $con->createCommand($query)->queryAll();
+        
         return $res;
 
     }

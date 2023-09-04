@@ -80,7 +80,7 @@ class ScholarisAsistenciaProfesorController extends Controller {
         $modelPeriodo = ScholarisPeriodo::find()->where(['id' => $periodoId])->one();
 
         $scripts = new \backend\models\helpers\Scripts();
-        $model = $scripts->sql_mostrar_clases_x_profesor();
+        $model = $scripts->sql_mostrar_clases_x_profesor();        
         
         $scriptsKids = new ScriptsKids();
         

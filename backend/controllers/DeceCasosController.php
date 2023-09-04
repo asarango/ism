@@ -117,6 +117,7 @@ class DeceCasosController extends Controller
         $usuariosCasos = $con->createCommand($query)->queryAll();
 
         $arrayCasos = array();
+        
         foreach ($usuariosCasos as $usuario) {
             $id_estudiante = $usuario['id_estudiante'];
 
@@ -141,16 +142,9 @@ class DeceCasosController extends Controller
             $query2 .= " and os.id = dc.id_estudiante 
                         group by os.last_name,os.middle_name,os.first_name,dc.id_estudiante ;";
 
-            // echo '<pre>';
-            // print_r($query2);
-            // die();
-
             $arrayCasos[] = $con->createCommand($query2)->queryOne();
         }
 
-        // echo '<pre>';
-        // print_r($arrayCasos);
-        // die();
         return $arrayCasos;
     }
     private function mostrar_casos_por_usuario($usuario)
@@ -168,7 +162,7 @@ class DeceCasosController extends Controller
         $instituteId = Yii::$app->user->identity->instituto_defecto;
         //buscamos si el usuario es coordinador
         // $modelCoordinadorDece = OpInstituteAuthorities::find()
-        //     ->where(['ilike', 'cargo_descripcion', 'dececoor'])
+        //     ->where(['ilike', 'cargo_descripcion', 'COORDINACIONDECE'])
         //     ->andWhere(['usuario' => $usuarioLog])
         //     ->one();
 
@@ -273,15 +267,19 @@ class DeceCasosController extends Controller
     {
         $model = new DeceCasos();
         $hora = date('H:i:s');
+        
         //la fecha de ingreso viene vacio cuando es un nuevo registro, por eso guarda solo cuando hay fecha de ingreso
         //quiere decir que vino desde la pantalla de de CREACION
         if ($model->load(Yii::$app->request->post()) && isset($_POST['fecha_inicio'])) {
-            $decesPorAlumno = $this->mostrar_dece_y_super_dece_por_alumno($model->id_estudiante);
+            $decesPorAlumno = $this->mostrar_dece_y_super_dece_por_alumno($model->id_estudiante);            
 
             $model->id_usuario_dece = $decesPorAlumno['hdi_dece'];
             $model->id_usuario_super_dece = $decesPorAlumno['super_dece'];
             $model->fecha_inicio = $_POST['fecha_inicio'] . ' ' . $hora;
+            
             $model->save();
+            
+            
             return $this->redirect(['historico', 'id' => $model->id_estudiante]);
         }
 

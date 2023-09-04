@@ -13,7 +13,42 @@ $this->title = 'Novedades de comportamiento ';
 // print_r($modelCompDetalle);
 // die();
 
+
+
 ?>
+
+<style>
+    @keyframes vibrate {
+        0% {
+            transform: translateX(0);
+        }
+
+        25% {
+            transform: translateX(-3px);
+        }
+
+        50% {
+            transform: translateX(3px);
+        }
+
+        75% {
+            transform: translateX(-3px);
+        }
+
+        100% {
+            transform: translateX(3px);
+        }
+    }
+
+    .vibrate {
+        animation: vibrate 0.8s;
+    }
+
+    .enlarge-on-hover:hover {
+        transform: scale(1.1);
+        transition: transform 0.3s ease;
+    }
+</style>
 
 <div class="comportamiento-detalle">
 
@@ -49,23 +84,29 @@ $this->title = 'Novedades de comportamiento ';
                 <!-- Inicio botones -->
                 <div class="col-lg-4" style="text-align: right;margin-top:-15px">
                     <p>
-                        <?= Html::a('<span class="badge rounded-pill" style="background-color: #ab0a3d"><i class="far fa-file"></i> Inicio</span>', ['site/index'], ['class' => 'link']); ?>
+                        <?= Html::a('<span class="badge rounded-pill enlarge-on-hover" style="background-color: #ab0a3d"><i class="far fa-file"></i> Inicio</span>', ['site/index'], ['class' => 'link']); ?>
                         |
                         <?=
                             Html::a(
-                                '<span class="badge rounded-pill" style="background-color: #ff9e18"><i class="far fa-file"></i> Listado</span>',
+                                '<span class="badge rounded-pill enlarge-on-hover" style="background-color: #ff9e18"><i class="far fa-file"></i> Listado</span>',
                                 ['index', 'id' => $modelAsistencia->id],
                                 ['class' => 'link']
                             );
                         ?>
                         |
-                        <?=
-                            Html::a(
-                                '<span class="badge rounded-pill" style="background-color: #0a1f8f"><i class="fa fa-briefcase" aria-hidden="true"></i>Seguimiento</span>',
-                                ['dece-casos/crear-deteccion', 'id' => $modelGrupo->estudiante_id, 'id_clase' => $modelGrupo->clase_id],
-                                ['class' => 'link']
-                            );
-                        ?>
+                        <?= Html::a(
+                            '<span class="badge rounded-pill enlarge-on-hover" style="background-color: #0a1f8f">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-exclamation-mark vibrate" 
+                            width="14" height="14" viewBox="0 0 24 24" stroke-width="3" stroke="white" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                            <path d="M12 19v.01" />
+                            <path d="M12 15v-10" />
+                            </svg>Alertas</span>',
+                            ['dece-casos/crear-deteccion', 'id' => $modelGrupo->estudiante_id, 'id_clase' => $modelGrupo->clase_id],
+                            ['class' => 'link']
+                        ); ?>
+
+
                         <!--?=
                 Html::a('<span class="badge rounded-pill" style="background-color: #9e28b5"><i class="far fa-file"></i> Mis asignaturas</span>',
                         ['profesor-inicio/index'], ['class' => 'link']);

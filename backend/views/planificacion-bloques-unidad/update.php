@@ -10,9 +10,11 @@ use yii\widgets\ActiveForm;
 
 $this->title = 'Editar Planificación de tema para desagregación de destrezas';
 $this->params['breadcrumbs'][] = $this->title;
-//echo '<pre>';
-//print_r($model);
-//die();
+
+// echo '<pre>';
+// print_r($model);
+// die();
+
 $estado = $model->planCabecera->estado;
 ?>
 

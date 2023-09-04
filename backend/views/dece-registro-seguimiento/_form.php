@@ -96,13 +96,19 @@ $listFirmas = DeceSeguimientoFirmas::find()
 ?>
 <script src="https://cdn.ckeditor.com/4.19.0/standard/ckeditor.js"></script>
 
+<style>
+    .card {
+        border-radius: 10px
+    }
+</style>
+
 <div class="comportamiento-detalle">
 
     <div class="m-0 vh-50 row justify-content-center align-items-center">
 
 
         <div class="row p-4 ">
-            <div class="card col-lg-5 col-ms-5">
+            <div class="card col-lg-5 col-ms-5" style="padding: 20px">
                 <!-- RENDERIZA A LA VISTA datos_estudiante.php -->
                 <h5 style="color:blueviolet"><b>Datos Estudiante</b></h5>
                 <table class="table table-responsive">
@@ -149,6 +155,7 @@ $listFirmas = DeceSeguimientoFirmas::find()
                     </tr>
                 </table>
                 <h5 style="color:red">Histórico Acompañamiento</h5>
+                
                 <div style="overflow-x:scroll;overflow-y:scroll;">
                     <table class="table table-success table-striped table-bordered my-text-small">
                         <tr class="table-primary">
@@ -207,7 +214,7 @@ $listFirmas = DeceSeguimientoFirmas::find()
                                                         <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                             aria-label="Close"></button>
                                                     </div>
-                                                    <div class="modal-body">
+                                                    <div class="modal-body" style="padding: 20px;">
                                                         <table class="table table-striped table-hover" style="font-size:13px">
                                                             <tr>
                                                                 <td><b>Fecha Creación: </b></td>
@@ -294,7 +301,7 @@ $listFirmas = DeceSeguimientoFirmas::find()
                     </table>
                 </div>
             </div>
-            <div class="card col-lg-7 col-ms-7">
+            <div class="card col-lg-7 col-ms-7" style="padding: 20px">
                 <?php if ($model->isNewRecord) { ?>
                     <h5 style="color:blueviolet"><b>Acompañamiento</b></h5>
                 <?php } else { ?>

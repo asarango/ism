@@ -13,7 +13,7 @@ use yii\helpers\ArrayHelper;
 $this->title = 'Agregar Alumnos';
 
 // echo "<pre>";
-// print_r($cabecera);
+// print_r($alumnoSeleccionado);
 // die();
 // $alumnos = obtenerAlumnos();
 ?>
@@ -28,6 +28,13 @@ $this->title = 'Agregar Alumnos';
         margin-bottom: 8px;
         font-size: 14px;
     }
+
+    #noOptativa {
+        margin: 0 auto;
+        /* Esto centra el div horizontalmente */
+        max-width: 600px;
+        /* Configura un ancho máximo para el div */
+    }
 </style>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
@@ -41,7 +48,8 @@ $this->title = 'Agregar Alumnos';
         <div class="card shadow col-lg-10 col-md-10">
             <div class="row align-items-center p-2">
                 <div class="col-lg-1">
-                    <h4><img src="../ISM/main/images/submenu/herramientas-para-reparar.png" width="64px" style="" class="img-thumbnail"></h4>
+                    <h4><img src="../ISM/main/images/submenu/herramientas-para-reparar.png" width="64px" style=""
+                            class="img-thumbnail"></h4>
                 </div>
                 <div class="col-lg-9">
                     <h4>
@@ -50,7 +58,7 @@ $this->title = 'Agregar Alumnos';
                     <small>
                         (
                         <?=
-                        $cabecera[0]['materia'] . ' - ' .
+                            $cabecera[0]['materia'] . ' - ' .
                             $cabecera[0]['curso'] . ' ' . $cabecera[0]['paralelo'];
                         ?>
                         )
@@ -69,9 +77,8 @@ $this->title = 'Agregar Alumnos';
                 <hr>
             </div>
 
-            <div class="row justify-content-center">
-
-                <div class="col-lg-6">
+            <div class="row">
+                <div class="col-md-6" id="noOptativa" >
                     <div style="text-align: center;">
                         <h5>Listado de Alumnos</h5>
                         <div style="margin: 1rem 0 1rem 0;">
@@ -100,54 +107,52 @@ $this->title = 'Agregar Alumnos';
                     </div>
                 </div>
 
-
-                <div id="alumnosDiv" class="col-lg-6">
-
-                    <!-- <button id="mostrarDiv" class="btn btn-warning" style="color: white;">Seleccionar Alumnos</button>
-                    <div id="miDiv" > -->
-
-                    <div style="margin: 1rem 0 1rem 0; text-align: center;"><b style="font-size: 20px;">Seleccionar Alumnos</b><br>
+                <div class="col-md-6">
+                    <div id="SelectAlumnos" style="margin: 1rem 0; text-align: center;">
+                        <b style="font-size: 20px;">Seleccionar Alumnos</b><br>
                         <?php
                         $alumnosSelec = count($alumnoSeleccionado);
                         echo "Total alumnos Seleccionados: " . $alumnosSelec;
                         ?>
-
+                        <?php echo Html::beginForm(['registrar-alumno-clase', 'post']); ?>
+                        <select class="form-control select2 select2-hidden-accessible" style="width: 99%;" tabindex="-1"
+                            aria-hidden="true" name="estudiante_id" required>
+                            <option value="">Escoje un alumno</option>
+                            <?php
+                            foreach ($alumnos as $alumno) {
+                                echo '<option value="' . $alumno['student_id'] . '">' . $alumno['estudiante'] . '</option>';
+                            }
+                            ?>
+                        </select>
+                        <input type="hidden" name="clase_id" value="<?= $clase->id ?>">
+                        <div style="margin: 1rem 0;">
+                            <?= Html::submitButton('Agregar', ['class' => 'btn btn-success']) ?>
+                        </div>
                     </div>
 
-                    <?php echo Html::beginForm(['registrar-alumno-clase', 'post']); ?>
-                    <select class="form-control select2 select2-hidden-accessible" style="width: 99%;" tabindex="-1" aria-hidden="true" name="estudiante_id" required>
-
-                        <option value="">Escoje un alumno</option>
-                        <?php
-                        foreach ($alumnos as $alumno) {
-                            echo '<option value="' . $alumno['student_id'] . '">' . $alumno['estudiante'] . '</option>';
-                        }
-                        ?>
-                    </select>
-                    <input type="hidden" name="clase_id" value="<?= $clase->id ?>">
-                    <div style="margin: 1rem 0 1rem 0;">
-                        <?= Html::submitButton('Agregar',  ['class' => 'btn btn-success']) ?>
+                    <div id="alumnosDiv">
+                        <table class="table table-bordered">
+                            <tr>
+                                <th>#</th>
+                                <th>Nombre</th>
+                            </tr>
+                            <?php
+                            $numeroEstudiante = 1;
+                            foreach ($alumnoSeleccionado as $alumnos) {
+                                echo '<tr>';
+                                echo '<td>' . $numeroEstudiante . '</td>';
+                                echo '<td>' . $alumnos['estudiante'] . '</td>';
+                                echo '</tr>';
+                                $numeroEstudiante++;
+                            }
+                            ?>
+                        </table>
                     </div>
-
-                    <table class="table table-bordered">
-                        <tr>
-                            <th>#</th>
-                            <th>Nombre</th>
-                        </tr>
-                        <?php
-                        $numeroEstudiante = 1;
-                        foreach ($alumnoSeleccionado as $alumnos) {
-                            echo '<tr>';
-                            echo '<td>' . $numeroEstudiante . '</td>';
-                            echo '<td>' . $alumnos['estudiante'] . '</td>';
-                            echo '</tr>';
-                            $numeroEstudiante++;
-                        }
-                        ?>
-                    </table>
-
                 </div>
             </div>
+
+
+
             <?php echo Html::endForm(); ?>
         </div>
     </div>
@@ -156,8 +161,8 @@ $this->title = 'Agregar Alumnos';
 
 
 <script>
-    $(document).ready(function() {
-        $('#mostrarDiv').click(function() {
+    $(document).ready(function () {
+        $('#mostrarDiv').click(function () {
             $('#miDiv').show();
             buscador();
         });
@@ -180,14 +185,30 @@ $this->title = 'Agregar Alumnos';
 
     // Función para mostrar u ocultar el div según el valor de todosAlumnos
     function mostrarOcultarDiv() {
-        var div = document.getElementById("alumnosDiv");
+        var div1 = document.getElementById("noOptativa");
+        var div2 = document.getElementById("SelectAlumnos");
         if (todosAlumnos === 0) {
-            div.style.display = "block"; // Mostrar el div
+            div1.style.display = "block"; // Mostrar el div
+            div2.style.display = "block"; // Mostrar el div
+
         } else {
-            div.style.display = "none"; // Ocultar el div
+            div1.style.display = "none"; // Ocultar el div
+            div2.style.display = "none"; // Ocultar el div
         }
     }
 
     //Llamar a la función al cargar la página para configurar el estado inicial
     window.onload = mostrarOcultarDiv;
+</script>
+
+<script>
+    function OcultarSelect() {
+        var div = document.getElementById("SelectAlumnos");
+        if (todosAlumnos === 1) {
+            div.style.display = "block"; // Mostrar el div
+
+        } else {
+            div.style.display = "none"; // Ocultar el div
+        }
+    }
 </script>

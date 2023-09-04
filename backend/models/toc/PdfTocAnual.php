@@ -89,7 +89,7 @@ class PdfTocAnual extends \yii\db\ActiveRecord
         $html .= '</tr>';
 
         $html .= '<tr>';
-        $html .= '<td align="center"><b>PLANIFICACIÓN VERTICAL - PD<br>CLASE '.$this->periodo->nombre.'</b></td>';
+        $html .= '<td align="center"><b>PLANIFICACIÓN VERTICAL TdC<br>CLASE '.$this->periodo->nombre.'</b></td>';
         $html .= '</tr>';
 
         $html .= '</table>';

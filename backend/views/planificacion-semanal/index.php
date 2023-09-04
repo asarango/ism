@@ -63,7 +63,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <div class="col-lg-1 col-md-1">
                     <h4><img src="../ISM/main/images/submenu/plan.png" width="64px" class="img-thumbnail"></h4>
                 </div>
-                <div class="col-lg-7 col-md-7">
+                <div class="col-lg-6 col-md-6">
                     <h4>
                         <?= Html::encode($this->title)
                             ?>
@@ -78,7 +78,24 @@ $this->params['breadcrumbs'][] = $this->title;
                     </p>
                 </div>
                 <!-- INICIO BOTONES DERECHA -->
-                <div class="col-lg-4 col-md-4" style="text-align: right;">
+                <div class="col-lg-5 col-md-5" style="text-align: right;">
+                    <?=
+                        Html::a(
+                            '<span class="badge rounded-pill" style="background-color: #ab0a3d">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home-up"
+                             width="16" height="16" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ffffff" 
+                             fill="none" stroke-linecap="round" stroke-linejoin="round">
+                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                            <path d="M9 21v-6a2 2 0 0 1 2 -2h2c.641 0 1.212 .302 1.578 .771" />
+                            <path d="M20.136 11.136l-8.136 -8.136l-9 9h2v7a2 2 0 0 0 2 2h6.344" />
+                            <path d="M19 22v-6" />
+                            <path d="M22 19l-3 -3l-3 3" />
+                            </svg> Plan Vertical TdC</span>',
+                            ['toc-plan-vertical/index1', 'clase_id' => $clase->id],
+                            ['title' => 'Regresar a la Planificación Vertical TOC']
+                        );
+                    ?>
+                    |
                     <?=
                         Html::a(
                             '<span class="badge rounded-pill" style="background-color: #ff9e18">
@@ -90,20 +107,11 @@ $this->params['breadcrumbs'][] = $this->title;
                             <path d="M20.136 11.136l-8.136 -8.136l-9 9h2v7a2 2 0 0 0 2 2h6.344" />
                             <path d="M19 22v-6" />
                             <path d="M22 19l-3 -3l-3 3" />
-                            </svg> Regresar al PUD</span>',
+                            </svg>PUD</span>',
                             ['pud-dip/index1', 'plan_bloque_unidad_id' => $semana->bloque_id],
-                            ['title' => 'Planificación Vertical TOC']
+                            ['title' => 'Regresar al PUD']
                         );
                     ?>
-                    
-                    <?php Html::button(
-                        '<span class="badge rounded-pill" style="background-color: #ab0a3d"><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-arrow-back-up" width="16" height="16" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ffffff" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                        <path d="M9 14l-4 -4l4 -4" />
-                        <path d="M5 10h11a4 4 0 1 1 0 8h-1" />
-                        </svg>PUD</span>',
-                        ['class' => 'btn btn-default', 'onclick' => 'history.go(-1); return false;']
-                    ) ?>
                     |
                     <?=
                         Html::a(
@@ -122,6 +130,10 @@ $this->params['breadcrumbs'][] = $this->title;
                             ['title' => 'Planificación Vertical TOC']
                         );
                     ?>
+
+                    
+
+
                     <!-- FIN BOTONES DERECHA -->
                 </div>
                 <hr>
@@ -194,7 +206,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                     </thead>
                                     <tbody>
                                         <?php
-                                        
+
                                         foreach ($planSemanal as $semTotal) {
                                             echo '<tr>';
                                             echo '<td>' . $semTotal->fecha . '</td>';

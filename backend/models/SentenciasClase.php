@@ -38,8 +38,8 @@ class SentenciasClase extends \yii\db\ActiveRecord {
                     where	g.clase_id = $clase
                                 and sp.id = $periodo
                     order by s.last_name, s.first_name, s.middle_name"; 
-//        echo $query;
-//        die();
+    //    echo $query;
+    //    die();
         $res = $con->createCommand($query)->queryAll();
         return $res;
     }

@@ -65,17 +65,16 @@ $modelActividadConsulta = new ScholarisArchivosprofesor();
                         <?= Html::encode($this->title) ?>
                     </h4>
                     <p>(
-                        <?=
-                            ' <small>' . $modelActividad->clase->ismAreaMateria->materia->nombre .
+                        <?= '<small>' . $modelActividad->clase->ismAreaMateria->materia->nombre .
                             ' - ' .
                             'Clase #:' . $modelActividad->clase->id .
                             ' - ' .
                             $modelActividad->clase->paralelo->course->name . ' - ' . $modelActividad->clase->paralelo->name . ' / ' .
+                            //$modelActividad->clase->paralelo->name . ' / ' .
                             $modelActividad->clase->profesor->last_name . ' ' . $modelActividad->clase->profesor->x_first_name . ' / ' .
                             'Es calificado: ' . $calificado . ' / ' .
-                            'Tipo de actividad: ' . $modelActividad->tipo_calificacion .
-                            '</small>';
-                        ?>  )
+                            'Tipo de actividad: ' . getActividad($modelActividad->tipo_actividad_id) . '</small>';
+                        ?> )
                     </p>
                 </div>
 
@@ -137,16 +136,39 @@ $modelActividadConsulta = new ScholarisArchivosprofesor();
 
             <!-- /*****Dentro de Actividades*****/ -->
             <!-- render de formularios LMS (lms anterior o DIPL) -->
-            
-            
+
             <!--**************** modificar puesto que debemos tr4aer desde la planificacion semanal***************** -->
             <?php
-            if(empty($lmsActividad['id'])){
+            if (empty($lmsActividad['id'])) {
                 include '_lms-planificacion-semanal.php';
-            }else{
+            } else {
                 include '_lms-comunitario.php';
             }
-            ?>          
+            ?>
         </div>
     </div>
 </div>
+
+<?php
+function getActividad($tipo_actividad_id)
+{
+    $actividadTextos = array(
+        1 => 'Lecciones de revisión(1)',
+        3 => 'Pruebas de base estructuradas(3)',
+        4 => 'Tareas en clase(4)',
+        5 => 'Proyectos y/o investigaciones(5)',
+        6 => 'Proyectos y/o investigaciones(6)',
+        7 => 'Exposiciones foros(7)',
+        9 => 'Talleres(9)',
+        2 => 'Desarrollo de productos(2)',
+        8 => 'Se aplica metodología(8)',
+        10 => 'Evaluación de base estructurada(10)'
+    );
+
+    if (isset($actividadTextos[$tipo_actividad_id])) {
+        return $actividadTextos[$tipo_actividad_id];
+    } else {
+        return 'Actividad desconocida';
+    }
+}
+?>

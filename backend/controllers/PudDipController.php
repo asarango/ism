@@ -714,7 +714,8 @@ class PudDipController extends Controller {
         return $this->renderPartial('_semanas',[
             'planesSemanales' => $planesSemanales,
             'planUnidadId' => $planUnidad->id,
-            'paralelos' => $paralelos
+            'paralelos' => $paralelos,
+
         ]);
     }
     
@@ -777,8 +778,10 @@ class PudDipController extends Controller {
      * 2023-08-02
      */
     public function actionRedirectPs(){
-        $lmsId = $_GET['lms_id'];
-        $claseId = $_GET['clase_id'];
+        $lmsId      = $_GET['lms_id'];
+        $claseId    = $_GET['clase_id'];
+        $pudOrigen  = $_GET['pud_origen'];
+        $planBloqueUnidadId = $_GET['plan_bloque_unidad_id'];
         $periodoId = Yii::$app->user->identity->periodo_id;
 
         $periodo = ScholarisPeriodo::findOne($periodoId);
@@ -794,7 +797,9 @@ class PudDipController extends Controller {
         return $this->redirect(['planificacion-semanal/index1',
             'bloque_id' => $bloque['bloque_id'],
             'clase_id' => $claseId,
-            'semana_defecto' => $bloque['semana_id']
+            'semana_defecto' => $bloque['semana_id'],
+            'pud_origen' => $pudOrigen,
+            'plan_bloque_unidad_id' => $planBloqueUnidadId
         ]);
     }
 

@@ -39,7 +39,6 @@ $ahora = date('Y-m-d H:i:s');
                     <b>Estudiante:</b> <span style="color:red"><?=$nombreEstudiante?></span><br>
                     <b>Nuevo Caso:</b> <span style="color:red"><?=$model->numero_caso?></span>
                     </p></small>
-                    
                 </div>
               
                 <!-- FIN DE CABECERA -->

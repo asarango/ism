@@ -330,7 +330,6 @@ class DeceCasosController extends Controller
                     and c8.id = c7.course_id 
                     and c4.id = '$id_estudiante'
                     order by student;";        
-
         $resp = $con->createCommand($query)->queryOne();
 
         return $resp;

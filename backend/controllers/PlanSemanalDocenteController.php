@@ -2,6 +2,7 @@
 
 namespace backend\controllers;
 
+use backend\models\diploma\PdfPlanSemanaDocente;
 use backend\models\helpers\CalendarioSemanal;
 use backend\models\ScholarisBloqueSemanas;
 use backend\models\ScholarisHorariov2Dia;
@@ -103,7 +104,8 @@ class PlanSemanalDocenteController extends Controller {
     }
 
 
-// se obtiene los datos generales, renderizado a detail-week
+
+
     public function actionAcciones(){       
         $user       = Yii::$app->user->identity->usuario;
         $periodId   = Yii::$app->user->identity->periodo_id; 
@@ -132,29 +134,47 @@ class PlanSemanalDocenteController extends Controller {
 
             return $html;
         }///fin de para semanas
-        else if($action == 'detail-week'){
+        else if($action == 'detail-week'){            
             $weekId = $_GET['week_id'];
 
-            $week = ScholarisBloqueSemanas::findOne($weekId);
-            $statesBitacora = $this->get_states_bitacora($weekId, $user, $periodId);
+            // $week = ScholarisBloqueSemanas::findOne($weekId);
+            // $statesBitacora = $this->get_states_bitacora($weekId, $user, $periodId);
 
-            $dates = $this->get_dates($week->fecha_inicio, $week->fecha_finaliza, $user, $periodId);            
-            $hours = $this->get_hours($user, $periodId);
+            // $dates = $this->get_dates($week->fecha_inicio, $week->fecha_finaliza, $user, $periodId);            
+            // $hours = $this->get_hours($user, $periodId);
 
-            // echo '<pre>';
-            // print_r($statesBitacora);
-            // die();
+            // // echo '<pre>';
+            // // print_r($statesBitacora);
+            // // die();
 
-            return $this->renderPartial('detail-week', [
-                'dates' => $dates,
-                'hours' => $hours,
-                'user'  => $user,
-                'bloqueId' => $week->bloque->id,
-                'weekNumber' => $week->semana_numero,
-                'week'  => $week,
-                'statesBitacora' => $statesBitacora
+
+            // return $this->renderPartial('detail-week', [
+            //     'dates' => $dates,
+            //     'hours' => $hours,
+            //     'user'  => $user,
+            //     'bloqueId' => $week->bloque->id,
+            //     'weekNumber' => $week->semana_numero,
+            //     'week'  => $week,
+            //     'statesBitacora' => $statesBitacora
+            // ]);
+
+
+            return $this->renderPartial('detail-week-teacher', [
+                    'weekId' => $weekId
+                    // 'dates' => $dates,
+                    // 'hours' => $hours,
+                    // 'user'  => $user,
+                    // 'bloqueId' => $week->bloque->id,
+                    // 'weekNumber' => $week->semana_numero,
+                    // 'week'  => $week,
+                    // 'statesBitacora' => $statesBitacora
             ]);
+
         }////fin de detalle de semana
+        elseif($action == 'pdf'){
+            $weekId = $_GET['week_id'];
+            new PdfPlanSemanaDocente($weekId, $user, $periodId);
+        }//// FIN DE PDF
         else if($action == 'enviar'){            
             $courses = $this->get_courses_by_teacher($periodId, $user);            
             $weekId = $_GET['week_id'];            
@@ -184,6 +204,89 @@ class PlanSemanalDocenteController extends Controller {
         
         
     }
+
+
+// se obtiene los datos generales, renderizado a detail-week
+    // public function actionAcciones(){       
+    //     $user       = Yii::$app->user->identity->usuario;
+    //     $periodId   = Yii::$app->user->identity->periodo_id; 
+    //     $action = $_GET['action'];
+
+        
+    //     if($action == 'weeks'){ //para semanas
+    //         $blockId = $_GET['block_id'];
+    //         $weeks = ScholarisBloqueSemanas::find()
+    //         ->where(['bloque_id' => $blockId])
+    //         ->orderBy('semana_numero')
+    //         ->all();
+
+    //         $html = '';
+    //         $html.= '<select name="semanas" 
+    //                     id="select-semanas"
+    //                     onchange="showWeek(this)" 
+    //                     class="form-control">';
+    //         $html.= '<option value="">Semanas...</option>';
+
+    //         foreach($weeks as $week){
+    //             $html.= '<option value="'.$week->id.'">'.$week->nombre_semana.'</option>';
+    //         }
+
+    //         $html.= '</select>';
+
+    //         return $html;
+    //     }///fin de para semanas
+    //     else if($action == 'detail-week'){
+    //         $weekId = $_GET['week_id'];
+
+    //         $week = ScholarisBloqueSemanas::findOne($weekId);
+    //         $statesBitacora = $this->get_states_bitacora($weekId, $user, $periodId);
+
+    //         $dates = $this->get_dates($week->fecha_inicio, $week->fecha_finaliza, $user, $periodId);            
+    //         $hours = $this->get_hours($user, $periodId);
+
+    //         // echo '<pre>';
+    //         // print_r($statesBitacora);
+    //         // die();
+
+    //         return $this->renderPartial('detail-week', [
+    //             'dates' => $dates,
+    //             'hours' => $hours,
+    //             'user'  => $user,
+    //             'bloqueId' => $week->bloque->id,
+    //             'weekNumber' => $week->semana_numero,
+    //             'week'  => $week,
+    //             'statesBitacora' => $statesBitacora
+    //         ]);
+    //     }////fin de detalle de semana
+    //     else if($action == 'enviar'){            
+    //         $courses = $this->get_courses_by_teacher($periodId, $user);            
+    //         $weekId = $_GET['week_id'];            
+
+    //         foreach($courses as $course){       
+                
+    //             $coordinator = $this->get_coordinator($course['course_id']);
+
+    //             if(count($coordinator) != 1){
+    //                 echo 'Error al asignar coordinadores en la pantalla de clases, por favor comuníque a su administrador!!!';
+    //                 die();
+    //             }else{
+    //                 $model = new PlanSemanalBitacora();
+    //                 $model->semana_id       = $weekId;
+    //                 $model->docente_usuario = $user;
+    //                 $model->curso_id        = $course['course_id'];
+    //                 $model->estado          = 'COORDINADOR';
+    //                 $model->fecha_envio     = date('Y-m-d H:i:s');
+    //                 $model->usuario_envia   = $user;      
+    //                 $model->usuario_recibe  = $coordinator[0]['usuario'];         
+    //                 $model->save();
+    //             }
+    //         }   
+            
+    //         return $this->redirect(['index']);
+    //     }/////FIN DE ENVIAR A COORDINADOR
+        
+        
+    // }
 
 
     private function get_states_bitacora($weekId, $user, $periodId){

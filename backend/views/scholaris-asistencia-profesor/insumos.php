@@ -7,7 +7,7 @@ use yii\grid\GridView;
 $this->title = '¡Mis insumos!';
 
 // echo '<pre>';
-// print_r($clas);
+// print_r($searchModel);
 // die();
 ?>
 
@@ -76,9 +76,9 @@ $this->title = '¡Mis insumos!';
                                     
                                     return \yii\helpers\Url::to(['scholaris-actividad/actividad', 'actividad' => $model->actividad_id]);
                                 }
-                                //                       else if ($action === 'update') {
-//                            return \yii\helpers\Url::to(['update', 'id' => $key]);
-//                        }
+                                //     else if ($action === 'update') {
+                                //          return \yii\helpers\Url::to(['update', 'id' => $key]);
+                                //      }
                             }
                             ],
                             /** FIN BOTONES DE ACCION * */
@@ -91,6 +91,7 @@ $this->title = '¡Mis insumos!';
                             'actividad_id',
                             'inicio',
                             'title',
+                            // 'tipo_actividad_id', agregar el tipo actividad !
                             'total_calificados',
                             'total_estudiantes'
                             // [

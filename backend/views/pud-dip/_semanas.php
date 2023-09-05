@@ -11,6 +11,13 @@ use yii\helpers\Url;
 // echo '<pre>';
 // print_r($planUnidadId);
 // die();
+
+// echo "<pre>";
+// print_r($planUnidad);
+// die();
+// echo '<pre>';
+// print_r($planUnidadId);
+// die();
 ?>
 
 <style>
@@ -78,7 +85,9 @@ use yii\helpers\Url;
                                         </tr>
                                     </thead>
                                     <tbody>
+
                                         <?php
+
                                         foreach ($semana['actividades'] as $actividad) {
 
                                             $inicio = $actividad['dip_inicio'];
@@ -261,12 +270,17 @@ use yii\helpers\Url;
                                             <p>
                                                 <?php
 
+
                                                 foreach ($paralelos as $paralelo) {
+
 
                                                     echo Html::a('<lu style="padding-left: 5px; text-align: center"><h4><b>- ' . $paralelo['paralelo'] . ' -<lu><h4><b>', [
                                                         'redirect-ps',
                                                         'lms_id' => $actividad['id'],
                                                         'clase_id' => $paralelo['clase_id'],
+                                                        'pud_origen' => "normal",
+                                                        'plan_bloque_unidad_id' => $planUnidadId,
+                                            
                                                         // 'boton_retorno' => "pud-dip/index1?plan_bloque_unidad_id=" . $planUnidadId,
                                                     ]);
                                                 }

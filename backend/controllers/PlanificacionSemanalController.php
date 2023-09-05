@@ -92,6 +92,8 @@ class PlanificacionSemanalController extends Controller
         
         $bloqueId = $_GET['bloque_id'];
         $claseId = $_GET['clase_id'];
+        $pudOrigen = $_GET['pud_origen'];
+        $idOrigen = $_GET['plan_bloque_unidad_id'];
         
         $bloque = ScholarisBloqueActividad::findOne($bloqueId);
         $clase = ScholarisClase::findOne($claseId);
@@ -135,7 +137,9 @@ class PlanificacionSemanalController extends Controller
             'bloque'    => $bloque,
             'semanas'   => $semanas,
             'semana'    => $semana,
-            'planSemanal' => $planSemanal
+            'planSemanal' => $planSemanal,
+            'pud_origen' => $pudOrigen,
+            'plan_bloque_unidad_id' => $idOrigen
         ]);
     }
 
@@ -204,7 +208,6 @@ class PlanificacionSemanalController extends Controller
                 'bloque_id' => $model->semana->bloque->id
             ]);
         }
-        
 
         return $this->render('update', [
             'model' => $model

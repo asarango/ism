@@ -34,7 +34,7 @@ $this->title = 'Modificar Planificacion Semanal ';
                     </h4>
 
                     <p>
-                        <?= $model->clase->paralelo->course->name . ' ' . '"' . 'B' . '"' . '/' . ' Hora de clase:' . $model->hora->nombre . '
+                        <?= $model->clase->paralelo->course->name . ' ' . '"' . $model->clase->paralelo->name . '"' . '/' . ' Hora de clase:' . $model->hora->nombre . '
                          ' . '"' . '/' . ' ' . $model->clase->profesor->last_name . ' ' . $model->clase->profesor->x_first_name . '' ?>
                     </p>
                 </div>

@@ -98,7 +98,16 @@ foreach ($unidades as $unidad) {
                                 <path d="M4 11l16 0" />
                                 <path d="M8 15h2v2h-2z" />
                                 </svg></span>',
-                                    ['planificacion-semanal/index1', 'clase_id' => $claseId, 'bloque_id' => $unidad->bloque_id],
+                                    [
+                                        'planificacion-semanal/index1',
+
+                                        'clase_id' => $claseId,
+                                        'bloque_id' => $unidad->bloque_id,
+                                        'pud_origen' => "toc",
+                                        'plan_bloque_unidad_id' => $claseId
+
+                                    ],
+
                                     ['class' => '', 'title' => 'Plan Semanal']
                                 );
                             ?>

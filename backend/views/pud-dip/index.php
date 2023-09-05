@@ -18,7 +18,7 @@ use yii\helpers\ArrayHelper;
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 // echo '<pre>';
-// print_r($planUnidad);
+// print_r($planUnidadId);
 // die();
 
 $this->title = 'PUD - ' . $planUnidad->curriculoBloque->last_name . ' - ' . $planUnidad->unit_title;

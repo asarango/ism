@@ -81,6 +81,15 @@ $user           = Usuario::find()->where(['usuario' => $userLog])->one();
 $rol            = Rol::find()->where(['id' => $user->rol_id])->one();  //navegacion para encontrar  el rol del usuario logueado
 
 
+
+// if($rol== 'Profesor'){
+//     $condicion= true;
+// }
+
+// echo '<script>';
+// echo 'var mostrarContenido = ' . ($condicion ? 'true' : 'false') . ';';
+// echo '</script>';
+
 // echo "<pre>";
 // print_r($rol);
 // die(); 
@@ -497,7 +506,7 @@ $rol            = Rol::find()->where(['id' => $user->rol_id])->one();  //navegac
                         </div> <!-- fin Deteccion -->
 
                         <!-- validar el rol del usario, si es DECE muestra todo, caso contrario oculta Derivación e Intervención -->
-                        <div id="MostrarContenido">
+                        <div id="MostrarDiv">
                             <div class="row">
                                 <hr>
                                 <h6 style="color:red"> Derivación</h6>
@@ -695,6 +704,6 @@ $rol            = Rol::find()->where(['id' => $user->rol_id])->one();  //navegac
     <script>
         // JavaScript para ocultar la div según la variable generada por PHP
         if (!mostrarContenido) {
-            document.getElementById('MostrarContenido').style.display = 'none';
+            document.getElementById('MostrarDiv').style.display = 'none';
         }
     </script>

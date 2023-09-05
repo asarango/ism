@@ -8,15 +8,20 @@ use yii\helpers\Url;
 /* @var $this yii\web\View */
 /* @var $model backend\models\ScholarisClase */
 
+// echo '<pre>';
+// print_r($model->clase->ismAreaMateria->materia->nombre);   
+// die();
+
 $this->title = 'Retirar estudiante: ' . $model->alumno->last_name . ' ' . $model->alumno->first_name . ' ' . $model->alumno->middle_name . ' ' .
         'de la clase: ' . $model->clase_id . ' ' .
-        'materia: ' . $model->clase->materia->name . ' ' .
-        'profesor: ' . $model->clase->profesor->last_name . ' ' . $model->clase->profesor->x_first_name
-;
-;
+        'materia: ' . $model->clase->ismAreaMateria->materia->nombre . ' ' .
+        'profesor: ' . $model->clase->profesor->last_name . ' ' . $model->clase->profesor->x_first_name;
+
 $this->params['breadcrumbs'][] = ['label' => 'Scholaris Clases', 'url' => ['scholaris-clase/index']];
 //$this->params['breadcrumbs'][] = ['label' => $model->id, 'url' => ['view', 'id' => $model->id]];
 $this->params['breadcrumbs'][] = $this->title;
+
+
 ?>
 <div class="scholaris-clase-retirar">
 

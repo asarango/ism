@@ -49,7 +49,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     |
                     <?=
                         Html::a(
-                            '<span class="badge rounded-pill" style="background-color:#9e28b5"><i class="fa fa-briefcase" aria-hidden="true"></i> Registro General Acompañamiento</span>',
+                            '<span class="badge rounded-pill" style="background-color:#ab0a3d"><i class="fa fa-briefcase" aria-hidden="true"></i> Registro General Acompañamiento</span>',
                             ['reg-gen-acompaniamiento'],
                             ['class' => 'link']
                         );
@@ -65,7 +65,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     <div class="col-lg-12 col-md-12 text-center">
                         <?= Html::beginForm(['create', 'idEstudiante' => 0], 'post') ?>
                         <div class="row">
-                            <div class="col-lg-10 col-md-10">
+                            <div class="col-lg-10 col-md-10" style="font-weight: bold;">
                                 Total:
                                 <?= count($estudiantes) ?>
                                 <select id="idAlumno" name="idAlumno"
@@ -82,17 +82,17 @@ $this->params['breadcrumbs'][] = $this->title;
                             <div class="col-lg-2 col-md-2" style="text-align: center; margin-top: 28px;">
                                 <?= Html::submitButton('Crear Caso', [
                                     'class' => 'submit btn btn-primary my-text-medium',
-                                    
+                                    'style' => 'font-weight: bold;color: white;'
                                 ])
                                     ?>
                             </div>
                         </div>
                         <?= Html::endForm() ?>
                     </div>
-                    <hr>
-                    <div class="col-lg-12 col-md-12">
+                    <!-- <hr> -->
+                    <div class="col-lg-12 col-md-12" style="margin-top: 10px;">
                         <h6 class="my-text-medium">ESTUDIANTES EN SEGUIMIENTO:
-                            <?= count($casos) ?>
+                            <b><?= count($casos) ?></b>
                         </h6>
                         <div class="table responsive">
                             <table class="table table-hover table-striped my-text-medium">
@@ -140,7 +140,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                                 </strong></td>
                                             <td>
                                                 <?= Html::a(
-                                                    '<span class="badge  rounded-pill" style="background-color:red;font-size:14px;">Ver</span>',
+                                                    '<span class="badge  rounded-pill" style="background-color:#65b2e8;font-size:14px;">Ver</span>',
                                                     ['dece-casos/historico', 'id' => $caso['id_estudiante'], 'id_clase' => 0],
                                                     ['class' => 'link']
                                                 ); ?>
@@ -152,7 +152,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 </tbody>
                                 <tfoot>
                                     <tr style="text-align:center">
-                                        <th><strong style="color:brown">Totales --></strong></th>
+                                        <th><strong style="color: #0a1f8f">Totales </strong></th>
                                         <th>
                                             <?= $conteoEjesDeAccion[0] ?>
                                         </th>

@@ -133,7 +133,6 @@ $this->params['breadcrumbs'][] = $this->title;
                             ['toc-plan-vertical/index1', 'clase_id' => $plan_bloque_unidad_id],
                             ['title' => 'Regresar al PUD']
                         );
-
                     }
                     ?>
                     |
@@ -172,16 +171,22 @@ $this->params['breadcrumbs'][] = $this->title;
                             <div class="card row ancho-boton zoom menuizquierda"
                                 style="border-radius: .5rem; border-bottom:solid 1px #ccc;margin-top:5px;padding:8px;">
                                 <?php
-                                echo Html::a(
-                                    $nombreSemana,
-                                    [
-                                        'planificacion-semanal/index1',
-                                        'bloque_id' => $sem1->bloque_id,
-                                        'clase_id' => $clase->id,
-                                        'semana_defecto' => $sem1->id
-                                    ],
-                                    ['style' => 'text-decoration: none; color:#0a1f8f;']
-                                );
+                                
+                                    echo Html::a(
+
+                                        $nombreSemana,
+                                        [
+                                            'planificacion-semanal/index1',
+                                            'bloque_id' => $sem1->bloque_id,
+                                            'clase_id' => $clase->id,
+                                            'semana_defecto' => $sem1->id,
+                                            'pud_origen' => $pud_origen,
+                                            'plan_bloque_unidad_id' => $plan_bloque_unidad_id
+                                        ],
+                                        ['style' => 'text-decoration: none; color:#0a1f8f;']
+                                    );
+                                
+
                                 ?>
                             </div>
                             <?php

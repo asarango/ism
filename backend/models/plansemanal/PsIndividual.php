@@ -28,11 +28,17 @@ class PsIndividual
 
     private function recupera_horario()
     {
-        $horario = $this->get_horario();
+        $horario = $this->get_horario();     
+        // echo '<pre>';
+        // print_r($horario);
+        // die();   
         $i=0;
         foreach ($horario as $hora) {
             $i++;
             $fecha = $this->busca_fecha($hora['orden_dia']);
+            // echo '<br>'.$fecha;
+            // echo '<br>'.$hora['orden_dia'];
+            // echo '<br>'.$hora['hora_id'];
             $this->agrega_hora($hora['hora_id'], $i, $fecha);
         }
     }
@@ -50,6 +56,9 @@ class PsIndividual
                             inner join scholaris_horariov2_hora hor on hor.id = det.hora_id 
                     where 	hh.clase_id = $this->claseId
                     order by dia.numero, hor.numero;";
+        // echo $query;
+        // echo $this->claseId;
+        // die();
         $res = $con->createCommand($query)->queryAll();
         return $res;
     }
@@ -60,8 +69,9 @@ class PsIndividual
             'semana_id' => $this->semanaId,
             'hora_id' => $hora_id,
             'orden_hora_semana' => $orden_hora,
-            'fecha' => $fecha
-        ])->one();
+            'fecha' => $fecha,
+            'clase_id' => $this->claseId
+        ])->one();    
 
         if(!$ps){
             //inyectar plan semanal

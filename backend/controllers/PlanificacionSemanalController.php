@@ -126,7 +126,6 @@ class PlanificacionSemanalController extends Controller
         ])
         ->orderBy('orden_hora_semana')
         ->all();
-        
 
         // renderiza la vista
         return $this->render('index', [

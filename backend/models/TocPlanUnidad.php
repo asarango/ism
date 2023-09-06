@@ -42,9 +42,9 @@ class TocPlanUnidad extends \yii\db\ActiveRecord
             [['bloque_id', 'clase_id', 'created', 'created_at', 'updated', 'updated_at'], 'required'],
             [['bloque_id', 'clase_id'], 'default', 'value' => null],
             [['bloque_id', 'clase_id'], 'integer'],
-            [['objetivos', 'conceptos_clave', 'contenido', 'evaluacion_pd'], 'string'],
+            [['titulo','objetivos', 'conceptos_clave', 'contenido', 'evaluacion_pd'], 'string'],
             [['created_at', 'updated_at'], 'safe'],
-            [['titulo', 'created', 'updated'], 'string', 'max' => 200],
+            [['created', 'updated'], 'string', 'max' => 200],
             [['bloque_id'], 'exist', 'skipOnError' => true, 'targetClass' => ScholarisBloqueActividad::className(), 'targetAttribute' => ['bloque_id' => 'id']],
             [['clase_id'], 'exist', 'skipOnError' => true, 'targetClass' => ScholarisClase::className(), 'targetAttribute' => ['clase_id' => 'id']],
         ];

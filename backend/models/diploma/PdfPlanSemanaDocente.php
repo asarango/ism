@@ -149,8 +149,10 @@ class PdfPlanSemanaDocente extends \yii\db\ActiveRecord
         $html = '<table width="100%" cellpadding="2" cellspacing="0" class="marginTop10 tamano10">';
         $html .= '<tr>';
         $html .= '<th class="centrarTexto border fondoTh">FECHA</th>';
-        $html .= '<th class="centrarTexto border fondoTh">DÍA</th>';
+        $html .= '<th class="centrarTexto border fondoTh">DÍA</th>';        
         $html .= '<th class="centrarTexto border fondoTh">HORA</th>';
+        $html .= '<th class="centrarTexto border fondoTh">CURSO</th>';
+        $html .= '<th class="centrarTexto border fondoTh">PARALELO</th>';
         $html .= '<th class="centrarTexto border fondoTh">TEMA</th>';
         $html .= '<th class="centrarTexto border fondoTh">ACTIVIDADES</th>';
         $html .= '<th class="centrarTexto border fondoTh">DIF. NEE</th>';
@@ -173,7 +175,9 @@ class PdfPlanSemanaDocente extends \yii\db\ActiveRecord
             $html .= '<tr>';
             $html .= '<td class="centrarTexto border">'.$plan['fecha'].'</td>';
             $html .= '<td class="centrarTexto border">'.$plan['id'].'</td>';
-            $html .= '<td class="centrarTexto border">'.$plan['id'].'</td>';
+            $html .= '<td class="centrarTexto border">'.$plan['sigla'].'</td>';
+            $html .= '<td class="centrarTexto border">'.$plan['curso'].'</td>';
+            $html .= '<td class="centrarTexto border">'.$plan['paralelo'].'</td>';
             $html .= '<td class="centrarTexto border">'.$plan['tema'].'</td>';
             $html .= '<td class="centrarTexto border">'.$plan['actividades'].'</td>';
             $html .= '<td class="centrarTexto border">-</td>';
@@ -205,19 +209,22 @@ class PdfPlanSemanaDocente extends \yii\db\ActiveRecord
 
     private function get_planificiacion(){
         $con = Yii::$app->db;
-        $query = "select 	ps.id 
-                        ,ps.fecha 
-                        ,ps.tema 
-                        ,ps.actividades
-                        ,ps.diferenciacion_nee 
-                        ,hor.sigla 
-                from 	planificacion_semanal ps
-                        inner join scholaris_horariov2_hora hor  on hor.id = ps.hora_id 
-                where 	ps.semana_id = $this->semanaId
-                order by ps.orden_hora_semana;";
+        $query = "select ps.id ,ps.fecha 
+		,hor.sigla 
+		,cur.name as curso
+		,par.name as paralelo
+		,ps.tema ,ps.actividades 
+		,ps.diferenciacion_nee
+from 	planificacion_semanal ps 
+		inner join scholaris_horariov2_hora hor on hor.id = ps.hora_id 
+		inner join scholaris_clase cla on cla.id = ps.clase_id 
+		inner join op_course_paralelo par on par.id = cla.paralelo_id 
+		inner join op_course cur on cur.id = par.course_id 
+where 	ps.semana_id = $this->semanaId 
+		and ps.created = '$this->usuario' 
+order by ps.orden_hora_semana;";
 
-        echo $query;
-        die();
+
         $habilidades = $con->createCommand($query)->queryAll();
         return $habilidades;
     }

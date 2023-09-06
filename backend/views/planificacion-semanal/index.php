@@ -11,7 +11,7 @@ $this->title = 'Planificación Semanal';
 $this->params['breadcrumbs'][] = $this->title;
 
 // echo "<pre>";
-// print_r($semana);
+// print_r($planSemanal);
 // die();
 // $referrer = Yii::$app->request->referrer;
 
@@ -137,7 +137,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     ?>
                     |
                     <?php
-                    Html::a(
+                    echo Html::a(
                         '<span class="badge rounded-pill" style="background-color: #9e28b5">
                             <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copy" width="16" height="16" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ffffff" fill="none" stroke-linecap="round" stroke-linejoin="round">
                             <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
@@ -148,7 +148,9 @@ $this->params['breadcrumbs'][] = $this->title;
                             'copy',
                             'clase_id' => $clase->id,
                             'semana_id' => $planSemanal[0]->semana_id,
-                            'bloque_id' => $semanas[0]->bloque_id
+                            'bloque_id' => $semanas[0]->bloque_id,
+                            'pud_origen' => $pud_origen,
+                            'plan_bloque_unidad_id' => $plan_bloque_unidad_id
                         ],
                         ['title' => 'Planificación Vertical TOC']
                     );
@@ -250,7 +252,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                             echo '<td>';
                                             obtener_total_recursos($semTotal->id);
                                             echo '</td>';
-                                            echo '<td>' . generarBotonEdicion('update', $semTotal->id) . '</td>';
+                                            echo '<td>' . generarBotonEdicion('update', $semTotal->id, $pud_origen, $plan_bloque_unidad_id) . '</td>';
                                             echo '<td>' . BotonTarea($semTotal->id) . '</td>';
                                             echo '<td>' . BotonRecursos($semTotal->id, $bloque->id) . '</td>';
 
@@ -273,8 +275,9 @@ $this->params['breadcrumbs'][] = $this->title;
 </div>
 
 <?php
-function generarBotonEdicion($url, $id)
+function generarBotonEdicion($url, $id,$pud_origen, $plan_bloque_unidad_id)
 {
+
     return Html::a('<svg xmlns="http://www.w3.org/2000/svg"
                     class="icon icon-tabler icon-tabler-edit" width="20" height="20"
                     viewBox="0 0 24 24" stroke-width="1.5" stroke="#ab0a3d" fill="none"
@@ -284,7 +287,9 @@ function generarBotonEdicion($url, $id)
                     <path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z" />
                     <path d="M16 5l3 3" />
                     </svg>',
-        ['update', 'id' => $id],
+        ['update', 'id' => $id,
+        'pud_origen' => $pud_origen,
+        'plan_bloque_unidad_id' => $plan_bloque_unidad_id ],
         [
             'class' => '',
             'title' => 'Editar plan semanal',

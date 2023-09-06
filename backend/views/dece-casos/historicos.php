@@ -82,20 +82,34 @@ $rol            = Rol::find()->where(['id' => $user->rol_id])->one();  //navegac
 
 
 
-// if($rol== 'Profesor'){
-//     $condicion= true;
-// }
-
-// echo '<script>';
-// echo 'var mostrarContenido = ' . ($condicion ? 'true' : 'false') . ';';
-// echo '</script>';
+if ($rol->rol == 'DECE' || $rol->rol == 'Coordinador-DECE') {
+    $displayStyle = '';
+}else{
+    $displayStyle = 'none';
+}
 
 // echo "<pre>";
-// print_r($rol);
+// print_r($modelRegSeguimiento);
 // die(); 
+
+
 
 ?>
 <script src="//cdn.ckeditor.com/4.19.0/full/ckeditor.js"></script>
+
+<style>
+    .btn-caso {
+        color: white;
+        background-color: #0a1f8f;
+        transition: transform 0.5s ease;
+    }
+
+    .btn-caso:hover {
+        color: #ff9e18;
+        background-color: #ab0a3d;
+        transform: scale(1.2);
+    }
+</style>
 
 <div class="dece-casos-create" style="padding-left: 40px; padding-right: 40px; margin: 10px;">
     <div class="m-0 vh-50 row justify-content-center align-items-center">
@@ -140,7 +154,7 @@ $rol            = Rol::find()->where(['id' => $user->rol_id])->one();  //navegac
                     ?>
                     |
                     <?php
-                    if ($model->id_clase > 0) //si es mayor a cero, biene de leccionario
+                    if ($model->id_clase > 0) //si es mayor a cero, viene de leccionario
                     {
                     ?>
                         <?=
@@ -158,14 +172,14 @@ $rol            = Rol::find()->where(['id' => $user->rol_id])->one();  //navegac
                 </div> <!-- fin de menu izquierda -->
                 <!-- finaliza menu menu  -->
                 <hr>
-                <div class="row">
+                <div class="row" style="font-size: 15px;font-weight: bold">
                     <div class="col">
                         <span><b>Estudiante: </b>
                             <?php $nombreEstudiante = $model->estudiante->last_name . ' ' . $model->estudiante->middle_name . ' ' . $model->estudiante->first_name ?>
                             <span style="color:red"><?= $nombreEstudiante ?><span>
                                 </span>
                     </div>
-                    <div class="col">
+                    <div class="col" style="display: flex;justify-content: flex-end">
                         <span><b>Periodo: </b>
                             <?php $periodo = $model->periodo->nombre ?>
                             <span style="color:red"><?= $periodo ?><span>
@@ -181,9 +195,9 @@ $rol            = Rol::find()->where(['id' => $user->rol_id])->one();  //navegac
                                     <td>
                                         <h5 style="color:red; margin-left: 10px;"> Casos</h5>
                                     </td>
-                                    <td>
+                                    <td class="d-flex" style="justify-content: flex-end;">
                                         <?= Html::a(
-                                            '<span class="badge  rounded-pill" style="background-color:blue;"> Crear Casos</span>',
+                                            '<span class="badge  rounded-pill btn-caso" style="padding: 8px;"> Crear Casos</span>',
                                             ['create', 'idEstudiante' => $model->id_estudiante],
                                             ['class' => 'link']
                                         ); ?>
@@ -300,7 +314,7 @@ $rol            = Rol::find()->where(['id' => $user->rol_id])->one();  //navegac
                                             <td><?= $modelReg->fecha_fin ?></td>
                                             <td><?= $modelReg->estado ?></td>
                                             <td><?= $modelReg->motivo ?></td>
-                                            <td>
+                                            <td >
                                                 <?=
                                                 Html::a(
                                                     '<i class="fa fa-edit" aria-hidden="true"></i>',
@@ -506,7 +520,7 @@ $rol            = Rol::find()->where(['id' => $user->rol_id])->one();  //navegac
                         </div> <!-- fin Deteccion -->
 
                         <!-- validar el rol del usario, si es DECE muestra todo, caso contrario oculta Derivación e Intervención -->
-                        <div id="MostrarDiv">
+                        <div id="mostrarDiv" style="display: <?php echo $displayStyle; ?>">
                             <div class="row">
                                 <hr>
                                 <h6 style="color:red"> Derivación</h6>
@@ -704,6 +718,6 @@ $rol            = Rol::find()->where(['id' => $user->rol_id])->one();  //navegac
     <script>
         // JavaScript para ocultar la div según la variable generada por PHP
         if (!mostrarContenido) {
-            document.getElementById('MostrarDiv').style.display = 'none';
+            document.getElementById('mostrarDiv').style.display = 'none';
         }
     </script>

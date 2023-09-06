@@ -126,10 +126,7 @@ class PlanificacionSemanalController extends Controller
         ])
         ->orderBy('orden_hora_semana')
         ->all();
-        // echo '<pre>';
-        // print_r($planSemanal);
-        // die();
-
+        
 
         // renderiza la vista
         return $this->render('index', [
@@ -185,6 +182,9 @@ class PlanificacionSemanalController extends Controller
     public function actionUpdate()
     {
         if(isset($_GET['id'])){
+            $pudOrigen = $_GET['pud_origen'];
+            $planOrigenId = $_GET['plan_bloque_unidad_id'];
+
             $id = $_GET['id'];
             $model = $this->findModel($id);
         }        
@@ -194,6 +194,10 @@ class PlanificacionSemanalController extends Controller
             $today = date('Y-m-d H:i:s');
 
             $id = $_POST['id'];
+            
+            $pudOrigen = $_POST['pud_origen'];
+            $planOrigenId = $_POST['plan_bloque_unidad_id'];
+
             $model = $this->findModel($id);
             $model->tema        = $_POST['tema'];
             $model->actividades = $_POST['actividades'];
@@ -205,12 +209,17 @@ class PlanificacionSemanalController extends Controller
             
             return $this->redirect(['index1',
                 'clase_id' => $model->clase_id,
-                'bloque_id' => $model->semana->bloque->id
+                'bloque_id' => $model->semana->bloque->id,
+                'pud_origen' => $pudOrigen,
+                'plan_bloque_unidad_id' => $planOrigenId
             ]);
+            
         }
 
         return $this->render('update', [
-            'model' => $model
+            'model' => $model,
+            'pud_origen' => $pudOrigen,
+            'plan_bloque_unidad_id' => $planOrigenId
         ]);
     }
 
@@ -341,12 +350,15 @@ class PlanificacionSemanalController extends Controller
         $claseId = $_GET['clase_id'];
         $semana_id = $_GET['semana_id'];  
         $bloque_id = $_GET['bloque_id'];
+        $pudOrigen = $_GET['pud_origen'];
+        $pudOrigenId = $_GET['plan_bloque_unidad_id'];
+
 
         $urlPdf = ScholarisParametrosOpciones::find()
                     ->where(['codigo'=> 'rutaspdfplanes'])
                     ->one()->valor;
         $clase = ScholarisClase::findOne($claseId);
-        $clases = $this->get_clases($clase->ism_area_materia_id, $clase->paralelo->course_id, $semana_id, $urlPdf,$usuario, $periodoId);       
+        $clases = $this->get_clases($clase->ism_area_materia_id, $clase->paralelo->course_id, $semana_id, $urlPdf,$usuario, $periodoId, $pudOrigenId, $pudOrigen);       
                     
         
         // $semana = ScholarisBloqueSemanas::findOne($semana_defecto);
@@ -357,12 +369,14 @@ class PlanificacionSemanalController extends Controller
             'clases' => $clases,
             'urlPdf' => $urlPdf,
             'semana_id' => $semana_id,
-            'bloque_id' => $bloque_id
+            'bloque_id' => $bloque_id,
+            'plan_bloque_unidad_id' => $pudOrigenId,
+            'pud_origen' => $pudOrigen
 
         ]);
     }
 
-    private function get_clases($ismAreaMateriaId, $cursoId,$semanaId, $urlPdf, $usuario, $periodoId){
+    private function get_clases($ismAreaMateriaId, $cursoId,$semanaId, $urlPdf, $usuario, $periodoId, $origenId, $pudOrigen){
 
         $con = Yii::$app->db;
         $query = "select 	cla.id as clase_id
@@ -371,7 +385,11 @@ class PlanificacionSemanalController extends Controller
                     ,cur.x_institute 
                     ,cla.idprofesor 
                     ,concat(fac.x_first_name, ' ', fac.last_name) as docente 
-                    ,concat('$urlPdf','planificacion-semanal/pdf?clase_id=', cla.id, '&semana_id=', $semanaId, '&usuario=', '$usuario', '&periodo_id=', $periodoId) as url
+                    ,concat('$urlPdf','planificacion-semanal/pdf?clase_id=', cla.id, '&semana_id=', $semanaId, 
+                        '&usuario=', '$usuario', 
+                        '&periodo_id=', $periodoId,
+                        '&pud_origen=', '$pudOrigen',
+                        '&plan_bloque_unidad_id=', $origenId) as url
             from 	scholaris_clase cla
                     inner join op_course_paralelo par on par.id = cla.paralelo_id 
                     inner join op_course cur on cur.id = par.course_id 
@@ -388,10 +406,19 @@ class PlanificacionSemanalController extends Controller
         $claseIdHasta  = $_GET['clase_hasta'];
         $semanaId = $_GET['semana_id'];
         $bloqueId = $_GET['bloque_id'];
+        $pudOrigen = $_GET['pud_origen'];
+        $pudOrigenId = $_GET['plan_bloque_unidad_id'];
+
 
         new CopyPlanSemanal($claseIdDesde, $claseIdHasta, $semanaId);
         
-        return $this->redirect(['index1', 'bloque_id' => $bloqueId,'clase_id' => $claseIdHasta, 'semana_id' => $semanaId]);                
+        return $this->redirect(['index1', 
+            'bloque_id' => $bloqueId,
+            'clase_id' => $claseIdHasta, 
+            'semana_id' => $semanaId,
+            'pud_origen' => $pudOrigen,
+            'plan_bloque_unidad_id' => $pudOrigenId
+        ]);                
     }
 
     /**

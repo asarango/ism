@@ -19,6 +19,38 @@ $this->params['breadcrumbs'][] = $this->title;
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet" />
 
+<style>
+    .breathe {
+        color: red;
+        animation: breathe 1s infinite ease-in-out;
+
+    }
+
+
+    @keyframes breathe {
+
+        0%,
+        100% {
+            transform: scale(1);
+        }
+
+        50% {
+            transform: scale(1.2);
+        }
+    }
+
+    .notificacion {
+        transition: tranform 0.3s ease;
+        background-color: #65b2e8;
+    }
+
+    .notificacion:hover {
+        color: #ff9e18;
+        background-color: red;
+        transform: scale(1.2);
+        background-color: #ab0a3d;
+    }
+</style>
 
 <div class="dece-casos-index" style="padding-left: 40px; padding-right: 40px">
     <div class="m-0 vh-50 row justify-content-center align-items-center">
@@ -40,7 +72,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
                     <?=
                         Html::a(
-                            '<span class="badge rounded-pill" style="background-color: #9e28b5"><i class="fa fa-briefcase" aria-hidden="true"></i> Inicio</span>',
+                            '<span class="badge rounded-pill" style="background-color: #ff9e18"><i class="fa fa-briefcase" aria-hidden="true"></i> Inicio</span>',
                             ['site/index'],
                             ['class' => 'link']
                         );
@@ -65,9 +97,13 @@ $this->params['breadcrumbs'][] = $this->title;
                     <div class="col-lg-12 col-md-12 text-center">
                         <?= Html::beginForm(['create', 'idEstudiante' => 0], 'post') ?>
                         <div class="row">
-                            <div class="col-lg-10 col-md-10" style="font-weight: bold;">
-                                Total:
-                                <?= count($estudiantes) ?>
+                            <div class="col-lg-10 col-md-10">
+
+                                <p class="d-flex" style="justify-content: flex-start;font-weight: bold">
+                                    Total:
+                                    <?= count($estudiantes) ?>
+                                </p>
+
                                 <select id="idAlumno" name="idAlumno"
                                     class="form-control select2 select2-hidden-accessible" style="width: 100%;"
                                     tabindex="-1" aria-hidden="true">
@@ -82,7 +118,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             <div class="col-lg-2 col-md-2" style="text-align: center; margin-top: 28px;">
                                 <?= Html::submitButton('Crear Caso', [
                                     'class' => 'submit btn btn-primary my-text-medium',
-                                    'style' => 'font-weight: bold;color: white;'
+
                                 ])
                                     ?>
                             </div>
@@ -90,9 +126,9 @@ $this->params['breadcrumbs'][] = $this->title;
                         <?= Html::endForm() ?>
                     </div>
                     <!-- <hr> -->
-                    <div class="col-lg-12 col-md-12" style="margin-top: 10px;">
-                        <h6 class="my-text-medium">ESTUDIANTES EN SEGUIMIENTO:
-                            <b><?= count($casos) ?></b>
+                    <div class="col-lg-12 col-md-12" style="font-weight: bold;">
+                        <h6  class="my-text-medium" style="margin-top: 1rem;font-weight: bold;">ESTUDIANTES EN SEGUIMIENTO:
+                            <?= count($casos) ?>
                         </h6>
                         <div class="table responsive">
                             <table class="table table-hover table-striped my-text-medium">
@@ -119,7 +155,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                             <td>
                                                 <?= $nombreEstudiante ?>
                                             </td>
-                                            <td><strong>
+                                            <td class="breathe"><strong>
                                                     <?= $caso['casos'] ?>
                                                 </strong></td>
                                             <td><strong>C:
@@ -140,7 +176,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                                 </strong></td>
                                             <td>
                                                 <?= Html::a(
-                                                    '<span class="badge  rounded-pill" style="background-color:#65b2e8;font-size:14px;">Ver</span>',
+                                                    '<span class="badge  rounded-pill notificacion" style=";font-size:14px;">Ver</span>',
                                                     ['dece-casos/historico', 'id' => $caso['id_estudiante'], 'id_clase' => 0],
                                                     ['class' => 'link']
                                                 ); ?>
@@ -152,7 +188,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 </tbody>
                                 <tfoot>
                                     <tr style="text-align:center">
-                                        <th><strong style="color: #0a1f8f">Totales </strong></th>
+                                        <th><strong style="color:brown">Totales --></strong></th>
                                         <th>
                                             <?= $conteoEjesDeAccion[0] ?>
                                         </th>

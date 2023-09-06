@@ -133,7 +133,7 @@ $modelIntCompromiso = new DeceIntervencionCompromiso();
                                                             </tr>
                                                         </table>
                                                     </div>
-                                                    <div class="modal-footer">
+                                                    <div class="modal-footer" style="margin-top: 1rem;">
                                                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
 
                                                     </div>
@@ -202,7 +202,6 @@ $modelIntCompromiso = new DeceIntervencionCompromiso();
                                         </div>
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-
                                         </div>
                                     </div>
                                 </div>

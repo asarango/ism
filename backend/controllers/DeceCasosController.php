@@ -100,25 +100,40 @@ class DeceCasosController extends Controller
     {
         //buscamos si el usuario es coordinador
         $modelCoordinadorDece = OpInstituteAuthorities::find()
-            ->where(['ilike', 'cargo_descripcion', 'dececoor'])
-            ->andWhere(['usuario' => $user])
+            // ->where(['ilike', 'cargo_descripcion', 'dececoor'])
+            ->where(['usuario' => $user])
             ->one();
 
+            // echo "<pre>";
+            // print_r($modelCoordinadorDece);
+        
+        // verificar tipo de usuario que es para mostrar listado de casos DECE    
+        if(!$modelCoordinadorDece){
+            $tipoUser = 'guest';
+        }elseif($modelCoordinadorDece->cargo_codigo == 'dececoordinador'){
+            $tipoUser = 'super';
+        }elseif(substr($modelCoordinadorDece->cargo_codigo, 0, 4) == 'dece'){
+            $tipoUser = 'dece';
+        }
+          
+    
         $con = yii::$app->db;
         $periodoId = Yii::$app->user->identity->periodo_id;
         //extrae tdos los estudiantes asociados a un usuario de la tabla dece_casos
-        if ($modelCoordinadorDece) {
+        if ($tipoUser == 'super') {
             $query = "select distinct id_estudiante from dece_casos dc where id_usuario_super_dece  = '$user';";
-        } else {
+        } elseif ($tipoUser == 'dece') {
             $query = "select distinct id_estudiante from dece_casos dc where id_usuario_dece  = '$user';";
-        }
+        }else{
+            $query = "select distinct id_estudiante from dece_casos dc where id_usuario  = '$user';";
+        }     
         
-
         $usuariosCasos = $con->createCommand($query)->queryAll();
-
-        $arrayCasos = array();
+        
+        $arrayCasos = array();        
         
         foreach ($usuariosCasos as $usuario) {
+            
             $id_estudiante = $usuario['id_estudiante'];
 
             $query2 = "select  concat(os.last_name,' ',os.middle_name,' ',os.first_name) nombre,dc.id_estudiante , 
@@ -133,16 +148,20 @@ class DeceCasosController extends Controller
                         (select count(distinct id_caso) from dece_intervencion drs where id_estudiante = dc.id_estudiante) casos_intervencion
                         from dece_casos dc, op_student os  
                         where id_estudiante =  $id_estudiante";
-            if ($modelCoordinadorDece) {
+                        
+            if ($tipoUser == 'super') {
                 $query2 .= " and id_usuario_super_dece = '$user'";
-            } else {
+            } elseif ($tipoUser == 'dece') {
                 $query2 .= " and id_usuario_dece = '$user'";
-            }
-
+            }else{
+                $query2 .= " and id_usuario = '$user'";
+            }  
+            
             $query2 .= " and os.id = dc.id_estudiante 
                         group by os.last_name,os.middle_name,os.first_name,dc.id_estudiante ;";
-
+                        
             $arrayCasos[] = $con->createCommand($query2)->queryOne();
+           
         }
 
         return $arrayCasos;

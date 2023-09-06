@@ -29,6 +29,11 @@ if ($model->id_clase > 0) //si es mayor a cero, viene de leccionario
             ->one();
     }
 }
+
+// echo"<pre>";
+// print_r($model);
+// die();
+
 ?>
 
 <style>
@@ -57,7 +62,7 @@ if ($model->id_clase > 0) //si es mayor a cero, viene de leccionario
 </style>
 
 <div class="dece-registro-seguimiento-update">
-    <div class="container col-lg-10">
+    <div class="container col-lg-12">
         <div class="card shadow">
             <div class="header-row p-3">
                 <div class="header-logo">
@@ -66,18 +71,22 @@ if ($model->id_clase > 0) //si es mayor a cero, viene de leccionario
                 <div class="header-title">
                     <?= Html::encode($this->title) ?>
                 </div>
+                <hr>
                 <div class="header-links flex-grow-1 text-end">
                     <p>
+                        <!-- /* quitar background de necesitarse */ -->
+
                         <?=
                             Html::a(
-                                '<span class="badge badge-primary badge-link"><i class="fa fa-briefcase" aria-hidden="true"></i> Regresar Caso</span>',
+                                '<span class="badge badge-primary badge-link" style="background-color: #0a1f8f"><i class="fa fa-briefcase" aria-hidden="true"></i> Regresar Caso</span>',
                                 ['dece-casos/update', 'id' => $model->id_caso],
                                 ['class' => 'link']
                             );
                         ?>
+                        <!-- //quitar background de necesitarse// -->
                         <?=
                             Html::a(
-                                '<span class="badge badge-danger badge-link"><i class="fa fa-briefcase" aria-hidden="true"></i> PDF</span>',
+                                '<span class="badge badge-danger badge-link" style="background-color: #ab0a3d"><i class="fa fa-briefcase" aria-hidden="true"></i> PDF</span>',
                                 ['pdf', 'id' => $model->id],
                                 [
                                     'class' => 'link',
@@ -102,7 +111,7 @@ if ($model->id_clase > 0) //si es mayor a cero, viene de leccionario
                     </p>
                 </div>
             </div>
-            
+
             <div class="card-body">
                 <?= $this->render('_form', [
                     'model' => $model,

@@ -9,18 +9,18 @@ use yii\filters\VerbFilter;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\ActiveForm;
+use yii\mail\MessageInterface;
 
 class Messages extends \yii\db\ActiveRecord {
-
-//    Atributos
-    private $user;
-
-    public function __construct() {        
-        $this->user = Yii::$app->user->identity->usuario;
-
-
-        echo $this->user;
+    
+    public function send_email($arrayTo, $from, $subject, $textBody, $htmlBody){
+        Yii::$app->mailer->compose()
+        ->setTo($arrayTo)
+        ->setFrom(['info@ism.edu.ec' => 'Información EDUX'])
+        ->setSubject($subject)
+        ->setTextBody($textBody)
+        ->setHtmlBody($htmlBody)
+        ->send();
     }
-        
 
 }

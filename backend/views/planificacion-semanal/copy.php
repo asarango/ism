@@ -104,6 +104,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 </div>
                                 <div class="col-lg-6 " style="text-align: center" ;>
                                     <?=
+
                                         Html::a(
                                             '<span class="badge rounded-pill" style="background-color: #898b8d">
                                                     <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copy" width="18" height="18" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ffffff" fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -111,10 +112,15 @@ $this->params['breadcrumbs'][] = $this->title;
                                                     <path d="M8 8m0 2a2 2 0 0 1 2 -2h8a2 2 0 0 1 2 2v8a2 2 0 0 1 -2 2h-8a2 2 0 0 1 -2 -2z" />
                                                     <path d="M16 8v-2a2 2 0 0 0 -2 -2h-8a2 2 0 0 0 -2 2v8a2 2 0 0 0 2 2h2" />
                                                   </svg> Copiar</span>',
-                                            ['execute-copy', 'clase_hasta' => $clase->id, 
-                                            'clase_desde' => $class['clase_id'], 
-                                            'semana_id' => $semana_id,
-                                            'bloque_id' => $bloque_id],
+                                            [
+                                                'execute-copy',
+                                                'clase_hasta' => $clase->id,
+                                                'clase_desde' => $class['clase_id'],
+                                                'semana_id' => $semana_id,
+                                                'bloque_id' => $bloque_id,
+                                                'pud_origen' => $pud_origen,
+                                                'plan_bloque_unidad_id' => $plan_bloque_unidad_id
+                                            ],
                                             ['class' => '', 'title' => 'Copiar esta Planificación']
                                         );
                                     ?>
@@ -136,7 +142,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
 <script>
     function showpdf(url, nombre) {
-        // console.log(url);
+        console.log(nombre);
         let emb = '<embed src="' + url + '" type="application/pdf" width="100%" height="600px" />';
         $("#embeded-url").html(emb);
         $("#nombre").html(nombre);

@@ -100,26 +100,60 @@ $listFirmas = DeceSeguimientoFirmas::find()
     .card {
         border-radius: 10px
     }
+
+    /* .title {
+        transition: transform 0.5s ease;
+        text-align: center;
+    }
+
+    .title:hover {
+        transform: scale(1.2);
+       
+    } */
+
+    .historial {
+        background-color: #ab0a3d;
+    }
+
+    .detalle {
+        margin-left: 10px;
+        text-align: center;
+        margin: 5px;
+        color: black;
+
+
+    }
+
+    .btn-acuerdo {
+
+        transition: transform 0.5s ease;
+    }
+
+    .btn-acuerdo:hover {
+        transform: scale(1.4);
+
+    }
 </style>
+
+
 
 <div class="comportamiento-detalle">
 
     <div class="m-0 vh-50 row justify-content-center align-items-center">
 
-
-        <div class="row p-4 ">
-            <div class="card col-lg-5 col-ms-5" style="padding: 20px">
+        <div class="row p-5 " style="margin-top: -35px;">
+            <div class="card col-lg-5 col-ms-5" style="padding: 20px;">
                 <!-- RENDERIZA A LA VISTA datos_estudiante.php -->
-                <h5 style="color:blueviolet"><b>Datos Estudiante</b></h5>
-                <table class="table table-responsive">
+                <h5 style="color: #0a1f8f;"><b>Datos Estudiante</b></h5>
+                <table class=" table table-responsive table-striped table-hover" style="border: 1px solid black">
                     <tr>
-                        <td><b>No. Caso: </b></td>
-                        <td>
+                        <td style="background-color: #ab0a3d;color: white;"><b>No. Caso: </b></td>
+                        <td class="title">
                             <?= $model->caso->numero_caso ?>
                         </td>
                     </tr>
                     <tr>
-                        <td><b>Alumno: </b></td>
+                        <td style="background-color: #ab0a3d;color: white;"><b>Alumno: </b></td>
                         <td>
                             <?= $modelEstudiante->last_name . ' ' . $modelEstudiante->first_name . ' ' . $modelEstudiante->middle_name ?>
                         </td>
@@ -130,35 +164,40 @@ $listFirmas = DeceSeguimientoFirmas::find()
                         $objHelperGeneral = new HelperGeneral();
                         $edad = $objHelperGeneral->obtener_edad_segun_fecha($modelEstudiante->birth_date);
                         ?>
-                        <td><b>Fecha Nacimiento: </b></td>
+                        <td style="background-color: #ab0a3d;color: white;"><b>Fecha Nacimiento: </b></td>
                         <td>
                             <?= $modelEstudiante->birth_date . ' (' . $edad . ' años)' ?>
                         </td>
                     </tr>
                     <tr>
-                        <td><b>Representante: </b></td>
+                        <td style="background-color: #ab0a3d;color: white;"><b>Representante: </b></td>
                         <td>
                             <?= $modelRepresentante->name ?>
                         </td>
                     </tr>
                     <tr>
-                        <td><b>Email Representante: </b></td>
+                        <td style="background-color: #ab0a3d;color: white;"><b>Email Representante: </b></td>
                         <td>
                             <?= $modelRepresentante->email ?>
                         </td>
                     </tr>
                     <tr>
-                        <td><b>Telèfono: </b></td>
+                        <td style="background-color: #ab0a3d;color: white;"><b>Telèfono: </b></td>
                         <td>
                             <?= $modelRepresentante->phone . ' - ' . $modelRepresentante->mobile . ' - ' . $modelRepresentante->x_work_phone ?>
                         </td>
                     </tr>
                 </table>
-                <h5 style="color:red">Histórico Acompañamiento</h5>
-                
+
+                <h5 style="color: #0a1f8f;font-weight: bold">Histórico Acompañamiento </h5>
+
+
+
                 <div style="overflow-x:scroll;overflow-y:scroll;">
-                    <table class="table table-success table-striped table-bordered my-text-small">
-                        <tr class="table-primary">
+                    <table class="table table-striped table-bordered table-hover my-text-small"
+                        style="border: 1px solid black;">
+                        <tr class="table table-bordered table-striped historial"
+                            style="color: white; font-weight: bold;">
                             <td>No.</td>
                             <td>Fecha Creación</td>
                             <td>Última Modificación</td>
@@ -170,7 +209,7 @@ $listFirmas = DeceSeguimientoFirmas::find()
                         <?php if ($modelRegSeguimiento) {
                             foreach ($modelRegSeguimiento as $modelReg) {
                                 ?>
-                                <tr>
+                                <tr style="font-weight: bold;text-align: center;">
                                     <td>
                                         <?= $modelReg->numero_seguimiento ?>
                                     </td>
@@ -299,16 +338,21 @@ $listFirmas = DeceSeguimientoFirmas::find()
                         } //fin if
                         ?>
                     </table>
+                    <!-- <button type="button" class="btn btn-primary"
+                        style="background-color: #ab0a3d;border:none;margin-bottom: 10px; text-align: center;" data-bs-toggle="modal"
+                        data-bs-target="#exampleModal">
+                        Ver Historico
+                    </button> -->
                 </div>
             </div>
             <div class="card col-lg-7 col-ms-7" style="padding: 20px">
                 <?php if ($model->isNewRecord) { ?>
-                    <h5 style="color:blueviolet"><b>Acompañamiento</b></h5>
+                    <h5 style="color: #0a1f8f"><b>Acompañamiento</b></h5>
                 <?php } else { ?>
-                    <h5 style="color:blueviolet"><b>Acompañamiento No.
+                    <h5 style="color: #0a1f8f"><b>Acompañamiento No.
                             <?= $model->numero_seguimiento ?>
                         </b></h5>
-                    <small style="color:blueviolet"><b>Fecha Creación.
+                    <small style="color: #0a1f8f"><b>Fecha Creación.
                             <?= $model->fecha_inicio ?>
                         </b></small><br>
                 <?php } ?>
@@ -403,17 +447,20 @@ $listFirmas = DeceSeguimientoFirmas::find()
                             // ]);
                             ?> -->
                             <br>
-                            <h5 style="margin-left: 10px;"> Detalle de Acuerdos</h5>
-                            <div class="form-control" id="div_crea_acuerdo">
-                                <div class="card">
-                                    <div class="card-header" style="background-color:lightblue">
+                            <h5 class="detalle" style="font-weight: bold;"> Detalle de Acuerdos</h5>
+                            <hr>
+                            <div class="form-control" id="div_crea_acuerdo"
+                                style="padding: 1rem;border: none; margin-top: -15px">
+                                <div class="">
+                                    <div class="card-header" style="background-color: #ab0a3d; border: 1px solid black;">
                                         <div class="row">
-                                            <div class="col-lg-6">
+                                            <div class="col-lg-4">
                                                 <textarea class="form-control" type="text" id="acuerdo_acuerdo" rows="4"
                                                     placeholder="Acuerdo"></textarea>
                                             </div>
-                                            <div class="col-lg-6">
-                                                <div class="row">
+
+                                            <div class="col-lg-8">
+                                                <div class="row" style="margin: 5px;">
                                                     <div class="col-lg-6">
                                                         <input class="form-control" type="text" id="responsable_acuerdo"
                                                             placeholder="Responsable" />
@@ -424,7 +471,7 @@ $listFirmas = DeceSeguimientoFirmas::find()
                                                             placeholder="Fecha max cumplimiento" />
                                                     </div>
                                                 </div>
-                                                <div class="row">
+                                                <div class="row" style="margin: 5px;">
                                                     <div class="col-lg-6">
                                                         <select class="form-select" aria-label="Default select example"
                                                             id="parentesco">
@@ -451,14 +498,17 @@ $listFirmas = DeceSeguimientoFirmas::find()
                                                             ?>
                                                         </select>
                                                     </div>
-                                                    <div class="row">
+                                                    <div class="row" style="margin-top: 5px;">
                                                         <div class="col-lg-6">
-                                                            <input class="form-control" type="text" id="cedula" style="width: 150px;"
-                                                                placeholder="Cédula" />
+                                                            <input class="form-control" type="text" id="cedula"
+                                                                style="width: 150px;" placeholder="Cédula" />
                                                         </div>
-                                                        <div class="col-lg-6" style="text-align: center;padding: 3px;">
-                                                            <button type="button" class="btn btn-primary btn-sm" style="margin-left: 30px;" id="icono_acuerdo"
-                                                                onclick="guardar_acuerdo()" title="Guardar Acuerdos"><i
+                                                        <div class="col-lg-6 btn-acuerdo"
+                                                            style="text-align: center;padding: 3px;">
+                                                            <button type="button" class="btn btn-primary btn-sm"
+                                                                style="margin-left: 30px;background-color: #ff9e18;border: none;"
+                                                                id="icono_acuerdo" onclick="guardar_acuerdo()"
+                                                                title="Guardar Acuerdos"><i
                                                                     class="fas fa-save"></i></button>
                                                         </div>
                                                     </div>
@@ -467,9 +517,11 @@ $listFirmas = DeceSeguimientoFirmas::find()
                                         </div>
 
                                     </div>
-                                    <div class="card-body" id="div_muestra_acuerdo">
-                                        <table class="table table-success table-striped table-bordered my-text-small">
-                                            <thead>
+                                    <div class="card-body" id="div_muestra_acuerdo"
+                                        style="background-color: #eee;border: 1px solid black;margin-top: 10px;">
+                                        <table class="table table-striped table-bordered my-text-small" style="background-color: #ab0a3d; color: white;
+                                            border: 1px solid black;text-align: center;">
+                                            <thead style="font-weight: bold;">
                                                 <td><b> Ítem </b></td>
                                                 <td><b> Acuerdo </b></td>
                                                 <td><b> Responsable </b></td>
@@ -496,7 +548,7 @@ $listFirmas = DeceSeguimientoFirmas::find()
                                                         <?php
                                                         if ($acuerdo->cumplio) {
                                                             ?>
-                                                            <td> <input type="checkbox" id="cumplio_acuerdo" 
+                                                            <td> <input type="checkbox" id="cumplio_acuerdo"
                                                                     onclick="guardar_acuerdo_cumplido(<?= $acuerdo->id ?>,0)"
                                                                     checked /></td>
                                                             <?php
@@ -509,7 +561,8 @@ $listFirmas = DeceSeguimientoFirmas::find()
                                                         }
                                                         ?>
                                                         <td>
-                                                            <button type="button" class="btn btn-primary btn-sm" id="icono_acuerdo"
+                                                            <button type="button" class="btn btn-primary btn-sm"
+                                                                id="icono_acuerdo"
                                                                 onclick="eliminar_acuerdo(<?= $acuerdo->id ?>)"
                                                                 title="Eliminar Acuerdo">
                                                                 <i class="fas fa-trash-alt" style="color:white;"></i>
@@ -539,11 +592,12 @@ $listFirmas = DeceSeguimientoFirmas::find()
 
                             <div class="card">
 
-                                <br>
-                                <h5 style="margin-left: 10px;"> Firmas</h5>
+
+                                <h5 class="detalle" style="font-weight: bold;"> Firmas</h5>
                                 <div class="form-control" id="div_crea_acuerdo">
-                                    <div class="card">
-                                        <div class="card-header" style="background-color:lightblue">
+                                    <div>
+                                        <div class="card-header"
+                                            style="background-color: #ab0a3d; text-align: center;border: 1px solid black;">
                                             <div class="row">
                                                 <div class="col-lg-3">
                                                     <input class="form-control" type="text" id="firmas_nombre"
@@ -561,20 +615,23 @@ $listFirmas = DeceSeguimientoFirmas::find()
                                                     <input class="form-control" type="text" id="firmas_cargo"
                                                         placeholder="Cargo" />
                                                 </div>
-                                                <div class="col-lg-1">
-                                                    <button type="button" class="btn btn-primary btn-sm" id="icono_acuerdo"
-                                                        onclick="guardar_firmas()" title="Guardar Firmas"><i
+                                                <div class="col-lg-1 btn-acuerdo" >
+                                                    <button type="button" class="btn btn-primary btn-sm " id="icono_acuerdo"
+                                                        onclick="guardar_firmas()" style="background-color: #ff9e18;border: none;" title="Guardar Firmas"><i
                                                             class="fas fa-save"></i></button>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="card-body" id="div_muestra_firmas">
-                                            <table class="table table-success table-striped table-bordered my-text-small" ">
+
+                                        <div class="card-body" id="div_muestra_firmas"
+                                            style="border: 1px solid black;margin-top: 10px;background-color: #eee;">
+                                            <table class="table table-success table-striped table-bordered my-text-small"
+                                                style="color: white; text-align: center;border: 1px solid black;font-weight: bold;">
                                                 <thead>
-                                                    <td><b> Nombre </b></td>
-                                                    <td><b> Cédula </b></td>
-                                                    <td><b> Parentesco </b></td>
-                                                    <td><b> Cargo </b></td>
+                                                    <td style="background-color: #ab0a3d;"><b> Nombre </b></td>
+                                                    <td style="background-color: #ab0a3d;"><b> Cédula </b></td>
+                                                    <td style="background-color: #ab0a3d;"><b> Parentesco </b></td>
+                                                    <td style="background-color: #ab0a3d;"><b> Cargo </b></td>
                                                 </thead>
                                                 <tbody>
                                                     <?php
@@ -594,7 +651,9 @@ $listFirmas = DeceSeguimientoFirmas::find()
                                                                 <?= $firma->cargo ?>
                                                             </td>
                                                             <td>
-                                                                <button type="button" class="btn btn-primary btn-sm" id="icono_firmas"
+                                                                <button type="
+                                                                    button" class="btn btn-primary btn-sm"
+                                                                    id="icono_firmas"
                                                                     onclick="eliminar_firma(<?= $firma->id ?>)"
                                                                     title="Eliminar Firma">
                                                                     <i class="fas fa-trash-alt" style="color:white;"></i>
@@ -635,10 +694,9 @@ $listFirmas = DeceSeguimientoFirmas::find()
                                     </td>
                                 </tr>
                             </table>
-                            <div class="row" style="margin: 10px;>
-                                <div class=" col-lg-2">
+                            <div class="row" style="margin: 10px;">
                                 <div class="form-group">
-                                    <?= Html::submitButton('Guardar', ['class' => 'btn btn-success']) ?>
+                                    <?= Html::submitButton('Guardar', ['class' => 'btn btn-success ', 'style' => 'background-color: #ff9e18;border: none;']) ?>
                                 </div>
                             </div>
                         </div>

@@ -57,7 +57,9 @@ $this->title = 'Modificar Planificacion Semanal ';
             </div>
             <div class="row">
                 <div class="col-lg-12 col-md-12 col-sm-12">
-                    <?= $this->render('_form', ['model' => $model]); ?>
+                    <?= $this->render('_form', ['model' => $model
+                , 'pud_origen' => $pud_origen
+                , 'plan_bloque_unidad_id' => $plan_bloque_unidad_id]); ?>
                 </div>
             </div>
 

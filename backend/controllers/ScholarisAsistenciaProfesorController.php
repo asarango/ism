@@ -344,6 +344,10 @@ class ScholarisAsistenciaProfesorController extends Controller {
         $searchModel = new ViewInsumosSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams, $user, $periodId);
 
+        // echo "<pre>";
+        // print_r($searchModel);
+
+
         return $this->render('insumos', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider

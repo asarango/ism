@@ -1,7 +1,9 @@
 <?php
 
+use backend\models\Rol;
 use backend\models\ScholarisGrupoAlumnoClase;
 use backend\models\ScholarisAsistenciaProfesor;
+use backend\models\Usuario;
 use yii\helpers\Html;
 
 /* @var $this yii\web\View */
@@ -26,6 +28,19 @@ if ($model->id_clase > 0) //si es mayor a cero, biene de leccionario
         ->orderBy(['id' => SORT_DESC])
         ->one();
 }
+
+
+$userLog = Yii::$app->user->identity->usuario;
+$user = Usuario::find()->where(['usuario' => $userLog])->one();
+$rol = Rol::find()->where(['id' => $user->rol_id])->one(); //navegacion para encontrar el rol del usuario logueado
+
+if ($rol->rol == 'DECE' || $rol->rol == 'Coordinador-DECE') {
+    $displayStyle = '';
+} else {
+    $displayStyle = 'none';
+}
+
+
 ?>
 <!--Scripts para que funcionen AJAX de select 2 -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
@@ -46,7 +61,9 @@ if ($model->id_clase > 0) //si es mayor a cero, biene de leccionario
                             <b>Estudiante: </b><span style="color:red">
                                 <?= $nombreEstudiante ?>
                             </span><br>
-                            <b>Caso No.: </b><span style="color:red"><?= $model->numero_caso ?></span>
+                            <b>Caso No.: </b><span style="color:red">
+                                <?= $model->numero_caso ?>
+                            </span>
                         </small></p>
                 </div>
                 <div class="col-lg-4" style="text-align: right;">
@@ -96,46 +113,54 @@ if ($model->id_clase > 0) //si es mayor a cero, biene de leccionario
                         <?php
                     }
                     ?>
-
+                    
                 </div>
+
 
                 <!-- FIN DE CABECERA -->
                 <!-- inicia menu  -->
                 <div class="row">
                     <div class="col-lg-12 col-md-12" style="text-align: right">
 
-                        <div>
-                            <?=
-                                Html::a(
-                                    'Acompañamiento',
-                                    ['dece-registro-seguimiento/create', 'id_estudiante' => $model->id_estudiante, 'id_clase' => $model->id_clase, 'id_caso' => $model->id],
-                                    ['class' => 'btn btn-outline-primary']
-                                );
-                            ?>
-                            |
-                            <?=
-                                Html::a(
-                                   'Detección',
-                                    ['dece-deteccion/create', 'id_estudiante' => $model->id_estudiante, 'id_clase' => $model->id_clase, 'id_caso' => $model->id],
-                                    ['class' => 'btn btn-outline-secondary']
-                                );
-                            ?>
-                            |
-                            <?=
-                                Html::a(
-                                    'Derivación',
-                                    ['dece-derivacion/create', 'id_estudiante' => $model->id_estudiante, 'id_clase' => $model->id_clase, 'id_caso' => $model->id],
-                                    ['class' => 'btn btn-outline-info']
-                                );
-                            ?>
-                            |
-                            <?=
-                                Html::a(
-                                    'Intervención',
-                                    ['dece-intervencion/create', 'id_estudiante' => $model->id_estudiante, 'id_clase' => $model->id_clase, 'id_caso' => $model->id],
-                                    ['class' => 'btn btn-outline-success']
-                                );
-                            ?>
+                        <div class="d-flex" style="align-items: space-between;justify-content: flex-end">
+                            <div>
+                                <?=
+                                    Html::a(
+                                        'Acompañamiento',
+                                        ['dece-registro-seguimiento/create', 'id_estudiante' => $model->id_estudiante, 'id_clase' => $model->id_clase, 'id_caso' => $model->id],
+                                        ['class' => 'btn btn-outline-primary']
+
+                                    );
+                                ?>
+                                |
+                                <?=
+                                    Html::a(
+                                        'Detección',
+                                        ['dece-deteccion/create', 'id_estudiante' => $model->id_estudiante, 'id_clase' => $model->id_clase, 'id_caso' => $model->id],
+                                        ['class' => 'btn btn-outline-secondary']
+
+                                    );
+                                ?>
+                            </div>
+
+                            <div style="display: <?= $displayStyle ?>;">
+                                |
+                                <?=
+                                    Html::a(
+                                        'Derivación',
+                                        ['dece-derivacion/create', 'id_estudiante' => $model->id_estudiante, 'id_clase' => $model->id_clase, 'id_caso' => $model->id],
+                                        ['class' => 'btn btn-outline-info']
+                                    );
+                                ?>
+                                |
+                                <?=
+                                    Html::a(
+                                        'Intervención',
+                                        ['dece-intervencion/create', 'id_estudiante' => $model->id_estudiante, 'id_clase' => $model->id_clase, 'id_caso' => $model->id],
+                                        ['class' => 'btn btn-outline-success']
+                                    );
+                                ?>
+                            </div>
                         </div>
                     </div> <!-- fin de menu izquierda -->
 
@@ -143,7 +168,7 @@ if ($model->id_clase > 0) //si es mayor a cero, biene de leccionario
                 </div>
 
                 <!-- finaliza menu menu  -->
-               
+
 
                 <?= $this->render('_form', [
                     'model' => $model,

@@ -2,6 +2,7 @@
 
 namespace backend\controllers;
 
+use backend\models\messages\Messages;
 use Yii;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -10,6 +11,7 @@ use kartik\select2\Select2;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
 use yii\filters\AccessControl;
+use yii\mail\MessageInterface;
 
 /**
  * PlanPlanificacionController implements the CRUD actions for PlanPlanificacion model.
@@ -131,6 +133,18 @@ where	a.fecha = '$fecha'
         
         $res = $con->createCommand($query)->queryAll();
         return $res;
+    }
+
+
+
+    public function actionIndex(){
+        echo 'desde el envio';
+
+        $message = new Messages();
+
+        $to = array('desarrollo@ism.edu.ec', 'asisdesarrollo@ism.edu.ec', 'direccionsistemas@ism.edu.ec');
+        
+        $message->send_email($to, 'info@ism.edu.ec', 'asunto-prueba', 'texto sin formato', '<h1></h2>');
     }
 
 }

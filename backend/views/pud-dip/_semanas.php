@@ -270,7 +270,6 @@ use yii\helpers\Url;
                                             <p>
                                                 <?php
 
-
                                                 foreach ($paralelos as $paralelo) {
 
 

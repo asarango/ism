@@ -8,8 +8,9 @@ use yii\widgets\ActiveForm;
 /* @var $form yii\widgets\ActiveForm */
 
 // echo "<pre>";
-// print_r($model);
+// print_r($pud_origen);
 // die();
+
 ?>
 
 <script src="https://cdn.ckeditor.com/ckeditor5/38.0.1/classic/ckeditor.js"></script>
@@ -42,6 +43,8 @@ use yii\widgets\ActiveForm;
                     </label>
                     <textarea name="diferenciacion_nee" id="edit4"><?= $model['diferenciacion_nee']?></textarea>
                 </div>
+                <input type="hidden" name="pud_origen" value="<?= $pud_origen?>">
+                <input type="hidden" name="plan_bloque_unidad_id" value="<?= $plan_bloque_unidad_id?>">
                 <hr>
                 <div>
                     <label for="edit5">

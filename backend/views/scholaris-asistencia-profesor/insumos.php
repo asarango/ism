@@ -7,7 +7,7 @@ use yii\grid\GridView;
 $this->title = '¡Mis insumos!';
 
 // echo '<pre>';
-// print_r($searchModel);
+// print_r($dataProvider);
 // die();
 ?>
 

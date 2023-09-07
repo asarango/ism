@@ -38,7 +38,7 @@
                             echo '</td>';
 
                             echo '<td class="text-center">';
-                                if(strlen($unidad['concepto_clave']) < 20 ){
+                                if(strlen($unidad['concepto_clave']) < 5 ){
                                     echo $noexiste;    
                                 }else{
                                     echo $correcto;

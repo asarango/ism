@@ -18,11 +18,11 @@ use backend\models\helpers\HelperGeneral;
 class DeceAcompaniamientoPdf extends \yii\db\ActiveRecord
 {
     private $dece_acompaniamiento;
-    private $colorFondo ='#D5DBDB';
-    
+    private $colorFondo = '#D5DBDB';
+
     public function __construct($id_acompaniamiento)
-    {     
-        $this->dece_acompaniamiento = DeceRegistroSeguimiento::findOne($id_acompaniamiento);                      
+    {
+        $this->dece_acompaniamiento = DeceRegistroSeguimiento::findOne($id_acompaniamiento);
         $this->generate_pdf();
     }
     private function generate_pdf()
@@ -39,11 +39,11 @@ class DeceAcompaniamientoPdf extends \yii\db\ActiveRecord
         ]);
         $cabecera = $this->cabecera();
         $mpdf->SetHtmlHeader($cabecera);
-        $mpdf->showImageErrors = true;  
-        
-        $html = $this->cuerpo();               
-        $html.= $this->firmas();            
-        $mpdf->WriteHTML($html); 
+        $mpdf->showImageErrors = true;
+
+        $html = $this->cuerpo();
+        $html .= $this->firmas();
+        $mpdf->WriteHTML($html);
 
         // $piePagina=$this->piePagina();
         // $mpdf->SetFooter($piePagina);      
@@ -53,11 +53,12 @@ class DeceAcompaniamientoPdf extends \yii\db\ActiveRecord
         exit;
     }
     /****CABCERA */
-    private function cabecera(){
+    private function cabecera()
+    {
         $codigoISO = "ISMR20-08";
-        $version ="6.0";
-        $fecha=date('Y-m-d H:i:s'); 
-        $fecha='24/10/2022';
+        $version = "6.0";
+        $fecha = date('Y-m-d H:i:s');
+        $fecha = '24/10/2022';
         $html = <<<EOT
         <table border="1" width="100%" cellspacing="0" cellpadding="10"> 
             <tr> 
@@ -96,11 +97,12 @@ class DeceAcompaniamientoPdf extends \yii\db\ActiveRecord
                 </td>
             </tr> 
         </table>  
-        EOT;  
+        EOT;
         return $html;
     }
-    private function piePagina(){
-        
+    private function piePagina()
+    {
+
     }
     private function firmas()
     {
@@ -110,14 +112,14 @@ class DeceAcompaniamientoPdf extends \yii\db\ActiveRecord
     {
         $model = $this->dece_acompaniamiento;
         $modelSegFirmas = DeceSeguimientoAcuerdos::find()
-        ->where(['id_reg_seguimiento'=>$model->id])
-        ->orderBy(['secuencial'=>SORT_ASC])
-        ->all();
+            ->where(['id_reg_seguimiento' => $model->id])
+            ->orderBy(['secuencial' => SORT_ASC])
+            ->all();
 
         $html = '
         <br>
         <table border="1" width="100%" cellspacing="0" cellpadding="5">    
-            <tr style="background-color:'.$this->colorFondo.'"> 
+            <tr style="background-color:' . $this->colorFondo . '"> 
                 <td colspan="4"  align="left" style="font-size:10">
                     <b>3.- DETALLE DE ACUERDOS</b>
                 </td>
@@ -128,41 +130,38 @@ class DeceAcompaniamientoPdf extends \yii\db\ActiveRecord
                 <td align="left" style="font-size:10"><b> Fecha Máximo Cumplimiento </b></td>
                 <td align="left" style="font-size:10"><b> Cumplimiento </b></td>             
             </tr>';
-            foreach($modelSegFirmas as $acuerdo)
-            {
-                $html.='<tr> 
-                            <td align="left" style="font-size:10"> '.$acuerdo->secuencial.'.- </td>
-                            <td align="left" style="font-size:10"> '.$acuerdo->responsable.' </td>
-                            <td align="left" style="font-size:10"> '.substr($acuerdo->fecha_max_cumplimiento,0,10).' </td>';
-                            if($acuerdo->cumplio)
-                            {
-                                $html.='<td align="left" style="font-size:10"> SI </td>';  
-                                
-                            }else
-                            {
-                                $html.='<td align="left" style="font-size:10"> </td>';  
-                            }
-                                       
-                            $html.='</tr>';                
-            }    
-        
-        $html.='</table>';
+        foreach ($modelSegFirmas as $acuerdo) {
+            $html .= '<tr> 
+                            <td align="left" style="font-size:10"> ' . $acuerdo->secuencial . '.- </td>
+                            <td align="left" style="font-size:10"> ' . $acuerdo->responsable . ' </td>
+                            <td align="left" style="font-size:10"> ' . substr($acuerdo->fecha_max_cumplimiento, 0, 10) . ' </td>';
+            if ($acuerdo->cumplio) {
+                $html .= '<td align="left" style="font-size:10"> SI </td>';
+
+            } else {
+                $html .= '<td align="left" style="font-size:10"> </td>';
+            }
+
+            $html .= '</tr>';
+        }
+
+        $html .= '</table>';
 
         return $html;
     }
-   
+
 
     private function firmas_acuerdos()
     {
         $model = $this->dece_acompaniamiento;
         $modelSegFirmas = DeceSeguimientoFirmas::find()
-        ->where(['id_reg_seguimiento'=>$model->id])
-        ->all();
+            ->where(['id_reg_seguimiento' => $model->id])
+            ->all();
 
         $html = '
         <br>
         <table border="1" width="100%" cellspacing="0" cellpadding="5">    
-            <tr style="background-color:'.$this->colorFondo.'"> 
+            <tr style="background-color:' . $this->colorFondo . '"> 
                 <td colspan="4"  align="left" style="font-size:10">
                     <b>4.- FIRMAS</b>
                 </td>
@@ -174,45 +173,46 @@ class DeceAcompaniamientoPdf extends \yii\db\ActiveRecord
                 <td align="left" style="font-size:10" width="20%"> <b>Cargo</b> </td>
                 <td align="left" style="font-size:10" width="40%"> <b>Firma</b> </td>             
             </tr>';
-            foreach($modelSegFirmas as $firma)
-            {
-                $html.='<tr> 
-                            <td align="left" style="font-size:10"> '.$firma->nombre.' </td>
-                            <td align="left" style="font-size:10"> '.$firma->cedula.' </td>
-                            <td align="left" style="font-size:10"> '.$firma->parentesco.' </td>
-                            <td align="left" style="font-size:10"> '.$firma->cargo.' </td>
+        foreach ($modelSegFirmas as $firma) {
+            $html .= '<tr> 
+                            <td align="left" style="font-size:10"> ' . $firma->nombre . ' </td>
+                            <td align="left" style="font-size:10"> ' . $firma->cedula . ' </td>
+                            <td align="left" style="font-size:10"> ' . $firma->parentesco . ' </td>
+                            <td align="left" style="font-size:10"> ' . $firma->cargo . ' </td>
                             <td align="left" style="font-size:10"> </td>                
-                        </tr>';                
-            }    
-        
-        $html.='</table>';
+                        </tr>';
+        }
+
+        $html .= '</table>';
 
         return $html;
     }
     private function cabecera_acompaniamiento()
     {
         $model = $this->dece_acompaniamiento;
-        $estudiante = $model->estudiante->last_name.' '.$model->estudiante->middle_name.' '.$model->estudiante->first_name;
+        $estudiante = $model->estudiante->last_name . ' ' . $model->estudiante->middle_name . ' ' . $model->estudiante->first_name;
         $objScript = new Scripts();
         $arrayCurso = $objScript->mostrar_curso_estudiante($model->id_estudiante);
 
         $curso = '';
-        if($arrayCurso[0]) {$curso = $arrayCurso[0]['curso'];}   
+        if ($arrayCurso[0]) {
+            $curso = $arrayCurso[0]['curso'];
+        }
 
-        $html ='';
-        $html.='
+        $html = '';
+        $html .= '
         <table border="1" width="100%" cellspacing="0" cellpadding="5">  
-                <tr style="background-color:'.$this->colorFondo.'"> 
+                <tr style="background-color:' . $this->colorFondo . '"> 
                         <td colspan="5"  align="center" style="font-size:12">
                             <b>REGISTRO DE ACOMPAÑAMIENTO</b>
                         </td>
                 </tr>
-                <tr style="background-color:'.$this->colorFondo.'"> 
+                <tr style="background-color:' . $this->colorFondo . '"> 
                         <td colspan="5"  align="left" style="font-size:10">
                             <b>1.- DATOS INFORMATIVOS</b>
                         </td>
                 </tr>
-                <tr style="background-color:'.$this->colorFondo.'"> 
+                <tr style="background-color:' . $this->colorFondo . '"> 
                         <td colspan="2"  align="left" style="font-size:10">
                             <b>Nombre completo estudiante/staff:</b>
                         </td>
@@ -222,13 +222,13 @@ class DeceAcompaniamientoPdf extends \yii\db\ActiveRecord
                 </tr>
                 <tr > 
                         <td colspan="2"  align="left" style="font-size:10">
-                            '.$estudiante.'
+                            ' . $estudiante . '
                         </td>
                         <td colspan="3"  align="left" style="font-size:10">
-                            '.$model->nombre_quien_lidera.'
+                            ' . $model->nombre_quien_lidera . '
                         </td>
                 </tr>                
-                <tr style="background-color:'.$this->colorFondo.'"> 
+                <tr style="background-color:' . $this->colorFondo . '"> 
                         <td align="left" style="font-size:10">
                             <b>Departamento</b>
                         </td>
@@ -247,51 +247,52 @@ class DeceAcompaniamientoPdf extends \yii\db\ActiveRecord
                 </tr>
                 <tr > 
                         <td align="left" style="font-size:10">
-                        '.$model->departamento.'
+                        ' . $model->departamento . '
                         </td>
                         <td align="left" style="font-size:10">
-                        '.$model->fecha_inicio.'
+                        ' . $model->fecha_inicio . '
                         </td>
                         <td align="left" style="font-size:10">
-                        '.$curso.'
+                        ' . $curso . '
                         </td>
                         <td align="left" style="font-size:10">
-                        '.$model->hora_inicio.'
+                        ' . $model->hora_inicio . '
                         </td>
                         <td align="left" style="font-size:10">
-                        '.$model->hora_cierre.'
+                        ' . $model->hora_cierre . '
                         </td>
                 </tr>
         </table>        
         ';
-        $html.='<br>';
-        $html.='
+        $html .= '<br>';
+        $html .= '
         <table border="1" width="100%" cellspacing="0" cellpadding="5"> 
-                <tr style="background-color:'.$this->colorFondo.'"> 
+                <tr style="background-color:' . $this->colorFondo . '"> 
                         <td colspan="5"  align="left" style="font-size:10">
                             <b>2.- DETALLE DEL SEGUIMIENTO</b>
                         </td>
                 </tr>
                 <tr > 
                         <td colspan="5"  align="left" style="font-size:10">
-                            '.$model->pronunciamiento.'
+                            ' . $model->pronunciamiento . '
                         </td>
                 </tr>
         </table>';
-        return  $html;
-    } 
+        return $html;
+    }
 
 
     private function cuerpo()
     {
         $html = '';
-        $html.= $this->cabecera_acompaniamiento();  
-        $html.= $this->acuerdos();
-        $html.= $this->firmas_acuerdos();
+        $html .= $this->cabecera_acompaniamiento();
+        $html .= $this->acuerdos();
+        $html .= $this->firmas_acuerdos();
         return $html;
     }
 
-    private function estilos(){
+    private function estilos()
+    {
         $html = '';
         $html .= '<style>';
         $html .= '.border {

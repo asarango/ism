@@ -160,6 +160,11 @@ $listFirmas = DeceSeguimientoFirmas::find()
                     </tr>
                     <tr>
                         <?php
+
+                        // echo "<pre>";
+                        // print_r($padres1);
+                        // die();
+
                         //calcual la edad
                         $objHelperGeneral = new HelperGeneral();
                         $edad = $objHelperGeneral->obtener_edad_segun_fecha($modelEstudiante->birth_date);
@@ -470,6 +475,7 @@ $listFirmas = DeceSeguimientoFirmas::find()
                                                             placeholder="Responsable" />
                                                     </div>
                                                     <div class="col-lg-6">
+
                                                         <input class="form-control" type="date"
                                                             id="fecha_cumplimiento_acuerdo"
                                                             placeholder="Fecha max cumplimiento" />
@@ -504,7 +510,7 @@ $listFirmas = DeceSeguimientoFirmas::find()
                                                     </div>
                                                     <div class="row" style="margin-top: 5px;">
                                                         <div class="col-lg-6">
-                                                            <input class="form-control" type="text" id="cedula"
+                                                            <input class="form-control" type="number" id="cedula"
                                                                 style="width: 150px;" placeholder="Cédula" />
                                                         </div>
                                                         <div class="col-lg-6 btn-acuerdo"
@@ -531,15 +537,12 @@ $listFirmas = DeceSeguimientoFirmas::find()
                                                 <td><b> Responsable </b></td>
                                                 <td><b> Fecha Cumplimiento </b></td>
                                                 <td><b> Cumplió </b></td>
-                                                <td><b> Eliminar </b></td>
                                             </thead>
-                                            <tbody style="background-color: #ab0a3d; color: white;
-                                            border: 1px solid black;text-align: center; font-size: 1rem;border: 1px solid black;">
-
+                                            <tbody>
                                                 <?php
                                                 foreach ($listAcuerdos as $acuerdo) {
                                                     ?>
-                                                    <tr style="color: black; background-color: #eee; text-align: center;">
+                                                    <tr style="color: white;font-weight: bold;font-size: 0.9rem">
                                                         <td>
                                                             <?= $acuerdo->secuencial ?>
                                                         </td>
@@ -557,11 +560,11 @@ $listFirmas = DeceSeguimientoFirmas::find()
                                                             ?>
                                                             <td> <input type="checkbox" id="cumplio_acuerdo"
                                                                     onclick="guardar_acuerdo_cumplido(<?= $acuerdo->id ?>,0)"
-                                                                    checked style="transform: scale(1.5);" /></td>
+                                                                    checked /></td>
                                                             <?php
                                                         } else {
                                                             ?>
-                                                            <td> <input type="checkbox" id="cumplio_acuerdo" style="transform: scale(1.5);"
+                                                            <td> <input type="checkbox" id="cumplio_acuerdo"
                                                                     onclick="guardar_acuerdo_cumplido(<?= $acuerdo->id ?>,1)" />
                                                             </td>
                                                             <?php
@@ -633,15 +636,57 @@ $listFirmas = DeceSeguimientoFirmas::find()
 
                                         <div class="card-body" id="div_muestra_firmas"
                                             style="border: 1px solid black;margin-top: 10px;background-color: #eee;">
-                                            <table class="table table-striped table-bordered my-text-small"
+                                            <table class="table table-success table-striped table-bordered my-text-small"
                                                 style="color: white; text-align: center;border: 1px solid black;font-weight: bold;">
                                                 <thead>
                                                     <td style="background-color: #ab0a3d;"><b> Nombre </b></td>
                                                     <td style="background-color: #ab0a3d;"><b> Cédula </b></td>
                                                     <td style="background-color: #ab0a3d;"><b> Parentesco </b></td>
                                                     <td style="background-color: #ab0a3d;"><b> Cargo </b></td>
-                                                    <td style="background-color: #ab0a3d;"><b> Accción </b></td>
                                                 </thead>
+
+                                                <div class="row" style="text-align: center;">
+                                                    <div class="col-lg-4">
+                                                        <p>Familia directa del estudiante:</p>
+                                                        <ul>
+                                                            <li><b>Padre</b><input type="checkbox">
+
+                                                            </li>
+                                                            <li>
+                                                                <b>Madre</b><input type="checkbox">
+
+                                                            </li>
+                                                            <li>
+                                                                <b>Estudiante</b><input type="checkbox">
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                    <div class="col-lg-4">
+                                                        <!-- /* se agregan los profesores respomsables */ -->
+                                                        <p>Docente:</p>
+                                                        <!-- para prueba -->
+                                                        
+                                                        <ul>
+                                                            <li><b>Docentes</b><input type="checkbox"></li>
+                                                            <li><b>Docentes</b><input type="checkbox"></li>
+                                                            <li><b>Docentes</b><input type="checkbox"></li>
+                                                            <li><b>Docentes</b><input type="checkbox"></li>
+                                                        </ul>
+                                                    </div>
+                                                    <div class="col-lg-4">
+                                                        <!-- /* se agregan los profesores respomsables */ -->
+                                                        <p>Autoridades:</p>
+                                                        <!-- para prueba -->
+                                                        
+                                                        <ul>
+                                                            <li><b>Autoridades</b><input type="checkbox"></li>
+                                                            <li><b>Autoridades</b><input type="checkbox"></li>
+                                                            <li><b>Autoridades</b><input type="checkbox"></li>
+                                                            <li><b>Autoridades</b><input type="checkbox"></li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+
                                                 <tbody>
                                                     <?php
                                                     foreach ($listFirmas as $firma) {

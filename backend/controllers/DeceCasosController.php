@@ -104,9 +104,6 @@ class DeceCasosController extends Controller
             ->where(['usuario' => $user])
             ->one();
 
-            // echo "<pre>";
-            // print_r($modelCoordinadorDece);
-        
         // verificar tipo de usuario que es para mostrar listado de casos DECE    
         if(!$modelCoordinadorDece){
             $tipoUser = 'guest';
@@ -119,7 +116,7 @@ class DeceCasosController extends Controller
     
         $con = yii::$app->db;
         $periodoId = Yii::$app->user->identity->periodo_id;
-        //extrae tdos los estudiantes asociados a un usuario de la tabla dece_casos
+        //extrae todos los estudiantes asociados a un usuario de la tabla dece_casos
         if ($tipoUser == 'super') {
             $query = "select distinct id_estudiante from dece_casos dc where id_usuario_super_dece  = '$user';";
         } elseif ($tipoUser == 'dece') {

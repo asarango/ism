@@ -31,7 +31,7 @@ if ($model->id_clase > 0) //si es mayor a cero, viene de leccionario
 }
 
 // echo"<pre>";
-// print_r($model);
+// print_r($listAcuerdos);
 // die();
 
 ?>
@@ -116,6 +116,7 @@ if ($model->id_clase > 0) //si es mayor a cero, viene de leccionario
                 <?= $this->render('_form', [
                     'model' => $model,
                     'resUser' => $resUser,
+                    'padres1' => $padres1,
                 ]) ?>
             </div>
         </div>

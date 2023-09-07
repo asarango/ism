@@ -202,6 +202,9 @@ class DeceRegistroSeguimientoController extends Controller
         $model = $this->findModel($id);
         $fechaActual = date('Y-m-d');
         $hora = date('H:i:s');
+        $padres1= $this->mostrarFamiliar($model);
+
+        
 
         
             
@@ -239,16 +242,20 @@ class DeceRegistroSeguimientoController extends Controller
                 $model->path_archivo = $pathArchivoModel;
                 $model->save();
             }
+            
             return $this->redirect(['update', 'id' => $model->id]);
+            
         }
         //se asigna la fecha de creacion del seguimiento con la fecha de modificacion, para cargar en pantalla
         if($model)
         {
             $model->fecha_fin = $fechaActual;
-        }  
+        }
+               
         return $this->render('update', [
             'model' => $model,
             'resUser'=>$resUser,
+            'padres1'=>$padres1
         ]);
     }
 
@@ -499,5 +506,20 @@ class DeceRegistroSeguimientoController extends Controller
         }
 
         throw new NotFoundHttpException('The requested page does not exist.');
+    }
+
+    public function mostrarFamiliar($model){
+
+        $con = Yii::$app->db;
+        $query ="select concat(first_surname,' ',second_surname,' ',first_name,' ',middle_name),x_account_number,x_state 
+        from op_parent op 
+        inner join op_parent_op_student_rel oposr 
+            on op.id = oposr.op_parent_id 
+        where oposr.op_student_id = '$model->id_estudiante';";     
+        print_r($query);   
+
+        $padres1 = $con->createCommand($query)->queryAll();
+        return $padres1;
+
     }
 }

@@ -4,7 +4,7 @@ use yii\helpers\Html;
 use yii\grid\GridView;
 use yii\helpers\Url;
 
-$this->title = 'Plan de Unidad TOC';
+$this->title = 'Plan de Unidad TdC';
 $this->params['breadcrumbs'][] = $this->title;
 
 /* @var $this yii\web\View */

@@ -12,7 +12,7 @@ $this->params['breadcrumbs'][] = $this->title;
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 // echo "<pre>";
-// print_r($unidad);
+// print_r($pud);
 // die();
 
 ?>
@@ -242,7 +242,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         </div>
                         <div class="row" style="margin: 0.5rem;">
                             <div class="col-lg-11 col-md-11 cajastexto">
-                                <?= $pud['evaluacion_pd'] ?>
+                                <?= $pud['descripcion_unidad'] ?>
                             </div>
                         </div>
                         <hr>

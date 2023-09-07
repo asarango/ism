@@ -413,7 +413,11 @@ $listFirmas = DeceSeguimientoFirmas::find()
                     <div class="row">
                         <div class="col">
 
-                            <?= $form->field($model, 'estado')->dropDownList($arrayEstado, ['prompt' => 'Seleccione Estado']) ?>
+                            <?= $form->field($model, 'estado')->dropDownList(
+                                $arrayEstado,
+                                ['options' => ['PENDIENTE' => ['selected' => true]]]
+                            ) ?>
+
                         </div>
                         <div class="col">
 
@@ -527,12 +531,15 @@ $listFirmas = DeceSeguimientoFirmas::find()
                                                 <td><b> Responsable </b></td>
                                                 <td><b> Fecha Cumplimiento </b></td>
                                                 <td><b> Cumplió </b></td>
+                                                <td><b> Eliminar </b></td>
                                             </thead>
-                                            <tbody>
+                                            <tbody style="background-color: #ab0a3d; color: white;
+                                            border: 1px solid black;text-align: center; font-size: 1rem;border: 1px solid black;">
+
                                                 <?php
                                                 foreach ($listAcuerdos as $acuerdo) {
                                                     ?>
-                                                    <tr>
+                                                    <tr style="color: black; background-color: #eee; text-align: center;">
                                                         <td>
                                                             <?= $acuerdo->secuencial ?>
                                                         </td>
@@ -550,11 +557,11 @@ $listFirmas = DeceSeguimientoFirmas::find()
                                                             ?>
                                                             <td> <input type="checkbox" id="cumplio_acuerdo"
                                                                     onclick="guardar_acuerdo_cumplido(<?= $acuerdo->id ?>,0)"
-                                                                    checked /></td>
+                                                                    checked style="transform: scale(1.5);" /></td>
                                                             <?php
                                                         } else {
                                                             ?>
-                                                            <td> <input type="checkbox" id="cumplio_acuerdo"
+                                                            <td> <input type="checkbox" id="cumplio_acuerdo" style="transform: scale(1.5);"
                                                                     onclick="guardar_acuerdo_cumplido(<?= $acuerdo->id ?>,1)" />
                                                             </td>
                                                             <?php
@@ -615,29 +622,31 @@ $listFirmas = DeceSeguimientoFirmas::find()
                                                     <input class="form-control" type="text" id="firmas_cargo"
                                                         placeholder="Cargo" />
                                                 </div>
-                                                <div class="col-lg-1 btn-acuerdo" >
+                                                <div class="col-lg-1 btn-acuerdo">
                                                     <button type="button" class="btn btn-primary btn-sm " id="icono_acuerdo"
-                                                        onclick="guardar_firmas()" style="background-color: #ff9e18;border: none;" title="Guardar Firmas"><i
-                                                            class="fas fa-save"></i></button>
+                                                        onclick="guardar_firmas()"
+                                                        style="background-color: #ff9e18;border: none;"
+                                                        title="Guardar Firmas"><i class="fas fa-save"></i></button>
                                                 </div>
                                             </div>
                                         </div>
 
                                         <div class="card-body" id="div_muestra_firmas"
                                             style="border: 1px solid black;margin-top: 10px;background-color: #eee;">
-                                            <table class="table table-success table-striped table-bordered my-text-small"
+                                            <table class="table table-striped table-bordered my-text-small"
                                                 style="color: white; text-align: center;border: 1px solid black;font-weight: bold;">
                                                 <thead>
                                                     <td style="background-color: #ab0a3d;"><b> Nombre </b></td>
                                                     <td style="background-color: #ab0a3d;"><b> Cédula </b></td>
                                                     <td style="background-color: #ab0a3d;"><b> Parentesco </b></td>
                                                     <td style="background-color: #ab0a3d;"><b> Cargo </b></td>
+                                                    <td style="background-color: #ab0a3d;"><b> Accción </b></td>
                                                 </thead>
                                                 <tbody>
                                                     <?php
                                                     foreach ($listFirmas as $firma) {
                                                         ?>
-                                                        <tr>
+                                                        <tr style="color: black;">
                                                             <td>
                                                                 <?= $firma->nombre ?>
                                                             </td>

@@ -170,7 +170,8 @@ class DeceAcompaniamientoPdf extends \yii\db\ActiveRecord
             <tr> 
                 <td align="left" style="font-size:10" width="20%"> <b>Nombre</b> </td>
                 <td align="left" style="font-size:10" width="20%"> <b>Cédula</b> </td>
-                <td align="left" style="font-size:10" width="20%"> <b>Parentesco / Cargo</b> </td>
+                <td align="left" style="font-size:10" width="20%"> <b>Parentesco</b> </td>
+                <td align="left" style="font-size:10" width="20%"> <b>Cargo</b> </td>
                 <td align="left" style="font-size:10" width="40%"> <b>Firma</b> </td>             
             </tr>';
             foreach($modelSegFirmas as $firma)
@@ -178,7 +179,8 @@ class DeceAcompaniamientoPdf extends \yii\db\ActiveRecord
                 $html.='<tr> 
                             <td align="left" style="font-size:10"> '.$firma->nombre.' </td>
                             <td align="left" style="font-size:10"> '.$firma->cedula.' </td>
-                            <td align="left" style="font-size:10"> '.$firma->parentesco.' '.$firma->cargo.' </td>
+                            <td align="left" style="font-size:10"> '.$firma->parentesco.' </td>
+                            <td align="left" style="font-size:10"> '.$firma->cargo.' </td>
                             <td align="left" style="font-size:10"> </td>                
                         </tr>';                
             }    

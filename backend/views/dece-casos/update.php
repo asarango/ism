@@ -133,9 +133,10 @@ if ($rol->rol == 'DECE' || $rol->rol == 'Coordinador-DECE') {
                                     );
                                 ?>
                                 |
+                                <!-- | detection -->
                                 <?=
                                     Html::a(
-                                        'Detección',
+                                        'Alertas',
                                         ['dece-deteccion/create', 'id_estudiante' => $model->id_estudiante, 'id_clase' => $model->id_clase, 'id_caso' => $model->id],
                                         ['class' => 'btn btn-outline-secondary']
 

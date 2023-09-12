@@ -529,7 +529,7 @@ class DeceRegistroSeguimientoController extends Controller
         
 
         // Define los parámetros para el correo
-        $arrayTo = 'destinatario@example.com'; // Cambia esto al correo real
+        $arrayTo = 'asisdesarrollo2@ism.edu.ec'; // Cambia esto al correo real
         $from = 'info@ism.edu.ec';
         $subject = 'Asunto del Correo';
         $textBody = 'Cuerpo del correo en texto plano';
@@ -538,6 +538,10 @@ class DeceRegistroSeguimientoController extends Controller
         // Llama a la función send_email para enviar el correo
         $model->send_email([$arrayTo], $from, $subject, $textBody, $htmlBody);
 
-        // Puedes redirigir a una vista o realizar otras acciones después de enviar el correo
+        // Redirigir a una vista o realizar otras acciones después de enviar el correo
+    }
+
+    public function actionCuerpoCorreo(){
+        
     }
 }

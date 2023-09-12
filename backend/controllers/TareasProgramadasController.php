@@ -50,7 +50,7 @@ class TareasProgramadasController extends Controller {
             $htmlBody .= 'Por favor no responda a este correo, el reporte fue generado automáticamente por el sistema de gestión educativa EDUX. ';
 
             $email = new Messages();
-            $email->send_email('desarrollo@ism.edu.ec', 'info@ism.edu.ec', 'Información de novedades EDUX', '', $htmlBody);
+            $email->send_email($padre['email'], 'info@ism.edu.ec', 'Información de novedades EDUX', '', $htmlBody);
 
         }
 

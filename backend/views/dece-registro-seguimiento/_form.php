@@ -473,26 +473,25 @@ $listFirmas = DeceSeguimientoFirmas::find()
                                     <div class="card-header" style="background-color: #ab0a3d; border: 1px solid black;">
                                         <div class="row " style="padding: 1rem;">
 
-                                            <label style="color: white;" for=""><b>Seleccione responsable:</b></label>
+                                            <!-- <label style="color: white;" for=""><b>Seleccione responsable:</b></label> -->
 
-                                            <select name="Acuerdo" id="AcuerdoDropdown" onchange="mostrarDatosAcuerdo()">
+                                            <!-- <select name="Acuerdo" id="AcuerdoDropdown" onchange="mostrarDatosAcuerdo()">
                                                 <option value="">Escoja una opción</option>
                                                 <?php foreach ($listadoActores as $responsable) {
-                                                    $nombreCompleto = $responsable['name'] . " (" . $responsable['cargo_descripcion'] . ")";
-                                                    echo "<option value='{$responsable['name']}' data-cedula='{$responsable['numero_identificacion']}' data-parentesco='{$responsable['cargo_descripcion']}' data-email='{$responsable['email']}'>{$nombreCompleto}</option>";
-
-                                                } ?>
-                                            </select>
+                                                // $nombreCompleto = $responsable['name'] . " (" . $responsable['cargo_descripcion'] . ")";
+                                                // echo "<option value='{$responsable['name']}' data-cedula='{$responsable['numero_identificacion']}'
+                                                //  data-parentesco='{$responsable['cargo_descripcion']}' data-email='{$responsable['email']}'>{$nombreCompleto}</option>";
+                                        
+                                            } ?>
+                                            </select> -->
 
                                         </div>
 
                                         <div class="row">
-                                            <div class="col-lg-6" style="margin-top: 5px;">
+
+                                            <div class="col-lg-12">
                                                 <textarea class="form-control" type="text" id="acuerdo_acuerdo" rows="4"
                                                     placeholder="Acuerdo"></textarea>
-                                            </div>
-
-                                            <div class="col-lg-6">
 
                                                 <div class="row" style="margin-top: 5px;">
                                                     <div class="col-lg-12">
@@ -500,18 +499,18 @@ $listFirmas = DeceSeguimientoFirmas::find()
                                                         <input class="form-control" type="date"
                                                             id="fecha_cumplimiento_acuerdo"
                                                             placeholder="Fecha max cumplimiento" />
-                                                        <!-- responsable -->
-                                                        <input style="margin-top: 5px;" class="form-control" type="text"
+
+                                                        <!-- <input style="margin-top: 5px;" class="form-control" type="text"
                                                             id="responsable_acuerdo" placeholder="Responsable" />
-                                                        <!-- parentesco -->
+                                                    
                                                         <input style="margin-top: 5px;" class="form-control" type="text"
                                                             id="parentesco" placeholder="Parentesco" />
-                                                        <!-- E-mail -->
+                                    
                                                         <input style="margin-top: 5px;" class="form-control" type="text"
                                                             id="Acuerdo_cargo" placeholder="E-mail" />
-                                                        <!-- cedula -->
+                                    
                                                         <input style="margin-top: 5px;" class="form-control" type="text"
-                                                            id="cedula" style="width: 150px;" placeholder="Cédula" />
+                                                            id="cedula" style="width: 150px;" placeholder="Cédula" /> -->
 
                                                     </div>
 
@@ -627,14 +626,11 @@ $listFirmas = DeceSeguimientoFirmas::find()
 
                                             } ?>
                                         </select>
-                                        <div class="checkbox-label">
-                                            <input type="checkbox" id="checkboxEstudiante"
-                                                onclick="mostrarDatosEstudiante()" />
-                                            <label style="color: black;" for="checkboxEstudiante">Seleccionar como
-                                                responsable
-                                                al Estudiante</label>
-                                        </div>
-
+                                    </div>
+                                    <div class="checkbox-label" id="familiarDropdown">
+                                        <input type="checkbox" id="checkboxEstudiante" onclick="mostrarDatosEstudiante()" />
+                                        <label style="color: black;" for="checkboxEstudiante">Seleccionar como
+                                            responsable al Estudiante</label>
                                     </div>
                                 </div>
 
@@ -740,6 +736,7 @@ $listFirmas = DeceSeguimientoFirmas::find()
                                     <?= Html::submitButton('Guardar', ['class' => 'btn btn-success ', 'style' => 'background-color: #ff9e18;border: none;']) ?>
                                     <a href="#" id="enviar-correo-link" data-id="<?= $modelEstudiante['id'] ?>"
                                         class="btn btn-primary btn-acuerdo">Enviar al Correo</a>
+                                    <?php echo Html::a('Enviar Correo', ['enviar-correo', 'id' => $modelEstudiante['id']], ['class' => 'btn btn-primary btn-acuerdo']); ?>
                                 </div>
                             </div>
                         </div>
@@ -953,13 +950,13 @@ $listFirmas = DeceSeguimientoFirmas::find()
     </script>
 
     <script>
-
         function mostrarDatosEstudiante() {
-            var select = document.getElementById("familiarDropdown");
+            var checkbox = document.getElementById("checkboxEstudiante");
             var nombreCampo = document.getElementById("firmas_nombre");
             var cedulaCampo = document.getElementById("firmas_cedula");
             var parentescoCampo = document.getElementById("firmas_parentesco");
             var emailCampo = document.getElementById("firmas_cargo");
+
             if (checkbox.checked) {
                 // Si el checkbox está marcado, asigna los datos
                 var last_name = '<?= $modelEstudiante['last_name'] ?>';
@@ -980,8 +977,8 @@ $listFirmas = DeceSeguimientoFirmas::find()
                 emailCampo.value = "";
             }
         }
-
     </script>
+
 
     <script>
         $(document).ready(function () {

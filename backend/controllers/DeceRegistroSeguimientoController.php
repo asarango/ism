@@ -373,11 +373,6 @@ class DeceRegistroSeguimientoController extends Controller
         $html .= '</tbody>
         </table>';
 
-        // echo '<pre>';
-        // print_r($html);
-        // die();
-
-
         return $html;
     }
 
@@ -406,7 +401,7 @@ class DeceRegistroSeguimientoController extends Controller
 
     //*****   FIRMAS  *******
     public function actionGuardarFirmas()
-    {
+    {       
         $nombre = $_POST['nombre'];
         $cedula = $_POST['cedula'];
         $parentesco = $_POST['parentesco'];
@@ -419,7 +414,6 @@ class DeceRegistroSeguimientoController extends Controller
         $modelFirma->cargo = $cargo;
         $modelFirma->id_reg_seguimiento = $id_seguimiento;
         $modelFirma->save();
-
 
         return $this->mostrar_firmas($id_seguimiento);
     }
@@ -520,28 +514,64 @@ class DeceRegistroSeguimientoController extends Controller
     }
 
     public function actionEnviarCorreo(){
-
-        print_r($_POST);
-        die();
-
-        $studentId = $_POST['id_estudiante'];
+        
+        $casoId = $_GET['id_seguimiento'];
+        $idCaso = $this->actionCuerpoCorreo($casoId);
         $model = new Messages();
+        $contador = 0;
         
 
         // Define los parámetros para el correo
-        $arrayTo = 'asisdesarrollo2@ism.edu.ec'; // Cambia esto al correo real
+        $arrayTo = 'asisdesarrollo2@ism.edu.ec';
         $from = 'info@ism.edu.ec';
-        $subject = 'Asunto del Correo';
-        $textBody = 'Cuerpo del correo en texto plano';
-        $htmlBody = '<p>Cuerpo del correo en HTML</p>';
+        $subject = 'Acuerdos de seguimiento ';
+        $textBody = '';
+        $htmlBody = 'Estimados padres de familia,
 
-        // Llama a la función send_email para enviar el correo
-        $model->send_email([$arrayTo], $from, $subject, $textBody, $htmlBody);
+            Reciban un cordial saludo. <br><br>
+            A través de la presente, les compartimos los acuerdos resultantes de nuestra reunión de hoy.<br> 
+            Les pedimos encarecidamente que les den seguimiento y los cumplan de manera puntual. Queremos destacar que, 
+            por nuestra parte, también nos comprometemos a cumplir con nuestras responsabilidades. Si tienen alguna pregunta 
+            o inquietud, no duden en ponerse en contacto con nosotros.<br><br>';
+            $htmlBody .= '
+                            <table border="1" width="60%">
 
-        // Redirigir a una vista o realizar otras acciones después de enviar el correo
+                              <thead>
+                                <tr>
+                                  <th scope="col">#</th>
+                                  <th scope="col">Acuerdo</th>
+                                  <th scope="col">Fecha</th>
+                                </tr>
+                              </thead>
+                              <tbody>';
+            foreach ( $idCaso as $caso ){
+                
+                $contador++; 
+                if ( $caso['id_reg_seguimiento'] == $_GET['id_seguimiento'] ){
+                    $htmlBody .= '<tr>';
+                    $htmlBody .= '
+                                    <th scope="row">'.$contador.'</th>
+                                          <td>'.$caso['acuerdo'].'</td>
+                                          <td>'.$caso['fecha_max_cumplimiento'].'</td>       
+                                        </tr>';
+                }
+            }
+            $htmlBody .= ' </tbody></table>';
+            $htmlBody .= '<br>Atentamente, DECE-ISM';
+
+            // Llama a la función send_email para enviar el correo
+            $model->send_email([$arrayTo], $from, $subject, $textBody, $htmlBody);
+
+            // Redirigir a una vista o realizar otras acciones después de enviar el correo
     }
 
-    public function actionCuerpoCorreo(){
+    public function actionCuerpoCorreo($idCaso){
+
+        $con = Yii::$app->db;
+        $query = "select id_reg_seguimiento, acuerdo, fecha_max_cumplimiento  from dece_seguimiento_acuerdos dsa where id_reg_seguimiento = $idCaso ;";
+
+        $idStudent = $con->createCommand($query)->queryAll();        
+        return $idStudent;
         
     }
 }

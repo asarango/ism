@@ -2,6 +2,7 @@
 
 namespace backend\controllers;
 
+use backend\models\ScholarisOpPeriodPeriodoScholaris;
 use Yii;
 use yii\web\Controller;
 use yii\filters\VerbFilter;
@@ -162,6 +163,19 @@ class ConfiguracionInicialController extends Controller
             $query = "insert into $tabla 
                   select * from esquema_odoo.$tabla
                   where id not in (select id from $tabla);";
+
+            if($tabla == 'op_student_inscription'){
+
+                $periodId = Yii::$app->user->identity->periodo_id;
+                $periodo = ScholarisOpPeriodPeriodoScholaris::find()->where(['scholaris_id' => $periodId])->one();
+
+                $queryUpdate = "update 	op_student_inscription ins
+                                set 	parallel_id = (select parallel_id from esquema_odoo.op_student_inscription where id = ins.id)
+                                        ,inscription_state = (select inscription_state from esquema_odoo.op_student_inscription where id = ins.id)
+                                where	ins.period_id = $periodo->op_id;";
+                $con->createCommand($queryUpdate)->execute();
+            }
+
         }
         $con->createCommand($query)->execute();
         return $this->redirect('index');

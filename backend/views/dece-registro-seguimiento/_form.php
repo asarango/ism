@@ -449,8 +449,8 @@ $listFirmas = DeceSeguimientoFirmas::find()
                     <?php
 
                     // echo "<pre>";
-                    // print_r($modelEstudiante);
-                    // die();
+// print_r($modelEstudiante);
+// die();
                     
 
                     if (!($model->isNewRecord)) {
@@ -471,60 +471,66 @@ $listFirmas = DeceSeguimientoFirmas::find()
                                 style="padding: 1rem;border: none; margin-top: -15px">
                                 <div class="">
                                     <div class="card-header" style="background-color: #ab0a3d; border: 1px solid black;">
-                                        <div class="row " style="padding: 1rem;">
-
-                                            <!-- <label style="color: white;" for=""><b>Seleccione responsable:</b></label> -->
-
-                                            <!-- <select name="Acuerdo" id="AcuerdoDropdown" onchange="mostrarDatosAcuerdo()">
-                                                <option value="">Escoja una opción</option>
-                                                <?php foreach ($listadoActores as $responsable) {
-                                                // $nombreCompleto = $responsable['name'] . " (" . $responsable['cargo_descripcion'] . ")";
-                                                // echo "<option value='{$responsable['name']}' data-cedula='{$responsable['numero_identificacion']}'
-                                                //  data-parentesco='{$responsable['cargo_descripcion']}' data-email='{$responsable['email']}'>{$nombreCompleto}</option>";
-                                        
-                                            } ?>
-                                            </select> -->
-
-                                        </div>
-
                                         <div class="row">
-
                                             <div class="col-lg-12">
                                                 <textarea class="form-control" type="text" id="acuerdo_acuerdo" rows="4"
                                                     placeholder="Acuerdo"></textarea>
+                                                <input style="margin-top: 5px;" class="form-control" type="date"
+                                                    id="fecha_cumplimiento_acuerdo" placeholder="Fecha max cumplimiento" />
+                                            </div>
 
-                                                <div class="row" style="margin-top: 5px;">
+                                            <div class="row" style="text-align: center;">
+                                                <div class="row" style="margin: 5px;">
                                                     <div class="col-lg-12">
-                                                        <!-- fecha -->
-                                                        <input class="form-control" type="date"
-                                                            id="fecha_cumplimiento_acuerdo"
-                                                            placeholder="Fecha max cumplimiento" />
-
-                                                        <!-- <input style="margin-top: 5px;" class="form-control" type="text"
+                                                        <input class="form-control" style="display: none;" type="text"
                                                             id="responsable_acuerdo" placeholder="Responsable" />
-                                                    
-                                                        <input style="margin-top: 5px;" class="form-control" type="text"
-                                                            id="parentesco" placeholder="Parentesco" />
-                                    
-                                                        <input style="margin-top: 5px;" class="form-control" type="text"
-                                                            id="Acuerdo_cargo" placeholder="E-mail" />
-                                    
-                                                        <input style="margin-top: 5px;" class="form-control" type="text"
-                                                            id="cedula" style="width: 150px;" placeholder="Cédula" /> -->
 
                                                     </div>
 
                                                 </div>
-
-                                                <div class=" row" style="text-align: center;padding: 3px;margin-top: 10px;">
-                                                    <button type="button" class="btn btn-primary btn-sm  btn-acuerdo"
-                                                        style="background-color: #ff9e18;border: none;margin-bottom: 10px;"
-                                                        id="icono_acuerdo" onclick="guardar_acuerdo()"
-                                                        title="Guardar Acuerdos"><b>Guardar Acuerdo </b><i
-                                                            class="fas fa-save"></i></button>
-
+                                                <div class="row" style="margin: 5px;">
+                                                    <div>
+                                                        <select style="display:none;" class="form-select"
+                                                            aria-label="Default select example" id="parentesco">
+                                                            <option value="">Parentesco</option>
+                                                            <?php
+                                                            foreach ($parentescoList as $item) {
+                                                                ?>
+                                                                <option value="<?= $item->atencion_para ?>"><?= $item->atencion_para ?></option>
+                                                                <?php
+                                                            }
+                                                            ?>
+                                                        </select>
+                                                    </div>
+                                                    <div>
+                                                        <select style="display:none;" class="form-select"
+                                                            aria-label="Default select example" id="cargo"
+                                                            aria-placeholder="Parentesco">
+                                                            <option value=""> Cargo</option>
+                                                            <?php
+                                                            foreach ($cargoList as $item) {
+                                                                ?>
+                                                                <option value="<?= $item->responsable_seg ?>"><?= $item->responsable_seg ?></option>
+                                                                <?php
+                                                            }
+                                                            ?>
+                                                        </select>
+                                                    </div>
+                                                    <div class="" style="margin-top: 5px;">
+                                                        <div>
+                                                            <input style="display:none;" class="form-control" type="text"
+                                                                id="cedula" style="width: 150px;" placeholder="Cédula" />
+                                                        </div>
+                                                        <div class="col-lg-12 btn-acuerdo"
+                                                            style="text-align: center;padding: 3px;">
+                                                            <button type="button" class="btn btn-primary btn-sm"
+                                                                style="background-color: #ff9e18;border: none;"
+                                                                id="icono_acuerdo" onclick="guardar_acuerdo()"
+                                                                title="Guardar Acuerdos"><b>Guardar Acuerdo </b><i
+                                                                    class="fas fa-save"></i></button>
+                                                        </div>
+                                                    </div>
                                                 </div>
-
                                             </div>
                                         </div>
 
@@ -537,7 +543,7 @@ $listFirmas = DeceSeguimientoFirmas::find()
                                             <thead style="font-weight: bold;">
                                                 <td><b> Ítem </b></td>
                                                 <td><b> Acuerdo </b></td>
-                                                <td><b> Responsable </b></td>
+                                                <!-- <td><b> Responsable </b></td> -->
                                                 <td><b> Fecha Cumplimiento </b></td>
                                                 <td><b> Cumplió </b></td>
                                             </thead>
@@ -552,9 +558,9 @@ $listFirmas = DeceSeguimientoFirmas::find()
                                                         <td>
                                                             <?= $acuerdo->acuerdo ?>
                                                         </td>
-                                                        <td>
-                                                            <?= $acuerdo->responsable ?>
-                                                        </td>
+                                                        <!-- <td>
+                                                            < $acuerdo->responsable ?>
+                                                        </td> -->
                                                         <td>
                                                             <?= substr($acuerdo->fecha_max_cumplimiento, 0, 10) ?>
                                                         </td>
@@ -633,6 +639,7 @@ $listFirmas = DeceSeguimientoFirmas::find()
                                             responsable al Estudiante</label>
                                     </div>
                                 </div>
+
 
                                 <div class="form-control" id="div_crea_acuerdo">
                                     <div>
@@ -723,27 +730,33 @@ $listFirmas = DeceSeguimientoFirmas::find()
                             <!-- <script>
                                 CKEDITOR.replace("deceregistroseguimiento-eviencia");
                             </script> -->
-                            <br>
-                            <table class="table table-striped table-hover table-responsive">
-                                <tr>
-                                    <td>
-                                        <?= $form->field($model, 'path_archivo')->fileInput(['maxlength' => true]) ?>
-                                    </td>
-                                </tr>
-                            </table>
-                            <div class="row" style="margin: 10px; text-align: center;">
-                                <div class="form-group">
-                                    <?= Html::submitButton('Guardar', ['class' => 'btn btn-success ', 'style' => 'background-color: #ff9e18;border: none;']) ?>
-                                    <a href="#" id="enviar-correo-link" data-id="<?= $modelEstudiante['id'] ?>"
-                                        class="btn btn-primary btn-acuerdo">no funciona</a>
-                                    <?php echo Html::a('Enviar Correo', ['enviar-correo', 'id' => $modelEstudiante['id']], ['class' => 'btn btn-primary btn-acuerdo']); ?>
+
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <table class="table table-striped">
+                                        <tr>
+                                            <td>
+                                                <?= $form->field($model, 'path_archivo')->fileInput(['maxlength' => true]) ?>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+
+                                <div class="col-lg-6"
+                                    style="display: flex; justify-content: center; align-items: center; flex-direction: column; text-align: center;">
+                                    <div class="form-group">
+                                        <?= Html::submitButton('Subir Archivo', ['class' => 'btn btn-success btn-acuerdo', 'style' => 'background-color: #ff9e18;border: none;']) ?>
+                                    </div>
                                 </div>
                             </div>
+
+
                         </div>
                         <?php ActiveForm::end(); ?>
 
-
-
+                        <div class="row" style="margin: 0 auto;margin: 10px">
+                            <?php echo Html::a('Guardar y Enviar Correo', ['enviar-correo', 'id' => $modelEstudiante['id'], 'id_seguimiento' => $model->id], ['class' => 'btn btn-primary btn-acuerdo']); ?>
+                        </div>
 
                     </div>
                 </div>
@@ -758,28 +771,22 @@ $listFirmas = DeceSeguimientoFirmas::find()
         function guardar_acuerdo() {
             var url = '<?= Url::to(['guardar-acuerdos']) ?>';
 
-            var secuencial = $('#secuencial_acuerdo').val();
-            var acuerdo = $('#acuerdo_acuerdo').val();
-            var responsable = $('#responsable_acuerdo').val();
-            var cumplio = 0;
-            var fecha_max_cumplimiento = $('#fecha_cumplimiento_acuerdo').val();
-            var id_seguimiento = '<?= $model->id ?>';
-            var parentesco = $("#parentesco").val();
-            var cargo = $("#cargo").val();
-            var cedula = $("#cedula").val();
-
-            // alert(cedula)
+            var secuencial_acuerdo = $('#secuencial_acuerdo').val();
+            var acuerdo_acuerdo = $('#acuerdo_acuerdo').val();
+            var cumplio_acuerdo = 0;
+            var fecha_max_cumplimiento_acuerdo = $('#fecha_cumplimiento_acuerdo').val();
+            var id_seguimiento_acuerdo = '<?= $model->id ?>';
 
             var params = {
-                secuencial: secuencial,
-                acuerdo: acuerdo,
-                responsable: responsable,
-                cumplio: cumplio,
-                fecha_max_cumplimiento: fecha_max_cumplimiento,
-                id_seguimiento: id_seguimiento,
-                parentesco: parentesco,
-                cargo: cargo,
-                cedula: cedula,
+                secuencial: secuencial_acuerdo,
+                acuerdo: acuerdo_acuerdo,
+                responsable: 'N/A',
+                cumplio: cumplio_acuerdo,
+                fecha_max_cumplimiento: fecha_max_cumplimiento_acuerdo,
+                id_seguimiento: id_seguimiento_acuerdo,
+                parentesco: 'N/A',
+                cargo: 'N/A',
+                cedula: 'N/A',
             }
 
             $.ajax({
@@ -788,12 +795,10 @@ $listFirmas = DeceSeguimientoFirmas::find()
                 type: 'POST',
                 beforeSend: function (response) { },
                 success: function (response) {
-                    //$('#div_muestra_acuerdo').html(response);
                     var data = $.parseJSON(response);
                     $('#div_muestra_acuerdo').html(data.acuerdos);
                     $('#div_muestra_firmas').html(data.firmas);
                 }
-
             });
         }
 
@@ -837,22 +842,25 @@ $listFirmas = DeceSeguimientoFirmas::find()
         //******  fin  Acuerdos    ******** ///
 
         //******   firmas    ******** ///
-        function guardar_firmas() {
-            var url = '<?= Url::to(['guardar-firmas']) ?>';
+        function guardar_acuerdo() {
+            var url = '<?= Url::to(['guardar-acuerdos']) ?>';
 
-            var nombre = $('#firmas_nombre').val();
-            var cedula = $('#firmas_cedula').val();
-            var parentesco = $('#firmas_parentesco').val();
-            var cargo = $('#firmas_cargo').val();
-
-            var id_seguimiento = '<?= $model->id ?>';
+            var secuencial_acuerdo = $('#secuencial_acuerdo').val();
+            var acuerdo_acuerdo = $('#acuerdo_acuerdo').val();
+            var cumplio_acuerdo = 0;
+            var fecha_max_cumplimiento_acuerdo = $('#fecha_cumplimiento_acuerdo').val();
+            var id_seguimiento_acuerdo = '<?= $model->id ?>';
 
             var params = {
-                nombre: nombre,
-                cedula: cedula,
-                parentesco: parentesco,
-                cargo: cargo,
-                id_seguimiento: id_seguimiento,
+                secuencial: secuencial_acuerdo,
+                acuerdo: acuerdo_acuerdo,
+                responsable: 'N/A',
+                cumplio: cumplio_acuerdo,
+                fecha_max_cumplimiento: fecha_max_cumplimiento_acuerdo,
+                id_seguimiento: id_seguimiento_acuerdo,
+                parentesco: 'N/A',
+                cargo: 'N/A',
+                cedula: 'N/A',
             }
 
             $.ajax({
@@ -861,9 +869,10 @@ $listFirmas = DeceSeguimientoFirmas::find()
                 type: 'POST',
                 beforeSend: function (response) { },
                 success: function (response) {
-                    $('#div_muestra_firmas').html(response);
+                    var data = $.parseJSON(response);
+                    $('#div_muestra_acuerdo').html(data.acuerdos);
+                    $('#div_muestra_firmas').html(data.firmas);
                 }
-
             });
         }
 
@@ -893,22 +902,22 @@ $listFirmas = DeceSeguimientoFirmas::find()
             var nombreCampo = document.getElementById("firmas_nombre");
             var cedulaCampo = document.getElementById("firmas_cedula");
             var parentescoCampo = document.getElementById("firmas_parentesco");
-            var emailCampo = document.getElementById("firmas_cargo"); // Nota: Cambié el ID del campo a "firmas_cargo" en lugar de "firmas_cargo"
+            var emailCampo = document.getElementById("firmas_cargo");
 
             var selectedOption = select.options[select.selectedIndex];
             if (selectedOption.value === "") {
-                // Si se selecciona la opción predeterminada, borrar los campos
+
                 nombreCampo.value = "";
                 cedulaCampo.value = "";
                 parentescoCampo.value = "";
                 emailCampo.value = "";
             } else {
-                // Obtener los datos del atributo "data" de la opción seleccionada
+
                 var cedula = selectedOption.getAttribute("data-cedula");
                 var parentesco = selectedOption.getAttribute("data-parentesco");
                 var email = selectedOption.getAttribute("data-email");
 
-                // Asignar los datos a los campos correspondientes
+
                 nombreCampo.value = selectedOption.value;
                 cedulaCampo.value = cedula;
                 parentescoCampo.value = parentesco;
@@ -958,7 +967,7 @@ $listFirmas = DeceSeguimientoFirmas::find()
             var emailCampo = document.getElementById("firmas_cargo");
 
             if (checkbox.checked) {
-                // Si el checkbox está marcado, asigna los datos
+
                 var last_name = '<?= $modelEstudiante['last_name'] ?>';
                 var first_name = '<?= $modelEstudiante['first_name'] ?>';
                 var middle_name = '<?= $modelEstudiante['middle_name'] ?>';
@@ -970,7 +979,7 @@ $listFirmas = DeceSeguimientoFirmas::find()
                 parentescoCampo.value = "Estudiante";
                 emailCampo.value = x_institutional_email;
             } else {
-                // Si el checkbox no está marcado, borra los campos
+
                 nombreCampo.value = "";
                 cedulaCampo.value = "";
                 parentescoCampo.value = "";
@@ -980,27 +989,27 @@ $listFirmas = DeceSeguimientoFirmas::find()
     </script>
 
 
-    <script>
+    <!-- <script>
         $(document).ready(function () {
             $("#enviar-correo-link").click(function (e) {
-                e.preventDefault(); // Prevenir el comportamiento predeterminado del enlace
+                e.preventDefault();
 
                 var id = $(this).data("id");
 
-                // Realizar una solicitud POST utilizando AJAX
+
                 $.ajax({
                     url: "enviar-correo",
                     method: "POST",
                     data: { id: id },
                     success: function (response) {
-                        // Manejar la respuesta del servidor aquí
+
                         console.log("Correo enviado con éxito");
                     },
                     error: function () {
-                        // Manejar errores aquí
+
                         console.error("Error al enviar el correo");
                     }
                 });
             });
         });
-    </script>
+    </script> -->

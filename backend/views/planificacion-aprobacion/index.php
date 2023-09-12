@@ -120,9 +120,19 @@ $this->params['breadcrumbs'][] = $this->title;
 
             <div class="container">
                 <?php
+
+
+                
+                 
                 $mostrarDlp = [14, 15];
+
+                // echo "<pre>";
+                // print_r($detalle);
+                // die();
+
                 foreach ($mostrarDlp as $index) {
                     $curso = $detalle[$index];
+                    
                     ?>
                     <div class="course-card">
                         <div class="course-info">

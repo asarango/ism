@@ -58,7 +58,7 @@ $this->title = '¡Tema de Hoy!';
                 <hr>
             </div>
 
-            <div class="row align-items-center p-5" style="margin-top: -60px;>
+            <div class="row align-items-center p-5" style="margin-top: -60px;">
 
                 <?php $form = ActiveForm::begin(); ?>
 
@@ -101,15 +101,3 @@ $this->title = '¡Tema de Hoy!';
 </nav> -->
 
 
-
-<div class="comportamiento-nuevotema">
-
-    <div class="container">
-
-
-
-
-
-    </div>
-
-</div>

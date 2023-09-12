@@ -11,12 +11,46 @@ $this->params['breadcrumbs'][] = $this->title;
 // die();
 ?>
 
+<style>
+
+    /* Estilos para el tooltip */
+    .info-icon {
+        position: relative;
+        display: inline-block;
+        cursor: pointer;
+    }
+
+    .tooltip {
+        visibility: hidden;
+        width: 200px;
+        background-color: #333;
+        color: #fff;
+        text-align: center;
+        border-radius: 4px;
+        padding: 5px;
+        position: absolute;
+        z-index: 1;
+        bottom: 125%;
+        left: 50%;
+        transform: translateX(-50%);
+        opacity: 0;
+        transition: opacity 0.2s;
+    }
+
+    /* Mostrar el tooltip al pasar el ratón por encima */
+    .info-icon:hover .tooltip {
+        visibility: visible;
+        opacity: 1;
+    }
+</style>
+
 <div class="planificacion-semanal-copy">
     <div class="m-0 vh-50 row justify-content-center align-items-center">
         <div class="card shadow col-lg-10 col-md-10">
             <div class=" row align-items-center p-2">
                 <div class="col-lg-1 col-md-1">
-                    <h4><img src="../ISM/main/images/submenu/herramientas-para-reparar.png" width="64px" class="img-thumbnail"></h4>
+                    <h4><img src="../ISM/main/images/submenu/herramientas-para-reparar.png" width="64px"
+                            class="img-thumbnail"></h4>
                 </div>
                 <div class="col-lg-9 col-md-9" style="text-align: left;">
                     <h3>
@@ -24,7 +58,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     </h3>
                     <p>
                         <?=
-                        '<small>' . $clase->ismAreaMateria->materia->nombre .
+                            '<small>' . $clase->ismAreaMateria->materia->nombre .
                             ' - (' . $clase->id . ') - ' .
                             'Clase #:' . $clase->id .
                             ' - ' .
@@ -56,6 +90,18 @@ $this->params['breadcrumbs'][] = $this->title;
                     <small>*Advertencia: Por favor, tenga en cuenta que al hacer clic en el botón "Copiar
                         Planificación",
                         se reemplazarán los avances actuales con los datos de la planificación seleccionada.</small>
+                    <span class="info-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-info-circle shake"
+                            width="32" height="32" viewBox="0 0 24 24" stroke-width="1.5" stroke="#9e9e9e" fill="none"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                            <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
+                            <path d="M12 9h.01" />
+                            <path d="M11 12h1v4h1" />
+                        </svg>
+                        <div class="tooltip">Recuerde que para copiar una planificación usted debe estar dentro de una vacía, de lo contrario no funcionará.</div>
+                    </span>
+
                 </div>
                 <div class="col-lg-3 col-md-3 col-sm-3" style="margin-bottom: 10px;">
                     <div class="col-lg-12 col-md-12 col-sm-12">
@@ -64,7 +110,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         foreach ($clases as $class) {
                             $url = $class['url'];
                             $nombre = '<h4>Planificación Paralelo ' . $class['paralelo'] . ' - ' . $class['docente'] . '</h4><small>';
-                        ?>
+                            ?>
                             <ul class="list-group" style="margin-bottom: 1px; font-size: 12px;">
                                 <li class="list-group-item active" aria-current="true">
                                     <?= $class['paralelo'] . ' - ' . $class['docente'];
@@ -73,10 +119,14 @@ $this->params['breadcrumbs'][] = $this->title;
                                             <div class="col-lg-6" style="text-align: center;">
                                                 <a href="#embeded-url" onclick="showpdf('<?= $url ?>','<?= $nombre ?>')">
                                                     <span class="badge rounded-pill" style="background-color: #4DBE29">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-file-text" width="16" height="16" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ffffff" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                                        <svg xmlns="http://www.w3.org/2000/svg"
+                                                            class="icon icon-tabler icon-tabler-file-text" width="16"
+                                                            height="16" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ffffff"
+                                                            fill="none" stroke-linecap="round" stroke-linejoin="round">
                                                             <path stroke="none" d="M0 0h24v24H0z" fill="none" />
                                                             <path d="M14 3v4a1 1 0 0 0 1 1h4" />
-                                                            <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" />
+                                                            <path
+                                                                d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" />
                                                             <path d="M9 9l1 0" />
                                                             <path d="M9 13l6 0" />
                                                             <path d="M9 17l6 0" />
@@ -85,51 +135,56 @@ $this->params['breadcrumbs'][] = $this->title;
                                                 </a>
                                             </div>
                                         </div>
-                                </li>
-                            </ul>
-                        <?php
+                                    </li>
+                                </ul>
+                                <?php
                                     } else { ?>
 
-                            <div class="row">
-                                <div class="col-lg-6" style="text-align: center;">
-                                    <a href="#embeded-url" onclick="showpdf('<?= $url ?>','<?= $nombre ?>')"><span class="badge rounded-pill" style="background-color: #4DBE29">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-file-text" width="16" height="16" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ffffff" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                                                <path d="M14 3v4a1 1 0 0 0 1 1h4" />
-                                                <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" />
-                                                <path d="M9 9l1 0" />
-                                                <path d="M9 13l6 0" />
-                                                <path d="M9 17l6 0" />
-                                            </svg> Ver </span></a>
-                                </div>
-                                <div class="col-lg-6 " style="text-align: center" ;>
-                                    <?=
+                                <div class="row">
+                                    <div class="col-lg-6" style="text-align: center;">
+                                        <a href="#embeded-url" onclick="showpdf('<?= $url ?>','<?= $nombre ?>')"><span
+                                                class="badge rounded-pill" style="background-color: #4DBE29">
+                                                <svg xmlns="http://www.w3.org/2000/svg"
+                                                    class="icon icon-tabler icon-tabler-file-text" width="16" height="16"
+                                                    viewBox="0 0 24 24" stroke-width="1.5" stroke="#ffffff" fill="none"
+                                                    stroke-linecap="round" stroke-linejoin="round">
+                                                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                                    <path d="M14 3v4a1 1 0 0 0 1 1h4" />
+                                                    <path
+                                                        d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" />
+                                                    <path d="M9 9l1 0" />
+                                                    <path d="M9 13l6 0" />
+                                                    <path d="M9 17l6 0" />
+                                                </svg> Ver </span></a>
+                                    </div>
+                                    <div class="col-lg-6 " style="text-align: center" ;>
+                                        <?=
 
-                                        Html::a(
-                                            '<span class="badge rounded-pill" style="background-color: #898b8d">
+                                            Html::a(
+                                                '<span class="badge rounded-pill" style="background-color: #898b8d">
                                                     <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copy" width="18" height="18" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ffffff" fill="none" stroke-linecap="round" stroke-linejoin="round">
                                                     <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
                                                     <path d="M8 8m0 2a2 2 0 0 1 2 -2h8a2 2 0 0 1 2 2v8a2 2 0 0 1 -2 2h-8a2 2 0 0 1 -2 -2z" />
                                                     <path d="M16 8v-2a2 2 0 0 0 -2 -2h-8a2 2 0 0 0 -2 2v8a2 2 0 0 0 2 2h2" />
                                                   </svg> Copiar</span>',
-                                            [
-                                                'execute-copy',
-                                                'clase_hasta' => $clase->id,
-                                                'clase_desde' => $class['clase_id'],
-                                                'semana_id' => $semana_id,
-                                                'bloque_id' => $bloque_id,
-                                                'pud_origen' => $pud_origen,
-                                                'plan_bloque_unidad_id' => $plan_bloque_unidad_id
-                                            ],
-                                            ['class' => '', 'title' => 'Copiar esta Planificación']
-                                        );
-                                    ?>
+                                                [
+                                                    'execute-copy',
+                                                    'clase_hasta' => $clase->id,
+                                                    'clase_desde' => $class['clase_id'],
+                                                    'semana_id' => $semana_id,
+                                                    'bloque_id' => $bloque_id,
+                                                    'pud_origen' => $pud_origen,
+                                                    'plan_bloque_unidad_id' => $plan_bloque_unidad_id
+                                                ],
+                                                ['class' => '', 'title' => 'Copiar esta Planificación']
+                                            );
+                                        ?>
+                                    </div>
                                 </div>
-                            </div>
-                            </li>
-                            </ul>
-                    <?php }
-                                } ?>
+                                </li>
+                                </ul>
+                            <?php }
+                        } ?>
                     </div>
                 </div>
                 <div id='embeded-url' class=" col-lg-9 col-md-9 col-sm-9">

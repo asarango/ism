@@ -110,7 +110,7 @@ class PlanificacionAprobacionController extends Controller{
                     and c.x_institute = $institutoId
                     group by c.id ,c.name ,c.x_template_id, s.code
                     order by c.x_template_id desc;";
-       
+       print_r($query);
         $res = $con->createCommand($query)->queryAll();
 
         return $res;

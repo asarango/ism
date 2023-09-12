@@ -116,7 +116,9 @@ if ($model->id_clase > 0) //si es mayor a cero, viene de leccionario
                 <?= $this->render('_form', [
                     'model' => $model,
                     'resUser' => $resUser,
-                    'padres1' => $padres1,
+                    // 'padres1' => $padres1,
+                    // 'profesores' => $profesores,
+                    'listadoActores' => $listadoActores
                 ]) ?>
             </div>
         </div>

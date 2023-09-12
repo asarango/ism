@@ -13,7 +13,7 @@ use yii\helpers\ArrayHelper;
 $this->title = 'Agregar Alumnos';
 
 // echo "<pre>";
-// print_r($alumnoSeleccionado);
+// print_r($cabecera);
 // die();
 // $alumnos = obtenerAlumnos();
 ?>
@@ -55,14 +55,21 @@ $this->title = 'Agregar Alumnos';
                     <h4>
                         <?= Html::encode($this->title) ?>
                     </h4>
-                    <small>
-                        (
-                        <?=
-                            $cabecera[0]['materia'] . ' - ' .
-                            $cabecera[0]['curso'] . ' ' . $cabecera[0]['paralelo'];
-                        ?>
-                        )
-                    </small>
+                    <?php
+                    $opcion = $_GET['clase_id'];
+
+                    foreach ($cabecera as $cabe) {
+                        if ($cabe['clase_id'] == $opcion) {
+                            echo '<small>
+                            (' . $cabe['materia'] . ' - ' . $cabe['curso'] . '-'.
+                            $cabe['paralelo'] . ')</small>';
+                            break;
+                        }
+                    }
+                    ?>
+
+
+
                 </div>
                 <div class="col-lg-2 col-md-2" style="text-align: right;">
                     <?= Html::button(
@@ -78,7 +85,7 @@ $this->title = 'Agregar Alumnos';
             </div>
 
             <div class="row">
-                <div class="col-md-6" id="noOptativa" >
+                <div class="col-md-6" id="noOptativa">
                     <div style="text-align: center;">
                         <h5>Listado de Alumnos</h5>
                         <div style="margin: 1rem 0 1rem 0;">

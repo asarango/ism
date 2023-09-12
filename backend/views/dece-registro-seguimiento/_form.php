@@ -93,8 +93,16 @@ $listFirmas = DeceSeguimientoFirmas::find()
     ->orderBy(['id' => SORT_ASC])
     ->all();
 
+
+
+// echo "<pre>";
+// print_r($modelEstudiante);
+// die();
 ?>
-<script src="https://cdn.ckeditor.com/4.19.0/standard/ckeditor.js"></script>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+
 
 <style>
     .card {
@@ -130,11 +138,17 @@ $listFirmas = DeceSeguimientoFirmas::find()
     }
 
     .btn-acuerdo:hover {
-        transform: scale(1.4);
+        transform: scale(1.05);
 
     }
-</style>
 
+    .checkbox-label {
+        display: flex;
+        align-items: center;
+        font-weight: bold;
+    }
+</style>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 
 <div class="comportamiento-detalle">
@@ -160,11 +174,6 @@ $listFirmas = DeceSeguimientoFirmas::find()
                     </tr>
                     <tr>
                         <?php
-
-                        // echo "<pre>";
-                        // print_r($padres1);
-                        // die();
-
                         //calcual la edad
                         $objHelperGeneral = new HelperGeneral();
                         $edad = $objHelperGeneral->obtener_edad_segun_fecha($modelEstudiante->birth_date);
@@ -418,11 +427,7 @@ $listFirmas = DeceSeguimientoFirmas::find()
                     <div class="row">
                         <div class="col">
 
-                            <?= $form->field($model, 'estado')->dropDownList(
-                                $arrayEstado,
-                                ['options' => ['PENDIENTE' => ['selected' => true]]]
-                            ) ?>
-
+                            <?= $form->field($model, 'estado')->dropDownList($arrayEstado, ['prompt' => 'Seleccione Estado']) ?>
                         </div>
                         <div class="col">
 
@@ -439,11 +444,15 @@ $listFirmas = DeceSeguimientoFirmas::find()
                     <?= $form->field($model, 'pronunciamiento')->textarea(['rows' => 3]) ?>
                     <br>
 
-
-
                     <!-- //DETALLE DE ACUERDOS -->
 
                     <?php
+
+                    // echo "<pre>";
+                    // print_r($modelEstudiante);
+                    // die();
+                    
+
                     if (!($model->isNewRecord)) {
                         ?>
 
@@ -462,75 +471,70 @@ $listFirmas = DeceSeguimientoFirmas::find()
                                 style="padding: 1rem;border: none; margin-top: -15px">
                                 <div class="">
                                     <div class="card-header" style="background-color: #ab0a3d; border: 1px solid black;">
+                                        <div class="row " style="padding: 1rem;">
+
+                                            <label style="color: white;" for=""><b>Seleccione responsable:</b></label>
+
+                                            <select name="Acuerdo" id="AcuerdoDropdown" onchange="mostrarDatosAcuerdo()">
+                                                <option value="">Escoja una opción</option>
+                                                <?php foreach ($listadoActores as $responsable) {
+                                                    $nombreCompleto = $responsable['name'] . " (" . $responsable['cargo_descripcion'] . ")";
+                                                    echo "<option value='{$responsable['name']}' data-cedula='{$responsable['numero_identificacion']}' data-parentesco='{$responsable['cargo_descripcion']}' data-email='{$responsable['email']}'>{$nombreCompleto}</option>";
+
+                                                } ?>
+                                            </select>
+
+                                        </div>
+
                                         <div class="row">
-                                            <div class="col-lg-4">
+                                            <div class="col-lg-6" style="margin-top: 5px;">
                                                 <textarea class="form-control" type="text" id="acuerdo_acuerdo" rows="4"
                                                     placeholder="Acuerdo"></textarea>
                                             </div>
 
-                                            <div class="col-lg-8">
-                                                <div class="row" style="margin: 5px;">
-                                                    <div class="col-lg-6">
-                                                        <input class="form-control" type="text" id="responsable_acuerdo"
-                                                            placeholder="Responsable" />
-                                                    </div>
-                                                    <div class="col-lg-6">
+                                            <div class="col-lg-6">
 
+                                                <div class="row" style="margin-top: 5px;">
+                                                    <div class="col-lg-12">
+                                                        <!-- fecha -->
                                                         <input class="form-control" type="date"
                                                             id="fecha_cumplimiento_acuerdo"
                                                             placeholder="Fecha max cumplimiento" />
+                                                        <!-- responsable -->
+                                                        <input style="margin-top: 5px;" class="form-control" type="text"
+                                                            id="responsable_acuerdo" placeholder="Responsable" />
+                                                        <!-- parentesco -->
+                                                        <input style="margin-top: 5px;" class="form-control" type="text"
+                                                            id="parentesco" placeholder="Parentesco" />
+                                                        <!-- E-mail -->
+                                                        <input style="margin-top: 5px;" class="form-control" type="text"
+                                                            id="Acuerdo_cargo" placeholder="E-mail" />
+                                                        <!-- cedula -->
+                                                        <input style="margin-top: 5px;" class="form-control" type="text"
+                                                            id="cedula" style="width: 150px;" placeholder="Cédula" />
+
                                                     </div>
+
                                                 </div>
-                                                <div class="row" style="margin: 5px;">
-                                                    <div class="col-lg-6">
-                                                        <select class="form-select" aria-label="Default select example"
-                                                            id="parentesco">
-                                                            <option value="">Parentesco</option>
-                                                            <?php
-                                                            foreach ($parentescoList as $item) {
-                                                                ?>
-                                                                <option value="<?= $item->atencion_para ?>"><?= $item->atencion_para ?></option>
-                                                                <?php
-                                                            }
-                                                            ?>
-                                                        </select>
-                                                    </div>
-                                                    <div class="col-lg-6">
-                                                        <select class="form-select" aria-label="Default select example"
-                                                            id="cargo" aria-placeholder="Parentesco">
-                                                            <option value=""> Cargo</option>
-                                                            <?php
-                                                            foreach ($cargoList as $item) {
-                                                                ?>
-                                                                <option value="<?= $item->responsable_seg ?>"><?= $item->responsable_seg ?></option>
-                                                                <?php
-                                                            }
-                                                            ?>
-                                                        </select>
-                                                    </div>
-                                                    <div class="row" style="margin-top: 5px;">
-                                                        <div class="col-lg-6">
-                                                            <input class="form-control" type="number" id="cedula"
-                                                                style="width: 150px;" placeholder="Cédula" />
-                                                        </div>
-                                                        <div class="col-lg-6 btn-acuerdo"
-                                                            style="text-align: center;padding: 3px;">
-                                                            <button type="button" class="btn btn-primary btn-sm"
-                                                                style="margin-left: 30px;background-color: #ff9e18;border: none;"
-                                                                id="icono_acuerdo" onclick="guardar_acuerdo()"
-                                                                title="Guardar Acuerdos"><i
-                                                                    class="fas fa-save"></i></button>
-                                                        </div>
-                                                    </div>
+
+                                                <div class=" row" style="text-align: center;padding: 3px;margin-top: 10px;">
+                                                    <button type="button" class="btn btn-primary btn-sm  btn-acuerdo"
+                                                        style="background-color: #ff9e18;border: none;margin-bottom: 10px;"
+                                                        id="icono_acuerdo" onclick="guardar_acuerdo()"
+                                                        title="Guardar Acuerdos"><b>Guardar Acuerdo </b><i
+                                                            class="fas fa-save"></i></button>
+
                                                 </div>
+
                                             </div>
                                         </div>
 
                                     </div>
                                     <div class="card-body" id="div_muestra_acuerdo"
                                         style="background-color: #eee;border: 1px solid black;margin-top: 10px;">
-                                        <table class="table table-striped table-bordered my-text-small" style="background-color: #ab0a3d; color: white;
-                                            border: 1px solid black;text-align: center;">
+                                        <table class="table table-striped table-bordered my-text-small"
+                                            style="background-color: #ab0a3d; color: white;
+                                            border: 1px solid black;text-align: center;font-weight: bold; font-size: 0.8rem;">
                                             <thead style="font-weight: bold;">
                                                 <td><b> Ítem </b></td>
                                                 <td><b> Acuerdo </b></td>
@@ -538,11 +542,11 @@ $listFirmas = DeceSeguimientoFirmas::find()
                                                 <td><b> Fecha Cumplimiento </b></td>
                                                 <td><b> Cumplió </b></td>
                                             </thead>
-                                            <tbody>
+                                            <tbody style="font-weight: bold; color: white; font-size: 1rem;">
                                                 <?php
                                                 foreach ($listAcuerdos as $acuerdo) {
                                                     ?>
-                                                    <tr style="color: white;font-weight: bold;font-size: 0.9rem">
+                                                    <tr style="color: black;background-color: #ccc;">
                                                         <td>
                                                             <?= $acuerdo->secuencial ?>
                                                         </td>
@@ -602,96 +606,79 @@ $listFirmas = DeceSeguimientoFirmas::find()
 
                             <div class="card">
 
-
                                 <h5 class="detalle" style="font-weight: bold;"> Firmas</h5>
+
+                                <?php
+                                // echo "<pre>";
+                                // print_r($listadoActores);
+                                // die ();
+                                ?>
+
+                                <div class="row col-md-11" style="color: black; margin: 0 auto; margin-bottom: 1rem;">
+                                    <div class="row" style="padding: 1rem;">
+                                        <label for=""><b>Seleccione responsable:</b></label>
+
+                                        <select style="background-color: white;" name="familiar" id="familiarDropdown"
+                                            onchange="mostrarDatos()">
+                                            <option value="">Escoja una opción</option>
+                                            <?php foreach ($listadoActores as $responsable) {
+                                                $nombreCompleto = $responsable['name'] . " (" . $responsable['cargo_descripcion'] . ")";
+                                                echo "<option value='{$responsable['name']}' data-cedula='{$responsable['numero_identificacion']}' data-parentesco='{$responsable['cargo_descripcion']}' data-email='{$responsable['email']}'>{$nombreCompleto}</option>";
+
+                                            } ?>
+                                        </select>
+                                        <div class="checkbox-label">
+                                            <input type="checkbox" id="checkboxEstudiante"
+                                                onclick="mostrarDatosEstudiante()" />
+                                            <label style="color: black;" for="checkboxEstudiante">Seleccionar como
+                                                responsable
+                                                al Estudiante</label>
+                                        </div>
+
+                                    </div>
+                                </div>
+
                                 <div class="form-control" id="div_crea_acuerdo">
                                     <div>
                                         <div class="card-header"
                                             style="background-color: #ab0a3d; text-align: center;border: 1px solid black;">
                                             <div class="row">
-                                                <div class="col-lg-3">
-                                                    <input class="form-control" type="text" id="firmas_nombre"
-                                                        placeholder="Nombre" />
+                                                <div class="col-lg-12">
+                                                    <input style="margin-top: 5px;" class="form-control" type="text"
+                                                        id="firmas_nombre" placeholder="Nombre" />
+                                                    <input style="margin-top: 5px;" class="form-control" type="text"
+                                                        id="firmas_cedula" placeholder="Cédula" />
+                                                    <input style="margin-top: 5px;" class="form-control" type="text"
+                                                        id="firmas_parentesco" placeholder="Parentesco" />
+                                                    <input style="margin-top: 5px;" class="form-control" type="text"
+                                                        id="firmas_cargo" placeholder="E-mail" />
                                                 </div>
-                                                <div class="col-lg-3">
-                                                    <input class="form-control" type="number" id="firmas_cedula"
-                                                        placeholder="Cédula" />
-                                                </div>
-                                                <div class="col-lg-3">
-                                                    <input class="form-control" type="text" id="firmas_parentesco"
-                                                        placeholder="Parentesco" />
-                                                </div>
-                                                <div class="col-lg-2">
-                                                    <input class="form-control" type="text" id="firmas_cargo"
-                                                        placeholder="Cargo" />
-                                                </div>
-                                                <div class="col-lg-1 btn-acuerdo">
+
+                                                <div class="btn-acuerdo" style="margin-top: 1rem;">
                                                     <button type="button" class="btn btn-primary btn-sm " id="icono_acuerdo"
                                                         onclick="guardar_firmas()"
                                                         style="background-color: #ff9e18;border: none;"
-                                                        title="Guardar Firmas"><i class="fas fa-save"></i></button>
+                                                        title="Guardar Firmas"><b>Guardar Firmas</b> <i
+                                                            class="fas fa-save"></i></button>
                                                 </div>
                                             </div>
                                         </div>
 
                                         <div class="card-body" id="div_muestra_firmas"
                                             style="border: 1px solid black;margin-top: 10px;background-color: #eee;">
-                                            <table class="table table-success table-striped table-bordered my-text-small"
+                                            <table class="table table-striped table-bordered my-text-small"
                                                 style="color: white; text-align: center;border: 1px solid black;font-weight: bold;">
                                                 <thead>
                                                     <td style="background-color: #ab0a3d;"><b> Nombre </b></td>
                                                     <td style="background-color: #ab0a3d;"><b> Cédula </b></td>
                                                     <td style="background-color: #ab0a3d;"><b> Parentesco </b></td>
-                                                    <td style="background-color: #ab0a3d;"><b> Cargo </b></td>
+                                                    <td style="background-color: #ab0a3d;"><b> E-mail </b></td>
                                                 </thead>
-
-                                                <div class="row" style="text-align: center;">
-                                                    <div class="col-lg-4">
-                                                        <p>Familia directa del estudiante:</p>
-                                                        <ul>
-                                                            <li><b>Padre</b><input type="checkbox">
-
-                                                            </li>
-                                                            <li>
-                                                                <b>Madre</b><input type="checkbox">
-
-                                                            </li>
-                                                            <li>
-                                                                <b>Estudiante</b><input type="checkbox">
-                                                            </li>
-                                                        </ul>
-                                                    </div>
-                                                    <div class="col-lg-4">
-                                                        <!-- /* se agregan los profesores respomsables */ -->
-                                                        <p>Docente:</p>
-                                                        <!-- para prueba -->
-                                                        
-                                                        <ul>
-                                                            <li><b>Docentes</b><input type="checkbox"></li>
-                                                            <li><b>Docentes</b><input type="checkbox"></li>
-                                                            <li><b>Docentes</b><input type="checkbox"></li>
-                                                            <li><b>Docentes</b><input type="checkbox"></li>
-                                                        </ul>
-                                                    </div>
-                                                    <div class="col-lg-4">
-                                                        <!-- /* se agregan los profesores respomsables */ -->
-                                                        <p>Autoridades:</p>
-                                                        <!-- para prueba -->
-                                                        
-                                                        <ul>
-                                                            <li><b>Autoridades</b><input type="checkbox"></li>
-                                                            <li><b>Autoridades</b><input type="checkbox"></li>
-                                                            <li><b>Autoridades</b><input type="checkbox"></li>
-                                                            <li><b>Autoridades</b><input type="checkbox"></li>
-                                                        </ul>
-                                                    </div>
-                                                </div>
-
-                                                <tbody>
+                                                <tbody style="color: black;">
                                                     <?php
                                                     foreach ($listFirmas as $firma) {
                                                         ?>
-                                                        <tr style="color: black;">
+                                                        <tr>
                                                             <td>
                                                                 <?= $firma->nombre ?>
                                                             </td>
@@ -748,13 +735,19 @@ $listFirmas = DeceSeguimientoFirmas::find()
                                     </td>
                                 </tr>
                             </table>
-                            <div class="row" style="margin: 10px;">
+                            <div class="row" style="margin: 10px; text-align: center;">
                                 <div class="form-group">
                                     <?= Html::submitButton('Guardar', ['class' => 'btn btn-success ', 'style' => 'background-color: #ff9e18;border: none;']) ?>
+                                    <a href="#" id="enviar-correo-link" data-id="<?= $modelEstudiante['id'] ?>"
+                                        class="btn btn-primary btn-acuerdo">Enviar al Correo</a>
                                 </div>
                             </div>
                         </div>
                         <?php ActiveForm::end(); ?>
+
+
+
+
                     </div>
                 </div>
 
@@ -894,5 +887,123 @@ $listFirmas = DeceSeguimientoFirmas::find()
                 }
             });
         }
-            //******   fin firmas    ******** ///
+        //******   fin firmas    ******** ///
+    </script>
+
+    <script>
+        function mostrarDatos() {
+            var select = document.getElementById("familiarDropdown");
+            var nombreCampo = document.getElementById("firmas_nombre");
+            var cedulaCampo = document.getElementById("firmas_cedula");
+            var parentescoCampo = document.getElementById("firmas_parentesco");
+            var emailCampo = document.getElementById("firmas_cargo"); // Nota: Cambié el ID del campo a "firmas_cargo" en lugar de "firmas_cargo"
+
+            var selectedOption = select.options[select.selectedIndex];
+            if (selectedOption.value === "") {
+                // Si se selecciona la opción predeterminada, borrar los campos
+                nombreCampo.value = "";
+                cedulaCampo.value = "";
+                parentescoCampo.value = "";
+                emailCampo.value = "";
+            } else {
+                // Obtener los datos del atributo "data" de la opción seleccionada
+                var cedula = selectedOption.getAttribute("data-cedula");
+                var parentesco = selectedOption.getAttribute("data-parentesco");
+                var email = selectedOption.getAttribute("data-email");
+
+                // Asignar los datos a los campos correspondientes
+                nombreCampo.value = selectedOption.value;
+                cedulaCampo.value = cedula;
+                parentescoCampo.value = parentesco;
+                emailCampo.value = email;
+            }
+        }
+
+    </script>
+
+    <script>
+        function mostrarDatosAcuerdo() {
+            var select = document.getElementById("AcuerdoDropdown");
+            var nombreCampo = document.getElementById("responsable_acuerdo");
+            var cedulaCampo = document.getElementById("cedula");
+            var parentescoCampo = document.getElementById("parentesco");
+            var emailCampo = document.getElementById("Acuerdo_cargo");
+
+            var selectedOption = select.options[select.selectedIndex];
+            if (selectedOption.value === "") {
+
+                nombreCampo.value = "";
+                cedulaCampo.value = "";
+                parentescoCampo.value = "";
+                emailCampo.value = "";
+            } else {
+
+                var cedula = selectedOption.getAttribute("data-cedula");
+                var parentesco = selectedOption.getAttribute("data-parentesco");
+                var email = selectedOption.getAttribute("data-email");
+
+
+                nombreCampo.value = selectedOption.value;
+                cedulaCampo.value = cedula;
+                parentescoCampo.value = parentesco;
+                emailCampo.value = email;
+            }
+        }
+
+    </script>
+
+    <script>
+
+        function mostrarDatosEstudiante() {
+            var select = document.getElementById("familiarDropdown");
+            var nombreCampo = document.getElementById("firmas_nombre");
+            var cedulaCampo = document.getElementById("firmas_cedula");
+            var parentescoCampo = document.getElementById("firmas_parentesco");
+            var emailCampo = document.getElementById("firmas_cargo");
+            if (checkbox.checked) {
+                // Si el checkbox está marcado, asigna los datos
+                var last_name = '<?= $modelEstudiante['last_name'] ?>';
+                var first_name = '<?= $modelEstudiante['first_name'] ?>';
+                var middle_name = '<?= $modelEstudiante['middle_name'] ?>';
+                var x_institutional_email = '<?= $modelEstudiante['x_institutional_email'] ?>';
+                var x_account_owner_ident = '<?= $modelEstudiante['x_account_owner_ident'] ?>';
+
+                nombreCampo.value = last_name + " " + first_name + " " + middle_name;
+                cedulaCampo.value = x_account_owner_ident;
+                parentescoCampo.value = "Estudiante";
+                emailCampo.value = x_institutional_email;
+            } else {
+                // Si el checkbox no está marcado, borra los campos
+                nombreCampo.value = "";
+                cedulaCampo.value = "";
+                parentescoCampo.value = "";
+                emailCampo.value = "";
+            }
+        }
+
+    </script>
+
+    <script>
+        $(document).ready(function () {
+            $("#enviar-correo-link").click(function (e) {
+                e.preventDefault(); // Prevenir el comportamiento predeterminado del enlace
+
+                var id = $(this).data("id");
+
+                // Realizar una solicitud POST utilizando AJAX
+                $.ajax({
+                    url: "enviar-correo",
+                    method: "POST",
+                    data: { id: id },
+                    success: function (response) {
+                        // Manejar la respuesta del servidor aquí
+                        console.log("Correo enviado con éxito");
+                    },
+                    error: function () {
+                        // Manejar errores aquí
+                        console.error("Error al enviar el correo");
+                    }
+                });
+            });
+        });
     </script>

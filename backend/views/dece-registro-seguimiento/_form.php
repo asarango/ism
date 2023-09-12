@@ -735,7 +735,7 @@ $listFirmas = DeceSeguimientoFirmas::find()
                                 <div class="form-group">
                                     <?= Html::submitButton('Guardar', ['class' => 'btn btn-success ', 'style' => 'background-color: #ff9e18;border: none;']) ?>
                                     <a href="#" id="enviar-correo-link" data-id="<?= $modelEstudiante['id'] ?>"
-                                        class="btn btn-primary btn-acuerdo">Enviar al Correo</a>
+                                        class="btn btn-primary btn-acuerdo">no funciona</a>
                                     <?php echo Html::a('Enviar Correo', ['enviar-correo', 'id' => $modelEstudiante['id']], ['class' => 'btn btn-primary btn-acuerdo']); ?>
                                 </div>
                             </div>

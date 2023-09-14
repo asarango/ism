@@ -158,7 +158,7 @@ $modelRegDeteccion = DeceDeteccion::find()
                 <div class="row">
                     <h6 style="color:blueviolet;">ENLISTE LAS EVIDENCIAS</h6>
                     <div class="row">
-                        <?= $form->field($model, 'lista_evidencias')->textarea(['rows' => 6]) ?>
+                        <?=$form->field($model, 'lista_evidencias')->textarea(['rows' => 6]) ?>
                         <script>
                             CKEDITOR.replace("decedeteccion-lista_evidencias");
                         </script>

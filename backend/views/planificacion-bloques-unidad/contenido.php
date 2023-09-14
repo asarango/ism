@@ -37,7 +37,11 @@ $arrayVerificacion = array("SI" => "SI", "NO" => "NO", "REPLANIFICADO" => "REPLA
 ?>
 
 <!-- JS y CSS Ckeditor -->
-<script src="https://cdn.ckeditor.com/4.17.1/full/ckeditor.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet" />
+<script src="//cdn.ckeditor.com/4.19.0/full/ckeditor.js"></script>
+
 
 
 <div class="planificacion-desagregacion-cabecera-index">
@@ -88,340 +92,27 @@ $arrayVerificacion = array("SI" => "SI", "NO" => "NO", "REPLANIFICADO" => "REPLA
             <!-- inicia cuerpo de card -->
             <div class="row" style="margin: 0.5rem 1rem 1rem 1rem;">
 
-                <!-- Columna que muestra subtitulo1 y subtitulo2 -->
-                <div class="col-lg-12 col-md-12 card">
-                    <div style="text-align: end">
-                        <h5 style="text-align: center">
-
-                            <!--                            Condición si está el bloque cerrado (Es Abierto) 
-                            -- si el bloque estado (planUnidad->settings_status) está configurado 
-                            -- y si está la cabecera estado aprobada o en coordinacion
--->
-                            <?php
-
-                            if ($condicion == false) {
-
-                            } else {
-                                ?>
-                                <!-- Botón Modal Agregar Título -->
-                                <button type="button" title="Agregar tema" class="btn" data-bs-toggle="modal"
-                                    data-bs-target="#agregarTituloModal">
-                                    <i class="fas fa-plus-square" style="color: green"></i>
-                                </button>
-
-                                <?php
-                            }
-                            ?>
-                            Temas de:
-                            <?= '<b>' . $planUnidad->unit_title . '</b>' ?>
-                        </h5>
-                    </div>
-
-                    <hr>
-
-                    <!-- Muestra titulo -->
-                    <div>
-                        <div class="accordion accordion-flush" id="accordionFlushExample">
-                            <?php
-                            foreach ($subtitulos as $subtitulo) {
-                                ?>
-
-                                <div class="accordion-item">
-                                    <h2 class="accordion-header" id="headingOne">
-
-                                        <!--MUESTRA ACORDIÓN DE TITULOS-->
-                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                                            data-bs-target="#flush-<?= $subtitulo['id'] ?>" aria-expanded="true"
-                                            aria-controls="flush-collapseOne">
-                                            <?php
-                                            if ($condicion == false) {
-                                                echo $subtitulo['orden'] . ' - ' . $subtitulo['subtitulo'];
-                                            } else {
-                                                ?>
+                
 
 
-                                                <!-- Boton Modal Editar Titulo -->
-                                                <a type="button" class="btn" data-bs-toggle="modal"
-                                                    data-bs-target="#me<?= $subtitulo['id'] ?>">
-                                                    <i class="fas fa-pencil-alt" style="color: #0a1f8f "></i>
-                                                </a>
+                <div class="col-lg-12">
+                    <?php
+                    // echo "<pre>";
+                    // print_r ($planUnidad);
+                    // die();
+                    
+                    ?>
+
+                    <div class="row">
 
 
-                                                <!-- Boton Modal Eliminar Titulo -->
-                                                <a type="button" class="btn" data-bs-toggle="modal"
-                                                    data-bs-target="#m<?= $subtitulo['id'] ?>">
-                                                    <i class="fas fa-trash-alt" style="color: #ab0a3d"></i>
-                                                </a>
-
-
-
-                                                <strong class="my-text-medium">
-                                                    <?= $subtitulo['orden'] . ' - ' . $subtitulo['subtitulo'] ?>
-                                                </strong>
-
-                                                <?php
-                                            }
-                                            ?>
-                                        </button>
-
-
-                                    </h2>
-                                    <div id="flush-<?= $subtitulo['id'] ?>" class="accordion-collapse collapse"
-                                        aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
-                                        <div class="accordion-body" style="border: solid 1px #e7f1ff">
-                                            <div class="div-subtitulo-2" style="text-align: end">
-
-                                                <?php
-                                                if ($condicion == false) {
-
-                                                } else {
-                                                    ?>
-                                                    <!-- Boton Modal Agregar SUBTITULO -->
-                                                    <a type="button" class="btn my-text-medium" data-bs-toggle="modal"
-                                                        data-bs-target="#sb<?= $subtitulo['id'] ?>">
-                                                        <i class="fas fa-plus-square" style="color: #65b2e8 "
-                                                            title="Agregar Subtitulo"> Agregar subtítulo</i>
-                                                    </a>
-                                                    <?php
-                                                }
-                                                ?>
-
-                                            </div>
-
-                                            <?php
-                                            $subtitulo2 = busca_subtitulos2($subtitulo['id']);
-
-                                            foreach ($subtitulo2 as $subtitulo2) {
-                                                ?>
-                                                <ul class="list-group">
-                                                    <li
-                                                        class="my-text-medium list-group-item d-flex justify-content-between align-items-start">
-                                                        <div class="ms-2 me-auto">
-                                                            <div class="fw-bold">
-                                                                <?= $subtitulo2['orden'] . ' - ' . $subtitulo2['contenido'] ?>
-                                                            </div>
-                                                        </div>
-                                                        <?php
-                                                        if ($condicion == false) {
-                                                        } else {
-                                                            ?>
-                                                            <!--Boton Modal Eliminar Subtitulo2-->
-                                                            <a type="button" data-bs-toggle="modal"
-                                                                data-bs-target="#sbE<?= $subtitulo2['id'] ?>">
-                                                                <span class="badge rounded-pill" style="font-size: 12px">
-                                                                    <i class="far fa-trash-alt" style="color: #ab0a3d"></i>
-                                                                </span>
-                                                            </a>
-                                                            <?php
-                                                        }
-                                                        ?>
-
-
-
-                                                        <!-- Modal Eliminar SUBTITULO2-->
-                                                        <div class="modal fade" id="sbE<?= $subtitulo2['id'] ?>" tabindex="-1"
-                                                            aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                                            <div class="modal-dialog">
-                                                                <div class="modal-content">
-                                                                    <div class="modal-header">
-                                                                        <h5 class="modal-title" id="exampleModalLabel">Eliminar
-                                                                            "
-                                                                            <?= $subtitulo2['contenido'] ?>"
-                                                                        </h5>
-                                                                        <button type="button" class="btn-close"
-                                                                            data-bs-dismiss="modal" aria-label="Close"></button>
-                                                                    </div>
-                                                                    <div class="modal-body alert alert-warning" role="alert"
-                                                                        style="margin: 20px">
-                                                                        <h6>Usted va a borrar contenidos de <strong>"
-                                                                                <?= $subtitulo2['contenido'] ?>"
-                                                                            </strong></h6>
-                                                                        <h6>¿Desea eliminar?</h6>
-                                                                    </div>
-                                                                    <div class="modal-footer">
-                                                                        <button type="button" class="btn btn-secondary"
-                                                                            data-bs-dismiss="modal">Cerrar</button>
-                                                                        <?=
-                                                                            Html::a(
-                                                                                'Eliminar',
-                                                                                ['delete-subtitle2', 'id' => $subtitulo2['id']],
-                                                                                ['class' => 'btn btn-warning']
-                                                                            );
-                                                                        ?>
-                                                                    </div>
-
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </li>
-                                                </ul>
-                                                <?php
-                                            }
-                                            ?>
-
-                                        </div>
-                                    </div>
-
-
-
-
-
-                                    <!-- Modal Agregar SUBTITULO-->
-                                    <div class="modal fade" id="sb<?= $subtitulo['id'] ?>" tabindex="-1"
-                                        aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                        <div class="modal-dialog">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h5 class="modal-title" id="exampleModalLabel">Agregando subtitulo de "
-                                                        <?= $subtitulo['subtitulo'] ?>"
-                                                    </h5>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                        aria-label="Close"></button>
-                                                </div>
-                                                <div class="modal-body">
-
-                                                    <?php
-                                                    $form = ActiveForm::begin([
-                                                        'action' => ['create-subtitle2'],
-                                                        'method' => 'post',
-                                                    ]);
-                                                    $modelS2 = new backend\models\PlanificacionBloquesUnidadSubtitulo2();
-                                                    ?>
-
-                                                    <?= $form->field($modelS2, 'plan_unidad_id')->hiddenInput(['value' => $subtitulo['plan_unidad_id']])->label(false) ?>
-                                                    <?= $form->field($modelS2, 'subtitulo_id')->hiddenInput(['value' => $subtitulo['id']])->label(false) ?>
-                                                    <?= $form->field($modelS2, 'contenido')->textInput(['required' => ''])->label('Subtitulo') ?>
-                                                    <?= $form->field($modelS2, 'orden')->textInput(['required' => ''])->label('Orden') ?>
-
-                                                    <br>
-                                                    <div class="form-group" style="text-align: end">
-                                                        <?= Html::submitButton('Crear', ['class' => 'btn btn-success']) ?>
-                                                    </div>
-
-                                                    <?php ActiveForm::end(); ?>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-
-                                    <!-- Modal Editar Titulo -->
-                                    <div class="modal fade" id="me<?= $subtitulo['id'] ?>" tabindex="-1"
-                                        aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                        <div class="modal-dialog modal-xl">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h5 class="modal-title" id="exampleModalLabel">
-                                                        <?= $subtitulo['subtitulo'] ?>
-                                                    </h5>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                        aria-label="Close"></button>
-                                                </div>
-                                                <div class="modal-body">
-
-                                                    <?php
-                                                    $form = ActiveForm::begin([
-                                                        'action' => ['update-subtitle'],
-                                                        'id' => $subtitulo['id'],
-                                                        'method' => 'post',
-                                                    ]);
-                                                    ?>
-
-
-                                                    <?= $form->field($subtitulo, 'id')->hiddenInput()->label(false) ?>
-                                                    <?= $form->field($subtitulo, 'subtitulo')->textInput(['required' => ''])->label('Título') ?>
-                                                    <?= $form->field($subtitulo, 'orden')->textInput(['required' => ''])->label('Orden') ?>
-                                                    <?= $form->field($subtitulo, 'trazabilidad')->dropDownList($arrayTrazabilidad, ['prompt' => 'Seleccione Uno']) ?>
-                                                    <?= $form->field($subtitulo, 'verificacion')->dropDownList($arrayVerificacion, ['prompt' => 'Seleccione Uno']) ?>
-
-
-                                                    <hr>
-                                                    <div class="form-group">
-                                                        <label for="experiencia">EXPERIENCIAS DE APRENDIZAJE Y ESTRATEGIAS
-                                                            DE ENSEÑANZA:</label>
-                                                        <textarea name="experiencia_update"
-                                                            id="experiencia-editor-update<?= $subtitulo->id ?>"><?= $subtitulo->experiencias ?></textarea>
-                                                        <script>
-                                                            CKEDITOR.replace("experiencia-editor-update<?= $subtitulo->id ?>", {
-                                                                customConfig: "/ckeditor_settings/config.js"
-                                                            });
-                                                        </script>
-                                                    </div>
-                                                    <hr>
-
-                                                    <div class="form-group">
-                                                        <label for="experiencia">EVALUACIÓN FORMATIVAS:</label>
-                                                        <textarea name="evaluacion_update"
-                                                            id="evaluacion-editor-update<?= $subtitulo->id ?>"><?= $subtitulo->evaluacion_formativa ?></textarea>
-                                                        <script>
-                                                            CKEDITOR.replace("evaluacion-editor-update<?= $subtitulo->id ?>", {
-                                                                customConfig: "/ckeditor_settings/config.js"
-                                                            });
-                                                        </script>
-                                                    </div>
-                                                    <hr>
-
-                                                    <div class="form-group">
-                                                        <label for="experiencia">DIFERENCIACIÓN:</label>
-                                                        <textarea name="diferenciacion_update"
-                                                            id="diferenciacion-editor-update<?= $subtitulo->id ?>"><?= $subtitulo->diferenciacion ?></textarea>
-                                                        <script>
-                                                            CKEDITOR.replace("diferenciacion-editor-update<?= $subtitulo->id ?>", {
-                                                                customConfig: "/ckeditor_settings/config.js"
-                                                            });
-                                                        </script>
-                                                    </div>
-
-
-                                                    <br>
-                                                    <div class="form-group">
-                                                        <?= Html::submitButton('Actualizar', ['class' => 'btn btn-primary']) ?>
-                                                    </div>
-                                                    <?php ActiveForm::end(); ?>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-
-                                    <!-- Modal Borrar Titulo -->
-                                    <div class="modal fade" id="m<?= $subtitulo['id'] ?>" tabindex="-1"
-                                        aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                        <div class="modal-dialog">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                        aria-label="Close"></button>
-                                                </div>
-                                                <div class="modal-body alert alert-danger" role="alert"
-                                                    style="margin: 20px">
-                                                    <h6>Usted va a borrar contenidos de <strong>"
-                                                            <?= $subtitulo['subtitulo'] ?>"
-                                                        </strong></h6>
-                                                    <h6>¿Desea eliminar?</h6>
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary"
-                                                        data-bs-dismiss="modal">Cerrar</button>
-                                                    <?=
-                                                        Html::a(
-                                                            'Eliminar',
-                                                            ['delete-subtitle', 'id' => $subtitulo['id']],
-                                                            ['class' => 'btn btn-danger']
-                                                        );
-                                                    ?>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <?php
-                            }
-                            ?>
+                        <div id="div-mostrar-Arbol" class="col-md-6 card-body">
+                    
                         </div>
 
+                        <div id="div-mostrar-Tema" class="col-md-6 card-body">
+
+                        </div>
                     </div>
                 </div>
 
@@ -441,80 +132,6 @@ $arrayVerificacion = array("SI" => "SI", "NO" => "NO", "REPLANIFICADO" => "REPLA
 
 
 
-
-
-
-<!-- Modal Crear Titulo -->
-<div class="modal fade" id="agregarTituloModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Agregar Título</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <?php $form = ActiveForm::begin(); ?>
-
-
-                <?= $form->field($model, 'plan_unidad_id')->hiddenInput(['value' => $planUnidad->id])->label(false) ?>
-
-                <?= $form->field($model, 'subtitulo')->textInput()->label() ?>
-
-                <?php
-                $totalSubtitutlos = count($subtitulos) + 1;
-                echo $form->field($model, 'orden')->textInput(['value' => $totalSubtitutlos, 'required' => ''])->label()
-                    ?>
-
-                <?= $form->field($model, 'trazabilidad')->dropDownList($arrayTrazabilidad, ['prompt' => 'Seleccione Opción']) ?>
-
-                <?= $form->field($model, 'verificacion')->dropDownList($arrayVerificacion, ['prompt' => 'Seleccione Opción']) ?>
-
-                <hr>
-                <div class="form-group">
-                    <label for="experiencia">EXPERIENCIAS DE APRENDIZAJE Y ESTRATEGIAS DE ENSEÑANZA:</label>
-                    <textarea name="experiencia" id="experiencia-editor"></textarea>
-                    <script>
-                        CKEDITOR.replace("experiencia-editor", {
-                            customConfig: "/ckeditor_settings/config.js"
-                        });
-                    </script>
-                </div>
-
-                <hr>
-                <div class="form-group">
-                    <label for="experiencia">EVALUACIÓN FORMATIVAS:</label>
-                    <textarea name="evaluacion" id="evaluacion-editor"></textarea>
-                    <script>
-                        CKEDITOR.replace("evaluacion-editor", {
-                            customConfig: "/ckeditor_settings/config.js"
-                        });
-                    </script>
-                </div>
-
-                <hr>
-                <div class="form-group">
-                    <label for="experiencia">DIFERENCIACIÓN:</label>
-                    <textarea name="diferenciacion" id="diferenciacion-editor"></textarea>
-                    <script>
-                        CKEDITOR.replace("diferenciacion-editor", {
-                            customConfig: "/ckeditor_settings/config.js"
-                        });
-                    </script>
-                </div>
-
-                <br>
-                <div class="form-group" style="text-align: end">
-                    <?= Html::submitButton('Agregar', ['class' => 'btn btn-primary']) ?>
-                </div>
-
-                <?php ActiveForm::end(); ?>
-            </div>
-
-        </div>
-    </div>
-</div>
-
-
 <!--Funciones PHP-->
 <?php
 
@@ -528,4 +145,68 @@ function busca_subtitulos2($subtituloId)
 
     return $model;
 }
+
 ?>
+
+<?php
+
+$title = $planUnidad->unit_title;
+// echo "<pre>";
+// print_r($title);
+// die();
+
+?>
+
+<script>
+
+    // $('#btn_mostrar_arbol').click(function (planUnidad) {
+    //     mostrarArbol(
+    //         var params = {
+    //             planUnidad: planUnidad,
+    //         }
+    //     );
+    // });
+    mostrarArbol();
+
+    function mostrarArbol() {
+        var url = '<?= Url::to(['arbol']) ?>';
+        var planUnidadId = '<?= $planUnidad->id ?>';
+        // alert(planUnidadId);
+
+        var params = {
+            plan_unidad_id: planUnidadId
+            // title: title
+        }
+
+        $.ajax({
+            data: params,
+            url: url,
+            type: 'get',
+            beforeSend: function (response) { },
+            success: function (response) {
+                $('#div-mostrar-Arbol').html(response);
+            }
+        });
+    }
+
+    mostrarTema();
+
+    function mostrarTema() {
+        var url = '<?= Url::to(['tema']) ?>';
+        var planUnidadId = '<?= $planUnidad->id ?>';
+
+        var params = {
+            plan_unidad_id: planUnidadId
+        }
+
+        $.ajax({
+            data: params,
+            url: url,
+            type: 'get',
+            beforeSend: function (response) { },
+            success: function (response) {
+                $('#div-mostrar-Tema').html(response);
+            }
+        });
+    }
+</script>

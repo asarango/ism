@@ -491,7 +491,6 @@ $idioma = $cabecera->ismAreaMateria->idioma;
                     <!-- 4.- Fin enfoques de aprendizaje -->
 
 
-
                     <!-- 5.- inicio mentalidad internacional -->
                     <div id="mentalidad" style="margin-top: 10px; scroll-behavior: smooth;">
                         <?=
@@ -537,7 +536,7 @@ $idioma = $cabecera->ismAreaMateria->idioma;
                     </div>
                     <!-- 8.- Fin Otros recursos -->
 
-
+                    
                     <!-- 9.- Bibliografía -->
                     <div id="bibliografia" style="margin-top: 10px; scroll-behavior: smooth;">
                         <?=

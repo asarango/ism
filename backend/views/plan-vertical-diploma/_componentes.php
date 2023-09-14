@@ -6,7 +6,8 @@ use yii\helpers\Url;
 ?>
 <div class="card">
     <div class="card-header">
-        <h6 id=""><b>2. Componentes de evaluación interna y externa del Programa del Diploma que se deben completar durante el curso</b></h6>
+        <h6 id=""><b>2. Componentes de evaluación interna y externa del Programa del Diploma que se deben completar
+                durante el curso</b></h6>
     </div>
     <div class="card-body">
         <div class="table table-responsive" style="font-size: 10px;">
@@ -23,55 +24,69 @@ use yii\helpers\Url;
                 <tbody>
                     <?php
                     foreach ($componentes as $com) {
-                        
-                    ?>
+
+                        ?>
                         <tr>
-                            <td><?= $com->evaluacion ?></td>
-                            <td><?= $com->actividad ?></td>
-                            <td><?= $com->fecha ?></td>
-                            <td><?= $com->revision_cumplimiento ?></td>
+                            <td>
+                                <?= $com->evaluacion ?>
+                            </td>
+                            <td>
+                                <?= $com->actividad ?>
+                            </td>
+                            <td>
+                                <?= $com->fecha ?>
+                            </td>
+                            <td>
+                                <?= $com->revision_cumplimiento ?>
+                            </td>
                             <td class="text-center">
                                 <!-- Button trigger modal para actualizar componente -->
-                                <a type="button" class="" data-bs-toggle="modal" data-bs-target="#updatecomp" 
+                                <a type="button" class="" data-bs-toggle="modal" data-bs-target="#updatecomp"
                                     onclick="get_componente(<?= $com->id ?>)">
                                     <i class="fas fa-edit"></i>
                                 </a>
 
                                 <!-- Modal para actualizar componente-->
-                                <div class="modal fade" id="updatecomp" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                <div class="modal fade" id="updatecomp" data-bs-backdrop="static" data-bs-keyboard="false"
+                                    tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
                                     <div class="modal-dialog">
                                         <div class="modal-content">
                                             <div class="modal-header">
-                                                <h5 class="modal-title" id="staticBackdropLabel">Actualizando componente</h5>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                <h5 class="modal-title" id="staticBackdropLabel">Actualizando componente
+                                                </h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                    aria-label="Close"></button>
                                             </div>
                                             <?= Html::beginForm(['accion-componente'], 'post') ?>
                                             <div class="modal-body">
-                                                
+
                                                 <div class="modal-body">
 
                                                     <input type="hidden" name="id" id="comp-id">
                                                     <input type="hidden" name="field" id="" value="update">
 
                                                     <div class="form-group" id="com-evaluacion">
-                                                        
+
                                                     </div>
 
                                                     <div class="form-group">
                                                         <label class="form-label" for="Actividad">Actividad</label>
-                                                        <textarea class="form-control" name="com-actividad" id="com-actividad" cols="10"></textarea>
+                                                        <textarea class="form-control" name="com-actividad"
+                                                            id="com-actividad" cols="10"></textarea>
                                                     </div>
 
                                                     <div class="form-group">
                                                         <label class="form-label" for="Fecha">Fecha</label>
-                                                        <input type="date" name="com-fecha" id="com-fecha" class="form-control">
+                                                        <input type="date" name="com-fecha" id="com-fecha"
+                                                            class="form-control">
                                                     </div>
 
-                                                </div>                                                
-                                                
+                                                </div>
+
                                             </div>
                                             <div class="modal-footer">
-                                                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cerrar</button>
+                                                <button type="button" class="btn btn-outline-secondary"
+                                                    data-bs-dismiss="modal">Cerrar</button>
                                                 <?= Html::submitButton('Actualizar', ['class' => 'btn btn-outline-primary']) ?>
                                             </div>
                                             <?= Html::endForm() ?>
@@ -84,22 +99,24 @@ use yii\helpers\Url;
                             </td>
 
                             <td class="text-center">
-                                <?= 
+                                <?=
 
-                                    Html::a('<i class="fas fa-trash" style="color: #ab0a3d"></i>',
+                                    Html::a(
+                                        '<i class="fas fa-trash" style="color: #ab0a3d"></i>',
                                         ['accion-componente', 'id' => $com->id],
                                         [
                                             //'class' => 'btn btn-lg btn-primary',
                                             'data' => [
                                                 'method' => 'post',
-                                                'params' => ['id' => $com->id, 'field' => 'delete'], // <- extra level
+                                                'params' => ['id' => $com->id, 'field' => 'delete'],
+                                                // <- extra level
                                             ],
                                         ]
                                     );
                                 ?>
                             </td>
                         </tr>
-                    <?php
+                        <?php
                     }
                     ?>
                 </tbody>
@@ -112,7 +129,8 @@ use yii\helpers\Url;
             </button>
 
             <!-- Modal -->
-            <div class="modal fade" id="staticBackdrop5" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal fade" id="staticBackdrop5" data-bs-backdrop="static" data-bs-keyboard="false"
+                tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
                 <div class="modal-dialog" style="background-color: #fff;">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -144,7 +162,8 @@ use yii\helpers\Url;
 
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cerrar</button>
+                            <button type="button" class="btn btn-outline-secondary"
+                                data-bs-dismiss="modal">Cerrar</button>
                             <?= Html::submitButton('Agregar', ['class' => 'btn btn-outline-primary']) ?>
                         </div>
                         <?= Html::endForm() ?>
@@ -158,27 +177,27 @@ use yii\helpers\Url;
 
 </div>
 
-    <script>
-        function get_componente(id){
-            var url = '<?= Url::to(['accion-componente']) ?>';
-            params = {
-                id: id,
-                field: 'consultar'
-            }
-            $.ajax({
-                data: params,
-                url: url,
-                type: 'POST',
-                beforeSend: function() {},
-                success: function(response) {
-                    let content = JSON.parse(response);
-                    let evaluacion = content.evaluacion;
-                    let htmEvaluacion;
-                    htmEvaluacion='';
+<script>
+    function get_componente(id) {
+        var url = '<?= Url::to(['accion-componente']) ?>';
+        params = {
+            id: id,
+            field: 'consultar'
+        }
+        $.ajax({
+            data: params,
+            url: url,
+            type: 'POST',
+            beforeSend: function () { },
+            success: function (response) {
+                let content = JSON.parse(response);
+                let evaluacion = content.evaluacion;
+                let htmEvaluacion;
+                htmEvaluacion = '';
 
-                    $('#comp-id').val(content.id);
-                    
-                    htmEvaluacion = `<div clas="form-group">
+                $('#comp-id').val(content.id);
+
+                htmEvaluacion = `<div clas="form-group">
                     <label for="evaluacion" class="form-label">Evaluación</label>
                     <select name="evaluacion" class="form-control">
                         <option value="${evaluacion}">${evaluacion}</option>
@@ -187,11 +206,12 @@ use yii\helpers\Url;
                     </select>
                     </div>`;
 
-                    $('#com-evaluacion').html(htmEvaluacion);
-                    $('#com-actividad').val(content.actividad);
-                    $('#com-fecha').val(content.fecha);
-                    console.log(content);
-                }
-            });
-        }
-    </script>
+                $('#com-evaluacion').html(htmEvaluacion);
+                $('#com-actividad').val(content.actividad);
+                $('#com-fecha').val(content.fecha);
+                console.log(content);
+            }
+        });
+    }
+</script>
+

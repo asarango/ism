@@ -74,7 +74,10 @@ class PlanificacionSemanalRecursosController extends Controller
      * @return mixed
      */
     public function actionIndex()
-    {
+    { 
+        
+
+        $planBloqueId = $_GET['plan_bloque_unidad_id'];
         $planificacionSemanalId = $_GET['id']; // Se recibe parametro de planificacion ID
         $bloqueId = $_GET['bloque_id'];
 
@@ -92,7 +95,8 @@ class PlanificacionSemanalRecursosController extends Controller
             'planificacionSemanal' => $planificacionSemanal,
             'recursos' => $recursos,
             'insumos' => $insumos,
-            'bloqueId' => $bloqueId
+            'bloqueId' => $bloqueId,
+            'planBloqueId' => $planBloqueId
         ]);
     }
 

@@ -312,13 +312,13 @@ class DeceRegistroSeguimientoController extends Controller
         $modelAcuerdo->save();
 
         //agregamos enseguida el registro en la firma
-        $modelFirma = new DeceSeguimientoFirmas();
-        $modelFirma->nombre = $responsable;
-        $modelFirma->cedula = $cedula;
-        $modelFirma->parentesco = $parentesco;
-        $modelFirma->cargo = $cargo;
-        $modelFirma->id_reg_seguimiento = $id_seguimiento;
-        $modelFirma->save();
+        // $modelFirma = new DeceSeguimientoFirmas();
+        // $modelFirma->nombre = $responsable;
+        // $modelFirma->cedula = $cedula;
+        // $modelFirma->parentesco = $parentesco;
+        // $modelFirma->cargo = $cargo;
+        // $modelFirma->id_reg_seguimiento = $id_seguimiento;
+        // $modelFirma->save();
 
         //Guardamos en un JSON, los html a mostrar en pantalla
 
@@ -344,8 +344,7 @@ class DeceRegistroSeguimientoController extends Controller
         <table class="table table-striped table-success">
             <thead>
                 <td><b> Ítem </b></td>
-                <td><b> Acuerdo </b></td>
-                <td><b> Responsable </b></td>
+                <td><b> Acuerdo </b></td>                
                 <td><b> Fecha Cumplimiento </b></td>
                 <td><b> Cumplió </b></td>
                 <td>Acción</td>
@@ -355,8 +354,7 @@ class DeceRegistroSeguimientoController extends Controller
         foreach ($listAcuerdos as $acuerdo) {
             $html .= '<tr>';
             $html .= '<td>' . $acuerdo->secuencial . '</td>
-                            <td>' . $acuerdo->acuerdo . ' </td>
-                            <td>' . $acuerdo->responsable . ' </td>
+                            <td>' . $acuerdo->acuerdo . ' </td>                            
                             <td> ' . substr($acuerdo->fecha_max_cumplimiento, 0, 10) . '</td>';
             if ($acuerdo->cumplio) {
                 $html .= '<td> <input  type="checkbox" onclick="guardar_acuerdo_cumplido(' . $acuerdo->id . ',0)" checked/></td>';
@@ -401,9 +399,9 @@ class DeceRegistroSeguimientoController extends Controller
 
     //*****   FIRMAS  *******
     public function actionGuardarFirmas()
-    {       
+    {
         $nombre = $_POST['nombre'];
-        $cedula = $_POST['cedula'];
+        $cedula = $_POST['cedula']; 
         $parentesco = $_POST['parentesco'];
         $cargo = $_POST['cargo'];
         $id_seguimiento = $_POST['id_seguimiento'];
@@ -513,16 +511,19 @@ class DeceRegistroSeguimientoController extends Controller
         return $listadoActores;
     }
 
-    public function actionEnviarCorreo(){
-        
+    public function actionEnviarCorreo()
+    {
+
+        $id = $_GET['id'];
         $casoId = $_GET['id_seguimiento'];
         $idCaso = $this->actionCuerpoCorreo($casoId);
         $model = new Messages();
+        $correos = $this->correosEnviar($casoId);
         $contador = 0;
-        
+
 
         // Define los parámetros para el correo
-        $arrayTo = 'asisdesarrollo2@ism.edu.ec';
+        $arrayTo = $correos;
         $from = 'info@ism.edu.ec';
         $subject = 'Acuerdos de seguimiento ';
         $textBody = '';
@@ -533,45 +534,68 @@ class DeceRegistroSeguimientoController extends Controller
             Les pedimos encarecidamente que les den seguimiento y los cumplan de manera puntual. Queremos destacar que, 
             por nuestra parte, también nos comprometemos a cumplir con nuestras responsabilidades. Si tienen alguna pregunta 
             o inquietud, no duden en ponerse en contacto con nosotros.<br><br>';
-            $htmlBody .= '
+        $htmlBody .= '
                             <table border="1" width="60%">
 
                               <thead>
                                 <tr>
                                   <th scope="col">#</th>
-                                  <th scope="col">Acuerdo</th>
-                                  <th scope="col">Fecha</th>
+                                  <th scope="col">Acuerdo(s)</th>
+                                  <th scope="col">Fecha de cumplimiento</th>
                                 </tr>
                               </thead>
                               <tbody>';
-            foreach ( $idCaso as $caso ){
-                
-                $contador++; 
-                if ( $caso['id_reg_seguimiento'] == $_GET['id_seguimiento'] ){
-                    $htmlBody .= '<tr>';
-                    $htmlBody .= '
-                                    <th scope="row">'.$contador.'</th>
-                                          <td>'.$caso['acuerdo'].'</td>
-                                          <td>'.$caso['fecha_max_cumplimiento'].'</td>       
+        foreach ($idCaso as $caso) {
+
+            $contador++;
+            if ($caso['id_reg_seguimiento'] == $_GET['id_seguimiento']) {
+                $htmlBody .= '<tr>';
+                $htmlBody .= '
+                                    <th scope="row">' . $contador . '</th>
+                                          <td>' . $caso['acuerdo'] . '</td>
+                                          <td>' . $caso['fecha_max_cumplimiento'] . '</td>       
                                         </tr>';
-                }
             }
-            $htmlBody .= ' </tbody></table>';
-            $htmlBody .= '<br>Atentamente, DECE-ISM';
+        }
+        $htmlBody .= ' </tbody></table>';
+        $htmlBody .= '<br>Atentamente,<br> DECE-ISM<br><br><br>
+                        ------------------------------------------<br>
+                        Este es un mensaje automático, por favor no responda a este correo.<br>
+                        This is an automated message, please do not reply to this email.';
 
-            // Llama a la función send_email para enviar el correo
-            $model->send_email([$arrayTo], $from, $subject, $textBody, $htmlBody);
+        // Llama a la función send_email para enviar el correo
+        $model->send_email($arrayTo, $from, $subject, $textBody, $htmlBody);
 
-            // Redirigir a una vista o realizar otras acciones después de enviar el correo
+        // Redirigir a una vista o realizar otras acciones después de enviar el correo
+        return $this->redirect(['dece-casos/historico', 'id' => $id]);
     }
 
-    public function actionCuerpoCorreo($idCaso){
+    public function actionCuerpoCorreo($idCaso)
+    {
 
         $con = Yii::$app->db;
         $query = "select id_reg_seguimiento, acuerdo, fecha_max_cumplimiento  from dece_seguimiento_acuerdos dsa where id_reg_seguimiento = $idCaso ;";
 
-        $idStudent = $con->createCommand($query)->queryAll();        
+        $idStudent = $con->createCommand($query)->queryAll();
         return $idStudent;
-        
+    }
+
+    public function correosEnviar($idCaso)
+    {
+        $con = Yii::$app->db;
+        $query = "select cargo from dece_seguimiento_firmas dsf where id_reg_seguimiento = $idCaso ;";
+
+        $correos1 = $con->createCommand($query)->queryAll();
+        // $correos1 = array('asisdesarrollo@ism.edu.ec','asisdesarrollo2@ism.edu.ec','desarrollo@ism.edu.ec');        
+        $arrayOriginal = $correos1;
+
+        // Inicializa un nuevo array
+        $correos = array();
+
+        // Recorre el array original y agrega los valores al nuevo array
+        foreach ($arrayOriginal as $item) {
+            $correos[] = $item['cargo'];
+        }
+        return $correos;
     }
 }

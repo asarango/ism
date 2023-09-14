@@ -212,6 +212,18 @@ class PlanificacionBloquesUnidadController extends Controller{
 
     }
 
+    public function actionArbol(){       
+        
+        echo 'Arbol';
+        // return $this->renderPartial('_arbol');
+    }
+
+    public function actionTema(){
+        echo 'Tema';
+
+        // return $this->renderPartial('tema');
+    }
+
     public function actionDeleteSubtitle(){
         $id = $_GET['id'];
         $model = PlanificacionBloquesUnidadSubtitulo::findOne($id);

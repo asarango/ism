@@ -93,7 +93,7 @@ class PlanificacionSemanalController extends Controller
         $bloqueId = $_GET['bloque_id'];
         $claseId = $_GET['clase_id'];
         $pudOrigen = $_GET['pud_origen'];
-        $idOrigen = $_GET['plan_bloque_unidad_id'];
+        $idOrigen = $_GET['plan_bloque_unidad_id'];    
         
         $bloque = ScholarisBloqueActividad::findOne($bloqueId);
         $clase = ScholarisClase::findOne($claseId);

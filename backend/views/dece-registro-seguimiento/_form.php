@@ -101,6 +101,9 @@ $listFirmas = DeceSeguimientoFirmas::find()
 ?>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet" />
+<script src="//cdn.ckeditor.com/4.19.0/full/ckeditor.js"></script>
 
 
 
@@ -155,8 +158,8 @@ $listFirmas = DeceSeguimientoFirmas::find()
 
     <div class="m-0 vh-50 row justify-content-center align-items-center">
 
-        <div class="row p-5 " style="margin-top: -35px;">
-            <div class="card col-lg-5 col-ms-5" style="padding: 20px;">
+        <div class="row" style="margin-top: -25px;">
+            <div class="card col-lg-5 col-ms-5 mb-3" style="padding: 20px;">
                 <!-- RENDERIZA A LA VISTA datos_estudiante.php -->
                 <h5 style="color: #0a1f8f;"><b>Datos Estudiante</b></h5>
                 <table class=" table table-responsive table-striped table-hover" style="border: 1px solid black">
@@ -359,7 +362,7 @@ $listFirmas = DeceSeguimientoFirmas::find()
                     </button> -->
                 </div>
             </div>
-            <div class="card col-lg-7 col-ms-7" style="padding: 20px">
+            <div class="card col-lg-7 col-ms-7 mb-3" style="padding: 20px; ">
                 <?php if ($model->isNewRecord) { ?>
                     <h5 style="color: #0a1f8f"><b>Acompañamiento</b></h5>
                 <?php } else { ?>
@@ -442,6 +445,10 @@ $listFirmas = DeceSeguimientoFirmas::find()
                     <!-- <?= $form->field($model, 'responsable_seguimiento')->dropDownList($arrayResponsableSeg, ['prompt' => 'Seleccione Opción']) ?> -->
 
                     <?= $form->field($model, 'pronunciamiento')->textarea(['rows' => 3]) ?>
+                    <script>
+                        CKEDITOR.replace("deceregistroseguimiento-pronunciamiento");
+                    </script>
+
                     <br>
 
                     <!-- //DETALLE DE ACUERDOS -->
@@ -449,8 +456,8 @@ $listFirmas = DeceSeguimientoFirmas::find()
                     <?php
 
                     // echo "<pre>";
-// print_r($modelEstudiante);
-// die();
+                    // print_r($modelEstudiante);
+                    // die();
                     
 
                     if (!($model->isNewRecord)) {
@@ -466,6 +473,7 @@ $listFirmas = DeceSeguimientoFirmas::find()
                             ?> -->
                             <br>
                             <h5 class="detalle" style="font-weight: bold;"> Detalle de Acuerdos</h5>
+
                             <hr>
                             <div class="form-control" id="div_crea_acuerdo"
                                 style="padding: 1rem;border: none; margin-top: -15px">
@@ -475,9 +483,11 @@ $listFirmas = DeceSeguimientoFirmas::find()
                                             <div class="col-lg-12">
                                                 <textarea class="form-control" type="text" id="acuerdo_acuerdo" rows="4"
                                                     placeholder="Acuerdo"></textarea>
+
                                                 <input style="margin-top: 5px;" class="form-control" type="date"
                                                     id="fecha_cumplimiento_acuerdo" placeholder="Fecha max cumplimiento" />
                                             </div>
+
 
                                             <div class="row" style="text-align: center;">
                                                 <div class="row" style="margin: 5px;">
@@ -537,7 +547,7 @@ $listFirmas = DeceSeguimientoFirmas::find()
                                     </div>
                                     <div class="card-body" id="div_muestra_acuerdo"
                                         style="background-color: #eee;border: 1px solid black;margin-top: 10px;">
-                                        <table class="table table-striped table-bordered my-text-small"
+                                        <table name="acuerdos" class="table table-striped table-bordered my-text-small"
                                             style="background-color: #ab0a3d; color: white;
                                             border: 1px solid black;text-align: center;font-weight: bold; font-size: 0.8rem;">
                                             <thead style="font-weight: bold;">
@@ -638,6 +648,8 @@ $listFirmas = DeceSeguimientoFirmas::find()
                                         <label style="color: black;" for="checkboxEstudiante">Seleccionar como
                                             responsable al Estudiante</label>
                                     </div>
+
+
                                 </div>
 
 
@@ -676,6 +688,7 @@ $listFirmas = DeceSeguimientoFirmas::find()
                                                     <td style="background-color: #ab0a3d;"><b> Cédula </b></td>
                                                     <td style="background-color: #ab0a3d;"><b> Parentesco </b></td>
                                                     <td style="background-color: #ab0a3d;"><b> E-mail </b></td>
+                                                    <td style="background-color: #ab0a3d;"><b> Borrar firma </b></td>
                                                 </thead>
                                                 <tbody style="color: black;">
                                                     <?php
@@ -743,13 +756,12 @@ $listFirmas = DeceSeguimientoFirmas::find()
                                 </div>
 
                                 <div class="col-lg-6"
-                                    style="display: flex; justify-content: center; align-items: center; flex-direction: column; text-align: center;">
+                                    style="display: flex; justify-content: center; align-items: center; flex-direction: column; text-align: center;margin-top: -5px;">
                                     <div class="form-group">
-                                        <?= Html::submitButton('Subir Archivo', ['class' => 'btn btn-success btn-acuerdo', 'style' => 'background-color: #ff9e18;border: none;']) ?>
+                                        <?= Html::submitButton('Guardar', ['class' => 'btn btn-success btn-acuerdo', 'style' => 'background-color: #ff9e18;border: none;']) ?>
                                     </div>
                                 </div>
                             </div>
-
 
                         </div>
                         <?php ActiveForm::end(); ?>
@@ -842,25 +854,22 @@ $listFirmas = DeceSeguimientoFirmas::find()
         //******  fin  Acuerdos    ******** ///
 
         //******   firmas    ******** ///
-        function guardar_acuerdo() {
-            var url = '<?= Url::to(['guardar-acuerdos']) ?>';
+        function guardar_firmas() {
+            var url = '<?= Url::to(['guardar-firmas']) ?>';
 
-            var secuencial_acuerdo = $('#secuencial_acuerdo').val();
-            var acuerdo_acuerdo = $('#acuerdo_acuerdo').val();
-            var cumplio_acuerdo = 0;
-            var fecha_max_cumplimiento_acuerdo = $('#fecha_cumplimiento_acuerdo').val();
-            var id_seguimiento_acuerdo = '<?= $model->id ?>';
+            var nombre = $('#firmas_nombre').val();
+            var cedula = $('#firmas_cedula').val();
+            var parentesco = $('#firmas_parentesco').val();
+            var cargo = $('#firmas_cargo').val();
+
+            var id_seguimiento = '<?= $model->id ?>';
 
             var params = {
-                secuencial: secuencial_acuerdo,
-                acuerdo: acuerdo_acuerdo,
-                responsable: 'N/A',
-                cumplio: cumplio_acuerdo,
-                fecha_max_cumplimiento: fecha_max_cumplimiento_acuerdo,
-                id_seguimiento: id_seguimiento_acuerdo,
-                parentesco: 'N/A',
-                cargo: 'N/A',
-                cedula: 'N/A',
+                nombre: nombre,
+                cedula: cedula,
+                parentesco: parentesco,
+                cargo: cargo,
+                id_seguimiento: id_seguimiento,
             }
 
             $.ajax({
@@ -869,10 +878,9 @@ $listFirmas = DeceSeguimientoFirmas::find()
                 type: 'POST',
                 beforeSend: function (response) { },
                 success: function (response) {
-                    var data = $.parseJSON(response);
-                    $('#div_muestra_acuerdo').html(data.acuerdos);
-                    $('#div_muestra_firmas').html(data.firmas);
+                    $('#div_muestra_firmas').html(response);
                 }
+
             });
         }
 

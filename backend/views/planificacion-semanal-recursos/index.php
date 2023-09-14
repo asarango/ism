@@ -6,7 +6,7 @@ $this->title = 'Recursos de la clase';
 $this->params['breadcrumbs'][] = $this->title;
 
 // echo"<pre>";
-// print_r($planificacionSemanal);
+// print_r($planBloqueId);
 // die();
 
 ?>
@@ -91,9 +91,13 @@ $this->params['breadcrumbs'][] = $this->title;
                         [
                             'planificacion-semanal/index1',
                             'clase_id' => $planificacionSemanal->clase_id,
-                            'bloque_id' => $bloqueId
+                            'bloque_id' => $bloqueId,
+                            'semana_defecto' => $planificacionSemanal->semana_id,
+                            'pud_origen' => 'normal',
+                            'plan_bloque_unidad_id' => $planBloqueId
                         ]
-                    ) ?>
+                    ) 
+                    ?>
                     |
                     <?= Html::a(
                         '<span class="badge rounded-pill" style="background-color: #ab0a3d"><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-apps" width="12" height="12" viewBox="0 0 24 24" stroke-width="2.5" stroke="#ffffff" fill="none" stroke-linecap="round" stroke-linejoin="round">

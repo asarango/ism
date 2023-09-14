@@ -14,33 +14,36 @@ use yii\helpers\Url;
 
     </div>
     <div class="card-body">
-        <div class="row">
-            <div class="col-lg-3 col-md-3"><b>Tema</b></div>
+        <!-- <div class="row">
+            <div class="col-lg-3 col-md-3"></div>
             <div class="col-lg-9 col-md-9">
-                Contribución al desarrollo de una mentalidad internacional
-                (incluidos los recursos que utilizaría)
+
             </div>
-        </div>
+        </div> -->
 
         <div class="row">
-            <div class="col-lg-3 col-md-3">
+            <div>
+                <b>Tema</b>
                 <form-group>
                     <?php $data = search_data_text($plan, 'datos', 'tema_menta'); ?>
-                    <textarea class="form-control text-cerrado " id="tema-menta" 
-                            onchange="update_text(<?= $data['id'] ?>, 'tema-menta');" 
-                            name="tema-menta"><?= $data['contenido']; ?></textarea>
+                    <textarea class="form-control text-cerrado " id="tema-menta"
+                        onchange="update_text(<?= $data['id'] ?>, 'tema-menta');"
+                        name="tema-menta"><?= $data['contenido']; ?></textarea>
                 </form-group>
 
             </div>
 
-
-            <div class="col-lg-9 col-md-9">
+            <div>
+                <b>
+                    Contribución al desarrollo de una mentalidad internacional
+                    (incluidos los recursos que utilizaría)
+                </b>
                 <form-group>
                     <?php $data = search_data_text($plan, 'datos', 'contibu_menta'); ?>
 
-                    <textarea class="form-control text-cerrado " id="contibu-menta" 
-                            onchange="update_text(<?= $data['id'] ?>, 'contibu-menta')" 
-                            name="tema-tdc"><?= $data['contenido']; ?></textarea>
+                    <textarea class="form-control text-cerrado " id="contibu-menta"
+                        onchange="update_text(<?= $data['id'] ?>, 'contibu-menta')"
+                        name="tema-tdc"><?= $data['contenido']; ?></textarea>
                 </form-group>
 
             </div>
@@ -48,3 +51,8 @@ use yii\helpers\Url;
         </div>
     </div>
 </div>
+
+<script>
+    CKEDITOR.replace("tema-menta");
+    CKEDITOR.replace("contibu-menta");
+</script>

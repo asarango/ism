@@ -20,7 +20,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
 // echo "<pre>";
 // print_r($pud_origen);
-// print_r($plan_bloque_unidad_id);
+// print_r($pud_origen);
 // die();
 
 ?>
@@ -254,7 +254,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                             echo '</td>';
                                             echo '<td>' . generarBotonEdicion('update', $semTotal->id, $pud_origen, $plan_bloque_unidad_id) . '</td>';
                                             echo '<td>' . BotonTarea($semTotal->id) . '</td>';
-                                            echo '<td>' . BotonRecursos($semTotal->id, $bloque->id) . '</td>';
+                                            echo '<td>' . BotonRecursos($semTotal->id, $bloque->id, $plan_bloque_unidad_id, $pud_origen) . '</td>';
 
                                             echo '</tr>';
                                         }
@@ -362,7 +362,7 @@ function BotonTarea($id)
 ?>
 
 <?php
-function BotonRecursos($id, $bloqueId)
+function BotonRecursos($id, $bloqueId, $plan_bloque_unidad_id, $pud_origen)
 {
     return Html::a(
         '<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-apps" width="16" height="16" viewBox="0 0 24 24" stroke-width="1.5" stroke="#0a1f8f" fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -376,7 +376,10 @@ function BotonRecursos($id, $bloqueId)
         [
             'planificacion-semanal-recursos/index',
             'id' => $id,
-            'bloque_id' => $bloqueId
+            'bloque_id' => $bloqueId,
+            'plan_bloque_unidad_id' => $plan_bloque_unidad_id,
+            'pud_origen' => $pud_origen
+
         ],
         [
             'class' => '',

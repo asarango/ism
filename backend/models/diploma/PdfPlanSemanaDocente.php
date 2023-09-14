@@ -224,6 +224,8 @@ where 	ps.semana_id = $this->semanaId
 		and ps.created = '$this->usuario' 
 order by ps.orden_hora_semana;";
 
+        // echo $query;
+        // die();
 
         $habilidades = $con->createCommand($query)->queryAll();
         return $habilidades;

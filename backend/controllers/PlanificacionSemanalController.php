@@ -226,7 +226,10 @@ class PlanificacionSemanalController extends Controller
     public function actionTasks(){
         // print_r($_GET);
         $id = $_GET['id'];
+        $pudOrigen = $_GET['pud_origen'];
         
+        $planBloqueUnidadId = ['plan_bloque_unidad_id'];
+
         $semana = PlanificacionSemanal::findOne($id); //Para datos de la semana, bloque y clase
         $seccion = $semana->clase->paralelo->course->section0->code;
 
@@ -265,7 +268,13 @@ class PlanificacionSemanalController extends Controller
 
             $this->insert_actividad($semana, $model, $tipoAct);
             
-            return $this->redirect(['index1', 'clase_id' => $semana->clase_id, 'bloque_id' => $semana->semana->bloque->id]);
+            return $this->redirect(['index1', 
+                'clase_id' => $semana->clase_id, 
+                'bloque_id' => $semana->semana->bloque->id,
+                'semana_defecto' => $semana->semana_id,
+                'pud_origen' => $pudOrigen,
+                'plan_bloque_unidad_id' => $planBloqueUnidadId
+            ]);
         }
 
 

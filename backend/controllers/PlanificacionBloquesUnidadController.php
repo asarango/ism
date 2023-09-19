@@ -204,7 +204,7 @@ class PlanificacionBloquesUnidadController extends Controller{
             'plan_unidad_id' => $planUnidadId
         ])
         ->orderBy('orden')
-        ->all();
+        ->all();        
        
         return $this->renderPartial('_arbol',[            
             'subtitulos' => $subtitulos,

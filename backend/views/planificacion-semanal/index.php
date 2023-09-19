@@ -253,7 +253,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                             obtener_total_recursos($semTotal->id);
                                             echo '</td>';
                                             echo '<td>' . generarBotonEdicion('update', $semTotal->id, $pud_origen, $plan_bloque_unidad_id) . '</td>';
-                                            echo '<td>' . BotonTarea($semTotal->id) . '</td>';
+                                            echo '<td>' . BotonTarea($semTotal->id, $pud_origen, $plan_bloque_unidad_id) . '</td>';
                                             echo '<td>' . BotonRecursos($semTotal->id, $bloque->id, $plan_bloque_unidad_id, $pud_origen) . '</td>';
 
                                             echo '</tr>';
@@ -339,7 +339,7 @@ function obtenerIcono($semTotal, $campo)
 ?>
 
 <?php
-function BotonTarea($id)
+function BotonTarea($id, $pud_origen, $plan_bloque_unidad_id)
 {
     return Html::a(
         '<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clipboard-plus" width="16" height="16" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ab0a3d" fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -349,7 +349,11 @@ function BotonTarea($id)
             <path d="M10 14h4" />
             <path d="M12 12v4" />
         </svg>',
-        ['tasks', 'id' => $id],
+        ['tasks', 
+            'id' => $id,
+            'pud_origen' => $pud_origen, 
+            'plan_bloque_unidad_id' => $plan_bloque_unidad_id
+        ],
         [
             'class' => '',
             'title' => 'Crear Tarea',

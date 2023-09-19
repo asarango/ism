@@ -28,7 +28,16 @@ $arrayVerificacion = array("SI" => "SI", "NO" => "NO", "REPLANIFICADO" => "REPLA
 
 ?>
 
-<div>
+<style>
+    .scroll {
+        max-height: 350px;
+        overflow: auto;
+        /* border: 1px solid #ccc; */
+        padding: 5px;
+    }
+</style>
+
+<div class="scroll">
     <?php foreach ($subtitulosTema as $subtituloTemaItem): ?>
         <?php
         $form = ActiveForm::begin([
@@ -41,8 +50,8 @@ $arrayVerificacion = array("SI" => "SI", "NO" => "NO", "REPLANIFICADO" => "REPLA
         <?= $form->field($subtituloTemaItem, 'planUnidadId')->hiddenInput(['value' => $planUnidadId])->label(false) ?>
         <?= $form->field($subtituloTemaItem, 'subtitulo')->textInput(['required' => ''])->label('Título') ?>
         <?= $form->field($subtituloTemaItem, 'orden')->textInput(['required' => ''])->label('Orden') ?>
-        <?= $form->field($subtituloTemaItem, 'trazabilidad')->dropDownList($arrayTrazabilidad, ['prompt' => 'Seleccione Uno']) ?>
         <?= $form->field($subtituloTemaItem, 'verificacion')->dropDownList($arrayVerificacion, ['prompt' => 'Seleccione Uno']) ?>
+        <?= $form->field($subtituloTemaItem, 'trazabilidad')->dropDownList($arrayTrazabilidad, ['prompt' => 'Seleccione Uno']) ?>
 
         <hr>
 

@@ -1,4 +1,5 @@
 <?php
+use backend\models\PlanificacionBloquesUnidadSubtitulo2;
 use yii\helpers\Html;
 use yii\grid\GridView;
 use yii\helpers\Url;
@@ -13,14 +14,16 @@ $estado = $planUnidad->planCabecera->estado;
 $isOpen = $planUnidad->is_open;
 $condicion = $condicionClass->aprobacion_planificacion($estado, $isOpen, $planUnidad->settings_status);
 $planUnidadId = $planUnidad->id;
+// $subtitulo2 = PlanificacionBloquesUnidadSubtitulo2::find()
+//     ->where(['id' => $subtitulo->id])
+//     ->orderBy(['orden' => SORT_ASC])
+//     ->all();
 
 // echo "<pre>";
-// print_r($subtitulos);
+// print_r($subtitulo2);
 // die();
 ?>
 
-
-<!-- llama los datos de la variable subtitulos -->
 <?php
 
 foreach ($subtitulos as $sub) {
@@ -42,15 +45,11 @@ foreach ($subtitulos as $sub) {
 }
 ?>
 
-
 <?php
 function busca_subtitulos2($subtituloId)
 {
-    $model = backend\models\PlanificacionBloquesUnidadSubtitulo2::find()->where([
-        'subtitulo_id' => $subtituloId,
-
-
-    ])
+    $model = backend\models\PlanificacionBloquesUnidadSubtitulo2::find()
+        ->where(['subtitulo_id' => $subtituloId,])
         ->orderBy('orden')
         ->all();
 

@@ -3,6 +3,11 @@
 use yii\helpers\Html;
 use yii\grid\GridView;
 
+// echo "<pre>";
+// print_r ($materiasNee);
+// die();
+
+
 ?>
 
 
@@ -12,11 +17,12 @@ use yii\grid\GridView;
     <h5 style="text-align: start; margin-top: 10px;color:#0a1f8f">4.-PROFESIONALES IMPLICADOS</h5>
     <div class="col-lg-12 col-md-12" style="padding:10px">
         <div class="table responsive">
-            <table class="table table-hover table-striped my-text-medium">
-                <thead>
+            <table class="table table-hover table-bordered table-striped my-text-medium" style="text-align: center">
+                <thead style="background-color: #ab0a3d; color: white;">
                     <tr>
-                        <th style="text-align:center">NOMBRE</th>
-                        <th>FUNCIÓN</th>
+                        <th width="100px">NOMBRE</th>
+                        <th width="100px">MATERIA</th>
+                        <th width="100px">FUNCIÓN</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -24,14 +30,13 @@ use yii\grid\GridView;
                     foreach ($materiasNee as $seleccionada) {
                         ?>
                     <tr>
-                        <td><?=$seleccionada->clase->profesor->last_name.' '.$seleccionada->clase->profesor->x_first_name ?></td>
+                        <td><strong> <?=$seleccionada->clase->profesor->last_name.' '.$seleccionada->clase->profesor->x_first_name ?> </strong></td>
+                        <td><strong><?=$seleccionada->clase->ismAreaMateria->materia->nombre ?></strong></td>
                         <td><strong>DOCENTE</strong></td>
                     </tr>
                     <?php
                     }
-                    
                     ?>
-                    
                 </tbody>
             </table>
 

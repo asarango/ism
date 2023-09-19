@@ -128,14 +128,17 @@ class PlanificacionSemanalRecursosController extends Controller
             // Con este metodo se realizan las preguntas del tipo de recursos
             //que consta en el formulario
             
+            $planBloqueUnidadId = $_POST['plan_bloque_unidad_id'];
             $planificacionSemanalId = $_POST['plan_semanal_id'];
             $planificacionSemanal = PlanificacionSemanal::findOne($planificacionSemanalId);
             $bloqueId = $planificacionSemanal->semana->bloque_id;
+
             
             $this->guardar_recursos($_POST);
 
             // Redireccionamos a index luego de grabar
             return $this->redirect(['index', 
+                'plan_bloque_unidad_id' => $planBloqueUnidadId,
                 'id' => $_POST['plan_semanal_id'],
                 'bloque_id' => $bloqueId
             ]);
@@ -143,9 +146,12 @@ class PlanificacionSemanalRecursosController extends Controller
             
             $planificacionSemanalId = $_GET['planificacion_semanal_id'];
             $planificacionSemanal = PlanificacionSemanal::findOne($planificacionSemanalId);
+            $planBloqueUnidadId = $_GET['plan_bloque_unidad_id'];
+
             return $this->render('create', [
                 'planificacionSemanalId' => $planificacionSemanalId,
-                'planificacionSemanal' => $planificacionSemanal
+                'planificacionSemanal' => $planificacionSemanal,
+                'planBloqueUnidadId' => $planBloqueUnidadId
             ]);
         }
     }

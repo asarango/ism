@@ -77,7 +77,7 @@ class PdfPlanSemana extends \yii\db\ActiveRecord
         $html .= '</tr>';
 
         $html .= '<tr>';
-        $html .= '<td align="center"><b>PLANIFICACIÓN SEMANAL - DIP<br>AÑO LECTIVO '.$this->periodo->nombre.'</b></td>';
+        $html .= '<td align="center"><b>PLANIFICACIÓN SEMANALccc - DIP<br>AÑO LECTIVO '.$this->periodo->nombre.'</b></td>';
         $html .= '</tr>';
 
         $html .= '</table>';

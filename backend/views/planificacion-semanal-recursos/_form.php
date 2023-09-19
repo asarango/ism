@@ -96,6 +96,8 @@ use yii\widgets\ActiveForm;
         <div style="margin-bottom: 1rem;margin-top: -2rem">
             <div class="" style="margin:1rem;">
                 <!-- plan_semanal_id -->
+
+                <input type="hidden" name="plan_bloque_unidad_id" value="<?= $planBloqueUnidadId; ?>">
                 <input type="hidden" name="plan_semanal_id" value="<?= $planificacionSemanalId; ?>">
                 <input type="hidden" name="bandera" id="input-bandera">
             </div>

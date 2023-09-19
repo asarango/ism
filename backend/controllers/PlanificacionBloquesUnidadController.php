@@ -186,42 +186,62 @@ class PlanificacionBloquesUnidadController extends Controller{
     }
 
     public function actionContenido(){
+        
         $planUnidadId = $_GET['unidad_id'];
+        $planUnidad = PlanificacionBloquesUnidad::findOne($planUnidadId);         
+
+        return $this->render('contenido', [
+            'planUnidad' => $planUnidad
+        ]);
+    }
+
+    public function actionArbol(){   
+        
+
+        $planUnidadId = $_GET['plan_unidad_id'];
         $planUnidad = PlanificacionBloquesUnidad::findOne($planUnidadId);
         $subtitulos = PlanificacionBloquesUnidadSubtitulo::find()->where([
             'plan_unidad_id' => $planUnidadId
         ])
         ->orderBy('orden')
         ->all();
+       
+        return $this->renderPartial('_arbol',[            
+            'subtitulos' => $subtitulos,
+            'planUnidad' => $planUnidad
+        ]);
+    }
 
-        $model = new PlanificacionBloquesUnidadSubtitulo();
-        if($model->load(Yii::$app->request->post())){      
-            
-            $model->experiencias = $_POST['experiencia'];
-            $model->evaluacion_formativa = $_POST['evaluacion'];
-            $model->diferenciacion = $_POST['diferenciacion'];            
+    public function actionTema(){      
+        
+        $planUnidadId = $_GET['plan_unidad_id'];
+        $subtituloId = $_GET['subtitulo_id'];
+        $subtitulosTema = PlanificacionBloquesUnidadSubtitulo::find()
+        ->where([ 'id' => $subtituloId ])
+        ->orderBy('orden')
+        ->all();
+
+        return $this->renderPartial('_temas',[
+            'subtitulosTema' => $subtitulosTema,
+            'planUnidadId' => $planUnidadId
+        ]);
+    }
+
+    public function actionGuardar(){
+
+        // echo '<pre>';
+        // print_r($_POST);
+        // die();
+                
+        $id = $_POST['PlanificacionBloquesUnidadSubtitulo']['id'];
+        $planUnidadId = $_POST['PlanificacionBloquesUnidadSubtitulo']['planUnidadId'];
+        $model =  PlanificacionBloquesUnidadSubtitulo::findOne($id);          
+            $model->experiencias = $_POST['experiencia_update'];
+            $model->evaluacion_formativa = $_POST['evaluacion_update'];
+            $model->diferenciacion = $_POST['diferenciacion_update']; 
             $model->save();
             return $this->redirect(['contenido', 'unidad_id' => $planUnidadId]);
-        }
-
-        return $this->render('contenido', [
-            'planUnidad' => $planUnidad,
-            'subtitulos' => $subtitulos,
-            'model' => $model
-        ]);
-
-    }
-
-    public function actionArbol(){       
-        
-        echo 'Arbol';
-        // return $this->renderPartial('_arbol');
-    }
-
-    public function actionTema(){
-        echo 'Tema';
-
-        // return $this->renderPartial('tema');
+        // }          
     }
 
     public function actionDeleteSubtitle(){

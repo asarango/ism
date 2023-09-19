@@ -129,7 +129,7 @@ function getIniciales($nombre){
                                     id="v-pills-settings-tab" data-bs-toggle="pill" data-bs-target="#v-pills-settings" type="button" role="tab" aria-controls="v-pills-settings" aria-selected="false">
                                 4.-PROFESIONALES IMPLICADOS
                             </button>
-                            <button class="nav-link <?=$informePsicoActive ?>" style="text-align: start; background-color: #ff9e18; border-radius: 0px" 
+                            <!-- <button class="nav-link <?=$informePsicoActive ?>" style="text-align: start; background-color: #ff9e18; border-radius: 0px" 
                                     id="v-pills-settings-tab" data-bs-toggle="pill" data-bs-target="#v-pills-5" type="button" role="tab" aria-controls="v-pills-settings" aria-selected="false">
                                 5.-INFORME PSICOPEDAGÓGICO
                             </button>
@@ -137,7 +137,7 @@ function getIniciales($nombre){
                             <button class="nav-link" style="text-align: start; background-color: #ff9e18; border-radius: 0px" 
                                     id="v-pills-settings-tab" data-bs-toggle="pill" data-bs-target="#v-pills-6" type="button" role="tab" aria-controls="v-pills-settings" aria-selected="false">
                                 6.-ADAPTACIONES
-                            </button>
+                            </button> -->
                         </div>   
                     </div>
                 </div>

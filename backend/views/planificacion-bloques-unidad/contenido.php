@@ -33,26 +33,49 @@ $arrayTrazabilidad = ArrayHelper::map($modelTrazabilidad, 'opcion', 'opcion');
 
 $arrayVerificacion = array("SI" => "SI", "NO" => "NO", "REPLANIFICADO" => "REPLANIFICADO");
 
+// echo "<pre>";
+// print_r ($planUnidad);
+// die();
+
+
 
 ?>
+
 
 <!-- JS y CSS Ckeditor -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet" />
 <script src="//cdn.ckeditor.com/4.19.0/full/ckeditor.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="script.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.11/jstree.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.11/themes/default/style.min.css"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.12/themes/default/style.min.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.12/jstree.min.js"></script>
 
+<style>
+    .btn {
+        background-color: none;
+    }
+
+    .btn:hover {
+        transform: scale(1.2);
+    }
+</style>
 
 
 <div class="planificacion-desagregacion-cabecera-index">
     <div class="m-0 vh-50 row justify-content-center align-items-center">
-        <div class="card shadow col-lg-12 col-md-12">
+        <div class="card shadow col-lg-9 col-md-9">
             <div class=" row align-items-center p-2">
                 <div class="col-lg-1">
                     <h4><img src="../ISM/main/images/submenu/herramientas-para-reparar.png" width="64px"
                             class="img-thumbnail"></h4>
                 </div>
-                <div class="col-lg-9">
+                <div class="col-lg-8">
                     <h4>
                         <?= Html::encode($this->title) ?>
                     </h4>
@@ -65,7 +88,7 @@ $arrayVerificacion = array("SI" => "SI", "NO" => "NO", "REPLANIFICADO" => "REPLA
                         )
                     </small>
                 </div>
-                <div class="col-lg-2 col-md-2" style="text-align: right;">
+                <div class="col-lg-3 col-md-3" style="text-align: right;">
                     <?=
                         Html::a(
                             '<span class="badge rounded-pill" style="background-color: #9e28b5"><i class="fa fa-briefcase" aria-hidden="true"></i> Inicio</span>',
@@ -85,43 +108,30 @@ $arrayVerificacion = array("SI" => "SI", "NO" => "NO", "REPLANIFICADO" => "REPLA
                     ?>
                 </div>
                 <hr>
-            </div><!-- FIN DE CABECERA -->
-
-
+            </div>
+            <!-- FIN DE CABECERA -->
 
             <!-- inicia cuerpo de card -->
             <div class="row" style="margin: 0.5rem 1rem 1rem 1rem;">
 
-                
-
-
                 <div class="col-lg-12">
                     <?php
-                    // echo "<pre>";
-                    // print_r ($planUnidad);
-                    // die();
-                    
+                    $form = ActiveForm::begin([
+                        'method' => 'get',
+                    ]);
                     ?>
 
+
+
+                    <?php ActiveForm::end(); ?>
+
                     <div class="row">
-
-
-                        <div id="div-mostrar-Arbol" class="col-md-6 card-body">
-                    
-                        </div>
-
-                        <div id="div-mostrar-Tema" class="col-md-6 card-body">
-
-                        </div>
+                        <div id="div-mostrar-Arbol" class="card col-md-4 card-body"></div>
+                        <div id="div-mostrar-Tema" class="card col-md-8 card-body"></div>
                     </div>
                 </div>
 
-                <!--Columna donde muestra contenido-->
-                <!-- <div class="col-lg-6 col-md-6 card">
-                    <div style="text-align: center">
-                        <h5>TEMARIO</h5>
-                    </div>
-                </div> -->
+
             </div>
             <!-- fin cuerpo de card -->
         </div>
@@ -129,24 +139,21 @@ $arrayVerificacion = array("SI" => "SI", "NO" => "NO", "REPLANIFICADO" => "REPLA
 
 </div>
 
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const agregarTemaBtn = document.getElementById("agregarTemaBtn");
+        const agregarTemaForm = document.getElementById("agregarTemaForm");
 
+        agregarTemaBtn.addEventListener("click", function () {
+            agregarTemaForm.style.display = "block";
+        });
+    });
+
+</script>
 
 
 <!--Funciones PHP-->
-<?php
 
-function busca_subtitulos2($subtituloId)
-{
-    $model = backend\models\PlanificacionBloquesUnidadSubtitulo2::find()->where([
-        'subtitulo_id' => $subtituloId
-    ])
-        ->orderBy('orden')
-        ->all();
-
-    return $model;
-}
-
-?>
 
 <?php
 
@@ -189,15 +196,17 @@ $title = $planUnidad->unit_title;
         });
     }
 
-    mostrarTema();
 
-    function mostrarTema() {
+    function mostrarTema(subtituloId, planUnidadId) {
+        event.preventDefault();
         var url = '<?= Url::to(['tema']) ?>';
         var planUnidadId = '<?= $planUnidad->id ?>';
 
+
         var params = {
+            subtitulo_id: subtituloId,
             plan_unidad_id: planUnidadId
-        }
+        };
 
         $.ajax({
             data: params,
@@ -209,4 +218,9 @@ $title = $planUnidad->unit_title;
             }
         });
     }
+
+</script>
+
+<script>
+    document.getElementById('enunciado_indagacion').contentEditable = true;
 </script>

@@ -108,7 +108,10 @@ $this->params['breadcrumbs'][] = $this->title;
                         <path d="M14 7l6 0" />
                         <path d="M17 4l0 6" />
                       </svg>  Nuevo Recurso</span>',
-                        ['create', 'planificacion_semanal_id' => $planificacionSemanal->id]
+                        ['create', 
+                            'planificacion_semanal_id' => $planificacionSemanal->id,
+                            'plan_bloque_unidad_id' => $planBloqueId
+                        ]
                     ) ?>
                 </div>
                 <hr>
@@ -155,106 +158,87 @@ $this->params['breadcrumbs'][] = $this->title;
 
                 <div class="col-lg-6 d-flex justify-content-center">
                     <div class="card col-lg-12" style="padding: 1rem; margin-bottom: 1rem;">
-                        <?php foreach ($recursos as $contador => $recurso): ?>
-                            <div class="card container bordes"
-                                style="margin-bottom: 20px;background-color: #eee;padding: 10px;">
-                                <table class="table table-striped">
-                                    <thead>
-                                        <tr>
-                                            <th>#</th>
-                                            <th width="100px" style="text-align: center;">Tema</th>
-                                            <th width="200px" colspan="" style="text-align: center;">Tipo de Recurso
-                                            </th>
-                                            <th colspan="2" style="text-align: center;"> Acción</th>
-                                            <th>Estado</th>
-                                        </tr>
-                                    </thead>
 
-                                    <tbody>
-                                        <tr>
-                                            <td>
-                                                <b>
-                                                    <?= $contador + 1 ?>
-                                                </b>
-                                            </td>
-                                            <td style="text-align: center;">
-                                                <?= Html::a(
-                                                    $recurso->tema,
-                                                    $recurso->url_recurso,
-                                                    [
-                                                        'style' => 'text-decoration: none; cursor: pointer; transition: transform 0.3s; display: inline-block;',
-                                                        'onmouseover' => 'this.style.transform = "scale(1.3)"',
-                                                        'onmouseout' => 'this.style.transform = "scale(1)"',
-                                                    ]
-                                                ); ?>
-                                            </td>
-                                            <td style="text-align: center;">
-                                                <?php
-                                                switch ($recurso->tipo_recurso) {
-                                                    case 'file':
-                                                        echo iconoFile($recurso->id);
-                                                        break;
-                                                    case 'link':
-                                                        echo iconolink($recurso->id);
-                                                        break;
-                                                    case 'video-conferencia':
-                                                        echo iconovideo($recurso->id);
-                                                        break;
-                                                    case 'texto':
-                                                        echo iconotexto($recurso->id);
-                                                        break;
-                                                    default:
-                                                        echo $recurso->tipo_recurso;
-                                                }
-                                                ?>
-                                            </td>
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th width="100px" style="text-align: center;">Tema</th>
+                                <th width="200px" colspan="" style="text-align: center;">Tipo de Recurso
+                                </th>
+                                <th colspan="2" style="text-align: center;"> Acción</th>
+                                <th>Estado</th>
+                            </tr>
+                        </thead>
 
-                                            <td>
-                                                <?= iconoVisualizar($recurso->id); ?>
+                        <tbody>
 
-                                            </td>
-                                            <td>
-                                                <?= iconoeditar($recurso->id); ?>
-                                            </td>
-                                            <td style="text-align: center;">
-                                                <?= iconoEstado($recurso->id, $recurso->estado); ?>
-                                            </td>
+                        <?php 
+                            $contador = 1;
+                            foreach ($recursos as $recurso): ?>
+                            <tr>
+                                <td>
+                                    <b>
+                                        <?= $contador++ ?>
+                                    </b>
+                                </td>
+
+                                <td style="text-align: center;">
+                                    <?= Html::a(
+                                        $recurso->tema,
+                                        $recurso->url_recurso,
+                                        [
+                                            'style' => 'text-decoration: none; cursor: pointer; 
+                                                        transition: transform 0.3s; display: inline-block;',
+                                            'onmouseover' => 'this.style.transform = "scale(1.3)"',
+                                            'onmouseout' => 'this.style.transform = "scale(1)"',
+                                            'target' => '_blank'
+                                        ]
+                                    ); ?>
+                                </td>
+                                <td style="text-align: center;">
+                                    <?php
+                                    switch ($recurso->tipo_recurso) {
+                                        case 'file':
+                                            echo iconoFile($recurso->id);
+                                            break;
+                                        case 'link':
+                                            echo iconolink($recurso->id);
+                                            break;
+                                        case 'video-conferencia':
+                                            echo iconovideo($recurso->id);
+                                            break;
+                                        case 'texto':
+                                            echo iconotexto($recurso->id);
+                                            break;
+                                        default:
+                                            echo $recurso->tipo_recurso;
+                                    }
+                                    ?>
+                                </td>
+
+                                <td>
+                                    <?= iconoVisualizar($recurso->id); ?>
+
+                                </td>
+                                <td>
+                                    <?= iconoeditar($recurso->id); ?>
+                                </td>
+                                <td style="text-align: center;">
+                                    <?= iconoEstado($recurso->id, $recurso->estado); ?>
+                                </td>
 
 
-                                        </tr>
+                            </tr>
 
-                                    </tbody>
-
-                                </table>
-                                <div class="card">
-                                    <div class="card">
-                                        <?php
-                                        $isYouTubeLink = (strpos($recurso->url_recurso, 'youtube.com') !== false || strpos($recurso->url_recurso, 'youtu.be') !== false);
-
-                                        if ($isYouTubeLink) {
-
-                                            $videoId = obtenerYouTubeVideoId($recurso->url_recurso);
-
-                                            echo '<div id="player"></div>';
-                                            echo '<script>';
-                                            echo '  var player;';
-                                            echo '  function onYouTubeIframeAPIReady() {';
-                                            echo '    player = new YT.Player("player", {';
-                                            echo '      height: "315",';
-                                            echo '      width: "500",';
-                                            echo '      videoId: "' . $videoId . '",';
-                                            echo '    });';
-                                            echo '  }';
-                                            echo '</script>';
-                                        } else {
-
-                                            echo '<embed src="' . $recurso->url_recurso . '">';
-                                        }
-                                        ?>
-                                    </div>
-                                </div>
-                            </div>
                         <?php endforeach; ?>
+
+                        </tbody>
+                    </table>
+
+
+
+                        
                     </div>
                 </div>
                 <div class="col-lg-3 d-flex justify-content-center">

@@ -396,6 +396,7 @@ class PlanificacionSemanalController extends Controller
             where 	cla.ism_area_materia_id = $ismAreaMateriaId
                     and par.course_id = $cursoId
             order by par.name;";
+
         $res = $con->createCommand($query)->queryAll();
         return $res;
     } 

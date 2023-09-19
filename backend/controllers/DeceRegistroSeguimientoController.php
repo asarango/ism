@@ -527,7 +527,7 @@ class DeceRegistroSeguimientoController extends Controller
         $from = 'info@ism.edu.ec';
         $subject = 'Acuerdos de seguimiento ';
         $textBody = '';
-        $htmlBody = 'Estimados padres de familia,
+        $htmlBody = 'Estimado(s),
 
             Reciban un cordial saludo. <br><br>
             A través de la presente, les compartimos los acuerdos resultantes de nuestra reunión de hoy.<br> 

@@ -159,22 +159,35 @@ $listFirmas = DeceSeguimientoFirmas::find()
     <div class="m-0 vh-50 row justify-content-center align-items-center">
 
         <div class="row" style="margin-top: -25px;">
+        
             <div class="card col-lg-5 col-ms-5 mb-3" style="padding: 20px;">
+
                 <!-- RENDERIZA A LA VISTA datos_estudiante.php -->
+
                 <h5 style="color: #0a1f8f;"><b>Datos Estudiante</b></h5>
+
                 <table class=" table table-responsive table-striped table-hover" style="border: 1px solid black">
+
                     <tr>
                         <td style="background-color: #ab0a3d;color: white;"><b>No. Caso: </b></td>
+
                         <td class="title">
+
                             <?= $model->caso->numero_caso ?>
+
                         </td>
                     </tr>
+
                     <tr>
                         <td style="background-color: #ab0a3d;color: white;"><b>Alumno: </b></td>
+
                         <td>
+
                             <?= $modelEstudiante->last_name . ' ' . $modelEstudiante->first_name . ' ' . $modelEstudiante->middle_name ?>
+
                         </td>
                     </tr>
+
                     <tr>
                         <?php
                         //calcual la edad

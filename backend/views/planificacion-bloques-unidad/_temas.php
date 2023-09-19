@@ -1,106 +1,117 @@
 <?php
+
+use backend\models\PlanificacionOpciones;
+use kartik\form\ActiveForm;
 use yii\helpers\Html;
 use yii\grid\GridView;
-?>
-<?php
-use yii\helpers\Html;
-use yii\grid\GridView;
+use yii\helpers\ArrayHelper;
+
+$condicionClass = new backend\models\helpers\Condiciones;
+
+
+
+
+//echo $condicion;
+//die();
+
+$modelTrazabilidad = PlanificacionOpciones::find()
+    ->where(['tipo' => 'TRAZABILIDAD_PAI'])
+    ->andWhere(['seccion' => 'PAI'])
+    ->all();
+$arrayTrazabilidad = ArrayHelper::map($modelTrazabilidad, 'opcion', 'opcion');
+
+$arrayVerificacion = array("SI" => "SI", "NO" => "NO", "REPLANIFICADO" => "REPLANIFICADO");
+
+// echo "<pre>";
+// print_r($planUnidad);
+// die();
 
 ?>
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="script.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.11/jstree.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.11/themes/default/style.min.css"></script>
+<div>
+    <?php foreach ($subtitulosTema as $subtituloTemaItem): ?>
+        <?php
+        $form = ActiveForm::begin([
+            'action' => ['guardar'],
+            'method' => 'post',
+        ]);
+        ?>
 
-<style>
-    ul {
-        list-style-type: none;
-        position: relative;
-        padding-left: 20px;
-    }
+        <?= $form->field($subtituloTemaItem, 'id')->hiddenInput()->label(false) ?>
+        <?= $form->field($subtituloTemaItem, 'planUnidadId')->hiddenInput(['value' => $planUnidadId])->label(false) ?>
+        <?= $form->field($subtituloTemaItem, 'subtitulo')->textInput(['required' => ''])->label('Título') ?>
+        <?= $form->field($subtituloTemaItem, 'orden')->textInput(['required' => ''])->label('Orden') ?>
+        <?= $form->field($subtituloTemaItem, 'trazabilidad')->dropDownList($arrayTrazabilidad, ['prompt' => 'Seleccione Uno']) ?>
+        <?= $form->field($subtituloTemaItem, 'verificacion')->dropDownList($arrayVerificacion, ['prompt' => 'Seleccione Uno']) ?>
 
-    li {
-        margin-left: 20px;
-        position: relative;
-    }
+        <hr>
 
-    .node {
-        cursor: pointer;
-    }
+        <div>
+            <label for="experiencia">EXPERIENCIAS DE APRENDIZAJE Y ESTRATEGIAS
+                DE ENSEÑANZA:</label>
+            <textarea name="experiencia_update"
+                id="experiencia-editor-update<?= $subtituloTemaItem->id ?>"><?= $subtituloTemaItem->experiencias ?></textarea>
+            <script>
+                CKEDITOR.replace("experiencia-editor-update<?= $subtituloTemaItem->id ?>", {
+                    customConfig: "/ckeditor_settings/config.js",
+                    toolbar: [
+                        { name: 'document', items: ['Source'] },
+                        { name: 'clipboard', items: ['Undo', 'Redo'] },
+                        { name: 'basicstyles', items: ['Bold', 'Italic', 'Underline'] },
+                        { name: 'paragraph', items: ['NumberedList', 'BulletedList'] },
+                        { name: 'styles', items: ['Format'] },
+                        { name: 'insert', items: ['Link'] }
+                    ]
+                });
+            </script>
+        </div>
 
-    .add {
-        margin-left: 10px;
-    }
+        <hr>
 
-    /* Línea vertical entre nodos */
-    li:before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: -10px;
-        border-left: 1px solid #000;
-        height: 100%;
-    }
+        <div>
+            <label for="experiencia">EVALUACIÓN FORMATIVAS:</label>
+            <textarea name="evaluacion_update"
+                id="evaluacion-editor-update<?= $subtituloTemaItem->id ?>"><?= $subtituloTemaItem->evaluacion_formativa ?></textarea>
+            <script>
+                CKEDITOR.replace("evaluacion-editor-update<?= $subtituloTemaItem->id ?>", {
+                    customConfig: "/ckeditor_settings/config.js",
+                    toolbar: [
+                        { name: 'document', items: ['Source'] },
+                        { name: 'clipboard', items: ['Undo', 'Redo'] },
+                        { name: 'basicstyles', items: ['Bold', 'Italic', 'Underline'] },
+                        { name: 'paragraph', items: ['NumberedList', 'BulletedList'] },
+                        { name: 'styles', items: ['Format'] },
+                        { name: 'insert', items: ['Link'] }
+                    ]
+                });
+            </script>
+        </div>
 
-    /* Línea horizontal entre nodos hijos */
-    li:after {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: -10px;
-        border-top: 1px solid #000;
-        width: 10px;
-    }
-</style>
+        <hr>
 
-<div id="tree">
-    <ul id="root">
-        <li>
-            <span class="node">
-                <?= '<b>' . $planUnidad . '</b>' ?>
-            </span>
-            <ul>
-                <li>
-                    <span class="node">Nodo 1.1</span>
-                    <!-- <button class="add">Agregar Hijo</button> -->
-                </li>
-            </ul>
-            <button class="add">Agregar Hijo</button>
-        </li>
-    </ul>
-    <button id="addRoot">Agregar Raíz</button>
+        <div>
+            <label for="experiencia">DIFERENCIACIÓN:</label>
+            <textarea name="diferenciacion_update"
+                id="diferenciacion-editor-update<?= $subtituloTemaItem->id ?>"><?= $subtituloTemaItem->diferenciacion ?></textarea>
+            <script>
+                CKEDITOR.replace("diferenciacion-editor-update<?= $subtituloTemaItem->id ?>", {
+                    customConfig: "/ckeditor_settings/config.js",
+                    toolbar: [
+                        { name: 'document', items: ['Source'] },
+                        { name: 'clipboard', items: ['Undo', 'Redo'] },
+                        { name: 'basicstyles', items: ['Bold', 'Italic', 'Underline'] },
+                        { name: 'paragraph', items: ['NumberedList', 'BulletedList'] },
+                        { name: 'styles', items: ['Format'] },
+                        { name: 'insert', items: ['Link'] }
+                    ]
+                });
+            </script>
+        </div>
+
+        <br>
+        <div>
+            <?= Html::submitButton('Actualizar', ['class' => 'btn btn-primary']) ?>
+        </div>
+        <?php ActiveForm::end(); ?>
+    <?php endforeach; ?>
 </div>
-
-<script>
-
-    $(document).ready(function () {
-        // Agregar hijo a un nodo
-        $(document).on("click", ".add", function () {
-            var newNodeText = prompt("Nombre del nuevo nodo:");
-            if (newNodeText) {
-                var newNode = $("<li><span class='node'>" + newNodeText + "</span><ul><button class='add'>Agregar Hijo</button></ul></li>");
-                $(this).siblings("ul").append(newNode);
-            }
-        });
-
-        // Agregar raíz
-        $("#addRoot").on("click", function () {
-            var newNodeText = prompt("Nombre de la nueva raíz:");
-            if (newNodeText) {
-                var newNode = $("<li><span class='node'>" + newNodeText + "</span><ul><button class='add'>Agregar Hijo</button></ul></li>");
-                $("#root").append(newNode);
-            }
-        });
-
-        // Editar nodo al hacer clic en el texto del nodo
-        $(document).on("click", ".node", function () {
-            var newText = prompt("Editar nodo:", $(this).text());
-            if (newText) {
-                $(this).text(newText);
-            }
-        });
-    });
-
-</script>

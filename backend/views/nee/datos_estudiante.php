@@ -158,7 +158,7 @@ use yii\widgets\ActiveForm;
 
                     <!-- -------------DATOS INFORMATIVOS DE LA EVALUACIÓN ---------------------------------------->
 
-                    <tr>
+                    <!-- <tr>
                         <td>
                             <strong>FECHA DE LA EVALUACIÓN:</strong>
                         </td>
@@ -177,7 +177,7 @@ use yii\widgets\ActiveForm;
                         <td>
                             <strong>TÉCNICAS E INSTRUMENTOS DE EVALUACIÓN</strong>
                         </td>
-                    </tr>
+                    </tr> -->
 
                     <!-- ---------------------FIN DATOS INFORMATIVOS DE LA EVALUACIÓN ------------------------------------>
 

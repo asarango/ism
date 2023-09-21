@@ -29,8 +29,7 @@ $this->params['breadcrumbs'][] = $this->title;
         <div class="card shadow col-lg-12 col-md-12">
             <div class=" row align-items-center p-2">
                 <div class="col-lg-1">
-                    <h4><img src="../ISM/main/images/submenu/herramientas-para-reparar.png" width="64px" style=""
-                            class="img-thumbnail"></h4>
+                    <h4><img src="../ISM/main/images/submenu/herramientas-para-reparar.png" width="64px" style="" class="img-thumbnail"></h4>
                 </div>
                 <div class="col-lg-8">
                     <h4>
@@ -48,20 +47,20 @@ $this->params['breadcrumbs'][] = $this->title;
                 </div>
                 <div class="col-lg-3" style="text-align: right;">
                     <?=
-                        Html::a(
-                            '<span class="badge rounded-pill" style="background-color: #9e28b5"><i class="fa fa-briefcase" aria-hidden="true"></i> Inicio</span>',
-                            ['site/index'],
-                            ['class' => 'link']
-                        );
+                    Html::a(
+                        '<span class="badge rounded-pill" style="background-color: #9e28b5"><i class="fa fa-briefcase" aria-hidden="true"></i> Inicio</span>',
+                        ['site/index'],
+                        ['class' => 'link']
+                    );
                     ?>
 
                     |
                     <?=
-                        Html::a(
-                            '<span class="badge rounded-pill" style="background-color: #0a1f8f"><i class="fa fa-briefcase" aria-hidden="true"></i> Planificación Vertical</span>',
-                            ['index1', 'unidad_id' => $modelPlanifVertDipl->planificacionBloqueUnidad->id],
-                            ['class' => 'link']
-                        );
+                    Html::a(
+                        '<span class="badge rounded-pill" style="background-color: #0a1f8f"><i class="fa fa-briefcase" aria-hidden="true"></i> Planificación Vertical</span>',
+                        ['index1', 'unidad_id' => $modelPlanifVertDipl->planificacionBloqueUnidad->id],
+                        ['class' => 'link']
+                    );
                     ?>
                 </div>
                 <hr>
@@ -70,8 +69,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
             <!-- inicia cuerpo de card -->
 
-            <div class="card p-4"
-                style="margin-top: -5px;margin-right: 5px;margin-left: 5px;margin-bottom: 5px; font-size: 10px">
+            <div class="card p-4" style="margin-top: -5px;margin-right: 5px;margin-left: 5px;margin-bottom: 5px; font-size: 10px">
                 <?php $form = ActiveForm::begin(); ?>
 
                 <div class="row p-3">
@@ -95,14 +93,31 @@ $this->params['breadcrumbs'][] = $this->title;
                     </div>
                 </div>
 
+                <?php
+                if ($modelPlanifVertDipl->contenido == 'none') {
+                    $concatenatedSubtitulos = '';
+
+                    foreach ($subtitulos as $subtitulo) {
+                        $concatenatedSubtitulos .= '&#9679; ' . $subtitulo['subtitulo'] . "\n";
+                    }
+
+                    $contenidoCk = $concatenatedSubtitulos;
+                } else {
+                    $contenidoCk = $modelPlanifVertDipl->contenido;
+                }
+                ?>
+
                 <div class="row p-3">
                     <div class="col-lg-2 col-md-2"><b>Contenido</b></div>
-                    <div class="col-lg-10 col-md-10">
-                        <?= $form->field($modelPlanifVertDipl, 'contenido')->textarea(['rows' => 3])->label(false) ?>
+                    <div class="col-lg-10 col-md-10">                        
+                        <?= $form->field($modelPlanifVertDipl, 'contenido')->textarea(['rows' => 3, 'value' => $contenidoCk])->label(false) ?>
+                        
+
                         <script>
-                            CKEDITOR.replace("planificacionverticaldiploma-contenido");
+                            CKEDITOR.replace('planificacionverticaldiploma-contenido');
                         </script>
                     </div>
+
                 </div>
 
                 <div class="row p-3">
@@ -126,10 +141,10 @@ $this->params['breadcrumbs'][] = $this->title;
             <div class="card shadow" style="margin: 20px;">
             <div class="row p-3">
                 <?=
-                    $this->render('formtdc', [
-                        'modelPlanifVertDiplTDC' => $modelPlanifVertDiplTDC,
-                        'modelPlanifVertDiplId' => $modelPlanifVertDipl->id
-                    ]);
+                $this->render('formtdc', [
+                    'modelPlanifVertDiplTDC' => $modelPlanifVertDiplTDC,
+                    'modelPlanifVertDiplId' => $modelPlanifVertDipl->id
+                ]);
                 ?>
             </div>            
             </div>
@@ -140,10 +155,10 @@ $this->params['breadcrumbs'][] = $this->title;
             <div class="card shadow" style="margin: 20px;">
             <div class="row p-3">
                 <?=
-                    $this->render('formhabilidades', [
-                        'modelPlanifVertDiplId' => $modelPlanifVertDipl->id,
-                        'modelPlanifVertDiplHab' => $modelPlanifVertDiplHab
-                    ]);
+                $this->render('formhabilidades', [
+                    'modelPlanifVertDiplId' => $modelPlanifVertDipl->id,
+                    'modelPlanifVertDiplHab' => $modelPlanifVertDiplHab
+                ]);
                 ?>
             </div>            
             </div>            -->

@@ -61,9 +61,9 @@ $arrayVerificacion = array("SI" => "SI", "NO" => "NO", "REPLANIFICADO" => "REPLA
         background-color: none;
     }
 
-    .btn:hover {
+    /* .btn:hover {
         transform: scale(1.2);
-    }
+    } */
 </style>
 
 
@@ -115,15 +115,6 @@ $arrayVerificacion = array("SI" => "SI", "NO" => "NO", "REPLANIFICADO" => "REPLA
             <div class="row" style="margin: 0.5rem 1rem 1rem 1rem;">
 
                 <div class="col-lg-12">
-                    <?php
-                    $form = ActiveForm::begin([
-                        'method' => 'get',
-                    ]);
-                    ?>
-
-
-
-                    <?php ActiveForm::end(); ?>
 
                     <div class="row">
                         <div id="div-mostrar-Arbol" class="card col-md-4 card-body"></div>
@@ -197,15 +188,15 @@ $title = $planUnidad->unit_title;
     }
 
 
-    function mostrarTema(subtituloId, planUnidadId) {
+    function mostrarTema(subtituloId, planUnidadId, subtitulo) {
         event.preventDefault();
         var url = '<?= Url::to(['tema']) ?>';
         var planUnidadId = '<?= $planUnidad->id ?>';
 
-
         var params = {
             subtitulo_id: subtituloId,
-            plan_unidad_id: planUnidadId
+            plan_unidad_id: planUnidadId,
+            subtitulo: subtitulo
         };
 
         $.ajax({
@@ -215,9 +206,32 @@ $title = $planUnidad->unit_title;
             beforeSend: function (response) { },
             success: function (response) {
                 $('#div-mostrar-Tema').html(response);
+                busca_subtitulos2(subtitulo);
             }
         });
     }
+
+    function ActualizarSub() {
+        var planUnidadId = '<?= $planUnidad->id ?>';
+        // alert(planUnidadId);
+
+        var params = {
+            plan_unidad_id: planUnidadId
+            // title: title
+        }
+
+        $.ajax({
+            data: params,
+            url: url,
+            type: 'get',
+            beforeSend: function (response) { },
+            success: function (response) {
+                mostrarTema();
+            }
+        });
+    }
+
+
 
 </script>
 

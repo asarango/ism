@@ -16,6 +16,12 @@ $this->params['breadcrumbs'][] = $this->title;
 // echo '<pre>';
 // print_r($planVerticalDiplHabilidades);
 // die();
+
+
+// echo "<pre>";
+// print_r($planUnidad);
+// die();
+
 ?>
 
 <div class="planificacion-vertical-pai-criterios-index">
@@ -58,7 +64,10 @@ $this->params['breadcrumbs'][] = $this->title;
                     <?=
                         Html::a(
                             '<span class="badge rounded-pill" style="background-color: #65b2e8"><i class="fa fa-briefcase" aria-hidden="true"></i> Actualizar detalles</span>',
-                            ['update', 'id' => $planVerticalDiploma->id],
+                            ['update', 'id' => $planVerticalDiploma->id,
+                            'plan_unidad_id' => $planUnidadId
+                            ],
+                            
                             ['class' => 'link']
                         );
                     ?>

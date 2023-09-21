@@ -74,27 +74,30 @@ class PlanificacionVerticalDiplomaController extends Controller
     public function actionIndex1()
     {
         $planUnidadId = $_GET['unidad_id'];
-        $planUnidad = PlanificacionBloquesUnidad::findOne($planUnidadId);
-
+        $planUnidad = PlanificacionBloquesUnidad::findOne($planUnidadId);        
         $planVerticalDipl = $this->select_plan_vertical_diploma($planUnidadId);
         $planVertDiplContenido = $this->select_contenidos($planUnidadId);
         //trae las relaciones y las habilidades, segun planVerticalDipl
         $planVertDiplRelacionTDC = $this->select_relacionTDC($planVerticalDipl);
         $planVertDiplHabilidades = $this->select_habilidadesTDC($planVerticalDipl);
 
+        
+
         return $this->render('index', [
             'planUnidad' => $planUnidad,
             'planVerticalDiploma' => $planVerticalDipl,
             'planVerticalDiplRelacionTDC' => $planVertDiplRelacionTDC,
             'planVerticalDiplHabilidades' => $planVertDiplHabilidades,
-            'planVerticalDiplContenidos' => $planVertDiplContenido
-
+            'planVerticalDiplContenidos' => $planVertDiplContenido,           
+            'planUnidadId' => $planUnidadId
         ]);
     }
-    public function actionUpdate($id)
+    public function actionUpdate($id)    
     {
-        //realiza la actualizacion de los campos simples de P.V.DIPLOMA      
+        //realiza la actualizacion de los campos simples de P.V.DIPLOMA
+        $planUnidadId = $_GET['plan_unidad_id'];      
         $planiVertDiplId = $id;
+        $subtitulos = $this->select_contenidos($planUnidadId);
         $modelPlanifVerticalDipl = PlanificacionVerticalDiploma::find()->where([
             'id' => $planiVertDiplId
         ])->one();
@@ -114,7 +117,8 @@ class PlanificacionVerticalDiplomaController extends Controller
         return $this->render('update', [
             'modelPlanifVertDipl' => $modelPlanifVerticalDipl,
             'modelPlanifVertDiplTDC' => $modelPlanifVertDiplRelacionTDC,
-            'modelPlanifVertDiplHab' => $modelPlanifVertDiplHabilidades
+            'modelPlanifVertDiplHab' => $modelPlanifVertDiplHabilidades,
+            'subtitulos' => $subtitulos
         ]);
     }
     public function actionUpdateTdc()
@@ -297,6 +301,7 @@ class PlanificacionVerticalDiplomaController extends Controller
             'plan_unidad_id' => $planUnidadId
         ])->asArray()->all();
 
+
         foreach ($contenido as $cont) {
             $contenidosSubnivel = PlanificacionBloquesUnidadSubtitulo2::find()->where([
                 'subtitulo_id' => $cont['id']
@@ -307,7 +312,7 @@ class PlanificacionVerticalDiplomaController extends Controller
                 array_push($cont['subtitulos'], $contSub);
             }
             array_push($arrayResp, $cont);
-        }
+        }       
         return  $arrayResp;
     }
 
@@ -323,7 +328,6 @@ class PlanificacionVerticalDiplomaController extends Controller
         ]);
     }
 
-
     public function actionAjaxHabilidadesSeleccionadas()
     {
         $planVerticalId = $_GET['plan_vertical_id'];
@@ -333,8 +337,6 @@ class PlanificacionVerticalDiplomaController extends Controller
             'habilidades' => $habilidades
         ]);
     }
-
-
 
     private function get_habilidades($planVerticalId)
     {
@@ -353,7 +355,6 @@ class PlanificacionVerticalDiplomaController extends Controller
         $res = $con->createCommand($query)->queryAll();
         return $res;
     }
-
 
     private function get_habilidades_titulos($planVerticalId)
     {
@@ -436,7 +437,6 @@ class PlanificacionVerticalDiplomaController extends Controller
         $res = $con->createCommand($query)->queryAll();
         return $res;
     }
-
 
     public function actionUpdateTdcRegister()
     {

@@ -18,72 +18,110 @@ use Mpdf\Mpdf;
 /**
  * MenuController implements the CRUD actions for Menu model.
  */
-class PlanSemanalDocenteController extends Controller {
+class PlanSemanalDocenteController extends Controller
+{
     /**
      * {@inheritdoc}
      */
-//    public function behaviors() {
-//        return [
-//            'access' => [
-//                'class' => AccessControl::className(),
-//                'rules' => [
-//                    [
-//                        'allow' => true,
-//                        'roles' => ['@'],
-//                    ]
-//                ],
-//            ],
-//            'verbs' => [
-//                'class' => VerbFilter::className(),
-//                'actions' => [
-//                    'delete' => ['POST'],
-//                ],
-//            ],
-//        ];
-//    }
-//
-//    public function beforeAction($action) {
-//        if (!parent::beforeAction($action)) {
-//            return false;
-//        }
-//
-//        if (Yii::$app->user->identity) {
-//
-//            //OBTENGO LA OPERACION ACTUAL
-//            list($controlador, $action) = explode("/", Yii::$app->controller->route);
-//            $operacion_actual = $controlador . "-" . $action;
-//            //SI NO TIENE PERMISO EL USUARIO CON LA OPERACION ACTUAL
-//            if (!Yii::$app->user->identity->tienePermiso($operacion_actual)) {
-//                echo $this->render('/site/error', [
-//                    'message' => "Acceso denegado. No puede ingresar a este sitio !!!",
-//                    'name' => 'Acceso denegado!!',
-//                ]);
-//            }
-//        } else {
-//            header("Location:" . \yii\helpers\Url::to(['site/login']));
-//            exit();
-//        }
-//        return true;
-//    }
+    //    public function behaviors() {
+    //        return [
+    //            'access' => [
+    //                'class' => AccessControl::className(),
+    //                'rules' => [
+    //                    [
+    //                        'allow' => true,
+    //                        'roles' => ['@'],
+    //                    ]
+    //                ],
+    //            ],
+    //            'verbs' => [
+    //                'class' => VerbFilter::className(),
+    //                'actions' => [
+    //                    'delete' => ['POST'],
+    //                ],
+    //            ],
+    //        ];
+    //    }
+    //
+    //    public function beforeAction($action) {
+    //        if (!parent::beforeAction($action)) {
+    //            return false;
+    //        }
+    //
+    //        if (Yii::$app->user->identity) {
+    //
+    //            //OBTENGO LA OPERACION ACTUAL
+    //            list($controlador, $action) = explode("/", Yii::$app->controller->route);
+    //            $operacion_actual = $controlador . "-" . $action;
+    //            //SI NO TIENE PERMISO EL USUARIO CON LA OPERACION ACTUAL
+    //            if (!Yii::$app->user->identity->tienePermiso($operacion_actual)) {
+    //                echo $this->render('/site/error', [
+    //                    'message' => "Acceso denegado. No puede ingresar a este sitio !!!",
+    //                    'name' => 'Acceso denegado!!',
+    //                ]);
+    //            }
+    //        } else {
+    //            header("Location:" . \yii\helpers\Url::to(['site/login']));
+    //            exit();
+    //        }
+    //        return true;
+    //    }
 
     /**
      * Lists all Menu models.
      * @return mixed
      */
-    public function actionIndex() {
+    public function actionIndex()
+    {
         $user = Yii::$app->user->identity->usuario;
         $periodId = Yii::$app->user->identity->periodo_id;
         $period = ScholarisPeriodo::findOne($periodId);
 
         $blocks = $this->get_blocks($user, $period->codigo);
 
-        return $this->render('index',[
+        return $this->render('index', [
             'blocks' => $blocks
         ]);
-    }    
+    }
+
+
+    private function get_coordinadores($usuarioLog, $periodoId, $weekId)
+    {
+
+        $con = Yii::$app->db;
+        $query = "select 	aut.usuario 
+                            , par.name as coordinador
+                            ,(select 	estado 
+                                from 	plan_semanal_bitacora
+                                where 	docente_usuario = 'elive@ism.edu.ec'
+                                        and usuario_recibe = aut.usuario 
+                                        and semana_id = $weekId
+                                order by id desc
+                                limit 1) as estado
+                    from 	scholaris_clase cla
+                            inner join op_faculty fac on fac.id = cla.idprofesor 
+                            inner join res_users rus on rus.partner_id = fac.partner_id 
+                            inner join ism_area_materia iam on iam.id = cla.ism_area_materia_id 
+                            inner join ism_malla_area ima on ima.id = iam.malla_area_id 
+                            inner join ism_periodo_malla ipm on ipm.id = ima.periodo_malla_id 
+                            inner join ism_materia mat on mat.id = iam.materia_id 
+                            inner join op_institute_authorities aut on aut.id = cla.coordinador_academico_id 
+                            inner join res_users ru2 on ru2.login = aut.usuario 
+                            inner join res_partner par on par.id = ru2.partner_id 
+                            inner join op_course_paralelo opa on opa.id = cla.paralelo_id 
+                            inner join op_course cur on cur.id = opa.course_id 
+                    where rus.login = '$usuarioLog'
+                            and ipm.scholaris_periodo_id = $periodoId
+                    group by aut.usuario 
+                            , par.name;";
+        $res = $con->createCommand($query)->queryAll();
+        return $res;
+    }
+
 
     // funcion para obtener los trimestres
-    private function get_blocks($user, $periodCode){
+    private function get_blocks($user, $periodCode)
+    {
         $con = Yii::$app->db;
         $query = "select 	id, name as bloque, blo.orden  
         from 	scholaris_bloque_actividad blo
@@ -106,35 +144,36 @@ class PlanSemanalDocenteController extends Controller {
 
 
 
-    public function actionAcciones(){       
+    public function actionAcciones()
+    {
         $user       = Yii::$app->user->identity->usuario;
-        $periodId   = Yii::$app->user->identity->periodo_id; 
+        $periodId   = Yii::$app->user->identity->periodo_id;
         $action = $_GET['action'];
 
-        
-        if($action == 'weeks'){ //para semanas
+
+        if ($action == 'weeks') { //para semanas
             $blockId = $_GET['block_id'];
             $weeks = ScholarisBloqueSemanas::find()
-            ->where(['bloque_id' => $blockId])
-            ->orderBy('semana_numero')
-            ->all();
+                ->where(['bloque_id' => $blockId])
+                ->orderBy('semana_numero')
+                ->all();
 
             $html = '';
-            $html.= '<select name="semanas" 
+            $html .= '<select name="semanas" 
                         id="select-semanas"
                         onchange="showWeek(this)" 
                         class="form-control">';
-            $html.= '<option value="">Semanas...</option>';
+            $html .= '<option value="">Semanas...</option>';
 
-            foreach($weeks as $week){
-                $html.= '<option value="'.$week->id.'">'.$week->nombre_semana.'</option>';
+            foreach ($weeks as $week) {
+                $html .= '<option value="' . $week->id . '">' . $week->nombre_semana . '</option>';
             }
 
-            $html.= '</select>';
+            $html .= '</select>';
 
             return $html;
-        }///fin de para semanas
-        else if($action == 'detail-week'){            
+        } ///fin de para semanas
+        else if ($action == 'detail-week') {
             $weekId = $_GET['week_id'];
 
             // $week = ScholarisBloqueSemanas::findOne($weekId);
@@ -160,136 +199,45 @@ class PlanSemanalDocenteController extends Controller {
 
 
             return $this->renderPartial('detail-week-teacher', [
-                    'weekId' => $weekId
-                    // 'dates' => $dates,
-                    // 'hours' => $hours,
-                    // 'user'  => $user,
-                    // 'bloqueId' => $week->bloque->id,
-                    // 'weekNumber' => $week->semana_numero,
-                    // 'week'  => $week,
-                    // 'statesBitacora' => $statesBitacora
+                'weekId' => $weekId,
+                'coordinadores' => $this->get_coordinadores($user, $periodId, $weekId)
+                // 'dates' => $dates,
+                // 'hours' => $hours,
+                // 'user'  => $user,
+                // 'bloqueId' => $week->bloque->id,
+                // 'weekNumber' => $week->semana_numero,
+                // 'week'  => $week,
+                // 'statesBitacora' => $statesBitacora
             ]);
-
-        }////fin de detalle de semana
-        elseif($action == 'pdf'){
+        } ////fin de detalle de semana
+        elseif ($action == 'pdf') {
             $weekId = $_GET['week_id'];
             new PdfPlanSemanaDocente($weekId, $user, $periodId);
-        }//// FIN DE PDF
-        else if($action == 'enviar'){            
-            $courses = $this->get_courses_by_teacher($periodId, $user);            
-            $weekId = $_GET['week_id'];            
+        } //// FIN DE PDF
+        else if ($action == 'enviar') {
 
-            foreach($courses as $course){       
-                
-                $coordinator = $this->get_coordinator($course['course_id']);
+            $weekId = $_GET['week_id'];
+            $coordinator = $_GET['coordinador'];
 
-                if(count($coordinator) != 1){
-                    echo 'Error al asignar coordinadores en la pantalla de clases, por favor comuníque a su administrador!!!';
-                    die();
-                }else{
-                    $model = new PlanSemanalBitacora();
-                    $model->semana_id       = $weekId;
-                    $model->docente_usuario = $user;
-                    $model->curso_id        = $course['course_id'];
-                    $model->estado          = 'COORDINADOR';
-                    $model->fecha_envio     = date('Y-m-d H:i:s');
-                    $model->usuario_envia   = $user;      
-                    $model->usuario_recibe  = $coordinator[0]['usuario'];         
-                    $model->save();
-                }
-            }   
-            
-            return $this->redirect(['index']);
-        }/////FIN DE ENVIAR A COORDINADOR
-        
-        
+            $model = new PlanSemanalBitacora();
+            $model->semana_id       = $weekId;
+            $model->docente_usuario = $user;
+            $model->estado          = 'COORDINADOR';
+            $model->fecha_envio     = date('Y-m-d H:i:s');
+            $model->usuario_envia   = $user;
+            $model->usuario_recibe  = $coordinator;
+            $model->save();
+
+            // return $this->redirect(['index']);
+        } /////FIN DE ENVIAR A COORDINADOR
+
+
     }
 
 
-// se obtiene los datos generales, renderizado a detail-week
-    // public function actionAcciones(){       
-    //     $user       = Yii::$app->user->identity->usuario;
-    //     $periodId   = Yii::$app->user->identity->periodo_id; 
-    //     $action = $_GET['action'];
 
-        
-    //     if($action == 'weeks'){ //para semanas
-    //         $blockId = $_GET['block_id'];
-    //         $weeks = ScholarisBloqueSemanas::find()
-    //         ->where(['bloque_id' => $blockId])
-    //         ->orderBy('semana_numero')
-    //         ->all();
-
-    //         $html = '';
-    //         $html.= '<select name="semanas" 
-    //                     id="select-semanas"
-    //                     onchange="showWeek(this)" 
-    //                     class="form-control">';
-    //         $html.= '<option value="">Semanas...</option>';
-
-    //         foreach($weeks as $week){
-    //             $html.= '<option value="'.$week->id.'">'.$week->nombre_semana.'</option>';
-    //         }
-
-    //         $html.= '</select>';
-
-    //         return $html;
-    //     }///fin de para semanas
-    //     else if($action == 'detail-week'){
-    //         $weekId = $_GET['week_id'];
-
-    //         $week = ScholarisBloqueSemanas::findOne($weekId);
-    //         $statesBitacora = $this->get_states_bitacora($weekId, $user, $periodId);
-
-    //         $dates = $this->get_dates($week->fecha_inicio, $week->fecha_finaliza, $user, $periodId);            
-    //         $hours = $this->get_hours($user, $periodId);
-
-    //         // echo '<pre>';
-    //         // print_r($statesBitacora);
-    //         // die();
-
-    //         return $this->renderPartial('detail-week', [
-    //             'dates' => $dates,
-    //             'hours' => $hours,
-    //             'user'  => $user,
-    //             'bloqueId' => $week->bloque->id,
-    //             'weekNumber' => $week->semana_numero,
-    //             'week'  => $week,
-    //             'statesBitacora' => $statesBitacora
-    //         ]);
-    //     }////fin de detalle de semana
-    //     else if($action == 'enviar'){            
-    //         $courses = $this->get_courses_by_teacher($periodId, $user);            
-    //         $weekId = $_GET['week_id'];            
-
-    //         foreach($courses as $course){       
-                
-    //             $coordinator = $this->get_coordinator($course['course_id']);
-
-    //             if(count($coordinator) != 1){
-    //                 echo 'Error al asignar coordinadores en la pantalla de clases, por favor comuníque a su administrador!!!';
-    //                 die();
-    //             }else{
-    //                 $model = new PlanSemanalBitacora();
-    //                 $model->semana_id       = $weekId;
-    //                 $model->docente_usuario = $user;
-    //                 $model->curso_id        = $course['course_id'];
-    //                 $model->estado          = 'COORDINADOR';
-    //                 $model->fecha_envio     = date('Y-m-d H:i:s');
-    //                 $model->usuario_envia   = $user;      
-    //                 $model->usuario_recibe  = $coordinator[0]['usuario'];         
-    //                 $model->save();
-    //             }
-    //         }   
-            
-    //         return $this->redirect(['index']);
-    //     }/////FIN DE ENVIAR A COORDINADOR
-        
-        
-    // }
-
-
-    private function get_states_bitacora($weekId, $user, $periodId){
+    private function get_states_bitacora($weekId, $user, $periodId)
+    {
         $con    = Yii::$app->db;
         $query  = "select 	bi.curso_id, bi.estado, cur.name as curso, bi.obervaciones
         from 	plan_semanal_bitacora bi
@@ -304,12 +252,13 @@ class PlanSemanalDocenteController extends Controller {
 
         // echo $query;
         // die();
-        
+
         $res    = $con->createCommand($query)->queryAll();
         return $res;
     }
 
-    private function get_coordinator($courseId){
+    private function get_coordinator($courseId)
+    {
         $con    = Yii::$app->db;
         $query  = "select 	oia.usuario  
                     from 	scholaris_clase cla
@@ -322,12 +271,14 @@ class PlanSemanalDocenteController extends Controller {
         return $res;
     }
 
-    private function get_dates($fechaInicio, $fechaFinaliza,  $user, $periodId){                
-        $days = new CalendarioSemanal($fechaInicio, $fechaFinaliza, $user);        
+    private function get_dates($fechaInicio, $fechaFinaliza,  $user, $periodId)
+    {
+        $days = new CalendarioSemanal($fechaInicio, $fechaFinaliza, $user);
         return $days->fechas;
     }
 
-    private function get_hours($user, $periodId){
+    private function get_hours($user, $periodId)
+    {
         $con = Yii::$app->db;
         $query = "select 	det.id as detalle_id 
                         ,cla.id as clase_id 
@@ -369,7 +320,8 @@ class PlanSemanalDocenteController extends Controller {
     }
 
 
-    public function get_courses_by_teacher($periodId, $user){
+    public function get_courses_by_teacher($periodId, $user)
+    {
         $con = Yii::$app->db;
         $query = "select 	par.course_id  
         from 	scholaris_clase cla
@@ -381,15 +333,15 @@ class PlanSemanalDocenteController extends Controller {
                 inner join op_course_paralelo par on par.id = cla.paralelo_id 
         where 	rus.login = '$user'
                 and ipm.scholaris_periodo_id = $periodId
-        group by par.course_id;";    
+        group by par.course_id;";
 
-        $res = $con->createCommand($query)->queryAll();        
+        $res = $con->createCommand($query)->queryAll();
         return $res;
-        
     }
 
 
-    public function actionDevuelto(){
+    public function actionDevuelto()
+    {
         $weekId     = $_GET['week_id'];
         $user       = Yii::$app->user->identity->usuario;
         $periodId   = Yii::$app->user->identity->periodo_id;
@@ -397,7 +349,7 @@ class PlanSemanalDocenteController extends Controller {
 
         $bitacora = $this->get_states_bitacora($weekId, $user, $periodId);
 
-        return $this->render('devuelto',[
+        return $this->render('devuelto', [
             'week'      => $week,
             'bitacora'  => $bitacora
         ]);

@@ -141,7 +141,7 @@ class PlanificacionBloquesUnidadController extends Controller{
                     where c.x_template_id = $templateId and sop.scholaris_id = $scholarisPeriodoId and c.x_institute = $institutoId";
 
         $res = $con->createCommand($query)->queryOne();
-        return $res['code'];
+            return $res['code'];
     }
 
     private function inserta_bloques($cabeceraId){
@@ -195,8 +195,7 @@ class PlanificacionBloquesUnidadController extends Controller{
         ]);
     }
 
-    public function actionArbol(){   
-        
+    public function actionArbol(){
 
         $planUnidadId = $_GET['plan_unidad_id'];
         $planUnidad = PlanificacionBloquesUnidad::findOne($planUnidadId);
@@ -204,7 +203,7 @@ class PlanificacionBloquesUnidadController extends Controller{
             'plan_unidad_id' => $planUnidadId
         ])
         ->orderBy('orden')
-        ->all();        
+        ->all();
        
         return $this->renderPartial('_arbol',[            
             'subtitulos' => $subtitulos,
@@ -228,46 +227,80 @@ class PlanificacionBloquesUnidadController extends Controller{
     }
 
     public function actionGuardar(){
-
         // echo '<pre>';
         // print_r($_POST);
         // die();
                 
         $id = $_POST['PlanificacionBloquesUnidadSubtitulo']['id'];
         $planUnidadId = $_POST['PlanificacionBloquesUnidadSubtitulo']['planUnidadId'];
-        $model =  PlanificacionBloquesUnidadSubtitulo::findOne($id);          
+        $model =  PlanificacionBloquesUnidadSubtitulo::findOne($id);
             $model->experiencias = $_POST['experiencia_update'];
             $model->evaluacion_formativa = $_POST['evaluacion_update'];
             $model->diferenciacion = $_POST['diferenciacion_update']; 
             $model->save();
-            return $this->redirect(['contenido', 'unidad_id' => $planUnidadId]);
-        // }          
+            return $this->redirect(['contenido', 'unidad_id' => $planUnidadId]);    
+    }
+
+    public function actionCreateTitle(){
+        // print_r($_POST);
+        // die();        
+
+        $planUnidadId = $_POST['plan_unidad_id'];
+        $orden = $_POST['total_subtitulos'];
+
+        $model = new PlanificacionBloquesUnidadSubtitulo();
+        $model->plan_unidad_id = $planUnidadId;
+        $model->subtitulo = 'none';
+        $model->orden = $orden+1;
+        $model->trazabilidad = 'Seleccione Uno';
+        $model->verificacion = 'no';
+        
+        $model->save();
+
+        // $id = $_POST['PlanificacionBloquesUnidadSubtitulo']['id'];
+        // $planUnidadId = $_POST['PlanificacionBloquesUnidadSubtitulo']['planUnidadId'];        
+        // $subtitulo = $_POST['PlanificacionBloquesUnidadSubtitulo']['subtitulo'];
+        // $orden = $_POST['PlanificacionBloquesUnidadSubtitulo']['orden'];
+        // $trazabilidad = $_POST['PlanificacionBloquesUnidadSubtitulo']['trazabilidad'];
+        // $verificacion = $_POST['PlanificacionBloquesUnidadSubtitulo']['verificacion'];
+
+        // $model =  PlanificacionBloquesUnidadSubtitulo::findOne($id);
+        // $model->subtitulo = $subtitulo;
+        // $model->orden = $orden;
+        // $model->trazabilidad = $trazabilidad;
+        // $model->verificacion = $verificacion;            
+        // $model->save();
+
+        //     $model->experiencias = $_POST['experiencia_update'];
+        //     $model->evaluacion_formativa = $_POST['evaluacion_update'];
+        //     $model->diferenciacion = $_POST['diferenciacion_update']; 
+
+        // return $this->redirect(['contenido', 'unidad_id' => $planUnidadId]);
+                
     }
 
     public function actionDeleteSubtitle(){
+
         $id = $_GET['id'];
         $model = PlanificacionBloquesUnidadSubtitulo::findOne($id);
         $planUnidadId = $model->plan_unidad_id;
 
         $model->delete();
 
-        return $this->redirect(['contenido', 
-            'unidad_id' => $planUnidadId
-        ]);
+        return $this->redirect(['contenido', 'unidad_id' => $planUnidadId ]);
     }
 
     public function actionUpdateSubtitle()
-    {     
+    {            
         
         $id = $_POST['PlanificacionBloquesUnidadSubtitulo']['id'];
         $subtitulo = $_POST['PlanificacionBloquesUnidadSubtitulo']['subtitulo'];
         $orden = $_POST['PlanificacionBloquesUnidadSubtitulo']['orden'];
         $trazabilidad = $_POST['PlanificacionBloquesUnidadSubtitulo']['trazabilidad'];
         $verificacion = $_POST['PlanificacionBloquesUnidadSubtitulo']['verificacion'];
-
-        $experiencias =  $_POST['experiencia_update'];
-        $evaluaciones =  $_POST['evaluacion_update'];
-        $diferenciacion =  $_POST['diferenciacion_update'];
+        $experiencias = $_POST['experiencia_update'];
+        $evaluaciones = $_POST['evaluacion_update'];
+        $diferenciacion = $_POST['diferenciacion_update'];
         
         $model = PlanificacionBloquesUnidadSubtitulo::findOne($id);
         $model->subtitulo = $subtitulo;
@@ -277,31 +310,27 @@ class PlanificacionBloquesUnidadController extends Controller{
         $model->diferenciacion = $diferenciacion;
         $model->trazabilidad = $trazabilidad;
         $model->verificacion = $verificacion;
+       
         $model->save();
 
         return $this->redirect(['contenido', 'unidad_id' => $model->plan_unidad_id]);
     }
 
-    public function actionCreateSubtitle2(){
-//        echo '<pre>';
-//        print_r($_POST);
-//        die();
-        
-        
-        $subtituloId            = $_POST['PlanificacionBloquesUnidadSubtitulo2']['subtitulo_id'];
-        $subtitulo2Contenido    = $_POST['PlanificacionBloquesUnidadSubtitulo2']['contenido'];
-        $subtitulo2Orden        = $_POST['PlanificacionBloquesUnidadSubtitulo2']['orden'];
-        $planUnidadId           = $_POST['PlanificacionBloquesUnidadSubtitulo2']['plan_unidad_id'];
+    public function actionCreateSubtitle2(){     
+    
+        $subtituloId            = $_POST['subtitulo_id'];
+        $subtitulo2Contenido    = $_POST['contenido'];
+        $subtitulo2Orden        = $_POST['orden'];
+        $planUnidadId           = $_POST['planUnidadId'];        
         
         $model = new PlanificacionBloquesUnidadSubtitulo2();
         $model->subtitulo_id = $subtituloId;
         $model->contenido = $subtitulo2Contenido;
         $model->orden = $subtitulo2Orden;
-
+  
         $model->save();
 
         return $this->redirect(['contenido', 'unidad_id' => $planUnidadId]);
-
     }
 
     public function actionDeleteSubtitle2(){

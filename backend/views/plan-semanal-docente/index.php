@@ -15,18 +15,25 @@ $this->title = 'Plan Semanal';
 // die();
 ?>
 
+<style>
+    .titulo {
+        text-align: left;
+        font-weight: bold;
+        font-size: 20px;
+    }
+</style>
+
 <div class="scholaris-asistencia-profesor-index" style="padding-left: 40px; padding-right: 40px">
 
     <div class="m-0 vh-50 row justify-content-center align-items-center">
         <div class="card shadow col-lg-10 col-md-10">
             <div class=" row align-items-center p-2">
                 <div class="col-lg-1 col-md-1">
-                    <h4><img src="../ISM/main/images/submenu/calendario.png" width="34px" style=""
-                            class="img-thumbnail"></h4>
+                    <h4><img src="../ISM/main/images/submenu/calendario.png" width="34px" style="" class="img-thumbnail"></h4>
                 </div>
 
                 <div class="col-lg-2 col-md-2">
-                    <h5>
+                    <h5 class="titulo">
                         <?= Html::encode($this->title) ?>
                     </h5>
                 </div>
@@ -36,9 +43,9 @@ $this->title = 'Plan Semanal';
                         <option value="">Seleccione Trimestre</option>
                         <?php
                         foreach ($blocks as $block) {
-                            ?>
+                        ?>
                             <option value="<?= $block['id'] ?>"><?= $block['bloque'] ?></option>
-                            <?php
+                        <?php
                         }
                         ?>
                     </select>
@@ -51,11 +58,11 @@ $this->title = 'Plan Semanal';
                 <!--botones derecha-->
                 <div class="col-lg-2 col-md-2" style="text-align: right;">
                     <?=
-                        Html::a(
-                            '<span class="badge rounded-pill" style="background-color: #0a1f8f"><i class="fa fa-briefcase" aria-hidden="true"></i> Inicio</span>',
-                            ['site/index'],
-                            ['class' => 'link']
-                        );
+                    Html::a(
+                        '<span class="badge rounded-pill" style="background-color: #0a1f8f"><i class="fa fa-briefcase" aria-hidden="true"></i> Inicio</span>',
+                        ['site/index'],
+                        ['class' => 'link']
+                    );
                     ?>
                 </div>
                 <!-- FIN DE BOTONES DE ACCION Y NAVEGACIÓN -->
@@ -86,8 +93,8 @@ $this->title = 'Plan Semanal';
             data: params,
             url: url,
             type: 'GET',
-            beforeSend: function () { },
-            success: function (response) {
+            beforeSend: function() {},
+            success: function(response) {
                 let html = response;
 
                 if (html.includes('Sem1')) {
@@ -168,8 +175,8 @@ $this->title = 'Plan Semanal';
             data: params,
             url: url,
             type: 'GET',
-            beforeSend: function () { },
-            success: function (response) {
+            beforeSend: function() {},
+            success: function(response) {
                 $("#div-detail-week").html(response);
             }
         });

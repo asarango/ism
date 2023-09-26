@@ -167,6 +167,7 @@ class CalculoV1{
                                     and periodo_id = $this->periodoId
                         ) as promedio
                     group by abreviatura,bloque_id;";
+
         $con->createCommand($query)->execute();
     }
 
@@ -187,8 +188,6 @@ class CalculoV1{
 
         foreach($bloques as $bloque){
             $this->calcula_aportes($bloque);
-            $this->calcular_evaluaciones($bloque, 'EVALUACION');
-            $this->calcular_evaluaciones($bloque, 'PROYECTO');
         }
         
     }
@@ -196,25 +195,45 @@ class CalculoV1{
     private function calcula_aportes($arrayBloque){
         $con    = Yii::$app->db;
         $bloqueId = $arrayBloque['bloque_id'];
-        $queryProemedio = "select 	tip.tipo_aporte  
-                                    ,sum((ins.nota *  45) / 100) as promedio_aporte
-                            from 	lib_promedios_insumos ins
-                                    inner join scholaris_tipo_actividad tip on tip.orden = ins.grupo_calificacion 
-                            where 	ins.bloque_id = $bloqueId
-                                    and ins.grupo_id = $this->grupoId
-                                    and tip.categoria = 'APORTES'
-                            group by tip.tipo_aporte;";
+
+        $queryProemedio = "select sum(promedio_aporte) as promedio_aporte
+        from(
+                        select 	tip.tipo_aporte  
+                                ,trunc((trunc(avg(ins.nota),2)*45)/100,2) as promedio_aporte
+                        from 	lib_promedios_insumos ins
+                                inner join scholaris_tipo_actividad tip on tip.orden = ins.grupo_calificacion 
+                        where 	ins.bloque_id = $bloqueId
+                                and ins.grupo_id = $this->grupoId
+                                and tip.categoria = 'APORTES'
+                        group by tip.tipo_aporte
+        ) as promedio_aporte;";
 
         $res = $con->createCommand($queryProemedio)->queryOne();
-        
-        
-        $nota = isset($res['promedio_aporte']) ? $res['promedio_aporte'] : 0;
-        // $abreviatura = isset($res['tipo_aporte']) ? $res['tipo_aporte'] : 0;
+
+        $queryPromNoAportes = "select sum(promedio_aporte) as promedio_aporte
+        from(
+                        select 	tip.tipo_aporte  
+                                ,trunc((trunc(avg(ins.nota),2)*5)/100,2) as promedio_aporte
+                        from 	lib_promedios_insumos ins
+                                inner join scholaris_tipo_actividad tip on tip.orden = ins.grupo_calificacion 
+                        where 	ins.bloque_id = $bloqueId
+                                and ins.grupo_id = $this->grupoId
+                                and tip.categoria <> 'APORTES'
+                        group by tip.tipo_aporte
+        ) as promedio_aporte;";
+
+        $resNo = $con->createCommand($queryPromNoAportes)->queryOne();
+    
+        $notaAporte = isset($res['promedio_aporte']) ? $res['promedio_aporte'] : 0;
+        $notaNoApor = isset($resNo['promedio_aporte']) ? $resNo['promedio_aporte'] : 0;
+
+        $nota = $notaAporte + $notaNoApor;
 
         if($nota != 0){
             $model = LibBloquesGrupoClase::find()->where([
                 'grupo_id' => $this->grupoId,
-                'abreviatura' => $res['tipo_aporte'],
+                'abreviatura' => 'total',
+                'bloque_id' => $bloqueId
             ])->one();
     
             if($model){
@@ -222,7 +241,7 @@ class CalculoV1{
                 $model->updated_at  = $this->ahora;
                 $model->updated     = $this->user;
                 $model->save();
-            }else{                
+            }else{             
                 $insert = new LibBloquesGrupoClase();
                 $insert->grupo_id   = $this->grupoId;
                 $insert->bloque_id  = $bloqueId;
@@ -232,7 +251,7 @@ class CalculoV1{
                 $insert->updated_at = $this->ahora;
                 $insert->updated    = $this->user;
                 $insert->periodo_id = $this->periodId;
-                $insert->abreviatura = $res['tipo_aporte'];
+                $insert->abreviatura = 'total'; //Total de aportes + no aportes
                 $insert->promedia   = $this->promedia;
                 $insert->imprime    = $this->imprime;
                 $insert->porcentaje = $this->porcentaje;
@@ -246,52 +265,57 @@ class CalculoV1{
     }
 
 
-    private function calcular_evaluaciones($arrayBloque, $tipoAporte){
-        $con    = Yii::$app->db;
-        $bloqueId = $arrayBloque['bloque_id'];
+//     private function calcular_evaluaciones($arrayBloque, $tipoAporte){
+//         $con    = Yii::$app->db;
+//         $bloqueId = $arrayBloque['bloque_id'];
 
-        $query = "select 	tip.tipo_aporte  
-                            ,(ins.nota *  5) / 100 as promedio
-                    from 	lib_promedios_insumos ins
-                            inner join scholaris_tipo_actividad tip on tip.orden = ins.grupo_calificacion 
-                    where 	ins.bloque_id = $bloqueId
-                            and ins.grupo_id = $this->grupoId
-                            and tip.categoria = '$tipoAporte';";
+//         $query = "select tipo_aporte, sum(promedio_aporte)
+//                         from(
+//                                         select 	tip.tipo_aporte  
+//                                                 ,trunc((trunc(avg(ins.nota),2)*5)/100,2) as promedio_aporte
+//                                         from 	lib_promedios_insumos ins
+//                                                 inner join scholaris_tipo_actividad tip on tip.orden = ins.grupo_calificacion 
+//                                         where 	ins.bloque_id = $bloqueId
+//                                                 and ins.grupo_id = $this->grupoId
+//                                                 and tip.categoria = '$tipoAporte'
+//                                         group by tip.tipo_aporte
+//                         ) as promedio_aporte
+//                         group by tipo_aporte;";
         
-            $res = $con->createCommand($query)->queryOne();
-            $nota = isset($res['promedio']) ? $res['promedio'] : 0;
+//             $res = $con->createCommand($query)->queryOne();
+//             $nota = isset($res['promedio']) ? $res['promedio'] : 0;
 
-            if($nota != 0){
-                $model = LibBloquesGrupoClase::find()->where([
-                    'grupo_id' => $this->grupoId,
-                    'abreviatura' => '$tipoAporte',
-                ])->one();
+//             if($nota != 0){
+//                 $model = LibBloquesGrupoClase::find()->where([
+//                     'grupo_id' => $this->grupoId,
+//                     'abreviatura' => '$tipoAporte',
+//                 ])->one();
         
-                if($model){
-                    $model->nota        = $nota;
-                    $model->updated_at  = $this->ahora;
-                    $model->updated     = $this->user;
-                    $model->save();
-                }else{                
-                    $insert = new LibBloquesGrupoClase();
-                    $insert->grupo_id   = $this->grupoId;
-                    $insert->bloque_id  = $bloqueId;
-                    $insert->nota       = $nota;
-                    $insert->created_at = $this->ahora;
-                    $insert->created    = $this->user;
-                    $insert->updated_at = $this->ahora;
-                    $insert->updated    = $this->user;
-                    $insert->periodo_id = $this->periodId;
-                    $insert->abreviatura = $tipoAporte;
-                    $insert->promedia   = $this->promedia;
-                    $insert->imprime    = $this->imprime;
-                    $insert->porcentaje = $this->porcentaje;
-                    $insert->tipo       = $this->tipo;
+//                 if($model){
+//                     $model->nota        = $nota;
+//                     $model->updated_at  = $this->ahora;
+//                     $model->updated     = $this->user;
+//                     $model->save();
+//                 }else{                
+//                     $insert = new LibBloquesGrupoClase();
+//                     $insert->grupo_id   = $this->grupoId;
+//                     $insert->bloque_id  = $bloqueId;
+//                     $insert->nota       = $nota;
+//                     $insert->created_at = $this->ahora;
+//                     $insert->created    = $this->user;
+//                     $insert->updated_at = $this->ahora;
+//                     $insert->updated    = $this->user;
+//                     $insert->periodo_id = $this->periodId;
+//                     $insert->abreviatura = $tipoAporte;
+//                     $insert->promedia   = $this->promedia;
+//                     $insert->imprime    = $this->imprime;
+//                     $insert->porcentaje = $this->porcentaje;
+//                     $insert->tipo       = $this->tipo;
         
-                    $insert->save();
-                }
-            }
-    }
+//                     $insert->save();
+//                 }
+//             }
+//     }
 
 
 

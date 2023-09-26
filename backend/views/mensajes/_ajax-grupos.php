@@ -7,7 +7,8 @@
             'message_header_id' => $messageId,
             'tipo_busqueda' => 'grabar_grupo',
             'word' => 'none',
-            'grupo_id' => $g['id']
+            'grupo_id' => $g['id'],
+            'tipo' => $g['tipo']
         ]);
         echo '</p>';
     }

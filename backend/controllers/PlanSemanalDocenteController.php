@@ -78,6 +78,7 @@ class PlanSemanalDocenteController extends Controller
         $period = ScholarisPeriodo::findOne($periodId);
 
         $blocks = $this->get_blocks($user, $period->codigo);
+       
 
         return $this->render('index', [
             'blocks' => $blocks
@@ -93,9 +94,9 @@ class PlanSemanalDocenteController extends Controller
                             , par.name as coordinador
                             ,(select 	estado 
                                 from 	plan_semanal_bitacora
-                                where 	docente_usuario = 'elive@ism.edu.ec'
+                                where 	docente_usuario = '$usuarioLog'
                                         and usuario_recibe = aut.usuario 
-                                        and semana_id = $weekId
+                                        and semana_id = $weekId 
                                 order by id desc
                                 limit 1) as estado
                     from 	scholaris_clase cla
@@ -114,6 +115,9 @@ class PlanSemanalDocenteController extends Controller
                             and ipm.scholaris_periodo_id = $periodoId
                     group by aut.usuario 
                             , par.name;";
+
+        // echo $query;
+        // die();
         $res = $con->createCommand($query)->queryAll();
         return $res;
     }

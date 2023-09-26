@@ -269,7 +269,8 @@ class MensajesController extends Controller
             return $groups;
         }else if($tipoBusqueda == 'grabar_grupo'){
             $groupId = $_GET['grupo_id'];
-            $this->save_group($messageHeaderId, $groupId);
+            $tipo = $_GET['tipo'];
+            $this->save_group($messageHeaderId, $groupId, $tipo);
             return $this->redirect(['view', 'id' => $messageHeaderId]);
         }else if($tipoBusqueda == 'delete_group'){            
             $this->delete_para($messageHeaderId, $_GET['group_id']);
@@ -349,16 +350,33 @@ class MensajesController extends Controller
     }
 
     //para grabar el grupo
-    private function save_group($messageId, $groupId){
+    private function save_group($messageId, $groupId, $tipo){
 
+        $hoy = date('Y-m-d H:i:s');
         $con = Yii::$app->db;
-        $query = "insert into message_para (message_id, para_usuario, estado, fecha_recepcion, grupo_id) 
-                            select 	$messageId, usuario
-                            ,false 
-                            ,current_timestamp 
-                            ,message_group_id
-                    from 	message_group_user
-                    where 	message_group_id = $groupId;";
+        // $query = "insert into message_para (message_id, para_usuario, estado, fecha_recepcion, grupo_id) 
+        //                     select 	$messageId, usuario
+        //                     ,false 
+        //                     ,current_timestamp 
+        //                     ,message_group_id
+        //             from 	message_group_user
+        //             where 	message_group_id = $groupId;";
+
+        if($tipo == 'ESTUDIANTES'){
+            $query = "insert into message_para (message_id, para_usuario, estado, fecha_recepcion, grupo_id)
+                        select 	$messageId,os.x_institutional_email, false, current_timestamp, $groupId 
+                        from	scholaris_grupo_alumno_clase gru
+                                inner join op_student os on os.id = gru.estudiante_id 
+                        where 	gru.clase_id = $groupId;";
+        }else{
+            $query = "insert into message_para (message_id, para_usuario, estado, fecha_recepcion, grupo_id)
+                        select 	$messageId, concat('f', os.x_codigo_relacion,'@ism.edu.ec')
+                            , false, current_timestamp, $groupId
+                        from	scholaris_grupo_alumno_clase gru
+                                inner join op_parent_op_student_rel rel on rel.op_student_id = gru.estudiante_id
+                                inner join op_student os on os.id = gru.estudiante_id 
+                        where 	gru.clase_id = $groupId group by 2;";
+        }
 
         $con->createCommand($query)->execute();
     }
@@ -367,14 +385,58 @@ class MensajesController extends Controller
     // para llenar seleccion de grupos
     private function search_groups($periodoId, $messageId, $word){
         $con = Yii::$app->db;
-        $query = "select 	gro.id, gro.nombre  
-                            from 	message_group gro
-                            where 	gro.scholaris_periodo_id = $periodoId
-                                    and gro.nombre ilike '$word%'
-                                    and gro.id not in (select 	par.grupo_id 
-                                            from 	message_para par
-                                                    inner join message_header mh on mh.id = par.message_id 
-                                            where 	par.grupo_id = gro.id and mh.id = $messageId);";
+        // $query = "select 	gro.id, gro.nombre  
+        //                     from 	message_group gro
+        //                     where 	gro.scholaris_periodo_id = $periodoId
+        //                             and gro.nombre ilike '$word%'
+        //                             and gro.id not in (select 	par.grupo_id 
+        //                                     from 	message_para par
+        //                                             inner join message_header mh on mh.id = par.message_id 
+        //                                     where 	par.grupo_id = gro.id and mh.id = $messageId);";
+
+
+        $query = "select 	cla.id
+                            ,concat('ESTUDIANTES', ' | ', cur.name, ' ', par.name, ' ',mat.nombre, ' ',fac.x_first_name,' ',fac.last_name) as nombre
+                            ,'ESTUDIANTES' as tipo
+                    from 	scholaris_clase cla
+                            inner join op_course_paralelo par on par.id = cla.paralelo_id 
+                            inner join op_course cur on cur.id = par.course_id 
+                            inner join ism_area_materia iam on iam.id = cla.ism_area_materia_id 
+                            inner join ism_malla_area ima on ima.id = iam.malla_area_id 
+                            inner join ism_periodo_malla ipm on ipm.id = ima.periodo_malla_id 
+                            inner join ism_materia mat on mat.id = iam.materia_id 
+                            inner join op_faculty fac on fac.id = cla.idprofesor 
+                    where 	ipm.scholaris_periodo_id = $periodoId 
+                            and (cur.name ilike '%$word%' or par.name ilike '%$word%' or mat.nombre ilike '%$word%'
+                                    or fac.x_first_name ilike '%$word%' or fac.last_name ilike '%$word%' 
+                            )
+                            and cla.id not in (select 	par.grupo_id 
+                                                                from 	message_para par
+                                                                        inner join message_header mh on mh.id = par.message_id 
+                                                                where 	par.grupo_id = cla.id and mh.id = $messageId)
+                    union all 
+                    select 	cla.id
+                            ,concat('PADRES', ' | ',cur.name, ' ', par.name, ' ',mat.nombre, ' ',fac.x_first_name,' ',fac.last_name) as nombre
+                            ,'PADRES' as tipo
+                    from 	scholaris_clase cla
+                            inner join op_course_paralelo par on par.id = cla.paralelo_id 
+                            inner join op_course cur on cur.id = par.course_id 
+                            inner join ism_area_materia iam on iam.id = cla.ism_area_materia_id 
+                            inner join ism_malla_area ima on ima.id = iam.malla_area_id 
+                            inner join ism_periodo_malla ipm on ipm.id = ima.periodo_malla_id 
+                            inner join ism_materia mat on mat.id = iam.materia_id 
+                            inner join op_faculty fac on fac.id = cla.idprofesor 
+                    where 	ipm.scholaris_periodo_id = $periodoId 
+                            and (cur.name ilike '%$word%' or par.name ilike '%$word%' or mat.nombre ilike '%$word%'
+                                    or fac.x_first_name ilike '%$word%' or fac.last_name ilike '%$word%' 
+                            )
+                            and cla.id not in (select 	par.grupo_id 
+                                                                from 	message_para par
+                                                                        inner join message_header mh on mh.id = par.message_id 
+                                                                where 	par.grupo_id = cla.id and mh.id = $messageId)
+                    order by 2;";
+
+                    
                                             
         $res = $con->createCommand($query)->queryAll();
         $html = '';
@@ -395,10 +457,10 @@ class MensajesController extends Controller
         $con = Yii::$app->db;
         $query = "select 	concat(os.last_name,' ', os.first_name,' ', middle_name) as student, os.x_institutional_email  
         from 	op_student os 
-        where 	last_name ilike 'apolo arev%'
-                or first_name ilike 'apolo arev%'
-                or middle_name ilike 'apolo arev%'
-                or x_institutional_email ilike 'apolo arev%'
+        where 	last_name ilike '$word%'
+                or first_name ilike '$word%'
+                or middle_name ilike '$word%'
+                or x_institutional_email ilike '$word%'
                 and os.x_institutional_email not in (select 	par.para_usuario  
                 from 	message_para par
                         inner join message_header mh on mh.id = par.message_id 

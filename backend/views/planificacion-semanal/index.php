@@ -446,8 +446,6 @@ function nombreSemana($semana)
 
 ?>
 
-
-
 <?php
 function obtener_total_insumos($planSemanalId, $horaId)
 {
@@ -503,7 +501,6 @@ function obtener_total_insumos($planSemanalId, $horaId)
     }
 }
 ?>
-
 
 <?php
 function obtener_total_recursos($planSemanalId)

@@ -23,8 +23,7 @@ $this->title = 'Actividad #: ' . $modelActividad->id . ' | ' . $modelActividad->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
 <link rel="stylesheet" type="text/css" href="pdf_viewer.css">
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
-    integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://mozilla.github.io/pdf.js/build/pdf.js"></script>
 <!-- JS HTML2CANVAS  -->
@@ -112,8 +111,7 @@ $this->title = 'Actividad #: ' . $modelActividad->id . ' | ' . $modelActividad->
         <div class="card shadow col-lg-11 col-md-11">
             <div class=" row " style="margin-top: 10px;margin-bottom: 10px;">
                 <div class="col-lg-1">
-                    <h4><img src="../ISM/main/images/submenu/retroalimentacion.png" width="64px" style=""
-                            class="img-thumbnail"></h4>
+                    <h4><img src="../ISM/main/images/submenu/retroalimentacion.png" width="64px" style="" class="img-thumbnail"></h4>
                 </div>
                 <?php
                 if ($modelActividad->calificado == true) {
@@ -130,7 +128,7 @@ $this->title = 'Actividad #: ' . $modelActividad->id . ' | ' . $modelActividad->
                     </h5>
                     <p>(
                         <?=
-                            ' <small>' . $modelActividad->clase->ismAreaMateria->materia->nombre .
+                        ' <small>' . $modelActividad->clase->ismAreaMateria->materia->nombre .
                             ' - ' .
                             'Clase #:' . $modelActividad->clase->id .
                             ' - ' .
@@ -182,7 +180,7 @@ $this->title = 'Actividad #: ' . $modelActividad->id . ' | ' . $modelActividad->
                     <div class="row" style="margin-top: 0px;">
                         <div class="box-name" style="text-align: center;">
                             <?=
-                                '<h5>' . $group->alumno->last_name . " " . $group->alumno->first_name . " " .
+                            '<h5>' . $group->alumno->last_name . " " . $group->alumno->first_name . " " .
                                 $group->alumno->middle_name . '</h5>';
                             ?>
                         </div>
@@ -200,7 +198,7 @@ $this->title = 'Actividad #: ' . $modelActividad->id . ' | ' . $modelActividad->
                                 //llamado de ajax
 
                                 // URL del archivo PDF
-                                var pdfUrl = '/files/students/10/Plan Semanal 30.pdf';
+                                var pdfUrl = '/files/homeworks/introduccion.pdf';
 
                                 // Variables para el lienzo de dibujo
                                 var drawingCanvas = document.getElementById('pdf-canvas');
@@ -210,9 +208,9 @@ $this->title = 'Actividad #: ' . $modelActividad->id . ' | ' . $modelActividad->
                                 var lastY = 0;
 
                                 // Carga del archivo PDF
-                                pdfjsLib.getDocument(pdfUrl).promise.then(function (pdf) {
+                                pdfjsLib.getDocument(pdfUrl).promise.then(function(pdf) {
                                     // Obtiene la primera página del PDF
-                                    pdf.getPage(1).then(function (page) {
+                                    pdf.getPage(1).then(function(page) {
                                         var scale = 1.75;
                                         var viewport = page.getViewport({
                                             scale: scale
@@ -281,7 +279,7 @@ $this->title = 'Actividad #: ' . $modelActividad->id . ' | ' . $modelActividad->
 
                                     html2canvas($("#pdf-viewer-container"), {
                                         useCORS: true,
-                                        onrendered: function (canvas) {
+                                        onrendered: function(canvas) {
                                             var myImage = canvas.toDataURL("image/png");
                                             guarda_imagen_div(myImage);
                                             // $("#mapa-google").hide();
@@ -303,7 +301,7 @@ $this->title = 'Actividad #: ' . $modelActividad->id . ' | ' . $modelActividad->
                                         url: url,
                                         data: params,
                                         type: 'POST',
-                                        success: function () {
+                                        success: function() {
                                             //alert('Imagen guardada!');
                                         }
                                     });
@@ -391,7 +389,7 @@ $this->title = 'Actividad #: ' . $modelActividad->id . ' | ' . $modelActividad->
                             echo $ods['opcion'];
                             echo '</div>'
 
-                                ?>
+                        ?>
 
                             <div class="row box" style="font-weight: bold;margin-top: -10px">
                                 <div class="" style="text-align: center;">
@@ -416,26 +414,22 @@ $this->title = 'Actividad #: ' . $modelActividad->id . ' | ' . $modelActividad->
                                     <h5 class="text-center font-weight-bold">Cambiar nota</h5>
                                     <div class="radio-options" style="text-align: center">
                                         <label class="radio-label">
-                                            <input type="radio" name="gender" value="0"
-                                                onclick="changeOds(<?= $group->id ?>, <?= $modelActividad->id ?>, 0); changeRadioState(this);">
+                                            <input type="radio" name="gender" value="0" onclick="changeOds(<?= $group->id ?>, <?= $modelActividad->id ?>, 0); changeRadioState(this);">
                                             <span class="radio-button">NO EVALUADO</span>
                                         </label>
 
                                         <label class="radio-label">
-                                            <input type="radio" name="gender" value="1"
-                                                onclick="changeOds(<?= $group->id ?>, <?= $modelActividad->id ?>, 1); changeRadioState(this);">
+                                            <input type="radio" name="gender" value="1" onclick="changeOds(<?= $group->id ?>, <?= $modelActividad->id ?>, 1); changeRadioState(this);">
                                             <span class="radio-button">INICIADO</span>
                                         </label>
 
                                         <label class="radio-label">
-                                            <input type="radio" name="gender" value="2"
-                                                onclick="changeOds(<?= $group->id ?>, <?= $modelActividad->id ?>, 2); changeRadioState(this);">
+                                            <input type="radio" name="gender" value="2" onclick="changeOds(<?= $group->id ?>, <?= $modelActividad->id ?>, 2); changeRadioState(this);">
                                             <span class="radio-button">EN PROCESO</span>
                                         </label>
 
                                         <label class="radio-label">
-                                            <input type="radio" name="gender" value="3"
-                                                onclick="changeOds(<?= $group->id ?>, <?= $modelActividad->id ?>, 3); changeRadioState(this);">
+                                            <input type="radio" name="gender" value="3" onclick="changeOds(<?= $group->id ?>, <?= $modelActividad->id ?>, 3); changeRadioState(this);">
                                             <span class="radio-button">ADQUIRIDO</span>
                                         </label>
                                     </div>
@@ -443,7 +437,7 @@ $this->title = 'Actividad #: ' . $modelActividad->id . ' | ' . $modelActividad->
                             </div>
 
 
-                            <?php
+                        <?php
                         } else {
                             echo 'No existe parámetros ODS para este insumo';
                         }
@@ -501,8 +495,8 @@ $this->title = 'Actividad #: ' . $modelActividad->id . ' | ' . $modelActividad->
 
 
     <script>
-        $(function () {
-            $('.input').keyup(function (e) {
+        $(function() {
+            $('.input').keyup(function(e) {
                 if (e.keyCode == 38) //38 para arriba
                     mover(e, -1);
                 if (e.keyCode == 40) //40 para abajo
@@ -540,7 +534,7 @@ $this->title = 'Actividad #: ' . $modelActividad->id . ' | ' . $modelActividad->
                 data: params,
                 url: url,
                 type: 'POST',
-                success: function () {
+                success: function() {
                     // alert("cambio exitoso");
 
                 }
@@ -595,7 +589,7 @@ $this->title = 'Actividad #: ' . $modelActividad->id . ' | ' . $modelActividad->
                 data: params,
                 url: url,
                 type: 'POST',
-                success: function () {
+                success: function() {
                     // alert("cambio exitoso");
                     location.reload();
                 }
@@ -619,7 +613,6 @@ $this->title = 'Actividad #: ' . $modelActividad->id . ' | ' . $modelActividad->
             // Agrega aquí tu lógica original para cambiar la nota
             // Utiliza groupID, actividadID y value según sea necesario
         }
-
     </script>
 
     <!-- agrega un icono dependiendo de la califiacion  -->

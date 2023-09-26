@@ -7,6 +7,7 @@ use Yii;
 use backend\models\ScholarisAsistenciaAlumnosNovedades;
 use backend\models\ScholarisAsistenciaAlumnosNovedadesSearch;
 use backend\models\ScholarisAsistenciaComportamientoDetalle;
+use backend\models\Usuario;
 use backend\models\ViewNovedadesEstudianteSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -69,6 +70,10 @@ class ScholarisAsistenciaAlumnosNovedadesController extends Controller
         return true;
     }
 
+    public function actionIndex(){
+        return $this->redirect(['index1']);
+    }
+
     /**
      * Lists all ScholarisAsistenciaAlumnosNovedades models.
      * @return mixed
@@ -78,9 +83,16 @@ class ScholarisAsistenciaAlumnosNovedadesController extends Controller
         
         $periodoId = Yii::$app->user->identity->periodo_id;
         $user = Yii::$app->user->identity->usuario;
+        $usuario = Usuario::find()->where(['usuario' => $user])->one();
+
+        $perfil = $usuario->rol->rol;
+
+        $posicion = strpos($perfil, 'Profesor');
+
+        $esProfesor = $posicion !== false ? 1 : 0;
 
         $searchModel = new ViewNovedadesEstudianteSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams, $periodoId, $user);
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams, $periodoId, $user, $esProfesor);
 
         return $this->render('index', [
             'searchModel' => $searchModel,

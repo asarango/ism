@@ -132,15 +132,20 @@ if (!Yii::$app->user->isGuest) {
                             ?>
 
                         </li>
-                        <!-- <li class="nav-item">
-                            <a class="nav-link" href="#">Link</a>
-                        </li> -->
+
+                        <!-- inicia offcanvas para aplicaciones de terceros -->
+                        <li class="nav-item">
+                            <a class="nav-link" data-bs-toggle="offcanvas" href="#offcanvasExample" role="button" aria-controls="offcanvasExample" title="Aplicaciones">
+                                <i class="fas fa-store"></i>
+                            </a>
+                        </li>
+                        <!-- fin offcanvas para aplicaciones de terceros -->
 
 
                     </ul>
                     <!-- <form class="d-flex"> -->
                     <div id="google_translate_element" class="google" style="margin-right: 10px;"></div>
-                    <div>                    
+                    <div>
 
                         <?php
 
@@ -177,9 +182,7 @@ if (!Yii::$app->user->isGuest) {
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" 
-                                id="staticBackdropLabel"
-                                style="color: #9e28b5">
+                            <h5 class="modal-title" id="staticBackdropLabel" style="color: #9e28b5">
                                 Tienes notificaciones sin leer
                             </h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -196,8 +199,8 @@ if (!Yii::$app->user->isGuest) {
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
                             <?=
-                                Html::a('Ver notificaciones',['mensajes/received'],['class' => 'btn btn-primary']);
-                            ?>                            
+                            Html::a('Ver notificaciones', ['mensajes/received'], ['class' => 'btn btn-primary']);
+                            ?>
                         </div>
                     </div>
                 </div>
@@ -224,6 +227,40 @@ if (!Yii::$app->user->isGuest) {
     <br>
     <br>
 
+
+    <!-- contenido para offcanvas de apliaciones de externos -->
+    <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
+        <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="offcanvasExampleLabel">Aplicaciones</h5>
+            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+            <div>
+                Estudiantes
+            </div>
+
+            <div class="row">
+                <div class="col">
+                    <?=
+                        Html::a(
+                            '<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-file-cv" width="60" height="60" viewBox="0 0 24 24" stroke-width="1" stroke="#0a1f8f" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                <path d="M14 3v4a1 1 0 0 0 1 1h4" />
+                                <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" />
+                                <path d="M11 12.5a1.5 1.5 0 0 0 -3 0v3a1.5 1.5 0 0 0 3 0" />
+                                <path d="M13 11l1.5 6l1.5 -6" />
+                             </svg><br>Currículo',['envia-aplicacion/index1',
+                                'app' => 'curriculo_estudiante'
+                            ]
+                        )                       
+                    ?>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- fin de contenido para offcanvas de apliaciones de externos -->
+
     <footer class="fixed-bottom">
 
         <div class="logo">
@@ -236,21 +273,21 @@ if (!Yii::$app->user->isGuest) {
 
     </footer>
 
- 
 
-<script type="text/javascript">
-    function googleTranslateElementInit() {
-        // new google.translate.TranslateElement({pageLanguage: 'es', includedLanguages: 'ca,eu,gl,en,fr,it,pt,de', layout: google.translate.TranslateElement.InlineLayout.SIMPLE, gaTrack: true}, 'google_translate_element');
-        new google.translate.TranslateElement({
-            pageLanguage: 'es',
-            includedLanguages: 'en,fr,es',
-            layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
-            gaTrack: true
-        }, 'google_translate_element');
-    }
-</script>
 
-<script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+            // new google.translate.TranslateElement({pageLanguage: 'es', includedLanguages: 'ca,eu,gl,en,fr,it,pt,de', layout: google.translate.TranslateElement.InlineLayout.SIMPLE, gaTrack: true}, 'google_translate_element');
+            new google.translate.TranslateElement({
+                pageLanguage: 'es',
+                includedLanguages: 'en,fr,es',
+                layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+                gaTrack: true
+            }, 'google_translate_element');
+        }
+    </script>
+
+    <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>

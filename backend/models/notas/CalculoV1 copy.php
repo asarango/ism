@@ -37,6 +37,9 @@ class CalculoV1{
                                 $areaId,
                                 $studentId){
 
+                                    echo $bloqueId;
+                                    die();
+
         $this->periodId = $periodId;
         $this->grupoId  = $grupoId;
         $this->bloqueId = $bloqueId;
@@ -60,7 +63,7 @@ class CalculoV1{
         $this->modelMallaArea = IsmMallaArea::findOne($areaId);
 
         $this->calcular_pr();
-        die();
+
         $this->calcular_pr80_porciento();
         $this->calcular_ex20_porciento();
         $this->calcular_quimestre();

@@ -54,7 +54,7 @@ $this->params['breadcrumbs'][] = $this->title;
     }
 
     .link {
-        color: #007bff;
+        color: black;
         text-decoration: none;
         transition: color 0.3s;
         transition: transform 0.3s, color 0.3s;
@@ -81,12 +81,15 @@ $this->params['breadcrumbs'][] = $this->title;
                     ?>
                     <div class="col-lg-3 col-md-3 text-center">
                         <div class="text-center animate__animated animate__fadeInRight">
-                            <img src="../ISM/main/images/submenu/<?= $photo ?>" width="60%" class="img-thumbnail"
-                                alt="<?= $photo ?>" style="align-items: center">
-                            <div class="card-body">
-                                <?= Html::a($sub['nombre'], ['/' . $ruta], ['class' => 'link']) ?>
-                            </div>
+                            <a href="<?= Url::to(['/' . $ruta]) ?>">
+                                <img src="../ISM/main/images/submenu/<?= $photo ?>" width="60%" class="img-thumbnail"
+                                    alt="<?= $photo ?>" style="align-items: center">
+                                <div class="card-body">
+                                    <?= Html::a($sub['nombre'], ['/' . $ruta], ['class' => 'link']) ?>
+                                </div>
+                            </a>
                         </div>
+
                     </div>
                 <?php endforeach; ?>
             </div>

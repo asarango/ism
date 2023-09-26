@@ -39,7 +39,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 </div>
                 <div class="col-lg-2 col-md-2">
                     <!-- menu derecha -->
-                    
+
                     <?=
                     Html::a(
                         '<span class="badge rounded-pill" style="background-color: #9e28b5"><i class="fa fa-briefcase" aria-hidden="true"></i> Inicio</span>',
@@ -55,14 +55,14 @@ $this->params['breadcrumbs'][] = $this->title;
                         ['class' => 'link']
                     );
                     ?>
-                    
+
                 </div> <!-- fin de menu derecha -->
                 <hr>
             </div><!-- FIN DE CABECERA -->
 
             <!-- inicia menu  -->
             <div class="row">
-                
+
 
                 <div class="col-lg-6 col-md-6" style="text-align: right;">
 
@@ -79,21 +79,18 @@ $this->params['breadcrumbs'][] = $this->title;
                     <?php
 
                     if ($seccionCode == 'DIPL') {
-                        ?>
-                        <iframe width="100%"
+                    ?>
+                        <iframe width="100%" height="600" src="<?= Url::toRoute(['plan-vertical-diploma/pdf', 'cabecera_id' => $cabecera->id]) ?>">
+                        </iframe>
+
+                        <!-- <iframe width="100%"
                                     height="600"
-                                    src="<?= Url::toRoute(['plan-vertical-diploma/pdf', 
-                                        'cabecera_id' => $cabecera->id]) ?>">
-                            </iframe>
-
-
-
-                            <!-- <iframe width="100%"
-                                    height="600"
-                                    src="<?= Url::toRoute(['planificacion-bloques-unidad/pdf-pv-dp', 
-                                        'cabecera_id' => $cabecera->id]) ?>">
+                                    src="<?= Url::toRoute([
+                                                'planificacion-bloques-unidad/pdf-pv-dp',
+                                                'cabecera_id' => $cabecera->id
+                                            ]) ?>">
                             </iframe> -->
-                        <?php
+                    <?php
                     } else {
                     ?>
                         <nav>
@@ -183,8 +180,6 @@ $this->params['breadcrumbs'][] = $this->title;
                                     ?>
                                 </div>
                             </div>
-
-
 
                             <!--Muestra PH-PV-->
                             <div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab">
@@ -356,7 +351,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     $form = ActiveForm::begin([
                         'action' => Url::to(['detalle', 'cabecera_id' => $cabecera->id, 'template_id' => $template_id]),
                         'method' => 'post'
-                        
+
 
                     ]);
                     ?>
@@ -373,7 +368,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         })
                     </script>
 
-                    
+
 
                     <?php
                     if ($cabecera->estado == 'APROBADO') {
@@ -401,10 +396,11 @@ $this->params['breadcrumbs'][] = $this->title;
                             <?=
                             Html::a(
                                 '<i class="fas fa-check-circle"> Aprobar Planificación</i>',
-                                ['aprobacion', 'cabecera_id' => $cabecera->id,
-                                 'template_id' => $template_id
-                            
-                            ],
+                                [
+                                    'aprobacion', 'cabecera_id' => $cabecera->id,
+                                    'template_id' => $template_id
+
+                                ],
                                 ['class' => 'btn btn-success my-text-medium']
                             );
                             ?>

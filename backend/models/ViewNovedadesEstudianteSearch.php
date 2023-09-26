@@ -41,10 +41,16 @@ class ViewNovedadesEstudianteSearch extends ViewNovedadesEstudiante
      *
      * @return ActiveDataProvider
      */
-    public function search($params, $periodoId, $user)
+    public function search($params, $periodoId, $user, $esProfesor)
     {
-        $query = ViewNovedadesEstudiante::find()                
+        if($esProfesor == 1){
+            $query = ViewNovedadesEstudiante::find()                
                 ->where(['scholaris_periodo_id' => $periodoId, 'docente' => $user]);
+        }else{
+            $query = ViewNovedadesEstudiante::find()                
+                ->where(['scholaris_periodo_id' => $periodoId]);
+        }
+        
 
         // add conditions that should always apply here
 

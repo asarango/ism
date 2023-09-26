@@ -88,6 +88,7 @@ $this->title = '¡Mis insumos!';
                             'curso',
                             'paralelo',
                             'nombre',
+                            'nombre_nacional',
                             'actividad_id',
                             'inicio',
                             'title',

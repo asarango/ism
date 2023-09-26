@@ -11,9 +11,10 @@ use yii\helpers\Url;
 $this->title = 'Aprobación de Planificaciones DPL';
 $this->params['breadcrumbs'][] = $this->title;
 
-// echo '<pre>';
+// echo"<pre>";
 // print_r($detalle);
 // die();
+
 ?>
 
 <style>
@@ -106,11 +107,11 @@ $this->params['breadcrumbs'][] = $this->title;
                 </div>
                 <div class="col-lg-1">
                     <?=
-                        Html::a(
-                            '<span class="badge rounded-pill" style="background-color: #9e28b5;color: #fff"><i class="fa fa-briefcase" aria-hidden="true"></i> Inicio</span>',
-                            ['site/index'],
-                            ['class' => 'link']
-                        );
+                    Html::a(
+                        '<span class="badge rounded-pill" style="background-color: #9e28b5;color: #fff"><i class="fa fa-briefcase" aria-hidden="true"></i> Inicio</span>',
+                        ['site/index'],
+                        ['class' => 'link']
+                    );
                     ?>
                 </div>
                 <hr>
@@ -121,20 +122,14 @@ $this->params['breadcrumbs'][] = $this->title;
             <div class="container">
                 <?php
 
-
-                
-                 
-                $mostrarDlp = [14, 15];
-
-                // echo "<pre>";
-                // print_r($detalle);
-                // die();
+                $mostrarDlp = ['0', '1'];
 
                 foreach ($mostrarDlp as $index) {
                     $curso = $detalle[$index];
-                    
-                    ?>
+
+                ?>
                     <div class="course-card">
+
                         <div class="course-info">
                             <div class="course-title">
                                 <?= $curso['curso'] . ' - ' . $curso['code'] ?>
@@ -144,42 +139,43 @@ $this->params['breadcrumbs'][] = $this->title;
                                 <?= $curso['total_materias'] ?>
                             </div>
                         </div>
+
                         <div class="action-links">
                             <?=
-                                Html::a('Planificación Vertical', [
-                                    'planificacion-aprobacion/asignaturas',
-                                    'template_id' => $curso['x_template_id']
-                                ], [
-                                    'class' => 'action-link',
-                                    'title' => 'Ver planificacion Vertical'
-                                ]);
+                            Html::a('Planificación Vertical', [
+                                'planificacion-aprobacion/asignaturas',
+                                'template_id' => $curso['x_template_id']
+                            ], [
+                                'class' => 'action-link',
+                                'title' => 'Ver planificacion Vertical'
+                            ]);
                             ?>
                             <?=
-                                Html::a('Plan de Unidades', [
-                                    'pud-aprobacion/index1',
-                                    'template_id' => $curso['x_template_id']
-                                ], [
-                                    'class' => 'action-link',
-                                    'title' => 'Ver plan de Unidades'
-                                ]);
+                            Html::a('Plan de Unidades', [
+                                'pud-aprobacion/index1',
+                                'template_id' => $curso['x_template_id']
+                            ], [
+                                'class' => 'action-link',
+                                'title' => 'Ver plan de Unidades'
+                            ]);
                             ?>
                             <?=
-                                Html::a('Planificación Semanal', [
-                                    'plan-semanal-docente/index',
-                                    'template_id' => $curso['x_template_id']
-                                ], [
-                                    'class' => 'action-link',
-                                    'title' => 'Ver plan semanal'
-                                ]);
+                            Html::a('Planificación Semanal', [
+                                'aprobacion-plan-semanal-diploma/index1',
+                                'template_id' => $curso['x_template_id']
+                            ], [
+                                'class' => 'action-link',
+                                'title' => 'Ver plan semanal'
+                            ]);
                             ?>
-                            <?php if ($curso['code'] == 'PAI'): ?>
+                            <?php if ($curso['code'] == 'PAI') : ?>
                                 <?=
-                                    Html::a('Mapa de Enfoques', ['materias-pai/lista-asignaturas'], ['class' => 'action-link']);
+                                Html::a('Mapa de Enfoques', ['materias-pai/lista-asignaturas'], ['class' => 'action-link']);
                                 ?>
                             <?php endif; ?>
                         </div>
                     </div>
-                    <?php
+                <?php
                 }
                 ?>
             </div>

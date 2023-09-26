@@ -75,7 +75,6 @@ class RegistraNotasV1{
                         where	cal.idalumno = $this->alumnoId
                                 and act.bloque_actividad_id = $this->bloqueId
                                 and cal.grupo_numero = $this->grupoCalificacion;";                          
-
             
             $res = $con->createCommand($query)->queryOne();
 
@@ -84,12 +83,12 @@ class RegistraNotasV1{
                         'bloque_id' => $this->bloqueId,
                         'grupo_calificacion' => $this->grupoCalificacion
                     ])
-                    ->one();
+                    ->one(); 
 
-            if($model){
+            if($model){  
                 $model->nota = $res['promedio'];
                 $model->updated_at = $this->ahora;
-                $model->updated = $this->user;                
+                $model->updated = $this->user;               
                 $model->save();
             }else{
                 $insert = new LibPromediosInsumos();

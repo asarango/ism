@@ -82,9 +82,8 @@ class PlanificacionAprobacionController extends Controller{
             $curso['totales'] = $this->consulta_totales($curso['x_template_id']);
             array_push($detalle, $curso);            
         }           
-// echo '<pre>';
-// print_r($detalle);
-// die();
+
+
         return $this->render('index', [
             'detalle' => $detalle
         ]);
@@ -106,11 +105,11 @@ class PlanificacionAprobacionController extends Controller{
                     inner join op_section s on s.id = c.section 
                     inner join scholaris_op_period_periodo_scholaris sop on sop.op_id = s.period_id 
                     where sop.scholaris_id = $periodoId
-                    --and s.code = '$section' 
+                    and s.code = 'DIPL' 
                     and c.x_institute = $institutoId
                     group by c.id ,c.name ,c.x_template_id, s.code
                     order by c.x_template_id desc;";
-       print_r($query);
+    
         $res = $con->createCommand($query)->queryAll();
 
         return $res;

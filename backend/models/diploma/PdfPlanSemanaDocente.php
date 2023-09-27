@@ -174,7 +174,10 @@ class PdfPlanSemanaDocente extends \yii\db\ActiveRecord
 
             $html .= '<tr>';
             $html .= '<td class="centrarTexto border">'.$plan['fecha'].'</td>';
-            $html .= '<td class="centrarTexto border">'.$plan['id'].'</td>';
+            setlocale(LC_TIME, 'es_ES.UTF-8');
+            $diaTimeStamp = strtotime($plan['fecha']);
+            $dia = strftime("%A", $diaTimeStamp);
+            $html .= '<td class="centrarTexto border">'.$dia.'</td>';
             $html .= '<td class="centrarTexto border">'.$plan['sigla'].'</td>';
             $html .= '<td class="centrarTexto border">'.$plan['curso'].'</td>';
             $html .= '<td class="centrarTexto border">'.$plan['paralelo'].'</td>';
@@ -222,7 +225,7 @@ from 	planificacion_semanal ps
 		inner join op_course cur on cur.id = par.course_id 
 where 	ps.semana_id = $this->semanaId 
 		and ps.created = '$this->usuario' 
-order by ps.orden_hora_semana;";
+order by ps.fecha, hor.sigla;";
 
         // echo $query;
         // die();

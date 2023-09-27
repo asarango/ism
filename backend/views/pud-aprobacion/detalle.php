@@ -31,8 +31,7 @@ $hoy = date('Y-m-d H:i:s');
         <div class="card shadow col-lg-12 col-md-12 col-sm-8">
             <div class=" row align-items-center p-2">
                 <div class="col-lg-1">
-                    <h4><img src="ISM/main/images/submenu/herramientas-para-reparar.png" width="64px" style=""
-                            class="img-thumbnail"></h4>
+                    <h4><img src="ISM/main/images/submenu/herramientas-para-reparar.png" width="64px" style="" class="img-thumbnail"></h4>
                 </div>
                 <div class="col-lg-6">
                     <h4>
@@ -44,7 +43,7 @@ $hoy = date('Y-m-d H:i:s');
                 </div>
 
                 <div class="col-lg-5 col-md-5" style="text-align: right;">
-                    <img src="imagenes/iso/iso.png" class="img-thumbnail" width="50px" /> <b>
+                    <img src="../imagenes/iso/iso.png" class="img-thumbnail" width="50px" /> <b>
                         <?= $docIso ?>
                     </b>
                 </div>
@@ -57,21 +56,21 @@ $hoy = date('Y-m-d H:i:s');
                     <!-- menu izquierda -->
                     |
                     <?=
-                        Html::a(
-                            '<span class="badge rounded-pill" style="background-color: #9e28b5"><i class="fa fa-briefcase" aria-hidden="true"></i> Inicio</span>',
-                            ['site/index'],
-                            ['class' => 'link']
-                        );
+                    Html::a(
+                        '<span class="badge rounded-pill" style="background-color: #9e28b5"><i class="fa fa-briefcase" aria-hidden="true"></i> Inicio</span>',
+                        ['site/index'],
+                        ['class' => 'link']
+                    );
                     ?>
 
                     |
 
                     <?=
-                        Html::a(
-                            '<span class="badge rounded-pill" style="background-color: #65b2e8"><i class="fa fa-briefcase" aria-hidden="true"></i> Aprobaciones</span>',
-                            ['planificacion-aprobacion/index'],
-                            ['class' => 'link']
-                        );
+                    Html::a(
+                        '<span class="badge rounded-pill" style="background-color: #65b2e8"><i class="fa fa-briefcase" aria-hidden="true"></i> Aprobaciones</span>',
+                        ['planificacion-aprobacion/index'],
+                        ['class' => 'link']
+                    );
                     ?>
 
                     |
@@ -91,23 +90,20 @@ $hoy = date('Y-m-d H:i:s');
                 <div class="col-lg-8 col-md-8">
                     <?php
                     if ($seccionCode == 'DIPL') {
-                        ?>
-                        <iframe width="100%" height="600"
-                            src="<?= Url::toRoute(['pud-dip/pdf-pud-dip', 'planificacion_unidad_bloque_id' => $dataMateria['id']]) ?>">
+                    ?>
+                        <iframe width="100%" height="600" src="<?= Url::toRoute(['pud-dip/pdf-pud-dip', 'planificacion_unidad_bloque_id' => $dataMateria['id']]) ?>">
                         </iframe>
-                        <?php
+                    <?php
                     } elseif ($seccionCode == 'PAI') {
-                        ?>
-                        <iframe width="100%" height="600"
-                            src="<?= Url::toRoute(['pud-pai/genera-pdf', 'planificacion_unidad_bloque_id' => $dataMateria['id']]) ?>">
+                    ?>
+                        <iframe width="100%" height="600" src="<?= Url::toRoute(['pud-pai/genera-pdf', 'planificacion_unidad_bloque_id' => $dataMateria['id']]) ?>">
                         </iframe>
-                        <?php
+                    <?php
                     } elseif ($seccionCode == 'BAS') {
-                        ?>
-                        <iframe width="100%" height="600"
-                            src="<?= Url::toRoute(['pud-pep/genera-pdf', 'planificacion_unidad_bloque_id' => $dataMateria['id']]) ?>">
+                    ?>
+                        <iframe width="100%" height="600" src="<?= Url::toRoute(['pud-pep/genera-pdf', 'planificacion_unidad_bloque_id' => $dataMateria['id']]) ?>">
                         </iframe>
-                        <?php
+                    <?php
                     }
                     ?>
 
@@ -173,27 +169,29 @@ $hoy = date('Y-m-d H:i:s');
                                 })
                             </script>
 
-                            <input type="radio" id="huey" name="estado" value="DEVUELTO" checked>
-                            <label for="huey">DEVOLVER</label>
+                            <div style="margin-top: 10px;">
+
+                                <input type="radio" id="huey" name="estado" value="DEVUELTO" checked>
+                                <label for="huey">DEVOLVER</label>
+
+                                <input type="radio" id="dewey" name="estado" value="APROBADO">
+                                <label for="dewey">APROBAR</label>
+
+                            </div>
 
 
 
-                            <input type="radio" id="dewey" name="estado" value="APROBADO">
-                            <label for="dewey">APROBAR</label>
-
-
-
-                            <input type="text" name="id" value="<?= $modelBitacora['id'] ?>">
+                            <input type="hidden" name="id" value="<?= $modelBitacora['id'] ?>">
                             <br />
                             <br />
 
                             <?= Html::submitButton('Registrar', ['class' => 'btn btn-outline-primary btn-block']) ?>
 
-                        </div>
+                </div>
 
-                        <?php ActiveForm::end(); ?>
-                    <?php } ?>
-                <?php } ?>
+                <?php ActiveForm::end(); ?>
+            <?php } ?>
+        <?php } ?>
 
             </div>
             <!--fin de retroalimentacion-->

@@ -45,6 +45,7 @@ $this->title = 'Plan Semanal';
                         foreach ($blocks as $block) {
                         ?>
                             <option value="<?= $block['id'] ?>"><?= $block['bloque'] ?></option>
+                            
                         <?php
                         }
                         ?>

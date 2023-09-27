@@ -6,6 +6,7 @@ use backend\models\dece\DeceDeteccionPdf;
 use Yii;
 use backend\models\DeceDeteccion;
 use backend\models\DeceDeteccionSearch;
+use backend\models\messages\Messages;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -142,16 +143,12 @@ class DeceDeteccionController extends Controller
 
         if ($model->load(Yii::$app->request->post())) 
         {
-            
-            // print_r($model);
-            // die();
 
             $ultimoNumDeteccion = $this->buscaUltimoNumDeteccion($model->id_caso);
             $model->numero_deteccion = $ultimoNumDeteccion + 1;
             $model->fecha_reporte = $model->fecha_reporte.' '.$hora;
-            // echo '<pre>';
-            // print_r($model);
-            // die();
+           
+            $this->enviar_correo_tutor($model);
             $model->save();
             
             return $this->redirect(['update', 'id' => $model->id]);
@@ -163,6 +160,23 @@ class DeceDeteccionController extends Controller
             'array_datos_estudiante' =>$array_datos_estudiante,
         ]);
     }
+
+
+    private function enviar_correo_tutor($model){
+        $to = array($model->caso->id_usuario_dece);
+        //$to = array('direccionsistemas@ism.edu.ec');
+        $estudiante = $model->estudiante->first_name.' '.$model->estudiante->last_name;
+
+        $html = '<b>Descripci&oacute;n del Hecho: </b>'.$model->descripcion_del_hecho.'<br>';
+        $html .= '<b>Acciones Realizadas: </b>'.$model->acciones_realizadas.'<br>';
+        $html .= '<br><br>Mensaje generado autom&aacute;ticamente, por favor no responder este correo<br><br>';
+
+        $message = new Messages();
+        $message->send_email($to, 'info@ism.edu.ec', 'Alerta: '.$estudiante, '', $html);
+        
+    }
+
+
     public function buscaUltimoNumDeteccion($idCaso)
     {
         //buscamos el ultimo numero de derivacion acorde al caso indicado

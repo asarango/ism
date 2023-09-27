@@ -11,10 +11,11 @@ use yii\widgets\ActiveForm;
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 $this->title = 'Plan Semanal';
+$userLog        = Yii::$app->user->identity->usuario;
 $contador = 0;
 
 // echo '<pre>';
-// print_r($docentes);
+// print_r($bitacora);
 // die();
 ?>
 <script src="https://cdn.ckeditor.com/4.17.2/standard/ckeditor.js"></script>
@@ -47,36 +48,35 @@ $contador = 0;
             <div class="col-lg-8">
 
                 <iframe width="100%" height="600" src="<?= Url::toRoute([
-                                                            'aprobacion-plan-semanal-diploma/ver-plan-semanal',
-                                                            'semanaId' => $semanaId,
-                                                            'user' => $user,
-                                                            'periodo' => $periodo
-                                                            // 'docentes' => $docenteId
-                                                        ]) ?>">
+                        'aprobacion-plan-semanal-diploma/ver-plan-semanal',
+                        'semanaId' => $semanaId,
+                        'user' => $user,
+                        'periodo' => $periodo                                                            
+                        // 'docentes' => $docenteId
+                    ]) ?>">
                 </iframe>
 
             </div>
 
-            <div class="col-lg-5 col-md-5" style="padding-top: 40px">
+            <div class="col-lg-4 col-md-4" style="padding-top: 40px">
 
                 <?php
                 $form = ActiveForm::begin([
-                    'action' => Url::to(['aprobar-plan-semanal', 'semanaId' => $semanaId,
-                    'user' => $user,
-                    'periodo' => $periodo]),
+                    'action' => Url::to(['aprobacion', 
+                    'semanaId' => $semanaId, 
+                    'user_envia' => $user,
+                    'periodo' => $periodo,
+                    'bitacora' => $bitacora,
+                    'user_recibe' => $userLog]),
                     'method' => 'post'
-
-
                 ]);
                 ?>
-                <!-- <input type="hidden" value="<?='' 
-                // $template_id 
-                ?>"> -->
+                <input type="hidden" value="<?= $bitacora['0']->id ?>">
 
                 <!--CKEDITOR-->
                 <!--EDITOR DE TEXTO KARTIK-->
                 <textarea name="revision_coordinacion_observaciones" id="editor">
-                        <?= $cabecera->revision_coordinacion_observaciones ?>
+                        <?= $bitacora['0']->obervaciones ?>
                     </textarea>
                 <script>
                     CKEDITOR.replace('editor', {
@@ -87,13 +87,13 @@ $contador = 0;
 
 
                 <?php
-                if ($cabecera->estado == 'APROBADO') {
+                if ($bitacora['0']->estado == 'APROBADO') {
                 ?>
                     <div class="alert alert-success" role="alert" style="text-align:center">
                         ¡Usted aprobó Planificaciones <i class="fas fa-thumbs-up"></i>!
                     </div>
                 <?php
-                } elseif ($cabecera->estado == 'EN_COORDINACION') {
+                } elseif ($bitacora['0']->estado == 'COORDINADOR') {
                 ?>
                     <br>
                     <div class="row" style="text-align: center; padding-left: 30px;padding-right: 30px;">
@@ -113,8 +113,10 @@ $contador = 0;
                         Html::a(
                             '<i class="fas fa-check-circle"> Aprobar Planificación</i>',
                             [
-                                'aprobacion', 'cabecera_id' => $cabecera->id,
-                                'template_id' => $template_id
+                                'aprobacion-plan-semanal', 
+                                'semana_id' => $bitacora['0']->id,
+                                'user_envia' => $bitacora['0']->usuario_envia,
+                                // 'template_id' => $template_id
 
                             ],
                             ['class' => 'btn btn-success my-text-medium']
@@ -122,13 +124,13 @@ $contador = 0;
                         ?>
                     </div>
                 <?php
-                } elseif ($cabecera->estado == 'DEVUELTO') {
+                } elseif ($bitacora['0']->estado == 'DEVUELTO') {
                 ?>
                     <div class="alert alert-warning" role="alert" style="text-align:center">
                         ¡Se ha enviado a modificar al profesor!
                     </div>
                 <?php
-                } elseif ($cabecera->estado == 'INICIANDO') {
+                } elseif ($bitacora['0']->estado == 'INICIANDO') {
                 ?>
                     <div class="alert alert-info" role="alert" style="text-align:center">
                         ¡El profesor está iniciando su planificación!
@@ -136,9 +138,6 @@ $contador = 0;
                 <?php
                 }
                 ?>
-
-
-
             </div>
 
             <?php ActiveForm::end(); ?>

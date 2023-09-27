@@ -3,6 +3,7 @@
 namespace backend\controllers;
 
 use backend\models\diploma\PdfPlanSemanaDocente;
+use backend\models\PlanSemanalBitacora;
 use backend\models\ScholarisBloqueActividad;
 use backend\models\ScholarisBloqueSemanas;
 use backend\models\ScholarisPeriodo;
@@ -136,16 +137,18 @@ class AprobacionPlanSemanalDiplomaController extends Controller
     public function actionAprobarPlanSemanal()
     {        
         $weekId = $_GET['semana_id'];
-        // $coordinador = $_GET['coordinador'];
         $user = $_GET['docentes']; 
         $periodoId = \Yii::$app->user->identity->periodo_id; 
-              
-
+        $bitacora = PlanSemanalBitacora::find()
+            ->where([ 'semana_id' => $weekId, 'usuario_envia' => $user ])
+            ->orderBy('id')
+            ->all();    
+          
         return $this->render('aprobar-plan-semanal', [
             'semanaId' => $weekId,
             'user' => $user,
-            'periodo' => $periodoId
-            // 'coordinador' => $coordinador
+            'periodo' => $periodoId,
+            'bitacora' => $bitacora
             
         ]);
     }
@@ -165,4 +168,21 @@ class AprobacionPlanSemanalDiplomaController extends Controller
 
         ]);
     }
+
+    // en caso de aprobar el plan botones del formulario
+    public function actionAprobacion(){
+        $fechaHoy = date('Y-m-d H:i:s');
+        $cabeceraId = $_GET['cabecera_id'];
+        $templateId = $_GET['template_id'];
+        $model = PlanSemanalBitacora::findOne($cabeceraId);
+
+        $model->estado = 'APROBADO';
+        $model->fecha_aprobacion_coordinacion = $fechaHoy;
+        $model->save();
+
+        return $this->redirect(['detalle', 'cabecera_id' => $cabeceraId,
+         'template_id' => $templateId]);
+
+    }
+
 }

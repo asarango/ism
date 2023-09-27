@@ -14,13 +14,26 @@ $this->title = 'Plan Semanal';
 $contador = 0;
 
 // echo '<pre>';
-// print_r($template);
+// print_r($semanas);
 // die();
 ?>
 
 <style>
     .adv {
         animation: vibrar .5s ease-in-out;
+    }
+
+    .adv-aprov {
+        animation: vibrar .5s ease-in-out;
+    }
+
+    .buscar {
+        animation: vibrar 0.5s infinite;
+        animation-delay: 4s;
+    }
+
+    .stop {
+        animation: none;
     }
 
     @keyframes vibrar {
@@ -62,6 +75,8 @@ $contador = 0;
     }
 </style>
 
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 <div class="scholaris-asistencia-profesor-index" style="padding-left: 40px; padding-right: 40px">
     <div class="m-0 vh-50 row justify-content-center align-items-center">
         <div class="card shadow col-lg-10 col-md-10">
@@ -72,37 +87,44 @@ $contador = 0;
                 </div>
 
                 <div class="col-lg-2 col-md-2">
+
                     <h5>
+
                         <?= Html::encode($this->title) ?>
+
                     </h5>
+
                 </div>
 
                 <div class="col-lg-6 col-md-6">
 
-                    <?php $form = ActiveForm::begin(); ?>
+                    <?php $form = ActiveForm::begin([
+                        'method' => 'get',
+                        // 'layout' => 'inline',
+                    ]); ?>
 
-                    <input type="hidden" name="template_id" value="<?= $template ?>" style="display: none;">
+                    <div style="display: flex;justify-content: space-between; align-items: center;">
+                        <input type="hidden" name="template_id" value="<?= $template ?>" />
 
+                        <select style="text-align: center;" name="trimestre_defecto" class="form-control">
 
-                    <select style="text-align: center;" name="" class="form-control">
-                        <option value="">Seleccione Trimestre</option>
+                            <option value="">Selecionar Trimestre</option>
 
-                        <?php
-                        foreach ($trimestres as $trim) {
-                        ?>
-                            <option value="<?= $trim->id ?>">
-                                <?= $trim->name ?>
-                            </option>
-                        <?php
-                        }
-                        ?>
+                            <?php
+                            foreach ($trimestres as $trim) {
+                            ?>
+                                <option value="<?= $trim->id ?>">
+                                    <?= $trim->name ?>
+                                </option>
+                            <?php
+                            }
+                            ?>
 
-                    </select>
+                        </select>
 
-                    <div class="form-group d-grid gap-2" style="text-align: center; margin-top: 5px;margin-bottom: 5px">
-                        <?= Html::submitButton('Buscar', ['class' => 'btn btn-primary']) ?>
+                        <?= Html::submitButton('Buscar', ['class' => 'btn btn-primary buscar', 'style' => 'margin-left: 10px']) ?>
                     </div>
-
+                    <?php ActiveForm::end(); ?>
                 </div>
 
                 <!-- <div class="col-lg-4 col-md-4">
@@ -118,7 +140,7 @@ $contador = 0;
                         ['class' => 'link']
                     );
                     ?>
-
+                    |
                     <?=
                     Html::a(
                         '<span class="badge rounded-pill" style="background-color: #65b2e8"><i class="fa fa-briefcase" aria-hidden="true"></i> Aprobaciones</span>',
@@ -131,8 +153,25 @@ $contador = 0;
                 <!-- FIN DE BOTONES DE ACCION Y NAVEGACIÓN -->
                 <hr>
             </div>
-            <div>
+
+            <div style="margin-top: -20px;">
+                <div style="font-size: 20px;justify-content: center;font-weight: bold;">
+                    <?php
+
+                    foreach ($semanas as $semana) {
+                        if ($semana->nombre_semana === 'Sem1') {
+                            echo 'Trimestre 1';
+                        } elseif ($semana->nombre_semana === 'Sem16') {
+                            echo 'Trimestre 2';
+                        } elseif ($semana->nombre_semana === 'Sem32') {
+                            echo 'Trimestre 3';
+                        }
+                    }
+
+                    ?>
+                </div>
                 <table id="tablaTrimestre" class="table table-bordered table-striped" style="text-align: center;">
+
                     <thead>
                         <tr>
                             <th scope="col">#</th>
@@ -146,11 +185,11 @@ $contador = 0;
                                 ?>
                                 <th scope="col" style="font-size: 11px;">
                                     <?= $semana->nombre_semana ?>
-
                                 </th>
                             <?php } ?>
                         </tr>
                     </thead>
+
                     <tbody>
 
                         <?php
@@ -174,21 +213,20 @@ $contador = 0;
                                         $coordinador = Yii::$app->user->identity->usuario;
                                         $estado = consulta_estado($sem->id, $docente['login']);
 
-
                                         if ($estado === 'COORDINADOR') {
-                                            echo '<a id="ver-plan-link" href="aprobar-plan-semanal?semana_id=' . $sem->id . '&docentes=' . $docente['login'] .  '"><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-eye-check" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#00b341" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                            echo '<a id="ver-plan-link" href="aprobar-plan-semanal?semana_id=' . $sem->id . '&docentes=' . $docente['login'] . '"><svg xmlns="http://www.w3.org/2000/svg" class="adv icon icon-tabler icon-tabler-eye-check" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#00b341" fill="none" stroke-linecap="round" stroke-linejoin="round">
                                             <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
                                             <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
                                             <path d="M11.102 17.957c-3.204 -.307 -5.904 -2.294 -8.102 -5.957c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6a19.5 19.5 0 0 1 -.663 1.032" />
                                             <path d="M15 19l2 2l4 -4" />
-                                          </svg></a>';
+                                            </svg></a>';
                                         } elseif ($estado === 'DEVUELTO') {
                                             echo '<a id="ver-plan-link" href="aprobar-plan-semanal?semana_id=' . $sem->id . '&docentes=' . $docente['login'] . '"><svg xmlns="http://www.w3.org/2000/svg" class="aler icon icon-tabler icon-tabler-clipboard-off" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ff2825" fill="none" stroke-linecap="round" stroke-linejoin="round">
                                             <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
                                             <path d="M5.575 5.597a2 2 0 0 0 -.575 1.403v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2m0 -4v-8a2 2 0 0 0 -2 -2h-2" />
                                             <path d="M9 5a2 2 0 0 1 2 -2h2a2 2 0 1 1 0 4h-2" />
                                             <path d="M3 3l18 18" />
-                                          </svg></a>';
+                                            </svg></a>';
                                         } else {
                                             echo
                                             '<a id="ver-plan-link" href="aprobar-plan-semanal?semana_id=' . $sem->id . '&docentes=' . $docente['login'] . '"><svg xmlns="http://www.w3.org/2000/svg" class="adv icon icon-tabler icon-tabler-alert-triangle" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ffbf00" fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -204,15 +242,14 @@ $contador = 0;
                                 <?php } ?>
                             </tr>
                         <?php } ?>
+                    </tbody>
                 </table>
-                </tbody>
 
             </div>
-            <?php ActiveForm::end(); ?>
+
         </div>
     </div>
 </div>
-
 
 
 <?php
@@ -235,3 +272,11 @@ function consulta_estado($semanaId, $docente)
     }
 }
 ?>
+
+<script>
+    $(document).ready(function() {
+        setTimeout(function() {
+            $(".buscar").addClass("stop");
+        }, 7000);
+    });
+</script>

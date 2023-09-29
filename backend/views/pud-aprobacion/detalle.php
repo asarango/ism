@@ -179,8 +179,6 @@ $hoy = date('Y-m-d H:i:s');
 
                             </div>
 
-
-
                             <input type="hidden" name="id" value="<?= $modelBitacora['id'] ?>">
                             <br />
                             <br />

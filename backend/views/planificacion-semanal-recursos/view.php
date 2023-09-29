@@ -11,9 +11,6 @@ $this->params['breadcrumbs'][] = ['label' => 'Planificacion Semanal Recursos', '
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
 
-// echo"<pre>";
-// print_r($model);
-// die();
 ?>
 <div class="planificacion-semanal-recursos-view">
 
@@ -27,9 +24,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     <h1>
                         <?= Html::encode($this->title) ?>
                     </h1>
-                    <p>
-
-                    </p>
+                    
                 </div>
                 <!-- INICIO BOTONES DERECHA -->
                 <div class="col-lg-3 col-md-3" style="text-align: right;">
@@ -69,7 +64,13 @@ $this->params['breadcrumbs'][] = $this->title;
                 </div>
 
                 <div style="margin-top: 0.5rem;margin-bottom: 1rem;">
-                    <?= Html::a('Eliminar', ['delete', 'id' => $model->id], [
+                    <?= Html::a('Eliminar', ['delete', 
+                            'id' => $model->id,
+                            'planificacionSemanalId' => $planificacionSemanalId,
+                            'bloqueId' => $bloqueId,
+                            'planBloqueUnidadId' => $planBloqueUnidadId,
+                            'origen' => $origen
+                        ], [
                         'class' => 'btn btn-danger',
                         'data' => [
                             'confirm' => 'Are you sure you want to delete this item?',

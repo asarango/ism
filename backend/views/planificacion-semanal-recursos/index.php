@@ -110,7 +110,8 @@ $this->params['breadcrumbs'][] = $this->title;
                       </svg>  Nuevo Recurso</span>',
                         ['create', 
                             'planificacion_semanal_id' => $planificacionSemanal->id,
-                            'plan_bloque_unidad_id' => $planBloqueId
+                            'plan_bloque_unidad_id' => $planBloqueId,
+                            'pudOrigen' => $pudOrigen
                         ]
                     ) ?>
                 </div>
@@ -222,7 +223,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
                                 </td>
                                 <td>
-                                    <?= iconoeditar($recurso->id); ?>
+                                    <?= iconoeditar($recurso->id, $planificacionSemanal, $bloqueId, $planBloqueId, $pudOrigen); ?>
                                 </td>
                                 <td style="text-align: center;">
                                     <?= iconoEstado($recurso->id, $recurso->estado); ?>
@@ -329,7 +330,7 @@ function obtenerYouTubeVideoId($url)
 
 
 <?php
-function iconoeditar($id)
+function iconoeditar($id, $planificacionSemanal, $bloqueId, $planBloqueUnidadId, $origen)
 {
     return Html::a(
         '<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-edit" width="36" height="36" viewBox="0 0 24 24" stroke-width="1.5" stroke="#0a1f8f" fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -338,7 +339,12 @@ function iconoeditar($id)
             <path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z" />
             <path d="M16 5l3 3" />
         </svg>',
-        ['view', 'id' => $id],
+        ['view', 'id' => $id,
+            'planificacion_semanal_id' => $planificacionSemanal->id,
+            'bloque_id' => $bloqueId,
+            'plan_bloque_unidad_id' => $planBloqueUnidadId,
+            'origen' => $origen
+        ],
         [
             'class' => '',
             'title' => 'Editar Recurso',

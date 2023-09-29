@@ -53,7 +53,8 @@ $this->title = 'Create Planificacion Semanal Recursos';
                 <div>
                     <?= $this->render('_form', [
                         'planificacionSemanalId' => $planificacionSemanalId,
-                        'planBloqueUnidadId' => $planBloqueUnidadId
+                        'planBloqueUnidadId' => $planBloqueUnidadId,
+                        'pudOrigen' => $pudOrigen
                     ]) ?>
                 </div>
             </div>

@@ -80,6 +80,7 @@ class PlanificacionSemanalRecursosController extends Controller
         $planBloqueId = $_GET['plan_bloque_unidad_id'];
         $planificacionSemanalId = $_GET['id']; // Se recibe parametro de planificacion ID
         $bloqueId = $_GET['bloque_id'];
+        $pudOrigen = $_GET['pud_origen'];
 
         $userLogin = Yii::$app->user->identity->usuario;
         $planificacionSemanal = PlanificacionSemanal::findOne($planificacionSemanalId);
@@ -96,7 +97,8 @@ class PlanificacionSemanalRecursosController extends Controller
             'recursos' => $recursos,
             'insumos' => $insumos,
             'bloqueId' => $bloqueId,
-            'planBloqueId' => $planBloqueId
+            'planBloqueId' => $planBloqueId,
+            'pudOrigen' => $pudOrigen
         ]);
     }
 
@@ -108,8 +110,18 @@ class PlanificacionSemanalRecursosController extends Controller
      */
     public function actionView($id)
     {
+
+        $planificacionSemanalId = $_GET['planificacion_semanal_id'];
+        $bloqueId = $_GET['bloque_id'];
+        $planBloqueUnidadId = $_GET['plan_bloque_unidad_id'];
+        $origen = $_GET['origen'];
+
         return $this->render('view', [
             'model' => $this->findModel($id),
+            'planificacionSemanalId' => $planificacionSemanalId,
+            'bloqueId' => $bloqueId,
+            'planBloqueUnidadId' => $planBloqueUnidadId,
+            'origen' => $origen
         ]);
     }
 
@@ -140,7 +152,8 @@ class PlanificacionSemanalRecursosController extends Controller
             return $this->redirect(['index', 
                 'plan_bloque_unidad_id' => $planBloqueUnidadId,
                 'id' => $_POST['plan_semanal_id'],
-                'bloque_id' => $bloqueId
+                'bloque_id' => $bloqueId,
+                'pud_origen' => $_POST['pud_origen']
             ]);
         } else {
             
@@ -151,7 +164,8 @@ class PlanificacionSemanalRecursosController extends Controller
             return $this->render('create', [
                 'planificacionSemanalId' => $planificacionSemanalId,
                 'planificacionSemanal' => $planificacionSemanal,
-                'planBloqueUnidadId' => $planBloqueUnidadId
+                'planBloqueUnidadId' => $planBloqueUnidadId,
+                'pudOrigen' => $_GET['pudOrigen']
             ]);
         }
     }
@@ -283,13 +297,23 @@ class PlanificacionSemanalRecursosController extends Controller
      * @throws NotFoundHttpException if the model cannot be found
      */
     public function actionDelete($id){
+        $planificacionSemanalId = $_GET['planificacionSemanalId'];
+        $bloqueId = $_GET['bloqueId'];
+        $planBloqueUnidadId = $_GET['planBloqueUnidadId'];
+        $origen = $_GET['origen'];
+
         $recurso = PlanificacionSemanalRecursos::findOne($id);
         $planSemanalRecursoId= $recurso->plan_semanal_id;
         $recurso->delete();
         if($recurso->tipo_recurso=='file'){
             unlink('/var/www/html' . $recurso->url_recurso);
         }
-        return $this->redirect(['index','id'=>$planSemanalRecursoId]);
+        return $this->redirect(['index',
+            'id'=>$planificacionSemanalId,
+            'bloque_id'=>$bloqueId,
+            'plan_bloque_unidad_id'=>$planBloqueUnidadId,
+            'pud_origen'=>$origen
+        ]);
         }
 
     /**

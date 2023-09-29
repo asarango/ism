@@ -69,7 +69,7 @@ class AprobacionPlanSemanalDiplomaController extends Controller
     }
 
     public function actionIndex1()
-    {        
+    {
         $userCoordinador    = \Yii::$app->user->identity->usuario;
         $periodoId  = \Yii::$app->user->identity->periodo_id;
         $periodo = ScholarisPeriodo::findOne($periodoId);
@@ -132,30 +132,32 @@ class AprobacionPlanSemanalDiplomaController extends Controller
         return $res;
     }
 
-    
+
 
     public function actionAprobarPlanSemanal()
     {        
         $weekId = $_GET['semana_id'];
-        $user = $_GET['docentes']; 
-        $periodoId = \Yii::$app->user->identity->periodo_id; 
+        $user = $_GET['docentes'];
+        $periodoId = \Yii::$app->user->identity->periodo_id;
+        // $template = $_GET['template_id'];
         $bitacora = PlanSemanalBitacora::find()
-            ->where([ 'semana_id' => $weekId, 'usuario_envia' => $user ])
-            ->orderBy('id')
-            ->all();    
-          
+            ->where(['semana_id' => $weekId, 'docente_usuario' => $user])
+            ->orderBy(['id' => SORT_DESC])
+            ->one();
+
         return $this->render('aprobar-plan-semanal', [
             'semanaId' => $weekId,
             'user' => $user,
             'periodo' => $periodoId,
-            'bitacora' => $bitacora
-            
+            // 'template' => $template,
+            'bitacora' => $bitacora,
+            'trimestre_name' => $_GET['trimestre_name']
         ]);
     }
-// muestra el pdf del plan semanal en vista de coordinador
+    // muestra el pdf del plan semanal en vista de coordinador
     public function actionVerPlanSemanal()
-    { 
-                
+    {
+
         $weekId = $_GET['semanaId'];
         $user = $_GET['user'];
         $periodoId = $_GET['periodo'];
@@ -164,25 +166,56 @@ class AprobacionPlanSemanalDiplomaController extends Controller
         return $this->render('ver-plan-semanal', [
             'semanaId' => $weekId,
             'user' => $user,
-            'periodo' => $periodoId
-
+            'periodo' => $periodoId,
+            
         ]);
     }
 
     // en caso de aprobar el plan botones del formulario
-    public function actionAprobacion(){
-        $fechaHoy = date('Y-m-d H:i:s');
-        $cabeceraId = $_GET['cabecera_id'];
-        $templateId = $_GET['template_id'];
-        $model = PlanSemanalBitacora::findOne($cabeceraId);
+    public function actionAprobacion()
+    {   
+        $semanaId = $_GET['semana_id'];
+        $docentePlanifica = $_GET['docente_planificacion'];
+        
 
+        $model = new PlanSemanalBitacora();
+        $model->semana_id = $semanaId;
+        $model->docente_usuario = $docentePlanifica;
         $model->estado = 'APROBADO';
-        $model->fecha_aprobacion_coordinacion = $fechaHoy;
+        $model->obervaciones = 'Felicitaciones, tu planificación se ha aprobado.';
+        $model->fecha_envio = date('Y-m-d H:i:s');
+        $model->usuario_envia = \Yii::$app->user->identity->usuario;
+        $model->usuario_recibe = $docentePlanifica;
         $model->save();
 
-        return $this->redirect(['detalle', 'cabecera_id' => $cabeceraId,
-         'template_id' => $templateId]);
-
+        return $this->redirect(['aprobar-plan-semanal', 
+            'semana_id' => $semanaId, 
+            'docentes' => $docentePlanifica,
+            'trimestre_name' => $_GET['trimestre_name']
+        ]);
+        
     }
 
+
+    public function actionDevolver(){
+        // echo '<pre>';
+        // print_r($_POST);
+        // die();
+
+        $model = new PlanSemanalBitacora();
+        $model->semana_id = $_POST['semana_id'];
+        $model->docente_usuario = $_POST['docente_usuario'];
+        $model->estado = 'DEVUELTO';
+        $model->obervaciones = $_POST['revision_coordinacion_observaciones'];
+        $model->fecha_envio = date('Y-m-d H:i:s');
+        $model->usuario_envia = \Yii::$app->user->identity->usuario;
+        $model->usuario_recibe = $_POST['docente_usuario'];
+        $model->save();
+
+        return $this->redirect(['aprobar-plan-semanal', 
+            'semana_id' => $_POST['semana_id'], 
+            'docentes' => $_POST['docente_usuario'],
+            'trimestre_name' => $_POST['trimestre_name']
+        ]);
+    }
 }

@@ -18,7 +18,9 @@ class DeceDerivacionSearch extends DeceDerivacion
     {
         return [
             [['id', 'id_estudiante'], 'integer'],
-            [['tipo_derivacion', 'nombre_quien_deriva', 'fecha_derivacion', 'motivo_referencia', 'historia_situacion_actual', 'accion_desarrollada', 'tipo_ayuda'], 'safe'],
+            [['tipo_derivacion', 'nombre_quien_deriva', 'fecha_derivacion', 'motivo_referencia', 
+              'historia_situacion_actual', 'accion_desarrollada', 
+              'tipo_ayuda', 'cargo_quien_deriva'], 'safe'],
         ];
     }
 
@@ -68,6 +70,7 @@ class DeceDerivacionSearch extends DeceDerivacion
             ->andFilterWhere(['ilike', 'motivo_referencia', $this->motivo_referencia])
             ->andFilterWhere(['ilike', 'historia_situacion_actual', $this->historia_situacion_actual])
             ->andFilterWhere(['ilike', 'accion_desarrollada', $this->accion_desarrollada])
+            ->andFilterWhere(['ilike', 'cargo_quien_deriva', $this->cargo_quien_deriva])
             ->andFilterWhere(['ilike', 'tipo_ayuda', $this->tipo_ayuda]);
 
         return $dataProvider;

@@ -18,6 +18,7 @@ use Mpdf\Mpdf;
 use datetime;
 use backend\models\helpers\HelperGeneral;
 use backend\models\OpStudent;
+use backend\models\ResPartner;
 
 class DeceDerivacionPdf extends \yii\db\ActiveRecord
 {
@@ -108,6 +109,8 @@ class DeceDerivacionPdf extends \yii\db\ActiveRecord
     }
     private function firmas()
     {
+        $quienDeriva = ResPartner::find()->where(['name' => $this->dece_derivacion->nombre_quien_deriva])->one();
+
         $html = '';
         $html .= '
         <table border="1" width="100%" cellspacing="0" cellpadding="5"> 
@@ -122,15 +125,17 @@ class DeceDerivacionPdf extends \yii\db\ActiveRecord
                 <tr > 
                         <td colspan="2"  align="left" style="font-size:10">
                             <br>
-                            NOMBRE:________________________________________
+                            NOMBRE: '.$this->dece_derivacion->nombre_quien_deriva.'
                             <br>
-                            CI:________________________________________________
+                            CI: '.$quienDeriva->numero_identificacion.'
                         </td>
                         <td colspan="2"  align="left" style="font-size:10">
                             <br>
-                            NOMBRE:________________________________________
+                            NOMBRE: '.$this->dece_derivacion->estudiante->xRepresentante->first_name.' '.
+                            $this->dece_derivacion->estudiante->xRepresentante->first_surname.
+                            '
                             <br>
-                            CI:________________________________________________
+                            CI: '.$this->dece_derivacion->estudiante->xRepresentante->name0->numero_identificacion.'
                         </td>
                 </tr>              
         </table>';
@@ -156,6 +161,7 @@ class DeceDerivacionPdf extends \yii\db\ActiveRecord
         // echo '<pre>';
         // print_r($model);
         // die();
+        $partner = ResPartner::find()->where(['name' => $model->nombre_quien_deriva])->one();
         $nombre_institucion = $model->estudiante->xInstitute->name . ' (' . $model->estudiante->xInstitute->location . ')';
         $direccion_institucion = $model->estudiante->xInstitute->direccion;
         $telf_institucion = $model->estudiante->xInstitute->telefono;
@@ -231,6 +237,27 @@ class DeceDerivacionPdf extends \yii\db\ActiveRecord
                             ' . $model->nombre_quien_deriva . '
                         </td>
                 </tr>
+
+                <tr > 
+                        <td colspan="1"  align="left" style="font-size:10">
+                            <b>Cargo de la persona que deriva:  </b>
+                        </td>
+                        <td colspan="3"  align="left" style="font-size:10">
+                            ' . $model->cargo_quien_deriva . '
+                        </td>
+                </tr>
+
+
+                
+                <tr > 
+                        <td colspan="1"  align="left" style="font-size:10">
+                            <b>Correo de la persona que deriva:  </b>
+                        </td>
+                        <td colspan="3"  align="left" style="font-size:10">
+                            ' . $partner->email . '
+                        </td>
+                </tr>
+
                 <tr > 
                         <td colspan="4"  align="left" style="font-size:10">
                             <b>Fecha de derivación: </b>' . substr($model->fecha_derivacion, 0, 10) . '
@@ -358,10 +385,10 @@ class DeceDerivacionPdf extends \yii\db\ActiveRecord
                     '.$curso .'
                     </td>
                     <td colspan="1"  align="left" style="font-size:10">
-                        <b>Sexo:</b>
+                        <b>Número de identidad:</b>
                     </td>
                     <td colspan="1"  align="left" style="font-size:10">
-                    ' . $modelEstudiante->gender . '
+                    ' . $modelEstudiante->partner->numero_identificacion . '
                     </td>
                 </tr>
                 <tr > 

@@ -14,7 +14,7 @@ $this->title = 'Planificaciones - ' . $cabecera->ismAreaMateria->mallaArea->peri
 $this->params['breadcrumbs'][] = $this->title;
 
 //  echo '<pre>';
-//  print_r($template_id);
+//  print_r($cabecera);
 //  die();
 
 //  print_r($desagregacion);
@@ -345,6 +345,8 @@ $this->params['breadcrumbs'][] = $this->title;
 
 
                 </div>
+
+                <!-- CK editor y botones -->
                 <div class="col-lg-5 col-md-5" style="padding-top: 40px">
 
                     <?php

@@ -180,6 +180,8 @@ use yii\widgets\ActiveForm;
                 <!-- fin Descripción General -->
             <!-- </form> -->
 
+            <input type="hidden" name="pud_origen" value="<?= $pudOrigen ?>">
+
             <div class="" style="margin-top: 1rem;">
                 <?= Html::submitButton('Guardar', ['class' => 'btn btn-success', 'style' => 'background-color: #4caf50;  border: none; padding: 9px']) ?>
             </div>

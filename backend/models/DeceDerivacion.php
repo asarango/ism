@@ -18,8 +18,10 @@ use Yii;
  * @property string $tipo_ayuda
  * @property int $id_casos
  * @property int $numero_casos
- * @property string $fecha_modificacion
  * @property string $otra_institucion_externa
+ * @property int $numero_derivacion
+ * @property string $fecha_modificacion
+ * @property string $cargo_quien_deriva
  *
  * @property DeceCasos $casos
  * @property OpStudent $estudiante
@@ -41,13 +43,14 @@ class DeceDerivacion extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id_estudiante', 'nombre_quien_deriva', 'id_casos', 'numero_casos','numero_derivacion'], 'required'],
-            [['id_estudiante', 'id_casos', 'numero_casos','numero_derivacion'], 'default', 'value' => null],
-            [['id_estudiante', 'id_casos', 'numero_casos','numero_derivacion'], 'integer'],
+            [['id_estudiante', 'nombre_quien_deriva', 'fecha_derivacion', 'id_casos', 'numero_casos', 'otra_institucion_externa'], 'required'],
+            [['id_estudiante', 'id_casos', 'numero_casos', 'numero_derivacion'], 'default', 'value' => null],
+            [['id_estudiante', 'id_casos', 'numero_casos', 'numero_derivacion'], 'integer'],
             [['nombre_quien_deriva', 'motivo_referencia', 'historia_situacion_actual', 'accion_desarrollada', 'tipo_ayuda'], 'string'],
             [['fecha_derivacion', 'fecha_modificacion'], 'safe'],
             [['tipo_derivacion'], 'string', 'max' => 50],
             [['otra_institucion_externa'], 'string', 'max' => 100],
+            [['cargo_quien_deriva'], 'string', 'max' => 30],
             [['id_casos'], 'exist', 'skipOnError' => true, 'targetClass' => DeceCasos::className(), 'targetAttribute' => ['id_casos' => 'id']],
             [['id_estudiante'], 'exist', 'skipOnError' => true, 'targetClass' => OpStudent::className(), 'targetAttribute' => ['id_estudiante' => 'id']],
         ];
@@ -60,19 +63,20 @@ class DeceDerivacion extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'tipo_derivacion' => 'Tipo Derivación',
+            'tipo_derivacion' => 'Tipo Derivacion',
             'id_estudiante' => 'Id Estudiante',
             'nombre_quien_deriva' => 'Nombre Quien Deriva',
-            'fecha_derivacion' => 'Fecha Derivación',
-            'motivo_referencia' => 'Motivo de Referencia / Descripción del Caso',
-            'historia_situacion_actual' => 'Historia de la Situación Actual, Antecedentes Familiares, Sociales y Acedémicos',
-            'accion_desarrollada' => 'Acciones Desarrolladas por la Institución',
-            'tipo_ayuda' => '¿Qué tipo de ayuda requiere?',
+            'fecha_derivacion' => 'Fecha Derivacion',
+            'motivo_referencia' => 'Motivo Referencia',
+            'historia_situacion_actual' => 'Historia Situacion Actual',
+            'accion_desarrollada' => 'Accion Desarrollada',
+            'tipo_ayuda' => 'Tipo Ayuda',
             'id_casos' => 'Id Casos',
-            'numero_casos' => 'Número Casos',
-            'numero_derivacion'=>'Número Derivación',
-            'fecha_modificacion' => 'Fecha Modificación',
-            'otra_institucion_externa' => 'Otra Institución Externa',
+            'numero_casos' => 'Numero Casos',
+            'otra_institucion_externa' => 'Otra Institucion Externa',
+            'numero_derivacion' => 'Numero Derivacion',
+            'fecha_modificacion' => 'Fecha Modificacion',
+            'cargo_quien_deriva' => 'Cargo Quien Deriva',
         ];
     }
 

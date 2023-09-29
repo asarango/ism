@@ -84,8 +84,8 @@ $usuario = $modelUsuarios->id;
 
         <div style="margin-top: 10px;">
             <?php
-            $listData = ArrayHelper::map($horas, 'id', 'sigla');
-            echo $form->field($model, 'hora_id')->dropDownList($listData, ['prompt' => 'Seleccione Hora'])
+            // $listData = ArrayHelper::map($horas, 'id', 'sigla');
+            // echo $form->field($model, 'hora_id')->dropDownList($listData, ['prompt' => 'Seleccione Hora'])
                 ?>
         </div>
 
@@ -135,8 +135,8 @@ $usuario = $modelUsuarios->id;
             echo $form->field($model, 'calificado')->hiddenInput(['maxlength' => true])->label(FALSE);
         } else {
             echo $form->field($model, 'calificado')->dropDownList([
-                'SI' => 'SI',
-                'NO' => 'NO'
+                'true' => 'SI',
+                'false' => 'NO'
             ]);
         }
         ?>

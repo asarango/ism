@@ -195,7 +195,8 @@ $user = Yii::$app->user->identity;
                 ?>
 
                 <br>
-                <h4><u>Datos Personales de Quien Deriva</u></h4>
+                <h4><u>Datos personales de quién deriva</u></h4>
+                <?= $form->field($model, 'cargo_quien_deriva')->textInput() ?>
                 <?php
                 if($model->isNewRecord)                            
                 {
@@ -206,7 +207,7 @@ $user = Yii::$app->user->identity;
                 else
                 {
                 ?>
-                    <?= $form->field($model, 'nombre_quien_deriva')->textInput(['value' => $model->nombre_quien_deriva]) ?>
+                <?= $form->field($model, 'nombre_quien_deriva')->textInput(['value' => $model->nombre_quien_deriva]) ?>
                  <?php
                 }
                 ?>

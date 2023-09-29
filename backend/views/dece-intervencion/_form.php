@@ -228,7 +228,7 @@ $modelIntCompromiso = new DeceIntervencionCompromiso();
                 }
                 ?>
 
-                <?= $form->field($model, 'razon')->textarea(['rows' => 4]) ?>
+                <?= $form->field($model, 'razon')->textarea(['rows' => 4])->label('DIAGNOSTICO / MOTIVO DE INTERVENCION') ?>
                 <!-- <script>
                     CKEDITOR.replace("deceintervencion-razon");
                 </script> -->

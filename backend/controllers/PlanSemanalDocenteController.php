@@ -95,7 +95,7 @@ class PlanSemanalDocenteController extends Controller
                             ,(select 	estado 
                                 from 	plan_semanal_bitacora
                                 where 	docente_usuario = '$usuarioLog'
-                                        and usuario_recibe = aut.usuario 
+                                        
                                         and semana_id = $weekId 
                                 order by id desc
                                 limit 1) as estado
@@ -118,6 +118,7 @@ class PlanSemanalDocenteController extends Controller
 
         // echo $query;
         // die();
+
         $res = $con->createCommand($query)->queryAll();
         return $res;
     }
@@ -179,32 +180,11 @@ class PlanSemanalDocenteController extends Controller
         } ///fin de para semanas
         else if ($action == 'detail-week') {
             $weekId = $_GET['week_id'];
-
-            // $week = ScholarisBloqueSemanas::findOne($weekId);
-            // $statesBitacora = $this->get_states_bitacora($weekId, $user, $periodId);
-
-            // $dates = $this->get_dates($week->fecha_inicio, $week->fecha_finaliza, $user, $periodId);            
-            // $hours = $this->get_hours($user, $periodId);
-
-            // // echo '<pre>';
-            // // print_r($statesBitacora);
-            // // die();
-
-
-            // return $this->renderPartial('detail-week', [
-            //     'dates' => $dates,
-            //     'hours' => $hours,
-            //     'user'  => $user,
-            //     'bloqueId' => $week->bloque->id,
-            //     'weekNumber' => $week->semana_numero,
-            //     'week'  => $week,
-            //     'statesBitacora' => $statesBitacora
-            // ]);
-
+            $coordinadores = $this->get_coordinadores($user, $periodId, $weekId);
 
             return $this->renderPartial('detail-week-teacher', [
                 'weekId' => $weekId,
-                'coordinadores' => $this->get_coordinadores($user, $periodId, $weekId)
+                'coordinadores' => $coordinadores
                 // 'dates' => $dates,
                 // 'hours' => $hours,
                 // 'user'  => $user,

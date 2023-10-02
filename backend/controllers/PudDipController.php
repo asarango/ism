@@ -1967,6 +1967,7 @@ class PudDipController extends Controller {
 
 
     public function actionFormActividad(){
+
         $lmsId = $_GET['lms_id'];
         $planUnidadId = $_GET['plan_bloque_unidad_id'];
 
@@ -1975,6 +1976,24 @@ class PudDipController extends Controller {
         if(isset($_GET['inicio'])){
             $user = Yii::$app->user->identity->usuario;
             $today = date('Y-m-d H:i:s');
+
+            $todaLaSemana = Lms::find()->where([
+                'ism_area_materia_id' => $lms->ism_area_materia_id,
+                'tipo_bloque_comparte_valor' => $lms->tipo_bloque_comparte_valor,
+                'semana_numero' => $lms->semana_numero
+                ]
+            )
+            ->orderBy("hora_numero")
+            ->all();
+
+            foreach($todaLaSemana as $dia){
+                    strlen($dia->dip_inicio) < 10 ? $dia->dip_inicio = $_GET['inicio'] : $dia->dip_inicio = $lms->dip_inicio;
+                    strlen($dia->dip_desarrollo) < 10 ? $dia->dip_desarrollo = $_GET['desarrollo'] : $dia->dip_desarrollo = $lms->dip_desarrollo;
+                    strlen($dia->dip_cierre) < 10 ? $dia->dip_cierre = $_GET['cierre'] : $dia->dip_cierre = $lms->dip_cierre;
+                    $dia->updated = $user;
+                    $dia->updated_at = $today;
+                    $dia->save();
+            }
             
             $lms->dip_inicio =  $_GET['inicio'];
             $lms->dip_desarrollo =  $_GET['desarrollo'];

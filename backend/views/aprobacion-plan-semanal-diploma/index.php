@@ -296,8 +296,6 @@ function consulta_estado($semanaId, $docente, $coordinador)
     } else {
         return 0;
     }
-
-
 }
 ?>
 

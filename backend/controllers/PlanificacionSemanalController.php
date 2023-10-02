@@ -3,6 +3,7 @@
 namespace backend\controllers;
 
 use backend\models\diploma\PdfPlanSemana;
+use backend\models\Lms;
 use backend\models\plansemanal\PsIndividual;
 use backend\models\ScholarisActividad;
 use backend\models\ScholarisBloqueActividad;
@@ -186,6 +187,17 @@ class PlanificacionSemanalController extends Controller
 
             $id = $_GET['id'];
             $model = $this->findModel($id);
+
+
+            $parametrosLms = Lms::find()->where([
+                'ism_area_materia_id' => $model->clase->ism_area_materia_id,
+                'semana_numero' => $model->semana->semana_numero
+            ])->one();
+
+            $actividades = '<p><b>Incio:</b>'.$parametrosLms->dip_inicio.'</p>'.
+                            '<p><b>Desarrollo: </b>'.$parametrosLms->dip_desarrollo.'</p>'.
+                            '<p><b>Cierre: </b>'.$parametrosLms->dip_cierre.'</p>';
+
         }        
 
         if($_POST){
@@ -198,7 +210,7 @@ class PlanificacionSemanalController extends Controller
             $planOrigenId = $_POST['plan_bloque_unidad_id'];
 
             $model = $this->findModel($id);
-            $model->tema        = $_POST['tema'];
+            $model->tema        = $_POST['tema'];            
             $model->actividades = $_POST['actividades'];
             $model->diferenciacion_nee = $_POST['diferenciacion_nee'];
             $model->recursos    = $_POST['recursos'];
@@ -218,7 +230,8 @@ class PlanificacionSemanalController extends Controller
         return $this->render('update', [
             'model' => $model,
             'pud_origen' => $pudOrigen,
-            'plan_bloque_unidad_id' => $planOrigenId
+            'plan_bloque_unidad_id' => $planOrigenId,
+            'actividades' => $actividades
         ]);
     }
 

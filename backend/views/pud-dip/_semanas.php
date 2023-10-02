@@ -122,7 +122,7 @@ use yii\helpers\Url;
                                                 </a>-->
 
                                                     <!-- Button trigger modal -->
-                                                    <a type="button" class="" data-bs-toggle="modal"
+                                                    <a type="button" class="" data-bs-toggle="modal" title="Inicio_Desarrollo_Cierre"
                                                         data-bs-target="#staticBackdrop<?= $actividad['id'] ?>">
                                                         <i class="fas fa-edit"></i>
                                                     </a>

@@ -39,7 +39,7 @@ $this->title = 'Modificar Planificacion Semanal ';
                     </p>
                 </div>
                 <div class="col-lg-3 col-md-3 col-sm-3" style="text-align: right;">
-                    
+
                     <?= Html::button(
                         '<span class="badge rounded-pill" style="background-color: #ff9e18"><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home-up"
                         width="16" height="16" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ffffff" 
@@ -57,9 +57,13 @@ $this->title = 'Modificar Planificacion Semanal ';
             </div>
             <div class="row">
                 <div class="col-lg-12 col-md-12 col-sm-12">
-                    <?= $this->render('_form', ['model' => $model
-                , 'pud_origen' => $pud_origen
-                , 'plan_bloque_unidad_id' => $plan_bloque_unidad_id]); ?>
+                    <?= $this->render('_form', [
+                        'model' => $model, 
+                        'pud_origen' => $pud_origen, 
+                        'plan_bloque_unidad_id' => $plan_bloque_unidad_id,
+                        'actividades' => $actividades
+                    ]);
+                    ?>
                 </div>
             </div>
 

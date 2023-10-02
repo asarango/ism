@@ -5,6 +5,7 @@ namespace backend\controllers;
 use backend\models\Lms;
 use backend\models\LmsActividad;
 use backend\models\LmsActividadXArchivo;
+use backend\models\messages\Messages;
 use backend\models\notas\RegistraNotas;
 use backend\models\notas\RegistraNotasV1;
 use backend\models\ResUsers;
@@ -680,6 +681,134 @@ class ScholarisActividadController extends Controller
         }
     }
 
+
+    public function actionEstadisticas(){
+        $actividadId = $_GET['actividad_id'];
+
+        $calificaciones = ScholarisCalificaciones::find()->where(['idactividad' => $actividadId])->all();        
+
+        $totalSobresalientes = 0;
+        $totalRegulares = 0;
+        $totalBajos = 0;
+        $totalReportadosPadres = 0;
+
+        foreach ($calificaciones as $calificacion) {
+            if($calificacion->calificacion < 70){
+                $totalBajos++;
+
+                if($calificacion->aviso_padre_menos_70 == 1){
+                    $totalReportadosPadres++;                    
+                }
+
+            }elseif($calificacion->calificacion >= 70 && $calificacion->calificacion < 95){
+                $totalRegulares++;
+            }else{
+                $totalSobresalientes++;
+            }
+        }
+
+        return $this->renderPartial('_estadisticas', [
+            'sobresalientes' => $totalSobresalientes,
+            'regulares' => $totalRegulares,
+            'bajos' => $totalBajos,
+            'reportadosPadres' => $totalReportadosPadres,
+            'totalCalificaciones' => count($calificaciones),
+            'actividadId' => $actividadId
+        ]);
+    }
+
+
+    public function actionNotificarPadres(){
+        $actividadId = $_GET['actividadId'];
+        $noEnviados = $this->consulta_no_enviados_bajos($actividadId);
+
+        foreach ($noEnviados as $noEnvio) {
+            $to = [$noEnvio['padre']];
+            // $to = ['desarrollo@ism.edu.ec'];
+            $email = $this->construye_email($to, $noEnvio);
+            $message = new Messages();
+            $message->send_email($to, 'info@paxdem.com', 'Ups!!!. Nada de que preocuparse', '', $email);
+            $model = ScholarisCalificaciones::findOne($noEnvio['id']);
+            $model->aviso_padre_menos_70 = true;
+            $model->save();
+        }
+
+        return $this->redirect(['calificar', 'id' => $actividadId]);
+    
+    }
+
+
+    private function construye_email($arrayTo, $noEnvio){
+        $html = '<br><b>Estimado/a representante</b><br><br>';
+        $html .= "<br>Tú representado ha sacado una calificación por debajo del permitido.";
+        $html .= "<br><br>";
+
+        $html .= "<b>Asignatura: </b>".$noEnvio['materia'].'<br>';
+        $html .= "<b>Insumo: </b>".$noEnvio['nombre_nacional'].'<br>';
+        $html .= "<b>Actividad disponible desde: </b>".$noEnvio['inicio'].'<br>';
+        $html .= "<b>Titulo de la actividad: </b>".$noEnvio['title'].'<br>';
+        $html .= "<b>Calificación: </b>".$noEnvio['calificacion'].'<br>';
+
+        $html .= "<br><br>";
+
+        $html .= "<br>Pero nada esta perdido todavía, te aconsejamos realizar los siguientes pasos:<br><br>";
+
+        $html .= "<ol>";
+        $html .= "<li>Conversa con tu hijo/a, y comentale que solo fué un mal momento, que puede hacer una recuperación</li>";
+        $html .= "<li>Comunícate con el docente de la asignatura, y pídele que te permita enviar un trabajo de recuperación</li>";
+        $html .= "<li>Entreguen el trabajo de recuperación</li>";
+        $html .= "<li>Y, listo la calificación aumentará </li>";
+        $html .= "</ol>";
+
+        $html .= "<br><br>";
+
+        $html .= "<b>Saludos cordiales.</b>";
+        $html .= "<br><br>";
+
+        $html .= "Sistema automático de mensajería Edux";
+        $html .= "<br><br>";
+
+
+        $html .= "<b>¡¡¡No responder a este correo!!!</b>";
+
+        return $html;
+
+    }
+
+    /**
+     * Summary of consulta_no_enviados_bajos
+     * @param mixed $actividadId
+     * @return array
+     */
+    private function consulta_no_enviados_bajos($actividadId){
+        $con = Yii::$app->db;
+        $query = "select 	cal.id 
+                            ,concat('f',os.x_codigo_relacion,'@ism.edu.ec') as padre
+                            ,cal.calificacion 
+                            ,tip.nombre_nacional
+		                    ,act.title
+                            ,act.inicio
+                            ,mat.nombre as materia
+                    from 	scholaris_calificaciones cal
+                            inner join op_student os on os.id = cal.idalumno 
+                            inner join op_parent_op_student_rel rel on rel.op_student_id = os.id 
+                            inner join op_parent opa on opa.id = rel.op_parent_id 
+                            inner join res_partner rpa on rpa.id = opa.name
+                            inner join scholaris_actividad act on act.id = cal.idactividad
+                            inner join scholaris_clase cla on cla.id = act.paralelo_id 
+                            inner join ism_area_materia iam on iam.id = cla.ism_area_materia_id 
+                            inner join ism_materia mat on mat.id = iam.materia_id 
+                            inner join scholaris_tipo_actividad tip on tip.id = act.tipo_actividad_id 
+                    where 	cal.calificacion < 70
+                            and cal.idactividad = $actividadId
+                            and (cal.aviso_padre_menos_70 <> true or cal.aviso_padre_menos_70 is null)
+                    group by cal.id, 2, act.title, mat.nombre, tip.nombre_nacional,act.inicio;";
+        $res = $con->createCommand($query)->queryAll();
+        return $res;
+    }
+
+
+
     public function actionAnularcalificaciones($id)
     {
 
@@ -830,8 +959,8 @@ class ScholarisActividadController extends Controller
                         inner join planificacion_vertical_pai_descriptores d on s.plan_vert_pai_descriptor_id = d.id 
                         inner join ism_criterio_descriptor_area i on  d.descriptor_id = i.id 
                         where s.actividad_id = $id;";
-            echo $queryIdCriterios;
-            die();
+            // echo $queryIdCriterios;
+            // die();
 
             $arrayIdCriterios = $con->createCommand($queryIdCriterios)->queryAll();
 

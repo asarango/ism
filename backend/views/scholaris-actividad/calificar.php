@@ -22,7 +22,7 @@ $this->title = 'Actividad #: ' . $modelActividad->id . ' | ' . $modelActividad->
 
 <div class="scholaris-actividad-index">
     <div class="m-0 vh-50 row justify-content-center align-items-center">
-        <div class="card shadow col-lg-8 col-md-8">
+        <div class="card shadow col-lg-12 col-md-12">
             <div class=" row " style="margin-top: 10px;">
                 <div class="col-lg-1 col-md-1 col-ms-1 col-xs-1">
                     <h4><img src="../ISM/main/images/submenu/retroalimentacion.png" width="64px" class="img-thumbnail">
@@ -68,92 +68,107 @@ $this->title = 'Actividad #: ' . $modelActividad->id . ' | ' . $modelActividad->
             </div>
 
             <!-- comienza cuerpo  -->
-            <div class="table table-responsive">
-                <font size="2">
-                    <table class="table table-condensed table-striped table-hover table-bordered">
-                        <tr>
-                            <th>#</th>
-                            <?php $cont = 1; ?>
-                            <th colspan="2">Estudiantes</th>
-                            <?php
-                            if (isset($modelCriterios)) {
-                                foreach ($modelCriterios as $criterio) {
-                                    $modelCriterio = \backend\models\IsmCriterio::findOne($criterio['id_criterio']);
-                                    echo '<th class="text-center">' . $modelCriterio->nombre . '</th>';
-                                }
-                            } else {
-                                echo '<th class="text-center">NOTA</th>';
-                            }
-                            ?>
-                            <th class="text-center">TOTAL ARCHIVOS</th>
-                        </tr>
 
-                        <?php
-                        foreach ($modelGrupo as $grupo) {
-                            $grupoId = $grupo['grupo_id'];
-                            $modelArchSubidos = \backend\models\ScholarisActividadDeber::find()
-                                ->where([
-                                    //                                      'alumno_id' => $grupo->estudiante_id,
-                                    'alumno_id' => $grupo['alumno_id'],
-                                    'actividad_id' => $modelActividad->id
-                                ])
-                                ->all();
+            <div class="row">
 
-                            echo '<tr>';
-                            echo '<td>' . $cont . '</td>';
-                            $cont = $cont + 1; //contador de numeros de alumnos
-                            echo '<td>';
-                            echo Html::a($grupo['last_name'] . ' ' . $grupo['first_name'] . ' ' . $grupo['middle_name'], [
-                                'calificacion/index1',
-                                'actividad_id' => $modelActividad->id,
-                                'grupo_id' => $grupoId
-                            ]);
-                            echo '</td>';
-
-                            echo '<td>';
-                            /* agregar funcion para obeterne icono */
-                            echo '</td>';
+                <div class="col-lg-4 col-md-4" style="background-color: #ccc">
+                    <div id="div-estadistica"></div>
+                </div>
 
 
-                            foreach ($modelCalificaciones as $notas) {
-                                if ($grupo['alumno_id'] == $notas->idalumno) {
-                                    if ($estado == 'abierto') {
-                                        /// SI EL BLOQUE ESTA ABIERTO
-                                        /// REALIZA EL INPUT
-                                        echo '<td align="center" width="10%">' //NOTAS
-                                            . '<input   class="input text-white" type="text " id="al' . $notas->id . '" value="' . $notas->calificacion .
-                                            '" onchange="cambiarNota(' . $notas->id . ',' . $grupoId . ');" onkeypress="return NumCheck(event, this)" '
-                                            . 'style="width : 60px; text-align: center; border: none;  background-color: #929292; "; >'
-                                            . '</td>'; //FIN NOTAS
-                        
+                <div class="col-lg-8 col-md-8" style="overflow-y: scroll; height: 400px;">
+                    <div class="table table-responsive">
+                        <font size="2">
+                            <table class="table table-condensed table-striped table-hover table-bordered">
+                                <tr>
+                                    <th>#</th>
+                                    <?php $cont = 1; ?>
+                                    <th>Estudiantes</th>
+                                    <th class="text-center"><b></b></th>
+                                    <?php
+                                    if (isset($modelCriterios)) {
+                                        foreach ($modelCriterios as $criterio) {
+                                            $modelCriterio = \backend\models\IsmCriterio::findOne($criterio['id_criterio']);
+                                            echo '<th class="text-center">' . $modelCriterio->nombre . '</th>';
+                                        }
                                     } else {
-                                        /// SI EL BLOQUE ES CERRADO SOLO MUESTRA LA CALIFICACION SIN OPCION A MODIFICAR
-                                        echo '<td>' . $notas->calificacion . '</td>';
+                                        echo '<th class="text-center">NOTA</th>';
                                     }
+                                    ?>
+                                    <th class="text-center">TOTAL ARCHIVOS</th>
+                                </tr>
 
-                                    //                                   echo '<td>' . substr($notas->observacion, 0, 20).' ... ' . '</td>';                                    
+                                <?php
+                                foreach ($modelGrupo as $grupo) {
+                                    $grupoId = $grupo['grupo_id'];
+                                    $modelArchSubidos = \backend\models\ScholarisActividadDeber::find()
+                                        ->where([
+                                            //                                      'alumno_id' => $grupo->estudiante_id,
+                                            'alumno_id' => $grupo['alumno_id'],
+                                            'actividad_id' => $modelActividad->id
+                                        ])
+                                        ->all();
+
+                                    echo '<tr>';
+                                    echo '<td>' . $cont . '</td>';
+                                    $cont = $cont + 1; //contador de numeros de alumnos
+                                    echo '<td>';
+                                    echo Html::a($grupo['last_name'] . ' ' . $grupo['first_name'] . ' ' . $grupo['middle_name'], [
+                                        'calificacion/index1',
+                                        'actividad_id' => $modelActividad->id,
+                                        'grupo_id' => $grupoId
+                                    ]);
+                                    echo '</td>';
+
+
+                                    foreach ($modelCalificaciones as $notas) {
+                                        if ($grupo['alumno_id'] == $notas->idalumno) {
+
+                                            ////para colocar semaforo de calificacion menor de 70
+                                            echo '<td align="center">';
+                                            echo semaforo_menor_70($notas->calificacion);
+                                            ////para colocar semaforo de calificacion menor de 70
+
+                                            echo '</td>';
+
+                                            if ($estado == 'abierto') {
+                                                /// SI EL BLOQUE ESTA ABIERTO
+                                                /// REALIZA EL INPUT
+                                                echo '<td align="center" width="10%">' //NOTAS
+                                                    . '<input   class="input text-white" type="text " id="al' . $notas->id . '" value="' . $notas->calificacion .
+                                                    '" onchange="cambiarNota(' . $notas->id . ',' . $grupoId . ');" onkeypress="return NumCheck(event, this)" '
+                                                    . 'style="width : 60px; text-align: center; border: none;  background-color: #929292; "; >'
+                                                    . '</td>'; //FIN NOTAS
+
+                                            } else {
+                                                /// SI EL BLOQUE ES CERRADO SOLO MUESTRA LA CALIFICACION SIN OPCION A MODIFICAR
+                                                echo '<td>' . $notas->calificacion . '</td>';
+                                            }
+
+                                            //                                   echo '<td>' . substr($notas->observacion, 0, 20).' ... ' . '</td>';
+                                        }
+                                    }
+                                    echo '<td class="text-center">' . count($modelArchSubidos) . ' archivos subidos</td>';
+
+                                    echo '</tr>';
                                 }
-                            }
-                            echo '<td class="text-center">' . count($modelArchSubidos) . ' archivos subidos</td>';
-
-                            echo '</tr>';
-                        }
-                        ?>
-                    </table>
-                </font>
+                                ?>
+                            </table>
+                        </font>
+                    </div>
+                </div>
             </div>
-
             <!-- finaliza cuerpo -->
         </div>
     </div>
 </div>
 
 <script>
-    $(function () {
-        $('.input').keyup(function (e) {
-            if (e.keyCode == 38)//38 para arriba
+    $(function() {
+        $('.input').keyup(function(e) {
+            if (e.keyCode == 38) //38 para arriba
                 mover(e, -1);
-            if (e.keyCode == 40)//40 para abajo
+            if (e.keyCode == 40) //40 para abajo
                 mover(e, 1);
         });
     });
@@ -181,19 +196,22 @@ $this->title = 'Actividad #: ' . $modelActividad->id . ' | ' . $modelActividad->
         if (nota == '' || (nota >= minima && nota <= maxima)) {
             var url = "<?= Url::to(['registra']) ?>";
             $.post(
-                url,
-                { nota: nota, notaId: id, grupo_id: grupoId },
-                function (result) {
-                    $("#res").html(result);
+                url, {
+                    nota: nota,
+                    notaId: id,
+                    grupo_id: grupoId
+                },
+                function(result) {
+                    $("#res").html(result);                    
                 }
             );
+            show_estadisticas();
         } else {
             alert("La calificación debe estar ente " + minima + " y " + maxima);
             alert($(idx).val(''));
             $(idx).focus();
             //location.reload();
         }
-
     }
 
     function NumCheck(e, field) {
@@ -229,6 +247,34 @@ $this->title = 'Actividad #: ' . $modelActividad->id . ' | ' . $modelActividad->
     }
 </script>
 
+<!-- inicio para presentar estadisticas -->
+<script>
+    show_estadisticas();
+
+    function show_estadisticas() {
+        let actividadId = '<?= $modelActividad->id ?>';
+
+        var url = "<?= Url::to(['estadisticas']) ?>";
+
+        $.ajax({
+            url: url,
+            data: {
+                actividad_id: actividadId
+            },
+            method: 'get',
+            success: function(result) {
+                $("#div-estadistica").html(result);
+            }
+        })
+    }
+</script>
+<!-- fin para presentar estadisticas -->
+
+<!-- fin de funcion scrip -->
+
+
+
+<!-- funciones php -->
 <?php
 function getActividad($tipo_actividad_id)
 {
@@ -282,6 +328,20 @@ function obtenerIcono($calificacion)
             <path d="M15 19l2 2l4 -4" />
         </svg>';
     }
+}
+
+
+function semaforo_menor_70($nota)
+{
+
+    if ($nota < 70) {
+        $estado = '<i class="fas fa-spinner fa-spin" style="color: red;"></i>';
+    } elseif ($nota >= 70 && $nota < 95) {
+        $estado = '<i class="fas fa-circle" style="color: blue;"></i>';
+    } else {
+        $estado = '<i class="fas fa-smile-wink" style="color: green;"></i>';
+    }
+    return $estado;
 }
 
 ?>

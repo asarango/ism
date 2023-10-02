@@ -38,9 +38,15 @@ class Pdf extends \yii\db\ActiveRecord{
         $this->planVertDipl = PlanificacionVerticalDiploma::find()->where([
             'planificacion_bloque_unidad_id' => $idPlanUniBloque
         ])->one(); 
+
+        if($this->planVertDipl){
+            $this->IdCabecera = $this->planVertDipl->planificacionBloqueUnidad->plan_cabecera_id; 
+            $this->generate_pdf();
+        }else{
+            echo 'La planificacion no inicia';
+        }
         
-        $this->IdCabecera = $this->planVertDipl->planificacionBloqueUnidad->plan_cabecera_id; 
-        $this->generate_pdf();
+        
     }
     /*****  METODOS DE CONSULTA A LA BASE ****************************************************************************************************/       
     private function select_scholaris_materia(){
@@ -786,8 +792,11 @@ class Pdf extends \yii\db\ActiveRecord{
                             'campo_de' => 'escrito'
                         ])->one();
                         
+
+                        $opcionTexto = isset($ods->opcion_texto) ? $ods->opcion_texto : '---';
+
                         $html.='<td class="border">'.$competencias_ods.'  
-                                    <p><b>Información Detallada:</b></p>'.$ods->opcion_texto.'
+                                    <p><b>Información Detallada:</b></p>'.$opcionTexto.'
                                 </td>';
                        
                        

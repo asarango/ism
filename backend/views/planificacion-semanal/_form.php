@@ -34,7 +34,14 @@ use yii\widgets\ActiveForm;
                     <label for="edit3">
                         <h6>Actividades:</h6>
                     </label>
-                    <textarea name="actividades" id="edit3"><?= $model['actividades']?></textarea>
+                    <?php
+                        if(strlen($model['actividades']) < 12){
+                            echo '<textarea name="actividades" id="edit3">'.$actividades.'</textarea>';
+                        }else{
+                            echo '<textarea name="actividades" id="edit3">'.$model['actividades'].'</textarea>';
+                        }
+                    ?>
+                    
                 </div>
                 <hr>
                 <div>

@@ -35,7 +35,8 @@ class PdfNew extends \yii\db\ActiveRecord
         $periodoId = Yii::$app->user->identity->periodo_id;
         $this->planCabecera = PlanVerticalDiploma::find()->where(['cabecera_id' => $cabeceraId])->all();
 
-        $cabecera = PlanificacionDesagregacionCabecera::findOne($cabeceraId);
+        if($this->planCabecera){
+            $cabecera = PlanificacionDesagregacionCabecera::findOne($cabeceraId);
         $this->materiaId = $cabecera->ismAreaMateria->materia_id;
 
         $this->unidades = $this->get_planes_unidad($this->materiaId, $periodoId);
@@ -46,6 +47,11 @@ class PdfNew extends \yii\db\ActiveRecord
             ->all();
 
         $this->generate_pdf();
+        }else{
+            echo '<h3>El docente no inicia su planificación</h3>';
+        }
+
+        
     }
 
 

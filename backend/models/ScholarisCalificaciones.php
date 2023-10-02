@@ -18,6 +18,7 @@ use Yii;
  * @property int $estado_proceso
  * @property int $grupo_numero
  * @property int $estado
+ * @property bool $aviso_padre_menos_70
  */
 class ScholarisCalificaciones extends \yii\db\ActiveRecord
 {
@@ -38,6 +39,7 @@ class ScholarisCalificaciones extends \yii\db\ActiveRecord
             [['idalumno', 'idactividad', 'idtipoactividad', 'idperiodo', 'criterio_id', 'estado_proceso', 'grupo_numero', 'estado'], 'default', 'value' => null],
             [['idalumno', 'idactividad', 'idtipoactividad', 'idperiodo', 'criterio_id', 'estado_proceso', 'grupo_numero', 'estado'], 'integer'],
             [['calificacion'], 'number'],
+            [['aviso_padre_menos_70'], 'boolean'],
             [['observacion'], 'string', 'max' => 255],
         ];
     }
@@ -59,18 +61,7 @@ class ScholarisCalificaciones extends \yii\db\ActiveRecord
             'estado_proceso' => 'Estado Proceso',
             'grupo_numero' => 'Grupo Numero',
             'estado' => 'Estado',
+            'aviso_padre_menos_70' => 'Aviso Padre Menos 70',
         ];
-    }
-    
-    public function getAlumno(){
-        return $this->hasOne(OpStudent::className(), ['id' => 'idalumno']);
-    }
-    
-    public function getActividad(){
-        return $this->hasOne(ScholarisActividad::className(), ['id' => 'idactividad']);
-    }
-    
-    public function getTipo(){
-        return $this->hasOne(ScholarisTipoActividad::className(), ['id' => 'idtipoactividad']);
     }
 }

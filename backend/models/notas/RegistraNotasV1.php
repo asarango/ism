@@ -74,7 +74,7 @@ class RegistraNotasV1{
                                 inner join scholaris_actividad act on act.id = cal.idactividad 
                         where	cal.idalumno = $this->alumnoId
                                 and act.bloque_actividad_id = $this->bloqueId
-                                and cal.grupo_numero = $this->grupoCalificacion;";                          
+                                and cal.grupo_numero = $this->grupoCalificacion;";          
             
             $res = $con->createCommand($query)->queryOne();
 

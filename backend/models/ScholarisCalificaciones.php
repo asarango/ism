@@ -64,4 +64,16 @@ class ScholarisCalificaciones extends \yii\db\ActiveRecord
             'aviso_padre_menos_70' => 'Aviso Padre Menos 70',
         ];
     }
+
+    public function getAlumno(){
+        return $this->hasOne(OpStudent::className(), ['id' => 'idalumno']);
+    }
+    
+    public function getActividad(){
+        return $this->hasOne(ScholarisActividad::className(), ['id' => 'idactividad']);
+    }
+    
+    public function getTipo(){
+        return $this->hasOne(ScholarisTipoActividad::className(), ['id' => 'idtipoactividad']);
+    }
 }

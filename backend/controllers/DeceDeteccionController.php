@@ -139,6 +139,8 @@ class DeceDeteccionController extends Controller
             $model->path_archivos = ' - ';
 
             $array_datos_estudiante = $this->datos_estudiante($id_estudiante,$es_lexionario);
+
+
         }  
 
         if ($model->load(Yii::$app->request->post())) 
@@ -294,8 +296,8 @@ class DeceDeteccionController extends Controller
                     from scholaris_clase c1 , scholaris_grupo_alumno_clase c2 ,
                     op_institute_authorities c3 ,op_student c4 ,op_student_inscription c5, 
                     scholaris_op_period_periodo_scholaris c6,op_course_paralelo c7, op_course c8
-                    where c3.usuario  = '$usuarioLog' 
-                    and (c3.id = c1.dece_dhi_id or c3.id =c1.coordinador_dece_id ) 
+                    where  
+                    (c3.id = c1.dece_dhi_id or c3.id =c1.coordinador_dece_id ) 
                     and c1.id = c2.clase_id 
                     and c2.estudiante_id = c4.id 
                     and c4.id = c5.student_id 
@@ -304,13 +306,10 @@ class DeceDeteccionController extends Controller
                     and c7.id = c1.paralelo_id 
                     and c8.id = c7.course_id 
                     and c2.estudiante_id ='$id_estudiante'
+                    --and c3.usuario  = '$usuarioLog'
                     order by student;";
 
         }
-
-        // echo '<pre>';
-        // print_r($query);
-        // die();
 
 
         $resp = $con->createCommand($query)->queryOne();

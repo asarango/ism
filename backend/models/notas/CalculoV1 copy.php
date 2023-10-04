@@ -8,7 +8,7 @@ use backend\models\ScholarisGrupoAlumnoClase;
 use backend\models\ScholarisQuimestre;
 use Yii;
 
-class CalculoV1{
+class CalculoV1Copiaaaa{
 
     private $periodId;
     private $bloqueId;
@@ -37,8 +37,6 @@ class CalculoV1{
                                 $areaId,
                                 $studentId){
 
-                                    echo $bloqueId;
-                                    die();
 
         $this->periodId = $periodId;
         $this->grupoId  = $grupoId;
@@ -183,10 +181,6 @@ class CalculoV1{
                             and sba.tipo_uso = '$this->uso'
                             and sba.tipo_bloque = 'PARCIAL'
                             and lib.grupo_id = $this->grupoId";
-
-        echo $query;
-        echo $this->quimestreCodigo;
-        die();
         
         $res = $con->createCommand($query)->queryOne();
 

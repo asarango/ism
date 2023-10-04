@@ -171,6 +171,7 @@ $this->title = 'Novedades de comportamiento ';
                             </tr>
                         </table>
                         <?php $form = ActiveForm::begin(); ?>
+
                         <?= $form->field($model, 'asistencia_profesor_id')->hiddenInput(['value' => $modelAsistencia->id])->label(false) ?>
                         <?= $form->field($model, 'comportamiento_detalle_id')->hiddenInput()->label(false) ?>
                         <?= $form->field($model, 'observacion')->textarea(array('rows' => 3, 'cols' => 4))->label('Ingrese Observación') ?>

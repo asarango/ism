@@ -187,7 +187,7 @@ $this->title = 'Actividad #: ' . $modelActividad->id . ' | ' . $modelActividad->
                         <div>
                             <!-- **para subir archivo pdf simple** -->
                             <div id="pdf-viewer-container">
-                                <canvas id="pdf-canvas"></canvas>
+                                <!-- <canvas id="pdf-canvas"></canvas> -->
                             </div>
 
                             <div id="target-element">

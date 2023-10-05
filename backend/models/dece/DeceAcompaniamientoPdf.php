@@ -131,9 +131,14 @@ class DeceAcompaniamientoPdf extends \yii\db\ActiveRecord
                 <td align="left" style="font-size:10"><b> Cumplimiento </b></td>             
             </tr>';
         foreach ($modelSegFirmas as $acuerdo) {
+
+            // echo "<pre>";
+            // print_r($acuerdo);
+            // die();
+
             $html .= '<tr> 
                             <td align="left" style="font-size:10"> ' . $acuerdo->secuencial . '.- </td>
-                            <td align="left" style="font-size:10"> ' . $acuerdo->responsable . ' </td>
+                            <td align="left" style="font-size:10"> ' . $acuerdo->acuerdo . ' </td>
                             <td align="left" style="font-size:10"> ' . substr($acuerdo->fecha_max_cumplimiento, 0, 10) . ' </td>';
             if ($acuerdo->cumplio) {
                 $html .= '<td align="left" style="font-size:10"> SI </td>';

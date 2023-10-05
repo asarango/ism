@@ -35,12 +35,12 @@ $this->title = 'Estudiantes NEE';
                     </h4>
                 </div>
                 <div class="col-lg-2" style="text-align: right;">
-                <?=
-                        Html::a(
-                            '<span class="badge rounded-pill" style="background-color: #9e28b5"><i class="fa fa-briefcase" aria-hidden="true"></i> Inicio</span>',
-                            ['site/index'],
-                            ['class' => 'link']
-                        );
+                    <?=
+                    Html::a(
+                        '<span class="badge rounded-pill" style="background-color: #9e28b5"><i class="fa fa-briefcase" aria-hidden="true"></i> Inicio</span>',
+                        ['site/index'],
+                        ['class' => 'link']
+                    );
                     ?>
                 </div>
                 <hr>
@@ -54,8 +54,7 @@ $this->title = 'Estudiantes NEE';
                     <?= Html::beginForm(['create', 'pestana' => 'datos_estudiante'], 'post') ?>
                     <div class="row">
                         <div class="col-lg-10 col-md-10">
-                            <select id="estudiante" name="id" class="form-control select2 select2-hidden-accessible"
-                                style="width: 100%;" tabindex="-1" aria-hidden="true">
+                            <select id="estudiante" name="id" class="form-control select2 select2-hidden-accessible" style="width: 100%;" tabindex="-1" aria-hidden="true">
                                 <option selected="selected" value="">Escoja un estudiante...</option>
                                 <?php
                                 foreach ($estudiantes as $estudiante) {
@@ -71,12 +70,13 @@ $this->title = 'Estudiantes NEE';
                                 'class' => 'submit btn btn-primary my-text-medium',
                                 'style' => 'background-color:#0a1f8f'
                             ])
-                                ?>
+                            ?>
                         </div>
                     </div>
                     <?= Html::endForm() ?>
 
                 </div>
+
                 <hr>
 
                 <div class=" row col-lg-12 col-md-12">
@@ -94,7 +94,7 @@ $this->title = 'Estudiantes NEE';
                                 <?php
                                 foreach ($nee as $n) {
                                     if (strlen($n['paralelo']) == 1) {
-                                        ?>
+                                ?>
                                         <tr>
                                             <td>
                                                 <?= $n['student'] ?>
@@ -113,7 +113,7 @@ $this->title = 'Estudiantes NEE';
                                                 ?>
                                             </td>
                                         </tr>
-                                        <?php
+                                <?php
                                     }
                                 }
                                 ?>
@@ -134,10 +134,10 @@ $this->title = 'Estudiantes NEE';
     <!-- SCRIPT PARA SELECT2 -->
     <script>
         buscador();
+
         function buscador() {
             $('.select2').select2({
                 closeOnSelect: true
             });
         }
-
     </script>

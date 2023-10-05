@@ -14,11 +14,18 @@ use Yii;
  * @property string $updated_at
  * @property string $updated
  * @property int $scholaris_periodo_id
+ * @property int $grado
+ * @property string $diagnostico
+ * @property string $fecha_diagnostico
+ * @property string $recomendaciones
+ * @property string $fecha_salida_nee
+ * @property string $observacion_salida_nee
+ * @property bool $es_permanente
  *
  * @property OpStudent $student
  * @property ScholarisPeriodo $scholarisPeriodo
+ * @property NeeDetalle[] $neeDetalles
  * @property NeeXClase[] $neeXClases
- * @property NeeXOpcion[] $neeXOpcions
  */
 class Nee extends \yii\db\ActiveRecord
 {
@@ -37,9 +44,11 @@ class Nee extends \yii\db\ActiveRecord
     {
         return [
             [['student_id', 'created_at', 'created', 'scholaris_periodo_id'], 'required'],
-            [['student_id', 'scholaris_periodo_id'], 'default', 'value' => null],
-            [['student_id', 'scholaris_periodo_id'], 'integer'],
-            [['created_at', 'updated_at'], 'safe'],
+            [['student_id', 'scholaris_periodo_id', 'grado'], 'default', 'value' => null],
+            [['student_id', 'scholaris_periodo_id', 'grado'], 'integer'],
+            [['created_at', 'updated_at', 'fecha_diagnostico', 'fecha_salida_nee'], 'safe'],
+            [['diagnostico', 'recomendaciones', 'observacion_salida_nee'], 'string'],
+            [['es_permanente'], 'boolean'],
             [['created', 'updated'], 'string', 'max' => 200],
             [['student_id'], 'exist', 'skipOnError' => true, 'targetClass' => OpStudent::className(), 'targetAttribute' => ['student_id' => 'id']],
             [['scholaris_periodo_id'], 'exist', 'skipOnError' => true, 'targetClass' => ScholarisPeriodo::className(), 'targetAttribute' => ['scholaris_periodo_id' => 'id']],
@@ -59,6 +68,13 @@ class Nee extends \yii\db\ActiveRecord
             'updated_at' => 'Updated At',
             'updated' => 'Updated',
             'scholaris_periodo_id' => 'Scholaris Periodo ID',
+            'grado' => 'Grado',
+            'diagnostico' => 'Diagnostico',
+            'fecha_diagnostico' => 'Fecha Diagnostico',
+            'recomendaciones' => 'Recomendaciones',
+            'fecha_salida_nee' => 'Fecha Salida Nee',
+            'observacion_salida_nee' => 'Observacion Salida Nee',
+            'es_permanente' => 'Es Permanente',
         ];
     }
 
@@ -81,16 +97,16 @@ class Nee extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getNeeXClases()
+    public function getNeeDetalles()
     {
-        return $this->hasMany(NeeXClase::className(), ['nee_id' => 'id']);
+        return $this->hasMany(NeeDetalle::className(), ['nee_id' => 'id']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getNeeXOpcions()
+    public function getNeeXClases()
     {
-        return $this->hasMany(NeeXOpcion::className(), ['nee_id' => 'id']);
+        return $this->hasMany(NeeXClase::className(), ['nee_id' => 'id']);
     }
 }

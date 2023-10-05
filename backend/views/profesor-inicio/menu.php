@@ -29,6 +29,15 @@ use yii\helpers\Html;
                 );
                 ?>
             </div>
+
+            <div style="margin-left: 10px;">
+                <?= Html::a(
+                    '<span class="badge rounded-pill" style="background-color: green">
+                <i class="far fa-char"></i> Reporte Notas</span>',
+                    ['reporte-notas-profesor-nac/index1', 'clase_id' => $clase['clase_id']]
+                );
+                ?>
+            </div>
         </li>
     <?php
     }

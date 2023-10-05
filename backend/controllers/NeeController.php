@@ -250,22 +250,43 @@ class NeeController extends Controller
 
     private function consulta_materias_estudiante($studentId, $periodoId){
         $con = Yii::$app->db;
+        // $query = "select 	c.id as clase_id ,m.nombre as materia 
+        //             from 	scholaris_grupo_alumno_clase g 
+        //                     inner join scholaris_clase c on c.id = g.clase_id  
+        //                     inner join ism_area_materia am on am.id = c.ism_area_materia_id 
+        //                     inner join ism_materia m on m.id = am.materia_id  
+        //                     inner join ism_malla_area ma on ma.id = am.malla_area_id 
+        //                     inner join ism_periodo_malla pm on pm.id = ma.periodo_malla_id
+        //             where 	g.estudiante_id = $studentId 
+        //                     and pm.scholaris_periodo_id = $periodoId 
+        //                     and c.id not in ( select clase_id 
+		// 					from nee_x_clase x
+		// 							inner join nee on nee.id = x.nee_id 
+		// 					where clase_id = c.id 
+		// 					and fecha_finaliza is null 
+		// 					and nee.student_id = g.estudiante_id ) 
+        //             order by m.nombre;";
         $query = "select 	c.id as clase_id ,m.nombre as materia 
+                            ,(
+                                select 	nee.grado 
+                                from 	nee_x_clase nxc
+                                        inner join nee on nee.id = nxc.nee_id 
+                                where 	nee.student_id = 3923
+                                        and nee.scholaris_periodo_id = 1
+                                        and nxc.clase_id = g.clase_id 
+                            )
                     from 	scholaris_grupo_alumno_clase g 
-                            inner join scholaris_clase c on c.id = g.clase_id  
+                            inner join scholaris_clase c on c.id = g.clase_id 
                             inner join ism_area_materia am on am.id = c.ism_area_materia_id 
-                            inner join ism_materia m on m.id = am.materia_id  
+                            inner join ism_materia m on m.id = am.materia_id 
                             inner join ism_malla_area ma on ma.id = am.malla_area_id 
-                            inner join ism_periodo_malla pm on pm.id = ma.periodo_malla_id
-                    where 	g.estudiante_id = $studentId 
-                            and pm.scholaris_periodo_id = $periodoId 
-                            and c.id not in ( select clase_id 
-							from nee_x_clase x
-									inner join nee on nee.id = x.nee_id 
-							where clase_id = c.id 
-							and fecha_finaliza is null 
-							and nee.student_id = g.estudiante_id ) 
-                    order by m.nombre;";            
+                    inner join ism_periodo_malla pm on pm.id = ma.periodo_malla_id 
+                    where g.estudiante_id = $studentId 
+                        and pm.scholaris_periodo_id = $periodoId 
+                    order by m.nombre;";          
+                    
+            //echo $query;
+            // die();
 
             $res = $con->createCommand($query)->queryAll();
             return $res;
@@ -332,6 +353,9 @@ class NeeController extends Controller
 
         $neeId      = $_POST["nee_id"];
         $claseId    = $_POST["clase_id"];
+        
+        $nee = Nee::findOne($neeId);
+
         $grado      = 1;
         $diagnostico_inicia = 'Aquí su diagnóstico';
         $fechaHoy   = date("Y-m-d");        
@@ -339,9 +363,9 @@ class NeeController extends Controller
         $model = new NeeXClase();
         $model->nee_id = $neeId;
         $model->clase_id = $claseId;
-        $model->grado_nee = $grado;
-        $model->fecha_inicia = $fechaHoy;
-        $model->diagnostico_inicia = $diagnostico_inicia;
+        $model->grado_nee = $nee->grado;
+        $model->fecha_inicia = $nee->fecha_diagnostico;
+        $model->diagnostico_inicia = $nee->diagnostico;
         $model->save();
 
         return $this->redirect(['ficha', 
@@ -418,5 +442,50 @@ class NeeController extends Controller
         $model->updated = $usuarioLog;
         
         $model->save();       
+    }
+
+
+
+
+    public function actionUpdateNee(){
+        $campo = $_POST['campo'];
+        $valor = $_POST['valor'];
+        $neeId = $_POST['nee_id'];
+        
+
+        $model = Nee::findOne($neeId);
+        $model->$campo = $valor;
+        $model->save();
+
+
+        $neeXClase = NeeXClase::find()->where(['nee_id' => $neeId])->all();
+
+        foreach($neeXClase as $nxc){
+            $nxc->grado_nee             = $model->grado;
+            $nxc->fecha_inicia          = $model->fecha_diagnostico;
+            $nxc->diagnostico_inicia    = $model->diagnostico;
+            $nxc->diagnostico_finaliza  = $model->diagnostico;
+            $nxc->fecha_finaliza        = $model->fecha_salida_nee;
+            $nxc->diagnostico_finaliza  = $model->observacion_salida_nee;
+            $nxc->recomendacion_clase   = $model->recomendaciones;
+            $nxc->save();
+        }
+        
+
+
+    }
+
+
+    public function actionUpdatePermanente(){
+        $neeId = $_POST['nee_id'];
+
+        $model = Nee::findOne($neeId);
+        if($model->es_permanente == 0 || $model->es_permanente == null){
+            $model->es_permanente = true;
+        }else{
+            $model->es_permanente = false;
+        }
+
+        $model->save();
     }
 }

@@ -71,111 +71,109 @@ $modelRegDeteccion = DeceDeteccion::find()
                         'modelRegDeteccion' => $modelRegDeteccion
                     ]) ?>
                 </div>
-            
 
 
-            <div class="card col-lg-8 col-ms-8" style="padding: 5px;margin-bottom: 10px">
 
-                <?php $form = ActiveForm::begin(); ?>
+                <div class="card col-lg-8 col-ms-8" style="padding: 5px;margin-bottom: 10px">
+
+                    <?php $form = ActiveForm::begin(); ?>
 
 
-                <!-- <?= $form->field($model, 'numero_deteccion')->textInput() ?> -->
+                    <!-- <?= $form->field($model, 'numero_deteccion')->textInput() ?> -->
 
-                <!-- <?= $form->field($model, 'id_estudiante')->textInput() ?> -->
+                    <!-- <?= $form->field($model, 'id_estudiante')->textInput() ?> -->
 
-                <!-- <?= $form->field($model, 'id_caso')->textInput() ?> -->
+                    <!-- <?= $form->field($model, 'id_caso')->textInput() ?> -->
 
-                <!-- <?= $form->field($model, 'numero_caso')->textInput() ?> -->
+                    <!-- <?= $form->field($model, 'numero_caso')->textInput() ?> -->
 
-                <div class=" row ">
-                    <h6 style=" color:blueviolet;"><b>DATOS INFORMATIVOS GENERALES</b></h6>
+                    <div class=" row ">
+                        <h6 style=" color:blueviolet;"><b>DATOS INFORMATIVOS GENERALES</b></h6>
 
-                    <div class="col-lg-6">
-                        <?= $form->field($model, 'nombre_estudiante')->textInput(['maxlength' => true, 'readonly' => true]) ?>
-                    </div>
-                    <div class="col-lg-3">
-                        <?= $form->field($model, 'anio')->textInput(['maxlength' => true, 'readonly' => true]) ?>
-                    </div>
-                    <div class="col-lg-3">
-                        <?= $form->field($model, 'paralelo')->textInput(['maxlength' => true, 'readonly' => true]) ?>
-                    </div>
-                </div>
-                <br>
-                <div class="row">
-                    <h6 style="color:blueviolet;">PERSONA QUE REPORTA</h6>
-                    <div class="row">
-                        <div class="col-lg-5">
-                            <label for="exampleInputEmail1" class="form-label">Fecha</label>
-                            <input type="date" id="fecha_reporte" class="form-control" name="fecha_reporte"
-                                require="true" value="<?= substr($model->fecha_reporte, 0, 10); ?>">
-
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-lg-5">
-                            <?= $form->field($model, 'nombre_quien_reporta')->textInput(['maxlength' => true, 'readonly' => true]) ?>
+                        <div class="col-lg-6">
+                            <?= $form->field($model, 'nombre_estudiante')->textInput(['maxlength' => true, 'readonly' => true]) ?>
                         </div>
                         <div class="col-lg-3">
-                            <?= $form->field($model, 'cedula')->textInput(['maxlength' => true, 'readonly' => true]) ?>
+                            <?= $form->field($model, 'anio')->textInput(['maxlength' => true, 'readonly' => true]) ?>
                         </div>
-                        <div class="col-lg-4">
-                            <?= $form->field($model, 'cargo')->textInput(['maxlength' => true]) ?>
+                        <div class="col-lg-3">
+                            <?= $form->field($model, 'paralelo')->textInput(['maxlength' => true, 'readonly' => true]) ?>
                         </div>
                     </div>
-                </div>
-                <br>
-                <div class="row">
-                    <h6 style="color:blueviolet;">DESCRIPCIÓN DEL HECHO (qué paso, quienes se involucran, dónde, cuándo)
-                    </h6>
-                    <!-- inicio de fecha y hora del hecho  -->
+                    <br>
                     <div class="row">
-                    <div class="col-lg-6 col-md-6">
-                    <label for="exampleInputEmail1" class="form-label">Fecha del hecho</label>
-                            <input type="date" id="fecha_hecho" class="form-control" name="fecha_hecho"
-                                require="true" value="<?= substr($model->fecha_hecho, 0, 10); ?>">
+                        <h6 style="color:blueviolet;">PERSONA QUE REPORTA</h6>
+                        <div class="row">
+                            <div class="col-lg-5">
+                                <label for="exampleInputEmail1" class="form-label">Fecha</label>
+                                <input type="date" id="fecha_reporte" class="form-control" name="fecha_reporte" require="true" value="<?= substr($model->fecha_reporte, 0, 10); ?>">
+
+                            </div>
                         </div>
-                        <div class="col-lg-6 col-md-6">
-                            <?= $form->field($model, 'hora_aproximada')->textInput(['maxlength' => true]) ?>
-                        </div>                                                
+                        <div class="row">
+                            <div class="col-lg-5">
+                                <?= $form->field($model, 'nombre_quien_reporta')->textInput(['maxlength' => true, 'readonly' => true]) ?>
+                            </div>
+                            <div class="col-lg-3">
+                                <?= $form->field($model, 'cedula')->textInput(['maxlength' => true, 'readonly' => true]) ?>
+                            </div>
+                            <div class="col-lg-4">
+                                <?= $form->field($model, 'cargo')->textInput(['maxlength' => true]) ?>
+                            </div>
+                        </div>
                     </div>
-                    <!-- fin de fecha y hora del hecho  -->
-
-
+                    <br>
                     <div class="row">
-                        <?= $form->field($model, 'descripcion_del_hecho')->textarea(['rows' => 6]) ?>
-                        <!-- <script>
+                        <h6 style="color:blueviolet;">DESCRIPCIÓN DEL HECHO (qué paso, quienes se involucran, dónde, cuándo)
+                        </h6>
+                        <!-- inicio de fecha y hora del hecho  -->
+                        <div class="row">
+                            <div class="col-lg-6 col-md-6">
+                                <label for="exampleInputEmail1" class="form-label">Fecha del hecho</label>
+                                <input type="date" id="fecha_hecho" class="form-control" name="fecha_hecho" require="true" value="<?= substr($model->fecha_hecho, 0, 10); ?>">
+                            </div>
+                            <div class="col-lg-6 col-md-6">
+                                <?= $form->field($model, 'hora_aproximada')->textInput(['maxlength' => true]) ?>
+                            </div>
+                        </div>
+                        <!-- fin de fecha y hora del hecho  -->
+
+
+                        <div class="row">
+                            <?= $form->field($model, 'descripcion_del_hecho')->textarea(['rows' => 6]) ?>
+                            <!-- <script>
                             CKEDITOR.replace("decedeteccion-descripcion_del_hecho");
                         </script> -->
-                    </div>
-                    <div class="row">
-                        <?= $form->field($model, 'acciones_realizadas')->textarea(['rows' => 6]) ?>
-                        <!-- <script>
+                        </div>
+                        <div class="row">
+                            <?= $form->field($model, 'acciones_realizadas')->textarea(['rows' => 6]) ?>
+                            <!-- <script>
                             CKEDITOR.replace("decedeteccion-acciones_realizadas");
                         </script> -->
+                        </div>
                     </div>
-                </div>
-                <br>
-                <div class="row">
-                    <h6 style="color:blueviolet;">ENLISTE LAS EVIDENCIAS</h6>
+                    <br>
                     <div class="row">
-                        <?=$form->field($model, 'lista_evidencias')->textarea(['rows' => 6]) ?>
-                        <script>
-                            CKEDITOR.replace("decedeteccion-lista_evidencias");
-                        </script>
+                        <h6 style="color:blueviolet;">ENLISTE LAS EVIDENCIAS</h6>
+                        <div class="row">
+                            <?= $form->field($model, 'lista_evidencias')->textarea(['rows' => 6]) ?>
+                            <script>
+                                CKEDITOR.replace("decedeteccion-lista_evidencias");
+                            </script>
+                        </div>
                     </div>
+
+
+                    <!-- <?= $form->field($model, 'path_archivos')->textInput(['maxlength' => true]) ?> -->
+
+                    <div class="form-group" style="padding: 5px;">
+                        <?= Html::submitButton('GUARDAR', ['class' => 'btn btn-success']) ?>
+                    </div>
+
+                    <?php ActiveForm::end(); ?>
+
+
                 </div>
-
-
-                <!-- <?= $form->field($model, 'path_archivos')->textInput(['maxlength' => true]) ?> -->
-
-                <div class="form-group" style="padding: 5px;">
-                    <?= Html::submitButton('GUARDAR', ['class' => 'btn btn-success']) ?>
-                </div>
-
-                <?php ActiveForm::end(); ?>
-
-
             </div>
         </div>
     </div>
-</div>

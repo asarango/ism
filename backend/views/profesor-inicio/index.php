@@ -48,7 +48,7 @@ $this->title = 'Mis asignaturas';
             <div class="row" style="padding: 0px 10px 10px 10px;">
                 <div style="margin-bottom:20px;">
                     <div class="row" style="margin-bottom:20px; margin-left: 5px;">
-                        <div class="col-lg-5 col-md-5">
+                        <div class="col-lg-8 col-md-8">
                             <?= $this->render('menu', [
                                 'clases' => $clases
                             ]) ?>
@@ -112,7 +112,7 @@ $this->title = 'Mis asignaturas';
                         </div>
 
 
-                        <div class="col-lg-7 col-md-7" style="margin-top:5px;text-align: right">
+                        <div class="col-lg-4 col-md-4" style="margin-top:5px;text-align: right">
                             <div id="div-detalle" style="display: none; margin-top: 0px;"></div>
                             <div id="div-semanas" style="display: none; padding: 15px;"></div>
                         </div>

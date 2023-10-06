@@ -66,7 +66,7 @@ $this->title = 'Novedades de comportamiento ';
                         <?= Html::encode($this->title) ?>
                     </h5>
                     <b>
-                        <?= ' (' . $modelGrupo->alumno->last_name . ' ' . $modelGrupo->alumno->first_name . ')'; ?>
+                        <?= ' (' . $modelGrupo->alumno->last_name . ' ' . $modelGrupo->alumno->first_name. ' ' . $modelGrupo->alumno->middle_name . ')'; ?>
                     </b>
                     <p>
                         <font size=1>

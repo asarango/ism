@@ -18,15 +18,24 @@ $this->title = 'Mis asignaturas';
 // $alumnos = obtenerAlumnos();
 ?>
 
+<style>
+    .centrar {
+        /* margin-bottom: 20px; */
+        /* display: flex; */
+        justify-content: center;
+        align-items: center;
+    }
+</style>
+
 
 <div class="portal-inicio-index animate__animated animate__fadeIn">
-
     <div class="m-0 vh-50 row justify-content-center align-items-center">
-
-        <div class="card shadow col-lg-10 col-md-10">
-            <div class=" row align-items-center p-2">
+        <div class="card shadow col-md-10 col-md-10">
+            <div class="row align-items-center p-2">
                 <div class="col-lg-1">
-                    <h4><img src="../ISM/main/images/submenu/aula.png" width="64px" style="" class="img-thumbnail"></h4>
+                    <h4>
+                        <img src="../ISM/main/images/submenu/aula.png" width="64px" style="" class="img-thumbnail">
+                    </h4>
                 </div>
                 <div class="col-lg-7">
                     <h2>
@@ -42,87 +51,23 @@ $this->title = 'Mis asignaturas';
                 </div>
                 <hr>
             </div>
-
+            
             <!-- Fin encabezado -->
-
-            <div class="row" style="padding: 0px 10px 10px 10px;">
+            <div class="row">
                 <div style="margin-bottom:20px;">
-                    <div class="row" style="margin-bottom:20px; margin-left: 5px;">
-                        <div class="col-lg-8 col-md-8">
-                            <?= $this->render('menu', [
-                                'clases' => $clases
-                            ]) ?>
-                            <div class="row">
-
-                                <div class="table table-responsive table-bordered">
-                                    <!-- <div style="margin: 1rem 0 1rem 0;">
-                                        <?php
-                                        // $alumnosCount = count($alumnos);
-                                        // echo "Cantidad de alumnos disponibles: " . $alumnosCount;
-                                        ?>
-
-                                    </div>
-                                    <table class="table table-bordered">
-                                        <tr>
-                                            <th>#</th>
-                                            <th>Nombre</th>
-                                        </tr>
-                                        <?php
-                                        // $numeroEstudiante = 1;
-                                        // foreach ($alumnos as $alumno) {
-                                        //     echo '<tr>';
-                                        //     echo '<td>' . $numeroEstudiante . '</td>';
-                                        //     echo '<td>' . $alumno['estudiante'] . '</td>';
-                                        //     echo '</tr>';
-                                        //     $numeroEstudiante++;
-                                        // }
-                                        ?>
-                                    </table> -->
-                                    <!-- <table class="table table-condensed table-striped table-hover tamano10">
-                                        <thead>
-                                            <tr>
-                                                <th>#</th>
-                                                <th>Estudiante</th>
-                                                <th>Curso</th>
-                                            </tr>
-                                        </thead>
-
-                                        <tbody> -->
-                                            <?php
-                                            // $i = 0;
-                                            // foreach ($modelGrupo as $grupo) {
-                                            //     $i++;
-                                            //     echo '<tr>';
-                                            //     echo '<td>' . $i . '</td>';
-                                            //     echo '<td>' . $grupo['last_name'] . ' ' . $grupo['first_name'] . ' ' . $grupo['middle_name'] . '</td>';
-                                            //     echo '<td>' . $grupo['curso'] . '</td>';
-                                            //     echo '<td>' . $grupo['paralelo'] . '</td>';
-                                            //     echo '<td>' . $grupo['inscription_state'] . '</td>';
-                                            //     echo '<td>';
-                                            //     echo Html::a('<p class="tamano10">Retirar</p>', ['scholaris-clase/retirar', 'grupoId' => $grupo['grupo_id']], ['class' => 'btn btn-link']);
-                                            //     echo '</td>';
-                                            //     echo '</tr>';
-                                            // }
-                                            ?>
-                                    <!-- </tbody>
-                                    </table> -->
-                                </div>
-
-                            </div>
-                        </div>
-
-
-                        <div class="col-lg-4 col-md-4" style="margin-top:5px;text-align: right">
+                    <div class="col-lg-12 col-md-12 centrar">
+                        <?= $this->render('menu', ['clases' => $clases]) ?>
+                    </div>
+                    <!-- <div class="col-lg-4 col-md-4" style="margin-top:5px;text-align: right">
                             <div id="div-detalle" style="display: none; margin-top: 0px;"></div>
                             <div id="div-semanas" style="display: none; padding: 15px;"></div>
-                        </div>
-                    </div>
+                        </div> -->
                 </div>
             </div>
-
         </div>
     </div>
 </div>
+
 
 <script>
     function muestra_detalle(claseId, accion) {

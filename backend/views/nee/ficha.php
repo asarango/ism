@@ -82,6 +82,7 @@ function getIniciales($nombre)
                     <h5><?= Html::encode($this->title) ?></h5>
                     <p><?php echo $nombreCompletoEstudiante . ' (' . $inicialesEstudiante . ')' ?></p>
                 </div>
+
                 <div class="col-lg-2 col-md-2" style="text-align: right;">
                     <!-- menu izquierda -->
 
@@ -92,11 +93,8 @@ function getIniciales($nombre)
                         ['class' => 'link']
                     );
                     ?>
-
-
                 </div>
                 <hr>
-
             </div><!-- FIN DE CABECERA -->
 
             <!-- inicia cuerpo de card -->

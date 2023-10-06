@@ -34,12 +34,33 @@ $this->title = '¡Mis insumos!';
                 <div class="col-lg-3 col-md-3" style="text-align: right; margin-top: -5px;">
                     <?php
                     echo Html::a(
-                        '<span class="badge rounded-pill" style="background-color: #ab0a3d">
-                                <i class="fa fa-plus-circle" aria-hidden="true"></i> Inicio
+                        '<span class="badge rounded-pill" style="background-color: #9e28b5">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home-share" width="15" height="15" viewBox="0 0 24 24" stroke-width="2.5" stroke="#ffffff" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                        <path d="M9 21v-6a2 2 0 0 1 2 -2h2c.247 0 .484 .045 .702 .127" />
+                        <path d="M19 12h2l-9 -9l-9 9h2v7a2 2 0 0 0 2 2h5" />
+                        <path d="M16 22l5 -5" />
+                        <path d="M21 21.5v-4.5h-4.5" />
+                        </svg> Inicio
                             </span>',
                         ['site/index']
                     );
                     ?>
+                    |
+                    <?php
+
+                    echo Html::a(
+                        '<span class="badge rounded-pill" style="background-color: #ab0a3d">
+                            <i class="fa fa-plus-circle" aria-hidden="true"></i> Crear Insumo
+                        </span>',
+                        [
+                            'view-actividad-crear/index1',
+                            // 'clase_id' => $claseId,
+                        ]
+                    );
+
+                    ?>
+
                 </div> <!-- FIN DE BOTONES DE ACCION Y NAVEGACIÓN -->
                 <hr>
             </div>
@@ -48,18 +69,18 @@ $this->title = '¡Mis insumos!';
             <!-- comienza cuerpo  -->
             <div class="row" style="padding: 10px;margin-top: -25px;">
                 <?=
-                    GridView::widget([
-                        'dataProvider' => $dataProvider,
-                        'filterModel' => $searchModel,
-                        'columns' => [
-                            ['class' => 'yii\grid\SerialColumn'],
-                            /** INICIO BOTONES DE ACCION * */
-                            [
-                                'class' => 'yii\grid\ActionColumn',
-                                //                    'width' => '150px',
-                                'template' => '{activity}',
-                                'buttons' => [
-                                    'activity' => function ($url, $model) {
+                GridView::widget([
+                    'dataProvider' => $dataProvider,
+                    'filterModel' => $searchModel,
+                    'columns' => [
+                        ['class' => 'yii\grid\SerialColumn'],
+                        /** INICIO BOTONES DE ACCION * */
+                        [
+                            'class' => 'yii\grid\ActionColumn',
+                            //                    'width' => '150px',
+                            'template' => '{activity}',
+                            'buttons' => [
+                                'activity' => function ($url, $model) {
                                     return Html::a('<i class="fas fa-edit"></i>', $url, [
                                         'title' => 'Ir a actividad',
                                         'data-toggle' => 'tooltip',
@@ -68,49 +89,49 @@ $this->title = '¡Mis insumos!';
                                         'class' => 'hand'
                                     ]);
                                 }
-                                ],
-                                'urlCreator' => function ($action, $model, $key) {
+                            ],
+                            'urlCreator' => function ($action, $model, $key) {
                                 if ($action === 'activity') {
-                                    
-                              
-                                    
+
+
+
                                     return \yii\helpers\Url::to(['scholaris-actividad/actividad', 'actividad' => $model->actividad_id]);
                                 }
                                 //     else if ($action === 'update') {
                                 //          return \yii\helpers\Url::to(['update', 'id' => $key]);
                                 //      }
                             }
-                            ],
-                            /** FIN BOTONES DE ACCION * */
-                            'clase_id',
-                            'bloque',
-                            'semana_numero',
-                            'curso',
-                            'paralelo',
-                            'nombre',
-                            'nombre_nacional',
-                            'actividad_id',
-                            'inicio',
-                            'title',
-                            // 'tipo_actividad_id', agregar el tipo actividad !
-                            'total_calificados',
-                            'total_estudiantes'
-                            // [
-                            //     'attribute' => 'ism_area_materia_id',
-                            //     'format' => 'raw',
-                            //     'value' => function ($model) {
-                            //         return $model->ismAreaMateria->materia->nombre;
-                            //     },
-                            //     'filter' => $listaM,
-                            //     'filterInputOptions' => [
-                            //         'class' => 'form-control',
-                            //         'prompt' => 'Seleccione asignatura...'
-                            //     ],
-                            // ],
-                
-                            //            ['class' => 'yii\grid\ActionColumn'],            
                         ],
-                    ]);
+                        /** FIN BOTONES DE ACCION * */
+                        'clase_id',
+                        'bloque',
+                        'semana_numero',
+                        'curso',
+                        'paralelo',
+                        'nombre',
+                        'nombre_nacional',
+                        'actividad_id',
+                        'inicio',
+                        'title',
+                        // 'tipo_actividad_id', agregar el tipo actividad !
+                        'total_calificados',
+                        'total_estudiantes'
+                        // [
+                        //     'attribute' => 'ism_area_materia_id',
+                        //     'format' => 'raw',
+                        //     'value' => function ($model) {
+                        //         return $model->ismAreaMateria->materia->nombre;
+                        //     },
+                        //     'filter' => $listaM,
+                        //     'filterInputOptions' => [
+                        //         'class' => 'form-control',
+                        //         'prompt' => 'Seleccione asignatura...'
+                        //     ],
+                        // ],
+
+                        //            ['class' => 'yii\grid\ActionColumn'],            
+                    ],
+                ]);
                 ?>
             </div>
             <!-- finaliza cuerpo -->

@@ -184,8 +184,9 @@ class PlanificacionSemanalController extends Controller
         if(isset($_GET['id'])){
             $pudOrigen = $_GET['pud_origen'];
             $planOrigenId = $_GET['plan_bloque_unidad_id'];
-
             $id = $_GET['id'];
+            $semanaDefecto = $_GET['semana_defecto'];
+
             $model = $this->findModel($id);
 
 
@@ -208,6 +209,7 @@ class PlanificacionSemanalController extends Controller
             
             $pudOrigen = $_POST['pud_origen'];
             $planOrigenId = $_POST['plan_bloque_unidad_id'];
+            $semanaDefecto = $_POST['semana_defecto'];
 
             $model = $this->findModel($id);
             $model->tema        = $_POST['tema'];            
@@ -222,7 +224,8 @@ class PlanificacionSemanalController extends Controller
                 'clase_id' => $model->clase_id,
                 'bloque_id' => $model->semana->bloque->id,
                 'pud_origen' => $pudOrigen,
-                'plan_bloque_unidad_id' => $planOrigenId
+                'plan_bloque_unidad_id' => $planOrigenId,
+                'semana_defecto' => $semanaDefecto
             ]);
             
         }
@@ -231,7 +234,8 @@ class PlanificacionSemanalController extends Controller
             'model' => $model,
             'pud_origen' => $pudOrigen,
             'plan_bloque_unidad_id' => $planOrigenId,
-            'actividades' => $actividades
+            'actividades' => $actividades,
+            'semana_defecto' => $semanaDefecto
         ]);
     }
 

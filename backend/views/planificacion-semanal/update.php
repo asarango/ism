@@ -61,7 +61,8 @@ $this->title = 'Modificar Planificacion Semanal ';
                         'model' => $model, 
                         'pud_origen' => $pud_origen, 
                         'plan_bloque_unidad_id' => $plan_bloque_unidad_id,
-                        'actividades' => $actividades
+                        'actividades' => $actividades,
+                        'semana_defecto' => $semana_defecto
                     ]);
                     ?>
                 </div>

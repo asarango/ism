@@ -8,6 +8,7 @@ use backend\models\LmsActividadXArchivo;
 use backend\models\messages\Messages;
 use backend\models\notas\RegistraNotas;
 use backend\models\notas\RegistraNotasV1;
+use backend\models\PlanificacionSemanal;
 use backend\models\ResUsers;
 use backend\models\ScholarisActividadDescriptor;
 use backend\models\ScholarisBloqueActividad;
@@ -119,44 +120,63 @@ class ScholarisActividadController extends Controller
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
-    public function actionCreate($claseId, $bloqueId, $calificado)
+    public function actionCreate()
     {
-        $modelBloques = ScholarisBloqueActividad::find()
-            ->where(['id' => $bloqueId])
-            ->one();
+        $userLog    = Yii::$app->user->identity->usuario;
+        $periodoId  = Yii::$app->user->identity->periodo_id;
+        $periodo    = ScholarisPeriodo::findOne($periodoId);
 
-        $estado = $this->estado($modelBloques->hasta);
-        $modelClase = ScholarisClase::find()->where(['id' => $claseId])->one();
-        //Toma las semanas del bloque
-        $weeks = ScholarisBloqueSemanas::find()->where(['bloque_id' => $bloqueId])
-            ->orderBy('semana_numero')
-            ->all();
+        $trimestres = ScholarisBloqueActividad::find()->where([
+            'scholaris_periodo_codigo' => $periodo->codigo
+        ])
+        ->orderBy('orden')
+        ->all();
 
-        $sentencias = new SentenciasSql();
-        $modelHorarios = $sentencias->fechasDisponibles($modelBloques->bloque_inicia, $modelBloques->bloque_finaliza, $claseId, $bloqueId);
+        // $modelBloques = ScholarisBloqueActividad::find()
+        //     ->where(['id' => $bloqueId])
+        //     ->one();
 
-        //si existe la semana renderiza a la misma vista, pero con los datos de la semana
-        if (isset($_GET['week_id'])) {
+        // $estado = $this->estado($modelBloques->hasta);
+        // $modelClase = ScholarisClase::find()->where(['id' => $claseId])->one();
+        // //Toma las semanas del bloque
+        // $weeks = ScholarisBloqueSemanas::find()->where(['bloque_id' => $bloqueId])
+        //     ->orderBy('semana_numero')
+        //     ->all();
 
-            $detailWeek = $this->get_detail_week($_GET['week_id'], $claseId);
-            return $this->render('create', [
-                'modelClase' => $modelClase,
-                'modelHorarios' => $modelHorarios,
-                'estado' => $estado,
-                'bloqueId' => $bloqueId,
-                'weeks' => $weeks,
-                'detailWeek' => $detailWeek
-            ]);
-        }
+        // $sentencias = new SentenciasSql();
+        // $modelHorarios = $sentencias->fechasDisponibles($modelBloques->bloque_inicia, $modelBloques->bloque_finaliza, $claseId, $bloqueId);
 
-        return $this->render('create', [
-            'modelClase' => $modelClase,
-            'modelHorarios' => $modelHorarios,
-            'estado' => $estado,
-            'bloqueId' => $bloqueId,
-            'weeks' => $weeks,
-            'calificado' => $calificado
+        // //si existe la semana renderiza a la misma vista, pero con los datos de la semana
+        // if (isset($_GET['week_id'])) {
+
+        //     $detailWeek = $this->get_detail_week($_GET['week_id'], $claseId);
+        //     return $this->render('create', [
+        //         'modelClase' => $modelClase,
+        //         'modelHorarios' => $modelHorarios,
+        //         'estado' => $estado,
+        //         'bloqueId' => $bloqueId,
+        //         'weeks' => $weeks,
+        //         'detailWeek' => $detailWeek
+        //     ]);
+        // }
+
+        // return $this->render('create', [
+        //     'modelClase' => $modelClase,
+        //     'modelHorarios' => $modelHorarios,
+        //     'estado' => $estado,
+        //     'bloqueId' => $bloqueId,
+        //     'weeks' => $weeks,
+        //     'calificado' => $calificado
+        // ]);
+
+        return $this->render('create',[
+            'trimestres' => $trimestres,
         ]);
+    }
+
+
+    private function get_plan_semanal($docente){
+
     }
 
 
@@ -452,6 +472,10 @@ class ScholarisActividadController extends Controller
 
         /**************************** */
 
+        $clasesParaCopiar = $this->get_clases_para_copiar($modelActividad->clase->paralelo->course->id, 
+                                                          $modelActividad->clase->ism_area_materia_id, 
+                                                          $modelActividad->paralelo_id, 
+                                                          $modelActividad->id);
 
 
         if ($modelActividad->tipo_calificacion == 'P') {
@@ -468,7 +492,8 @@ class ScholarisActividadController extends Controller
                 'asignados' => $asignados,
                 'model' =>  $model,
                 'lmsActividad' => $lmsActividad,
-                'materialApoyo' => $materialApoyo
+                'materialApoyo' => $materialApoyo,
+                'clasesParaCopiar' => $clasesParaCopiar
             ]);
         } else {
 
@@ -484,9 +509,84 @@ class ScholarisActividadController extends Controller
                 'asignados' => $asignados,
                 'model' =>  $model,
                 'lmsActividad' => $lmsActividad,
-                'materialApoyo' => $materialApoyo
+                'materialApoyo' => $materialApoyo,
+                'clasesParaCopiar' => $clasesParaCopiar
             ]);
         }
+    }
+
+
+
+    private function get_clases_para_copiar($cursoId, $ismAreaMateriaId, $claseId, $actividadId){
+        $con = Yii::$app->db;
+        $query = "select 	cla.id  
+                            ,cur.name as curso
+                            ,par.name as paralelo
+                            ,concat(fac.x_first_name, ' ', fac.middle_name, ' ', fac.last_name) as docente 
+                            ,(
+                                select 	actividad_original 
+                                from 	scholaris_actividad 
+                                where 	actividad_original = $actividadId
+                                        and paralelo_id = cla.id 
+                            )
+                    from 	scholaris_clase cla
+                            inner join op_course_paralelo par on par.id = cla.paralelo_id 
+                            inner join op_course cur on cur.id = par.course_id 
+                            inner join op_faculty fac on fac.id = cla.idprofesor 
+                    where 	cur.id = $cursoId
+                            and cla.ism_area_materia_id = $ismAreaMateriaId
+                            and cla.id <> $claseId
+                    order by par.name;";
+
+    
+        return $con->createCommand($query)->queryAll();
+    }
+
+
+    public function actionCopiarActividad(){
+        print_r($_GET);
+        
+        $claseOriginalId = $_GET['clase_original_id'];
+        $claseDestinoId = $_GET['clase_destino_id'];
+        $actividadId = $_GET['actividad_id'];
+
+        $actividadOrigen = ScholarisActividad::findOne($actividadId);
+        $planSemanalOrigen = PlanificacionSemanal::findOne($actividadOrigen->plan_semanal_id);
+        
+        $planSemanalDestino = PlanificacionSemanal::find()->where([
+                'semana_id' => $planSemanalOrigen->semana_id,
+                'clase_id' => $claseDestinoId,
+                'orden_hora_semana' => $planSemanalOrigen->orden_hora_semana,
+            ])->one();
+
+        if($planSemanalDestino != null){
+            $nuevoId = $this->clonar_actividad($actividadId);
+
+            $model = ScholarisActividad::findOne($nuevoId);
+            $model->paralelo_id = $claseDestinoId;
+            $model->actividad_original = $actividadId;
+            $model->plan_semanal_id = $planSemanalDestino->id;
+            $model->hora_id = $planSemanalDestino->hora_id;
+            $model->save();
+
+            return $this->redirect(['actividad', 'actividad' => $actividadId]);
+        }else{
+            return $this->render('error');
+        }
+        
+    }
+
+
+
+    private function clonar_actividad($actividadId){
+        $con = Yii::$app->db;
+        $query = "insert into scholaris_actividad (create_date, write_date, create_uid, write_uid, title, descripcion, archivo, descripcion_archivo, color, inicio, fin, tipo_actividad_id, bloque_actividad_id, a_peso, b_peso, c_peso, d_peso, paralelo_id, materia_id, calificado, tipo_calificacion, tareas, hora_id, actividad_original, semana_id, momento_detalle, con_nee, grado_nee, observacion_nee, destreza_id, formativa_sumativa, videoconfecia, respaldo_videoconferencia, link_aula_virtual, es_aprobado, fecha_revision, usuario_revisa, comentario_revisa, respuesta_revisa, lms_actvidad_id, es_heredado_lms, estado, plan_semanal_id, ods_pud_dip_id )
+        select 	create_date, write_date, create_uid, write_uid, title, descripcion, archivo, descripcion_archivo, color, inicio, fin, tipo_actividad_id, bloque_actividad_id, a_peso, b_peso, c_peso, d_peso, paralelo_id, materia_id, calificado, tipo_calificacion, tareas, hora_id, actividad_original, semana_id, momento_detalle, con_nee, grado_nee, observacion_nee, destreza_id, formativa_sumativa, videoconfecia, respaldo_videoconferencia, link_aula_virtual, es_aprobado, fecha_revision, usuario_revisa, comentario_revisa, respuesta_revisa, lms_actvidad_id, es_heredado_lms, estado, plan_semanal_id, ods_pud_dip_id  
+        from 	scholaris_actividad where id = $actividadId;";
+
+        $con->createCommand($query)->execute();
+        return $con->getLastInsertID();
+
     }
 
 

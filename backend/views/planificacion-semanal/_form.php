@@ -52,6 +52,7 @@ use yii\widgets\ActiveForm;
                 </div>
                 <input type="hidden" name="pud_origen" value="<?= $pud_origen?>">
                 <input type="hidden" name="plan_bloque_unidad_id" value="<?= $plan_bloque_unidad_id?>">
+                <input type="hidden" name="semana_defecto" value="<?= $semana_defecto?>">
                 <hr>
                 <div>
                     <label for="edit5">

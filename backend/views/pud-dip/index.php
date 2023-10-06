@@ -205,7 +205,7 @@ $modelPudBitacora = PudAprobacionBitacora::find()
                             <div class="card" style="width: 100%; margin-top:20px">
                                 <div class="card-header">
                                     <div class="row">
-                                        <P style="color:red">AQUI PODRA VISUALIZAR LAS NOVEDADES ENVIADAS POR EL COORDINADOR </p>
+                                        <P style="color:red">AQUÍ PODRÁ VISUALIZAR LAS NOVEDADES ENVIADAS POR EL COORDINADOR </p>
                                     </div>
                                 </div>
                                 <div class="card-body">

@@ -297,7 +297,11 @@ function conteo_novedades_especiale($array, $codigo)
 
                                     
                                     //******** ESTUDIANTES  *****************//
-                                    echo '<td>' . $alumno['last_name'] . ' ' . $alumno['first_name'] . '</td>';
+                                    // echo "<pre>";
+                                    // print_r($alumno);
+                                    // die();  
+
+                                    echo '<td>' . $alumno['last_name'] . ' '.$alumno['middle_name'] .' '. $alumno['first_name'] . '</td>';
 
                                     /*************** FALTAS *********************/
                                     $fechaFalta = isset($alumno['fecha']) ? 'falta' : 'no falto';

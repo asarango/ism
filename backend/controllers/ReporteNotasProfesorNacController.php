@@ -2,6 +2,7 @@
 
 namespace backend\controllers;
 
+use backend\models\notas\NotasProfesor;
 use Yii;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -69,6 +70,75 @@ class ReporteNotasProfesorNacController extends Controller {
     }
 
     public function actionIndex1() {
-        print_r($_GET);
+        $claseId = $_GET['clase_id'];
+        $periodoId = Yii::$app->user->identity->periodo_id;
+        $periodo = ScholarisPeriodo::findOne($periodoId);
+
+        $clase = ScholarisClase::findOne($claseId);
+
+
+        // Para tomar el trimestre por defecto
+        if(isset($_GET['trimestre_defecto'])){
+            $trimestreId = $_GET['trimestre_defecto'];
+            $trimestre = ScholarisBloqueActividad::findOne($trimestreId);
+        }else{
+            $trimestre = ScholarisBloqueActividad::find()->where([
+                'scholaris_periodo_codigo' => $periodo->codigo,
+                'orden' => 1 
+            ])
+            ->one();
+        }
+        // Fin de para tomar el trimestre por defecto
+
+        //## Toma la información de los bloques trimestres 
+        $trimestres = $this->get_trimestres($periodo->codigo, $claseId);
+
+
+        //## Llamamos a nuestra clase de NotasProfesor para el reporte de los calculos
+        // $notasProfesor->grupo 'CONTIENE LA INFORMACION DE LA LISTA DE GRUPOS'
+        // $notasProfesor->tipoActividades 'CONTIENE EL TIPO DE ACTIVIDADES'
+        // $notasProfesor->actividades 'CONTIENE LA LISTA DE ACTIVIDADES'
+        // $notasProfesor->notas_x_actividad 'CONTIENE LAS CALIFICACIONES DE LAS ACTIVIDADES'
+        $notasProfesor = new NotasProfesor($claseId, $trimestre->id);
+
+        echo '<pre>';
+         //print_r($notasProfesor->tipoActividades);
+         //print_r($notasProfesor->grupo);
+         //print_r($notasProfesor->notas_x_actividad);
+        die();
+
+
+        return $this->render('index', [
+            'trimestres' => $trimestres,
+            'clase' => $clase,
+            'trimestre' => $trimestre,
+            'notasProfesor' => $notasProfesor
+        ]);
+
+
+
     }
+
+
+    private function get_trimestres($periodoCodigo, $claseId) {
+        $con = Yii::$app->db;
+        $query = "select 	b.id as bloque_id
+                            ,b.name as trimestre
+                            ,(
+                                select 	trunc(avg(nota),2) as promedio
+                                from 	lib_bloques_grupo_clase lib
+                                        inner join scholaris_grupo_alumno_clase gru on gru.id = lib.grupo_id
+                                where	gru.clase_id = $claseId
+                                        and lib.bloque_id = b.id
+                            )
+                    from 	scholaris_bloque_actividad b
+                    where 	b.scholaris_periodo_codigo = '$periodoCodigo'
+                    order by b.orden;";
+
+        $res = $con->createCommand($query)->queryAll();
+        return $res;
+    }
+
+
+    
 }

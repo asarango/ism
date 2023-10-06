@@ -11,7 +11,7 @@ use yii\helpers\Url;
 /* @var $searchModel app\models\ScholarisActividadSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Actividad #: ' . $modelActividad->id . ' | ' . $modelActividad->title;
+$this->title = 'Copiar planificación de la actividad '.'Actividad #: ' . $modelActividad->id;
 
 
 /** Extrae path donde se almacena los archivos */
@@ -48,8 +48,8 @@ $modelActividadConsulta = new ScholarisArchivosprofesor();
 <div class="scholaris-actividad-index">
     <div class="m-0 vh-50 row justify-content-center align-items-center">
         <div class="card shadow col-lg-10">
-            <div class=" row" style="margin-top:10px;">
-                <div class="col-lg-1 col-md-1">
+            <div class=" row" style="margin-top: 10px;">
+                <div class="col-lg-1 col-md-1" >
                     <h4><img src="../ISM/main/images/submenu/retroalimentacion.png" width="64px" class="img-thumbnail">
                     </h4>
                 </div>
@@ -61,24 +61,13 @@ $modelActividadConsulta = new ScholarisArchivosprofesor();
                 }
                 ?>
                 <div class="col-lg-6 col-md-6">
-                    <h4>
+                    <h6 style="margin-top: 20px;">
                         <?= Html::encode($this->title) ?>
-                    </h4>
-                    <p>(
-                        <?= '<small>' . $modelActividad->clase->ismAreaMateria->materia->nombre .
-                            ' - ' .
-                            'Clase #:' . $modelActividad->clase->id .
-                            ' - ' .
-                            $modelActividad->clase->paralelo->course->name . ' - ' . $modelActividad->clase->paralelo->name . ' / ' .
-                            //$modelActividad->clase->paralelo->name . ' / ' .
-                            $modelActividad->clase->profesor->last_name . ' ' . $modelActividad->clase->profesor->x_first_name . ' / ' .
-                            'Es calificado: ' . $calificado . ' / ' .
-                            'Tipo de actividad: ' . getActividad($modelActividad->tipo_actividad_id) . '</small>';
-                        ?> )
-                    </p>
+                    </h6>
+
                 </div>
 
-                <div class="col-lg-5 col-md-5" style="text-align: right;">
+                <div class="col-lg-5 col-md-5" style="text-align: right;margin-top: 18px;">
                     <?php
 
                     echo Html::a(
@@ -100,7 +89,6 @@ $modelActividadConsulta = new ScholarisArchivosprofesor();
                                 );
                                 $cantidadCalif = backend\models\ScholarisCalificaciones::find()->where(['idactividad' => $modelActividad->id])->all();
                             } else {
-
                             }
                         } else {
                             echo Html::a(
@@ -138,13 +126,30 @@ $modelActividadConsulta = new ScholarisArchivosprofesor();
             <!-- render de formularios LMS (lms anterior o DIPL) -->
 
             <!--**************** modificar puesto que debemos tr4aer desde la planificacion semanal***************** -->
-            <?php
-            if (empty($lmsActividad['id'])) {
-                include '_lms-planificacion-semanal.php';
-            } else {
-                include '_lms-comunitario.php';
-            }
-            ?>
+            <div class="col-lg-12">
+                <div>
+                    <?php
+                    echo $this->render(
+                        '_lms-planificacion-semanal.php',
+                        [
+                            'modelActividad' => $modelActividad,
+                            'clasesParaCopiar' => $clasesParaCopiar,
+
+                        ]
+                    )
+                    ?>
+
+                    <?php
+
+                    // if (empty($lmsActividad['id'])) {
+                    //     include '_lms-planificacion-semanal.php';
+                    // } else {
+                    //     include '_lms-comunitario.php';
+                    // }
+
+                    ?>
+                </div>
+            </div>
         </div>
     </div>
 </div>

@@ -219,13 +219,18 @@ class DeceRegistroSeguimientoController extends Controller
                 $imagenSubida = UploadedFile::getInstance($model, 'path_archivo');
                 $pathArchivos = $path_archivo_dece_atencion->opcion . $model->id_estudiante . '/' . $model->id . '/';
 
+        
+
                 //creamos la carpeta
                 if (!file_exists($pathArchivos)) {
                     mkdir($pathArchivos, 0777, true);
                     chmod($pathArchivos, 0777);
                 }
+
+                
                 $imagenSubida->name = str_replace(' ', '', $imagenSubida->name);
                 $path = $pathArchivos . $imagenSubida->name;
+                
                 if ($imagenSubida->saveAs($path)) {
                     $model->path_archivo = $model->id_estudiante . '/' . $model->id . '##' . $imagenSubida->name;
                     $model->save();

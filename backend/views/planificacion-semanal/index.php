@@ -1,4 +1,5 @@
 <?php
+
 use backend\models\PlanificacionSemanalRecursos;
 use backend\models\ScholarisActividad;
 use backend\models\TocPlanUnidadHabilidad;
@@ -72,15 +73,15 @@ $this->params['breadcrumbs'][] = $this->title;
                 <div class="col-lg-6 col-md-6">
                     <h4>
                         <?= Html::encode($this->title)
-                            ?>
+                        ?>
                     </h4>
                     <p>
                         <?=
-                            '<b><small>' . $clase->paralelo->course->name . ' / ' . ' "' . $clase->paralelo->name .
+                        '<b><small>' . $clase->paralelo->course->name . ' / ' . ' "' . $clase->paralelo->name .
                             '"' . ' ' . '/' . ' ' . '(' . $bloque->name . ')' . ' ' . 'Clase #:' . $clase->id .
                             ' / ' . $clase->profesor->last_name . ' ' . $clase->profesor->x_first_name . ' ' . ' ' .
                             '/' . 'Materia:' . ' ' . $clase->ismAreaMateria->materia->nombre . '</small></b>'
-                            ?>
+                        ?>
                     </p>
                 </div>
                 <!-- INICIO BOTONES DERECHA -->
@@ -137,7 +138,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     ?>
                     |
                     <?php
-                    
+
                     echo Html::a(
                         '<span class="badge rounded-pill" style="background-color: #9e28b5">
                             <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copy" width="16" height="16" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ffffff" fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -170,29 +171,28 @@ $this->params['breadcrumbs'][] = $this->title;
                         <?php
                         foreach ($semanas as $sem1) {
                             $nombreSemana = nombreSemana($sem1->nombre_semana);
-                            ?>
-                            <div class="card row ancho-boton zoom menuizquierda"
-                                style="border-radius: .5rem; border-bottom:solid 1px #ccc;margin-top:5px;padding:8px;">
+                        ?>
+                            <div class="card row ancho-boton zoom menuizquierda" style="border-radius: .5rem; border-bottom:solid 1px #ccc;margin-top:5px;padding:8px;">
                                 <?php
-                                
-                                    echo Html::a(
 
-                                        $nombreSemana,
-                                        [
-                                            'planificacion-semanal/index1',
-                                            'bloque_id' => $sem1->bloque_id,
-                                            'clase_id' => $clase->id,
-                                            'semana_defecto' => $sem1->id,
-                                            'pud_origen' => $pud_origen,
-                                            'plan_bloque_unidad_id' => $plan_bloque_unidad_id
-                                        ],
-                                        ['style' => 'text-decoration: none; color:#0a1f8f;']
-                                    );
-                                
+                                echo Html::a(
+
+                                    $nombreSemana,
+                                    [
+                                        'planificacion-semanal/index1',
+                                        'bloque_id' => $sem1->bloque_id,
+                                        'clase_id' => $clase->id,
+                                        'semana_defecto' => $sem1->id,
+                                        'pud_origen' => $pud_origen,
+                                        'plan_bloque_unidad_id' => $plan_bloque_unidad_id
+                                    ],
+                                    ['style' => 'text-decoration: none; color:#0a1f8f;']
+                                );
+
 
                                 ?>
                             </div>
-                            <?php
+                        <?php
                         }
                         ?>
                     </b>
@@ -253,7 +253,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                             echo '<td>';
                                             obtener_total_recursos($semTotal->id);
                                             echo '</td>';
-                                            echo '<td>' . generarBotonEdicion('update', $semTotal->id, $pud_origen, $plan_bloque_unidad_id) . '</td>';
+                                            echo '<td>' . generarBotonEdicion('update', $semTotal->id, $pud_origen, $plan_bloque_unidad_id, $semana->id) . '</td>';
                                             echo '<td>' . BotonTarea($semTotal->id, $pud_origen, $plan_bloque_unidad_id) . '</td>';
                                             echo '<td>' . BotonRecursos($semTotal->id, $bloque->id, $plan_bloque_unidad_id, $pud_origen) . '</td>';
 
@@ -276,10 +276,11 @@ $this->params['breadcrumbs'][] = $this->title;
 </div>
 
 <?php
-function generarBotonEdicion($url, $id,$pud_origen, $plan_bloque_unidad_id)
+function generarBotonEdicion($url, $id, $pud_origen, $plan_bloque_unidad_id, $semanaDefectoId)
 {
 
-    return Html::a('<svg xmlns="http://www.w3.org/2000/svg"
+    return Html::a(
+        '<svg xmlns="http://www.w3.org/2000/svg"
                     class="icon icon-tabler icon-tabler-edit" width="20" height="20"
                     viewBox="0 0 24 24" stroke-width="1.5" stroke="#ab0a3d" fill="none"
                     stroke-linecap="round" stroke-linejoin="round">
@@ -288,9 +289,13 @@ function generarBotonEdicion($url, $id,$pud_origen, $plan_bloque_unidad_id)
                     <path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z" />
                     <path d="M16 5l3 3" />
                     </svg>',
-        ['update', 'id' => $id,
-        'pud_origen' => $pud_origen,
-        'plan_bloque_unidad_id' => $plan_bloque_unidad_id ],
+        [
+            'update', 'id' => $id,
+            'pud_origen' => $pud_origen,
+            'plan_bloque_unidad_id' => $plan_bloque_unidad_id,
+            'semana_defecto' => $semanaDefectoId
+        ],
+
         [
             'class' => '',
             'title' => 'Editar plan semanal',
@@ -350,9 +355,10 @@ function BotonTarea($id, $pud_origen, $plan_bloque_unidad_id)
             <path d="M10 14h4" />
             <path d="M12 12v4" />
         </svg>',
-        ['tasks', 
+        [
+            'tasks',
             'id' => $id,
-            'pud_origen' => $pud_origen, 
+            'pud_origen' => $pud_origen,
             'plan_bloque_unidad_id' => $plan_bloque_unidad_id
         ],
         [

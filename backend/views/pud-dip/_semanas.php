@@ -281,7 +281,9 @@ use yii\helpers\Url;
                                                         'plan_bloque_unidad_id' => $planUnidadId,
                                             
                                                         // 'boton_retorno' => "pud-dip/index1?plan_bloque_unidad_id=" . $planUnidadId,
-                                                    ]);
+                                                    ],
+                                                    ['target' => '_blank']
+                                                );
                                                 }
 
                                                 ?>

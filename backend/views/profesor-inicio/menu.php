@@ -74,7 +74,7 @@ use yii\helpers\Html;
         <?php
         $contador = 1;
         foreach ($clases as $clase) {
-            ?>
+        ?>
             <tr>
                 <td>
                     <?= $contador ?>
@@ -130,7 +130,7 @@ use yii\helpers\Html;
                     ?>
                 </td>
             </tr>
-            <?php
+        <?php
             $contador++;
         }
         ?>

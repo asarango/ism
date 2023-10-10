@@ -8,7 +8,7 @@ use backend\models\NeexClase;
 
 //print_r($model);
 // echo '<pre>';
-// print_r($materiasNee);
+// print_r($materiasSelect);
 // die();
 ?>
 <!--SCRIPTS Y JQUERYS PARA SELECT 2-->
@@ -79,20 +79,25 @@ use backend\models\NeexClase;
 
                     <?php
                     foreach ($materiasSelect as $materia) {
+                        // echo "<pre>";
+                        // print_r($materia);
+                        // die();
                         echo '<tr>';
                         echo '<td>' . $materia['materia'] . '</td>';
                         echo '<td style="text-align: center;">';
 
-                        if ($materia['grado']) {
+                        if ($materia['grado'] == '') {
+
+                            echo  '<input type="checkbox" 
+                        onclick="ajaxInsertaMateria(' . $materia['clase_id'] . ')" name="clase_id" 
+                        value="' . $materia['clase_id'] . ' checked"></td>';;
+                        } else {
+
                             echo '<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-circle-check" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="#7bc62d" fill="none" stroke-linecap="round" stroke-linejoin="round">
                         <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
                         <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" />
                         <path d="M9 12l2 2l4 -4" />
                         </svg>';
-                        } else {
-                            echo  '<input type="checkbox" 
-                        onclick="ajaxInsertaMateria(' . $materia['clase_id'] . ')" name="clase_id" 
-                        value="' . $materia['clase_id'] . ' checked"></td>';;
                         }
 
                         echo '</tr>';

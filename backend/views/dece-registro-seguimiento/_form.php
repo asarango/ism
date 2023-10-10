@@ -346,8 +346,22 @@ $listFirmas = DeceSeguimientoFirmas::find()
                                                                 }
                                                                 ?>
                                                                 <td><b>Archivo: </b></td>
+                                                                <?php
+
+                                                                        $institutoId = Yii::$app->user->identity->instituto_defecto;
+                                                                        // echo $modelPathArchivo->opcion . $arrayArchivo[0] . $arrayArchivo[1];
+                                                                        // echo "<pre>";
+                                                                        // print_r($institutoId);
+                                                                        // die();
+
+                                                                        if ($institutoId == 1) {
+                                                                            $path = 'http://100.50.40.52/' . $modelPathArchivo->opcion;
+                                                                        } else {
+                                                                            $path = $modelPathArchivo->opcion;
+                                                                        }
+                                                                        ?>
                                                                 <td><a target="_blank"
-                                                                        href="<?= $modelPathArchivo->opcion . $arrayArchivo[0] . '/' . $arrayArchivo[1] ?>">
+                                                                        href="<?= $path. $arrayArchivo[0] . '/' . $arrayArchivo[1] ?>">
                                                                         <?= $arrayArchivo[1] ?>
                                                                     </a></td>
                                                             </tr>

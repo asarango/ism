@@ -17,8 +17,15 @@ class NotasProfesor
         public $tipoAporte;
         public $tipoActividades;
         public $actividades;
+
+        public $calificaciones;
         private $promediosInsumos;
         public $notas_x_actividad;
+        public $cabecera;
+
+        public $notas;
+
+        public $promediosFinales;
 
 
         public function __construct($claseId, $bloqueId)
@@ -36,14 +43,32 @@ class NotasProfesor
                 $this->get_actividades();
                 $this->get_notas_x_actividad();
                 $this->get_promedios_insumos();
+                $this->get_promedios_finales();
+
+                $this->generate_cabecera();
 
                 $this->generate_matriz();
 
-                
+
+        }
+
+        private function get_promedios_finales(){
+                $con = Yii::$app->db;
+                $query ="select 	gru.id
+                                        ,gru.estudiante_id  
+                                        ,lib.nota  
+                                        ,concat(est.last_name, ' ', est.first_name) as estudiante
+                        from 	lib_bloques_grupo_clase lib
+                                        inner join scholaris_grupo_alumno_clase gru on gru.id = lib.grupo_id 
+                                        inner join op_student est on est.id = gru.estudiante_id
+                        where 	gru.clase_id = $this->claseId
+                                        and lib.bloque_id = $this->bloqueId;";
+                $this->promediosFinales = $con->createCommand($query)->queryAll();
         }
 
 
-        private function get_promedios_insumos(){
+        private function get_promedios_insumos()
+        {
                 $con = Yii::$app->db;
                 $query = "select 	gru.estudiante_id 
                                                 ,ins.nota
@@ -53,6 +78,10 @@ class NotasProfesor
                                 where 	ins.bloque_id = $this->bloqueId
                                                 and gru.clase_id = $this->claseId;";
                 $this->promediosInsumos = $con->createCommand($query)->queryAll();
+
+                // echo '<pre>';
+                // print_r($this->promediosInsumos);
+                // die();
         }
 
 
@@ -144,62 +173,176 @@ class NotasProfesor
                 $this->notas_x_actividad = $con->createCommand($query)->queryAll();
         }
 
-
-
-        private function generate_matriz()
+        private function generate_cabecera()
         {
-                $arrayEstudiantes = array();
-                $arrayNotasXActividad = array();
-                $arrayTipoActividad = array();
-                $arrayAportes = array();
-                $arrayTa = array();
-                $arrayPromedioInsumos = array();
-
+                $arrayCabecera = array();
 
                 // echo '<pre>';
-                // print_r($this->promediosInsumos);
+                // print_r($this->actividades[0+10]['title']);
+                // die();
+                
+                for($i=0; $i<count($this->actividades); $i++){
+                        array_push($arrayCabecera, [
+                                'title' => $this->actividades[$i]['title'],
+                                'actividad_id' =>$this->actividades[$i]['actividad_id'],
+                                'grupo_numero' => $this->actividades[$i]['grupo_numero'],
+                                'tipo_actividad_id' => $this->actividades[$i]['tipo_actividad_id'],
+                        ]);
+                        
+                        if(isset($this->actividades[$i+1]['grupo_numero'])){
+                                if($this->actividades[$i+1]['grupo_numero'] != $this->actividades[$i]['grupo_numero']){
+                                        array_push($arrayCabecera, [
+                                                'title' => 'Promedio',
+                                                'actividad_id' => 0,
+                                                'grupo_numero' => $this->actividades[$i]['grupo_numero'],
+                                                'tipo_actividad_id' => $this->actividades[$i]['tipo_actividad_id'],
+                                         ]);
+                                }
+                        }else{
+                                array_push($arrayCabecera, [
+                                        'title' => 'Promedio',
+                                        'actividad_id' => 0,
+                                        'grupo_numero' => $this->actividades[$i]['grupo_numero'],
+                                        'tipo_actividad_id' => $this->actividades[$i]['tipo_actividad_id'],
+                                ]); 
+                        } 
+                        
+                }
+                // array_push($arrayCabecera, 'Promedio');
+                array_push($arrayCabecera, [
+                        'title' => 'Final',
+                        'actividad_id' => 0,
+                        'grupo_numero' => 0,
+                        'tipo_actividad_id' => 0,
+                ]);
+                $this->cabecera = $arrayCabecera;
+        }
+
+        private function generate_matriz(){
+                
+                $arrayEstudiantes = array();
+                
+                foreach($this->grupo as $key => $estudiante){
+
+                        $notas = $this->recorre_notas($estudiante['grupo_id'], $estudiante['estudiante_id']);
+
+                        array_push($arrayEstudiantes, [
+                                'estudiante_id' => $estudiante['estudiante_id'],
+                                'estudiante' => $estudiante['estudiante'],
+                                'grupo_id' => $estudiante['grupo_id'],
+                                'notas' => $notas
+                        ]);
+                }
+                
+                $this->notas = $arrayEstudiantes;
+
+                // echo '<pre>';
+                // print_r($this->notas);
                 // die();
 
-                foreach($this->promediosInsumos as $key => $promedioInsumo){
-                        $arrayPromedioInsumos[$promedioInsumo['estudiante_id']][$promedioInsumo['grupo_calificacion']]['promedio'] = $promedioInsumo['nota'];
-                }
-
-                foreach ($this->tipoAporte as $key => $ta) {
-                        $arrayTa[] = $ta['tipo_aporte'];
-                }
+        }
 
 
-                foreach ($this->tipoActividades as $key => $tipoActividad) {
-                        $arrayTipoActividad[$tipoActividad['tipo_actividad_id']]['tipo_actividad_id'] = $tipoActividad['tipo_actividad_id'];
-                        $arrayTipoActividad[$tipoActividad['tipo_actividad_id']]['tipo_actividad'] = $tipoActividad['tipo_actividad'];
-                        $arrayTipoActividad[$tipoActividad['tipo_actividad_id']]['tipo_aporte'] = $tipoActividad['tipo_aporte'];
-                        $arrayTipoActividad[$tipoActividad['tipo_actividad_id']]['grupo_numero'] = $tipoActividad['grupo_numero'];
-                }
+        private function recorre_notas($grupoId, $estudianteId){
+                $arrayNotas = array();
+                $notax = 0;
 
-                foreach ($this->grupo as $keyE => $estudiante) {
-                        $arrayEstudiantes[$estudiante['estudiante_id']]['estudiante'] = $estudiante['estudiante'];
+                foreach($this->cabecera as $cabecera){
 
-                        /** Ingresamos al arrayEstudiantes los index de individual y grupal */
-                        foreach ($arrayTa as $keyTa => $ta) {
-                                foreach($this->tipoActividades as $keyTip => $tipoActividad) {
-                                       if($ta == $tipoActividad['tipo_aporte']){
-                                        $arrayEstudiantes[$estudiante['estudiante_id']][$ta][$tipoActividad['tipo_actividad_id']]['tipo_actividad_id'] = $tipoActividad['tipo_actividad_id'];
-                                        $arrayEstudiantes[$estudiante['estudiante_id']][$ta][$tipoActividad['tipo_actividad_id']]['tipo_actividad'] = $tipoActividad['tipo_actividad'];
-                                        $arrayEstudiantes[$estudiante['estudiante_id']][$ta][$tipoActividad['tipo_actividad_id']]['grupo_numero'] = $tipoActividad['grupo_numero'];
-                                        $arrayEstudiantes[$estudiante['estudiante_id']][$ta][$tipoActividad['tipo_actividad_id']]['promedio'] = ( isset($arrayPromedioInsumos[$estudiante['estudiante_id']][$tipoActividad['grupo_numero']] )) 
-                                                        ?  $arrayPromedioInsumos[$estudiante['estudiante_id']][$tipoActividad['grupo_numero']]['promedio'] : 0 ;                                        //$arrayEstudiantes[$estudiante['estudiante_id']][$ta][$tipoActividad['tipo_actividad_id']]['promedio'] =   $arrayPromedioInsumos[$estudiante['estudiante_id']][$tipoActividad['grupo_numero']]['promedio'];
-                                       }
+                        if($cabecera['actividad_id'] == 0 && $cabecera['title'] == 'Promedio'){
+                                
+                                foreach($this->promediosInsumos as $promedioInsumo){
+                                        if($promedioInsumo['estudiante_id'] == $estudianteId && $cabecera['grupo_numero'] == $promedioInsumo['grupo_calificacion']){
+                                                $notax = $promedioInsumo['nota'];
+                                        }
                                 }
                                 
+                        }elseif($cabecera['actividad_id'] == 0 && $cabecera['title'] == 'Final'){
+                                foreach($this->promediosFinales as $promedioFinal){
+                                        if($promedioFinal['estudiante_id'] == $estudianteId){
+                                                $notax = $promedioFinal['nota'];
+                                        }
+
+                                }
+                        }else{
+                                foreach($this->notas_x_actividad as $nota){
+                                        if($nota['grupo_id'] == $grupoId && $nota['actividad_id'] == $cabecera['actividad_id']){
+                                                $notax = $nota['calificacion'];
+                                        }
+                                }
                         }
-                }                
+                        
+
+                        array_push($arrayNotas, [
+                           'tipo_actividad_id' => $cabecera['tipo_actividad_id'],
+                           'actividad_id' => $cabecera['actividad_id'],
+                           'title' => $cabecera['title'], 
+                           'grupo_numero' => $cabecera['grupo_numero'],
+                           'nota' => $notax
+                        ]);
 
 
 
 
-                echo '<pre>';
-                print_r($arrayEstudiantes);
-                // print_r($arrayNotasXActividad);
-                die();
+                }
+
+                return $arrayNotas;
         }
+
+
+        // private function generate_matriz()
+        // {
+        //         $arrayEstudiantes = array();
+        //         $arrayNotasXActividad = array();
+        //         $arrayTipoActividad = array();
+        //         $arrayAportes = array();
+        //         $arrayTa = array();
+        //         $arrayPromedioInsumos = array();
+
+
+        //         // echo '<pre>';
+        //         // print_r($this->promediosInsumos);
+        //         // die();
+
+        //         foreach ($this->promediosInsumos as $key => $promedioInsumo) {
+        //                 $arrayPromedioInsumos[$promedioInsumo['estudiante_id']][$promedioInsumo['grupo_calificacion']]['promedio'] = $promedioInsumo['nota'];
+        //         }
+
+        //         foreach ($this->tipoAporte as $key => $ta) {
+        //                 $arrayTa[] = $ta['tipo_aporte'];
+        //         }
+
+
+        //         foreach ($this->tipoActividades as $key => $tipoActividad) {
+        //                 $arrayTipoActividad[$tipoActividad['tipo_actividad_id']]['tipo_actividad_id'] = $tipoActividad['tipo_actividad_id'];
+        //                 $arrayTipoActividad[$tipoActividad['tipo_actividad_id']]['tipo_actividad'] = $tipoActividad['tipo_actividad'];
+        //                 $arrayTipoActividad[$tipoActividad['tipo_actividad_id']]['tipo_aporte'] = $tipoActividad['tipo_aporte'];
+        //                 $arrayTipoActividad[$tipoActividad['tipo_actividad_id']]['grupo_numero'] = $tipoActividad['grupo_numero'];
+        //         }
+
+        //         foreach ($this->grupo as $keyE => $estudiante) {
+        //                 $arrayEstudiantes[$estudiante['estudiante_id']]['estudiante'] = $estudiante['estudiante'];
+
+        //                 /** Ingresamos al arrayEstudiantes los index de individual y grupal */
+        //                 foreach ($arrayTa as $keyTa => $ta) {
+        //                         foreach ($this->tipoActividades as $keyTip => $tipoActividad) {
+        //                                 if ($ta == $tipoActividad['tipo_aporte']) {
+        //                                         $arrayEstudiantes[$estudiante['estudiante_id']][$ta][$tipoActividad['tipo_actividad_id']]['tipo_actividad_id'] = $tipoActividad['tipo_actividad_id'];
+        //                                         $arrayEstudiantes[$estudiante['estudiante_id']][$ta][$tipoActividad['tipo_actividad_id']]['tipo_actividad'] = $tipoActividad['tipo_actividad'];
+        //                                         $arrayEstudiantes[$estudiante['estudiante_id']][$ta][$tipoActividad['tipo_actividad_id']]['grupo_numero'] = $tipoActividad['grupo_numero'];
+        //                                         $arrayEstudiantes[$estudiante['estudiante_id']][$ta][$tipoActividad['tipo_actividad_id']]['promedio'] = (isset($arrayPromedioInsumos[$estudiante['estudiante_id']][$tipoActividad['grupo_numero']]))
+        //                                                 ?  $arrayPromedioInsumos[$estudiante['estudiante_id']][$tipoActividad['grupo_numero']]['promedio'] : 0;                                        //$arrayEstudiantes[$estudiante['estudiante_id']][$ta][$tipoActividad['tipo_actividad_id']]['promedio'] =   $arrayPromedioInsumos[$estudiante['estudiante_id']][$tipoActividad['grupo_numero']]['promedio'];
+        //                                 }
+        //                         }
+        //                 }
+        //         }
+
+
+
+
+        //         echo '<pre>';
+        //         print_r($arrayEstudiantes);
+        //         // print_r($arrayNotasXActividad);
+        //         die();
+        // }
 }

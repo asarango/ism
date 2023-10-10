@@ -216,7 +216,7 @@ class DeceRegistroSeguimientoController extends Controller
 
             //if(!empty($model->path_archivo))
             if ($imagenSubida) {
-                $imagenSubida = UploadedFile::getInstance($model, 'path_archivo');
+                // $imagenSubida = UploadedFile::getInstance($model, 'path_archivo');
                 $pathArchivos = $path_archivo_dece_atencion->opcion . $model->id_estudiante . '/' . $model->id . '/';
 
         

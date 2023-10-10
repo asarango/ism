@@ -72,11 +72,18 @@ $modelRegIntervencion = DeceIntervencion::find()
 
 //busca el path de los archivos donde se guardan los datos de dece
 $modelPathArchivo = PlanificacionOpciones::find()
-    ->where(['tipo' => 'VER_ARCHIVO'])
+    ->where([
+        'tipo' => 'VER_ARCHIVO',
+        'categoria' => 'PATH_DECE_SEG'
+    ])
     ->one();
 
+
+// echo "<pre>";
+// print_r($modelPathArchivo);
+// die();
 // $periodId    = Yii::$app->user->identity->periodo_id;
-$userLog        = Yii::$app->user->identity->usuario;    
+$userLog        = Yii::$app->user->identity->usuario;
 $user           = Usuario::find()->where(['usuario' => $userLog])->one();
 $rol            = Rol::find()->where(['id' => $user->rol_id])->one();  //navegacion para encontrar  el rol del usuario logueado
 
@@ -84,7 +91,7 @@ $rol            = Rol::find()->where(['id' => $user->rol_id])->one();  //navegac
 
 if ($rol->rol == 'DECE' || $rol->rol == 'Coordinador-DECE') {
     $displayStyle = '';
-}else{
+} else {
     $displayStyle = 'none';
 }
 
@@ -314,7 +321,7 @@ if ($rol->rol == 'DECE' || $rol->rol == 'Coordinador-DECE') {
                                             <td><?= $modelReg->fecha_fin ?></td>
                                             <td><?= $modelReg->estado ?></td>
                                             <td><?= $modelReg->motivo ?></td>
-                                            <td >
+                                            <td>
                                                 <?=
                                                 Html::a(
                                                     '<i class="fa fa-edit" aria-hidden="true"></i>',
@@ -325,10 +332,26 @@ if ($rol->rol == 'DECE' || $rol->rol == 'Coordinador-DECE') {
                                             </td>
 
                                             <td>
+                                                <!-- muestra pdf -->
+                                                <?=
+                                                Html::a(
+                                                    '<span class="badge badge-danger badge-link" style="background-color: #ab0a3d"><i class="fa fa-briefcase" aria-hidden="true"></i> PDF</span>',
+                                                    [
+                                                        'dece-registro-seguimiento/pdf',
+                                                        'id' => $modelReg->id,
+
+                                                    ],
+                                                    [
+                                                        'class' => 'link',
+                                                        'target' => '_blank'
+                                                    ]
+                                                );
+                                                ?>
                                                 <!--boton VER  boton llama modal -->
-                                                <button type="button" class="rounded-pill" data-bs-toggle="modal" data-bs-target="<?php echo "#staticBackdrop_seg_$modelReg->id"; ?>">
+
+                                                <!-- <button type="button" class="rounded-pill" data-bs-toggle="modal" data-bs-target="<?php echo "#staticBackdrop_seg_$modelReg->id"; ?>">
                                                     <i class="fas fa-glasses" style="color:blueviolet;"></i>
-                                                </button>
+                                                </button> -->
                                                 <!-- Modal -->
                                                 <div class="modal fade" id="<?php echo "staticBackdrop_seg_$modelReg->id"; ?>" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
                                                     <div class="modal-dialog modal-dialog-scrollable modal-lg">
@@ -342,6 +365,13 @@ if ($rol->rol == 'DECE' || $rol->rol == 'Coordinador-DECE') {
 
                                                             <div class="modal-body">
                                                                 <table class="table table-striped table-hover">
+
+                                                                    <?php
+                                                                    // echo "<pre>";
+                                                                    // print_r($modelReg);
+                                                                    // die();
+                                                                    ?>
+
                                                                     <!-- <tr>
                                                                         <td><b>Fecha Creación: </b></td>
                                                                         <td><?= $modelReg->fecha_inicio ?></td>
@@ -385,10 +415,38 @@ if ($rol->rol == 'DECE' || $rol->rol == 'Coordinador-DECE') {
                                                                         }
                                                                         ?>
                                                                         <td><b>Archivo: </b></td>
-                                                                        <td><a target="_blank" href="<?= $modelPathArchivo->opcion . $arrayArchivo[0] . '/' . $arrayArchivo[1] ?>">
+                                                                        <?php
+
+                                                                        $institutoId = Yii::$app->user->identity->instituto_defecto;
+                                                                        // echo $modelPathArchivo->opcion . $arrayArchivo[0] . $arrayArchivo[1];
+                                                                        // echo "<pre>";
+                                                                        // print_r($institutoId);
+                                                                        // die();
+
+                                                                        if ($institutoId == 1) {
+                                                                            $path = 'http://100.50.40.52/' . $modelPathArchivo->opcion;
+                                                                        } else {
+                                                                            $path = $modelPathArchivo->opcion;
+                                                                        }
+                                                                        ?>
+                                                                        <td><a target="_blank" href="<?= $path . $arrayArchivo[0] . '/' . $arrayArchivo[1] ?>">
                                                                                 <?= $arrayArchivo[1] ?>
                                                                             </a>
                                                                         </td>
+                                                                        <td>
+                                                                            <?=
+                                                                            Html::a(
+                                                                                '<span class="badge badge-danger badge-link" style="background-color: #ab0a3d"><i class="fa fa-briefcase" aria-hidden="true"></i> PDF</span>',
+                                                                                ['pdf', 'id' => $model->id],
+                                                                                [
+                                                                                    'class' => 'link',
+                                                                                    'target' => '_blank'
+                                                                                ]
+                                                                            );
+                                                                            ?>
+                                                                        </td>
+
+                                                                        <!-- <iframe src="<?= $modelPathArchivo->opcion . $arrayArchivo[0] . '/' . $arrayArchivo[1] ?>" width="500"  height="500" ></iframe> -->
                                                                     </tr>
                                                                 </table>
                                                             </div>

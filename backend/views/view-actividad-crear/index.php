@@ -25,11 +25,13 @@ $this->params['breadcrumbs'][] = $this->title;
                     </h3>
                 </div>
                 <div class="col-lg-8">
+
                     <h3>
                         <?= Html::encode($this->title) ?>
                     </h3>
 
                 </div>
+
                 <div class="col-lg-3 col-md-3" style="text-align: right; margin-top: -5px;">
                     <?php
                     echo Html::a(
@@ -46,8 +48,10 @@ $this->params['breadcrumbs'][] = $this->title;
                     );
                     ?>
                 </div> <!-- FIN DE BOTONES DE ACCION Y NAVEGACIÓN -->
+
                 <hr>
             </div>
+
             <div class="row" style="padding: 10px;margin-top: -25px;">
 
                 <?= GridView::widget([
@@ -65,7 +69,6 @@ $this->params['breadcrumbs'][] = $this->title;
                         'fecha',
                         'hora',
                         'materia',
-
                         // 'tema',
                         // 'login',
                         [

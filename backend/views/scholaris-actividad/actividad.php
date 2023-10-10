@@ -11,7 +11,7 @@ use yii\helpers\Url;
 /* @var $searchModel app\models\ScholarisActividadSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Copiar planificación de la actividad '.'Actividad #: ' . $modelActividad->id;
+$this->title = 'Copiar planificación de la actividad ' . 'Actividad #: ' . $modelActividad->id;
 
 
 /** Extrae path donde se almacena los archivos */
@@ -49,7 +49,7 @@ $modelActividadConsulta = new ScholarisArchivosprofesor();
     <div class="m-0 vh-50 row justify-content-center align-items-center">
         <div class="card shadow col-lg-10">
             <div class=" row" style="margin-top: 10px;">
-                <div class="col-lg-1 col-md-1" >
+                <div class="col-lg-1 col-md-1">
                     <h4><img src="../ISM/main/images/submenu/retroalimentacion.png" width="64px" class="img-thumbnail">
                     </h4>
                 </div>

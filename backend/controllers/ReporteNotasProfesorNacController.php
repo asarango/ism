@@ -98,14 +98,18 @@ class ReporteNotasProfesorNacController extends Controller {
         // $notasProfesor->grupo 'CONTIENE LA INFORMACION DE LA LISTA DE GRUPOS'
         // $notasProfesor->tipoActividades 'CONTIENE EL TIPO DE ACTIVIDADES'
         // $notasProfesor->actividades 'CONTIENE LA LISTA DE ACTIVIDADES'
-        // $notasProfesor->notas_x_actividad 'CONTIENE LAS CALIFICACIONES DE LAS ACTIVIDADES'
+        // $notasProfesor->notas 'CONTIENE LAS CALIFICACIONES DE LAS ACTIVIDADES'
+        // $notasProfesor->cabecera 'CONTIENE LA CABECERA DE LAS ACTIVIDADES'
+        // $notasProfesor->promediosFinales 'CONTIENE LOS PROMEDIOS GENERALES'
         $notasProfesor = new NotasProfesor($claseId, $trimestre->id);
 
-        echo '<pre>';
+        // echo '<pre>';
          //print_r($notasProfesor->tipoActividades);
          //print_r($notasProfesor->grupo);
          //print_r($notasProfesor->notas_x_actividad);
-        die();
+        //  print_r($notasProfesor->cabecera);
+         
+        // die();
 
 
         return $this->render('index', [

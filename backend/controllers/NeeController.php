@@ -271,8 +271,8 @@ class NeeController extends Controller
                                 select 	nee.grado 
                                 from 	nee_x_clase nxc
                                         inner join nee on nee.id = nxc.nee_id 
-                                where 	nee.student_id = 3923
-                                        and nee.scholaris_periodo_id = 1
+                                where 	nee.student_id = $studentId
+                                        and nee.scholaris_periodo_id = $periodoId
                                         and nxc.clase_id = g.clase_id 
                             )
                     from 	scholaris_grupo_alumno_clase g 
@@ -285,7 +285,7 @@ class NeeController extends Controller
                         and pm.scholaris_periodo_id = $periodoId 
                     order by m.nombre;";          
                     
-            //echo $query;
+            // echo $query;
             // die();
 
             $res = $con->createCommand($query)->queryAll();

@@ -218,7 +218,8 @@ class DeceCasosController extends Controller
                             inner join op_period ope on ope.id = sec.period_id 
                     where 	sop.scholaris_id = '$scholarisPeriodoId'
                             and ins.inscription_state = 'M'
-                            and ope.institute = $instituteId
+                            and ope.institute = $instituteId 
+                            and sec.code = 'DIPL'
                     order by student;";
         // echo $query;
         // die();

@@ -11,7 +11,7 @@ $this->title = 'Incidente/Caso';
 $this->params['breadcrumbs'][] = $this->title;
 
 // echo "<pre>";
-// print_r($casos);
+// print_r($estudiantes);
 // die();
 ?>
 <!--Scripts para que funcionen AJAX de select 2 -->
@@ -71,20 +71,20 @@ $this->params['breadcrumbs'][] = $this->title;
                     <!-- menu izquierda -->
 
                     <?=
-                        Html::a(
-                            '<span class="badge rounded-pill" style="background-color: #ff9e18"><i class="fa fa-briefcase" aria-hidden="true"></i> Inicio</span>',
-                            ['site/index'],
-                            ['class' => 'link']
-                        );
+                    Html::a(
+                        '<span class="badge rounded-pill" style="background-color: #ff9e18"><i class="fa fa-briefcase" aria-hidden="true"></i> Inicio</span>',
+                        ['site/index'],
+                        ['class' => 'link']
+                    );
                     ?>
 
                     |
                     <?=
-                        Html::a(
-                            '<span class="badge rounded-pill" style="background-color:#ab0a3d"><i class="fa fa-briefcase" aria-hidden="true"></i> Registro General Acompañamiento</span>',
-                            ['reg-gen-acompaniamiento'],
-                            ['class' => 'link']
-                        );
+                    Html::a(
+                        '<span class="badge rounded-pill" style="background-color:#ab0a3d"><i class="fa fa-briefcase" aria-hidden="true"></i> Registro General Acompañamiento</span>',
+                        ['reg-gen-acompaniamiento'],
+                        ['class' => 'link']
+                    );
                     ?>
                 </div> <!-- fin de menu izquierda -->
 
@@ -104,9 +104,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                     <?= count($estudiantes) ?>
                                 </p>
 
-                                <select id="idAlumno" name="idAlumno"
-                                    class="form-control select2 select2-hidden-accessible" style="width: 100%;"
-                                    tabindex="-1" aria-hidden="true">
+                                <select id="idAlumno" name="idAlumno" class="form-control select2 select2-hidden-accessible" style="width: 100%;" tabindex="-1" aria-hidden="true">
                                     <option selected="selected" value="">Escoja un estudiante...</option>
                                     <?php
                                     foreach ($estudiantes as $estudiante) {
@@ -120,14 +118,14 @@ $this->params['breadcrumbs'][] = $this->title;
                                     'class' => 'submit btn btn-primary my-text-medium',
 
                                 ])
-                                    ?>
+                                ?>
                             </div>
                         </div>
                         <?= Html::endForm() ?>
                     </div>
                     <!-- <hr> -->
                     <div class="col-lg-12 col-md-12" style="font-weight: bold;">
-                        <h6  class="my-text-medium" style="margin-top: 1rem;font-weight: bold;">ESTUDIANTES EN SEGUIMIENTO:
+                        <h6 class="my-text-medium" style="margin-top: 1rem;font-weight: bold;">ESTUDIANTES EN SEGUIMIENTO:
                             <?= count($casos) ?>
                         </h6>
                         <div class="table responsive">
@@ -150,7 +148,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
                                         $nombreEstudiante = $caso['nombre'];
                                         //$nombreEstudiante = $caso->estudiante->middle_name . ' ' . $caso->estudiante->first_name . ' ' . $caso->estudiante->last_name
-                                        ?>
+                                    ?>
                                         <tr style="text-align:center">
                                             <td>
                                                 <?= $nombreEstudiante ?>
@@ -182,7 +180,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                                 ); ?>
                                             </td>
                                         </tr>
-                                        <?php
+                                    <?php
                                     } //fin for
                                     ?>
                                 </tbody>
@@ -213,24 +211,24 @@ $this->params['breadcrumbs'][] = $this->title;
                 </div>
 
                 <!-- <?= GridView::widget([
-                    'dataProvider' => $dataProvider,
-                    'filterModel' => $searchModel,
-                    'columns' => [
-                        ['class' => 'yii\grid\SerialColumn'],
+                            'dataProvider' => $dataProvider,
+                            'filterModel' => $searchModel,
+                            'columns' => [
+                                ['class' => 'yii\grid\SerialColumn'],
 
-                        'id',
-                        'numero_caso',
-                        'id_estudiante',
-                        'id_periodo',
-                        'estado',
-                        //'fecha_inicio',
-                        //'fecha_fin',
-                        //'detalle:ntext',
-                        //'id_usuario',
-                
-                        ['class' => 'yii\grid\ActionColumn'],
-                    ],
-                ]); ?> -->
+                                'id',
+                                'numero_caso',
+                                'id_estudiante',
+                                'id_periodo',
+                                'estado',
+                                //'fecha_inicio',
+                                //'fecha_fin',
+                                //'detalle:ntext',
+                                //'id_usuario',
+
+                                ['class' => 'yii\grid\ActionColumn'],
+                            ],
+                        ]); ?> -->
             </div>
         </div>
     </div>

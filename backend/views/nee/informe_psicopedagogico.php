@@ -8,7 +8,6 @@ use yii\helpers\Url;
 <script src="https://cdn.ckeditor.com/4.17.1/basic/ckeditor.js"></script>
 
 
-
 <div class="row" style="margin-bottom: 10px">
     <h5 style="margin-top: 10px; text-align: start;color:#0a1f8f">5.- INFORME PSICOPEDAGÓGICO</h5>
     <div class="col-lg-12 col-md-12 scroll-400" >

@@ -112,19 +112,23 @@ use backend\models\NeexClase;
         <div class="table responsive" style="width: 95%">
             <H3 style="text-align: center;">RESUMEN DE ASIGNATURAS CON NEE</H3>
             <table class="table table-hover table-bordered table-striped my-text-medium">
+
                 <thead>
                     <tr class="text-center">
                         <th>Materia / Profesor</th>
                         <th>Grado</th>
                         <th>Diagnóstico Inicia</th>
                         <th>Diagnóstico Finaliza</th>
-                        <!-- <th>Acciones</th> -->
+                        <th>Acción</th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php
 
                     foreach ($materiasNee as $seleccionada) {
+                        // echo "<pre>";
+                        // print_r($seleccionada);
+                        // die();
 
                     ?>
                         <tr class="text-center">
@@ -150,6 +154,7 @@ use backend\models\NeexClase;
                                 }
                                 ?>
                             </td>
+
                             <td>
                                 <?php
                                 if ($seleccionada->diagnostico_finaliza == null) {
@@ -159,6 +164,29 @@ use backend\models\NeexClase;
                                 }
                                 ?>
                             </td>
+
+                            <td>
+
+                                <?=
+                                Html::a(
+                                    '<span class="badge rounded-pill" style="background-color: red"><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-trash" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ffffff" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                    <path d="M4 7l16 0" />
+                                    <path d="M10 11l0 6" />
+                                    <path d="M14 11l0 6" />
+                                    <path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" />
+                                    <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
+                                    </svg></span>',
+                                    [
+                                        'eliminar-asignatura-nee',
+                                        'id' => $seleccionada->id
+                                    ],
+                                    ['class' => 'link']
+                                );
+                                ?>
+
+                            </td>
+
                             <!-- <td> -->
                             <!-- Boton Modal Editar -->
                             <!-- <a type="button" class="btn" data-bs-toggle="modal" data-bs-target="#edit<?= $seleccionada->id ?>">

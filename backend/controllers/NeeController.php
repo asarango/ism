@@ -488,4 +488,14 @@ class NeeController extends Controller
 
         $model->save();
     }
+
+
+    public function actionEliminarAsignaturaNee(){
+        $id = $_GET['id'];
+        $model = NeeXClase::findOne($id);
+        $neeId = $model->nee_id;
+
+        $model->delete();
+        return $this->redirect(['ficha', 'nee_id' => $neeId, 'pestana' => 'fecha_elab']);
+    }
 }

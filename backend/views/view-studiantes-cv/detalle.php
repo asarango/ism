@@ -11,8 +11,8 @@ use yii\helpers\Url;
 $this->title = 'Detalle Estudiante';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<!-- 
-<style>
+
+<!-- <style>
     body {
         background-color: #f5f5f5;
         margin: 0;
@@ -84,6 +84,32 @@ $this->params['breadcrumbs'][] = $this->title;
 </style> -->
 
 
+<style>
+    .col-lg-2 {
+        background-color: red;
+        color: #fff;
+        padding: 10px;
+        border-radius: 5px;
+    }
+
+    .col-lg-12 {
+        font-size: 18px;
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+
+    p {
+        font-size: 16px;
+        margin-bottom: 10px;
+    }
+
+    .icon-tabler {
+        width: 24px;
+        height: 24px;
+        margin-right: 5px;
+    }
+</style>
+
 
 <div class="view-studiantes-cv-index">
 
@@ -116,18 +142,46 @@ $this->params['breadcrumbs'][] = $this->title;
 
 
             <!-- Inicio Gráficos -->
-            <div id="div_graficos" style="margin-bottom: 10px;">
+            <div id="div_graficos" >
 
                 <div class="row">
 
                     <div class="col-lg-2 col-md-2">
 
                         <div class="row">
-                            <div class="col-lg-12 col-md-12">Datos Estudiante 
+                            <div class="col-lg-12 col-md-12">Datos Estudiante
+                                <?php
+                                // echo "<pre>";
+                                // print_r($inscription->student);
+                                // die();
+                                ?>
 
-                            <?php 
-                            echo "<pre>"; print_r($inscription);
-                            ?>
+                                <p>
+                                    <?php echo $inscription->student->last_name . ' ' . $inscription->student->middle_name . ' ' . $inscription->student->first_name
+
+                                    ?>
+                                    <?php
+                                    if ($inscription->student->gender == 'm') {
+
+                                        // echo 'Genero: ';
+                                        echo '<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-gender-male" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                        <path d="M10 14m-5 0a5 5 0 1 0 10 0a5 5 0 1 0 -10 0" />
+                                        <path d="M19 5l-5.4 5.4" />
+                                        <path d="M19 5h-5" />
+                                        <path d="M19 5v5" />
+                                        </svg>';
+                                    } else {
+                                        // echo 'Genero: ';
+                                        echo '<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-gender-female" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                        <path d="M12 9m-5 0a5 5 0 1 0 10 0a5 5 0 1 0 -10 0" />
+                                        <path d="M12 14v7" />
+                                        <path d="M9 18h6" />
+                                        </svg>';
+                                    }
+                                    ?>
+                                </p>
 
                             </div>
                             <div class="col-lg-12 col-md-12">Estadística</div>

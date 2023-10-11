@@ -79,14 +79,14 @@ $this->params['breadcrumbs'][] = $this->title;
     .trimestre a {
         text-decoration: none;
         padding: 10px 50px;
-        background-color: #ab0a3d;
-        color: #ff9e18;
+        background-color: #ff9e18;
+        color: white;
         border-radius: 10px;
         transition: background-color 0.3s;
     }
 
     .trimestre a:hover {
-        background-color: blue;
+        background-color: #0a1f8f;
     }
 
     /* al pasar el mouse el texto se expande y cambia a un color azul */
@@ -94,10 +94,16 @@ $this->params['breadcrumbs'][] = $this->title;
         transform: scale(1.2);
         color: #0a1f8f;
     } */
+
+    .selected {
+        background-color: #0a1f8f;
+        color: #fff;
+        /* Cambia el color del texto si es necesario */
+    }
 </style>
 
 <!-- para los botones de navegacion de los trimestres -->
-<div style="display: flex; justify-content: space-evenly;margin-bottom: 10px">
+<div style="display: flex; justify-content: space-evenly;margin-bottom: -40px">
     <?php foreach ($trimestres as $tri): ?>
         <div class="trimestre" style="margin-right: 10px;">
             <?php
@@ -125,20 +131,23 @@ $this->params['breadcrumbs'][] = $this->title;
 
 <!-- fin para los botones de navegacion de los trimestres -->
 
-<table class="table" border="1" cellpading="1" cellspacing="1">
-    <tr>
+
+<table class="table" border="1" cellpadding="1" cellspacing="1">
+    <tr clas>
         <td>#</td>
-        <td>Estudiante</td>
+        <td width="300px">Estudiantes - <?php echo $trimestre->name ?> </td>
         <?php
-        foreach ($notasProfesor->cabecera as $key => $cabecera) {
-            echo "<td>" . $cabecera['title'] . "</td>";
+        foreach ($notasProfesor->cabecera as $cabecera) {
+            echo '<td title="' . $cabecera['title'] . '">';
+            echo abreviar($cabecera['title']);
+            echo '</td>';
         }
         ?>
     </tr>
 
     <?php
     $i = 0;
-    foreach ($notasProfesor->notas as $key => $estudiante) {
+    foreach ($notasProfesor->notas as $estudiante) {
         $i++;
         echo "<tr>";
         echo "<td>" . $i . "</td>";
@@ -149,7 +158,6 @@ $this->params['breadcrumbs'][] = $this->title;
         }
         echo '</tr>';
     }
-
     ?>
 </table>
 
@@ -158,4 +166,20 @@ function consulta_notas($arrayNotas)
 {
 }
 
+?>
+
+<!-- esta funcion crea abreviaturas de la tabla -->
+<?php
+
+function abreviar($titulo)
+{
+    $palabras = explode(' ', $titulo);
+    $abreviatura = '';
+
+    foreach ($palabras as $palabra) {
+        $abreviatura .= strtoupper($palabra[0]);
+    }
+
+    return $abreviatura;
+}
 ?>

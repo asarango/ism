@@ -29,23 +29,23 @@ $this->title = 'Configuración de clases';
                 <div class="col-lg-6 col-md-6"> |
                     <?php
                     echo Html::a(
-                            '<span class="badge rounded-pill" style="background-color: #898b8d"><i class="fa fa-plus-circle" aria-hidden="true"></i> Inicio</span>',
-                            ['site/index']
+                        '<span class="badge rounded-pill" style="background-color: #898b8d"><i class="fa fa-plus-circle" aria-hidden="true"></i> Inicio</span>',
+                        ['site/index']
                     );
-                    ?>                    
+                    ?>
                     |
                 </div>
                 <!-- fin de primeros botones -->
 
                 <!--botones derecha-->
-                <div class="col-lg-6 col-md-6" style="text-align: right;">                 
+                <div class="col-lg-6 col-md-6" style="text-align: right;">
                     |
                     <?php
                     echo Html::a(
-                            '<span class="badge rounded-pill" style="background-color: #ab0a3d"><i class="fa fa-plus-circle" aria-hidden="true"></i> Nueva clase</span>',
-                            ['create']
+                        '<span class="badge rounded-pill" style="background-color: #ab0a3d"><i class="fa fa-plus-circle" aria-hidden="true"></i> Nueva clase</span>',
+                        ['create']
                     );
-                    ?>                    
+                    ?>
                     |
                 </div> <!-- FIN DE BOTONES DE ACCION Y NAVEGACIÓN -->
             </div>
@@ -63,28 +63,32 @@ $this->title = 'Configuración de clases';
                         /** INICIO BOTONES DE ACCION * */
                         [
                             'class' => 'yii\grid\ActionColumn',
-//                    'width' => '150px',
-                            'template' => '{update}',
+                            //                    'width' => '150px',
+                            'template' => '{update} {cambiar}',
                             'buttons' => [
                                 'update' => function ($url, $model) {
                                     return Html::a('<i class="fas fa-edit"></i>', $url, [
                                         'title' => 'Actualizar', 'data-toggle' => 'tooltip', 'role' => 'modal-remote', 'data-pjax' => "0", 'class' => 'hand'
                                     ]);
-                                }
+                                },
+                                'cambiar' => function ($url, $model) {
+                                    return Html::a('<i class="fas fa-exchange-alt"></i>', $url, [
+                                        'title' => 'Cambiar horario', 'data-toggle' => 'tooltip', 'role' => 'modal-remote', 'data-pjax' => "0", 'class' => 'hand'
+                                    ]);
+                                },
                             ],
                             'urlCreator' => function ($action, $model, $key) {
                                 if ($action === 'update') {
                                     return \yii\helpers\Url::to(['scholaris-clase-aux/update', 'id' => $key]);
+                                } else if ($action === 'cambiar') {
+                                    return \yii\helpers\Url::to(['cambiar-horario', 'id' => $key]);
                                 }
-//                        else if ($action === 'update') {
-//                            return \yii\helpers\Url::to(['update', 'id' => $key]);
-//                        }
                             }
                         ],
                         /** FIN BOTONES DE ACCION * */
                         'id',
                         //'idmateria',
-//            'ism_area_materia_id',
+                        //            'ism_area_materia_id',
                         [
                             'attribute' => 'ism_area_materia_id',
                             'format' => 'raw',
@@ -97,7 +101,7 @@ $this->title = 'Configuración de clases';
                                 'prompt' => 'Seleccione asignatura...'
                             ],
                         ],
-//            'idprofesor',
+                        //            'idprofesor',
                         [
                             'attribute' => 'idprofesor',
                             'format' => 'raw',
@@ -115,7 +119,7 @@ $this->title = 'Configuración de clases';
                             'attribute' => 'paralelo_id',
                             'format' => 'raw',
                             'value' => function ($model) {
-                                return $model->paralelo->course->name.' - | '.$model->paralelo->name.' |';
+                                return $model->paralelo->course->name . ' - | ' . $model->paralelo->name . ' |';
                             },
                             'filter' => $listaC,
                             'filterInputOptions' => [
@@ -135,11 +139,11 @@ $this->title = 'Configuración de clases';
                                 $tipo = backend\models\ScholarisHorariov2Cabecera::findOne($model->asignado_horario);
                                 return $tipo->descripcion;
                             },
-//                            'filter' => $listaC,
-//                            'filterInputOptions' => [
-//                                'class' => 'form-control',
-//                                'prompt' => 'Seleccione curso...'
-//                            ],
+                            //                            'filter' => $listaC,
+                            //                            'filterInputOptions' => [
+                            //                                'class' => 'form-control',
+                            //                                'prompt' => 'Seleccione curso...'
+                            //                            ],
                         ],
                         'tipo_usu_bloque',
                         'todos_alumnos',
@@ -157,7 +161,7 @@ $this->title = 'Configuración de clases';
                         //'dece_dhi_id',
                         //'tutor_id',            
                         'es_activo:boolean',
-//            ['class' => 'yii\grid\ActionColumn'],            
+                        //            ['class' => 'yii\grid\ActionColumn'],            
                     ],
                 ]);
                 ?>

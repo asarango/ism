@@ -317,6 +317,7 @@ class PlanVerticalDiplomaController extends Controller
             $model->opcion_seleccion = $active;
             $model->save();
         } elseif ($field == 'texto') {
+            
             $planId = $_POST['plan_id'];
             $contenido = $_POST['content'];
 
@@ -375,8 +376,8 @@ class PlanVerticalDiplomaController extends Controller
             $model->evaluacion = $_POST['evaluacion'];
             $model->actividad = $_POST['com-actividad'];
             $model->fecha = $_POST['com-fecha'];
-            print_r($model);
-            die();
+            // print_r($model);
+            // die();
             $model->save();
 
             return $this->redirect(['index1', 'cabecera_id' => $model->cabecera_id]); 

@@ -25,10 +25,8 @@ use yii\helpers\Url;
             <div>
                 <b>Tema</b>
                 <form-group>
-                    <?php $data = search_data_text($plan, 'datos', 'tema_menta'); ?>
-                    <textarea class="form-control text-cerrado " id="tema-menta"
-                        onchange="update_text(<?= $data['id'] ?>, 'tema-menta');"
-                        name="tema-menta"><?= $data['contenido']; ?></textarea>
+                    <?php $dataMen = search_data_text($plan, 'datos', 'tema_menta'); ?>
+                    <textarea name="tema-mentalidad-tdc" id="tema-mentalidad-tdc"><?= $dataMen['contenido']; ?></textarea>
                 </form-group>
 
             </div>
@@ -39,11 +37,8 @@ use yii\helpers\Url;
                     (incluidos los recursos que utilizaría)
                 </b>
                 <form-group>
-                    <?php $data = search_data_text($plan, 'datos', 'contibu_menta'); ?>
-
-                    <textarea class="form-control text-cerrado " id="contibu-menta"
-                        onchange="update_text(<?= $data['id'] ?>, 'contibu-menta')"
-                        name="tema-tdc"><?= $data['contenido']; ?></textarea>
+                    <?php $dataMenCont = search_data_text($plan, 'datos', 'contibu_menta'); ?>
+                    <textarea name="mentalidad-cont" id="mentalidad-cont"><?= $dataMenCont['contenido']; ?></textarea>
                 </form-group>
 
             </div>
@@ -53,6 +48,33 @@ use yii\helpers\Url;
 </div>
 
 <script>
-    CKEDITOR.replace("tema-menta");
-    CKEDITOR.replace("contibu-menta");
+    ClassicEditor
+        .create(document.querySelector('#tema-mentalidad-tdc'))
+        .then(editor => {
+            editor.model.document.on('change:data', () => {
+                // Esta función se ejecutará cuando cambie el contenido del editor.
+                let tema = editor.getData();
+                console.log(tema);
+                let temaId = '<?= $dataMen['id'] ?>';
+                update_text(temaId, tema);
+            });
+        })
+        .catch(error => {
+            console.error(error);
+        });
+
+    ClassicEditor
+        .create(document.querySelector('#mentalidad-cont'))
+        .then(editor => {
+            editor.model.document.on('change:data', () => {
+                // Esta función se ejecutará cuando cambie el contenido del editor.
+                let tema = editor.getData();
+                console.log(tema);
+                let temaId = '<?= $dataMenCont['id'] ?>';
+                update_text(temaId, tema);
+            });
+        })
+        .catch(error => {
+            console.error(error);
+        });
 </script>

@@ -80,7 +80,6 @@ use backend\models\NeexClase;
 </div>
 
 <form>
-
     <?php
     if ($model->es_permanente == true) {
         $checked = 'checked';
@@ -90,8 +89,6 @@ use backend\models\NeexClase;
 
     ?>
 
-
-
     <div class="row">
         <div class="col-lg-4" style="display: flex;justify-content: center;margin-top: 25px">
             <label for="es_permanente">¿Es permanente?
@@ -99,11 +96,13 @@ use backend\models\NeexClase;
             </label>
         </div>
         <div class="col-lg-4">
+
             <label for="grado">Grado NEE</label>
             <input type="number" name="grado" id="grado" value="<?= $model->grado ?>" min="1" max="3" onchange="update(this, 'grado')" placeholder="Grado">
 
         </div>
         <div class="col-lg-4">
+
             <label for="fecha_diagnostico">Fecha de diagnóstico</label>
             <input type="date" name="fecha_diagnostico" id="fecha_diagnostico" value="<?= $model->fecha_diagnostico ?>" onchange="update(this, 'fecha_diagnostico')" placeholder="Fecha de diagnóstico">
 

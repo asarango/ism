@@ -13,10 +13,8 @@ use yii\helpers\Url;
         <div class="row">
             <div class="col-lg-12 col-md-12">
                 <form-group>
-                    <?php $data = search_data_text($plan, 'datos', 'bibliografia'); ?>
-                    <textarea class="form-control text-cerrado " id="div-bibliografia"
-                        onchange="update_text(<?= $data['id'] ?>, 'div-bibliografia');"
-                        name="div-bibliografia"><?= $data['contenido']; ?></textarea>
+                    <?php $dataBiblio = search_data_text($plan, 'datos', 'bibliografia'); ?>
+                    <textarea name="biblio" id="biblio"><?= $dataBiblio['contenido']; ?></textarea>
                 </form-group>
 
             </div>
@@ -26,5 +24,18 @@ use yii\helpers\Url;
 </div>
 
 <script>
-    CKEDITOR.replace("div-bibliografia");
+    ClassicEditor
+        .create(document.querySelector('#biblio'))
+        .then(editor => {
+            editor.model.document.on('change:data', () => {
+                // Esta función se ejecutará cuando cambie el contenido del editor.
+                let tema = editor.getData();
+                console.log(tema);
+                let temaId = '<?= $dataBiblio['id'] ?>';
+                update_text(temaId, tema);
+            });
+        })
+        .catch(error => {
+            console.error(error);
+        });
 </script>

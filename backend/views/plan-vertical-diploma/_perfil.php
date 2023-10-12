@@ -26,10 +26,8 @@ use yii\helpers\Url;
             <b>Tema</b>
             <div>
                 <form-group>
-                    <?php $data = search_data_text($plan, 'datos', 'tema_perfil'); ?>
-                    <textarea class="form-control text-cerrado " id="tema-perfil"
-                        onchange="update_text(<?= $data['id'] ?>, 'tema-perfil');"
-                        name="tema-perfil"><?= $data['contenido']; ?></textarea>
+                    <?php $dataPerfil = search_data_text($plan, 'datos', 'tema_perfil'); ?>
+                    <textarea name="tema-perfil" id="tema-perfil"><?= $dataPerfil['contenido']; ?></textarea>
                 </form-group>
 
             </div>
@@ -40,11 +38,8 @@ use yii\helpers\Url;
                     Contribución al desarrollo de los atributos del perfil de la comunidad de aprendizaje del IB
                 </b>
                 <form-group>
-                    <?php $data = search_data_text($plan, 'datos', 'contibu_perfil'); ?>
-
-                    <textarea class="form-control text-cerrado " id="contibu-perfil"
-                        onchange="update_text(<?= $data['id'] ?>, 'contibu-perfil')"
-                        name="contibu-perfil"><?= $data['contenido']; ?></textarea>
+                    <?php $dataContPerfil = search_data_text($plan, 'datos', 'contibu_perfil'); ?>
+                    <textarea name="cont-perfil" id="cont-perfil"><?= $dataContPerfil['contenido']; ?></textarea>
                 </form-group>
 
             </div>
@@ -54,6 +49,33 @@ use yii\helpers\Url;
 </div>
 
 <script>
-    CKEDITOR.replace("tema-perfil");
-    CKEDITOR.replace("contibu-perfil");
+    ClassicEditor
+        .create(document.querySelector('#tema-perfil'))
+        .then(editor => {
+            editor.model.document.on('change:data', () => {
+                // Esta función se ejecutará cuando cambie el contenido del editor.
+                let tema = editor.getData();
+                console.log(tema);
+                let temaId = '<?= $dataPerfil['id'] ?>';
+                update_text(temaId, tema);
+            });
+        })
+        .catch(error => {
+            console.error(error);
+        });
+
+    ClassicEditor
+        .create(document.querySelector('#cont-perfil'))
+        .then(editor => {
+            editor.model.document.on('change:data', () => {
+                // Esta función se ejecutará cuando cambie el contenido del editor.
+                let tema = editor.getData();
+                console.log(tema);
+                let temaId = '<?= $dataContPerfil['id'] ?>';
+                update_text(temaId, tema);
+            });
+        })
+        .catch(error => {
+            console.error(error);
+        });
 </script>

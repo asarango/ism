@@ -17,11 +17,8 @@ use yii\helpers\Url;
             <div>
                 <form-group>
                     <label for="tema-tdc" class="form-label">Tema</label>
-                    <?php $data = search_data_text($plan, 'datos', 'tema_tdc'); ?>
-
-                    <textarea class="form-control text-cerrado " id="tema-tdc"
-                        onchange="update_text(<?= $data['id'] ?>, 'tema-tdc');"
-                        name="tema-tdc"><?= $data['contenido']; ?></textarea>
+                    <?php $dataTema = search_data_text($plan, 'datos', 'tema_tdc'); ?>
+                    <textarea name="tema-tdc" id="tema-tdc"><?= $dataTema['contenido']; ?></textarea>
                 </form-group>
 
             </div>
@@ -30,11 +27,8 @@ use yii\helpers\Url;
                 <form-group>
                     <label for="vinculo-tdc" class="form-label">Vínculo con TdC (incluida la descripción de la
                         planificación de clase)</label>
-                    <?php $data = search_data_text($plan, 'datos', 'vinculo_tdc'); ?>
-
-                    <textarea class="form-control text-cerrado " id="vinculo-tdc"
-                        onchange="update_text(<?= $data['id'] ?>, 'vinculo-tdc');"
-                        name="tema-tdc"><?= $data['contenido']; ?></textarea>
+                    <?php $dataVinculo = search_data_text($plan, 'datos', 'vinculo_tdc'); ?>
+                    <textarea name="vinculo-tdc" id="vinculo-tdc"><?= $dataVinculo['contenido']; ?></textarea>
                 </form-group>
 
             </div>
@@ -44,6 +38,33 @@ use yii\helpers\Url;
 </div>
 
 <script>
-    CKEDITOR.replace("tema-tdc");
-    CKEDITOR.replace("vinculo-tdc");
+    ClassicEditor
+        .create(document.querySelector('#tema-tdc'))
+        .then(editor => {
+            editor.model.document.on('change:data', () => {
+                // Esta función se ejecutará cuando cambie el contenido del editor.
+                let tema = editor.getData();
+                console.log(tema);
+                let temaId = '<?= $dataTema['id'] ?>';
+                update_text(temaId, tema);
+            });
+        })
+        .catch(error => {
+            console.error(error);
+        });
+
+    ClassicEditor
+        .create(document.querySelector('#vinculo-tdc'))
+        .then(editor => {
+            editor.model.document.on('change:data', () => {
+                // Esta función se ejecutará cuando cambie el contenido del editor.
+                let tema = editor.getData();
+                console.log(tema);
+                let temaId = '<?= $dataVinculo['id'] ?>';
+                update_text(temaId, tema);
+            });
+        })
+        .catch(error => {
+            console.error(error);
+        });
 </script>

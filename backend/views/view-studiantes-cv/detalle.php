@@ -10,6 +10,10 @@ use yii\helpers\Url;
 
 $this->title = 'Detalle Estudiante';
 $this->params['breadcrumbs'][] = $this->title;
+
+// echo "<pre>";
+// print_r($promedios);
+// die();
 ?>
 
 <!-- <style>
@@ -86,8 +90,8 @@ $this->params['breadcrumbs'][] = $this->title;
 
 <style>
     .col-lg-2 {
-        background-color: red;
-        color: #fff;
+        background-color: #eee;
+        color: black;
         padding: 10px;
         border-radius: 5px;
     }
@@ -108,8 +112,14 @@ $this->params['breadcrumbs'][] = $this->title;
         height: 24px;
         margin-right: 5px;
     }
-</style>
 
+    /* .div-grafico {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 300px;
+    } */
+</style>
 
 <div class="view-studiantes-cv-index">
 
@@ -142,29 +152,49 @@ $this->params['breadcrumbs'][] = $this->title;
 
 
             <!-- Inicio Gráficos -->
-            <div id="div_graficos" >
+            <div id="div_graficos">
 
                 <div class="row">
 
                     <div class="col-lg-2 col-md-2">
 
                         <div class="row">
-                            <div class="col-lg-12 col-md-12">Datos Estudiante
+                            <div class="col-lg-12 col-md-12">
+
+                                <h6 style="text-align: center">
+                                    Datos Estudiante:
+                                </h6>
+
                                 <?php
                                 // echo "<pre>";
                                 // print_r($inscription->student);
                                 // die();
                                 ?>
-
-                                <p>
+                                <p style="text-align: center">
                                     <?php echo $inscription->student->last_name . ' ' . $inscription->student->middle_name . ' ' . $inscription->student->first_name
 
                                     ?>
+                                </p>
+                                <hr>
+                                <div style="text-align: center;">
+                                    <p>
+                                        Género:
+                                        <?php
+                                        // echo $inscription->student->gender;
+
+                                        if ($inscription->student->gender == 'm') {
+                                            echo 'Masculino';
+                                        } else {
+                                            echo 'Femenino';
+                                        }
+                                        ?>
+                                    </p>
+
                                     <?php
                                     if ($inscription->student->gender == 'm') {
 
                                         // echo 'Genero: ';
-                                        echo '<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-gender-male" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                        echo '<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-gender-male" width="40" height="40" viewBox="0 0 24 24" stroke-width="1.5" stroke="blue" fill="none" stroke-linecap="round" stroke-linejoin="round">
                                         <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
                                         <path d="M10 14m-5 0a5 5 0 1 0 10 0a5 5 0 1 0 -10 0" />
                                         <path d="M19 5l-5.4 5.4" />
@@ -173,7 +203,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                         </svg>';
                                     } else {
                                         // echo 'Genero: ';
-                                        echo '<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-gender-female" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                        echo '<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-gender-female" width="40" height="40" viewBox="0 0 24 24" stroke-width="1.5" stroke="#fd0061" fill="none" stroke-linecap="round" stroke-linejoin="round">
                                         <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
                                         <path d="M12 9m-5 0a5 5 0 1 0 10 0a5 5 0 1 0 -10 0" />
                                         <path d="M12 14v7" />
@@ -181,10 +211,25 @@ $this->params['breadcrumbs'][] = $this->title;
                                         </svg>';
                                     }
                                     ?>
-                                </p>
+                                </div>
+                                <hr>
+                                <div style="text-align: center;">
+                                    <p>Correo institucional: <?php
+                                                                echo $inscription->student->x_institutional_email;
+                                                                ?></p>
+
+                                </div>
+                                <hr>
+                                <div style="text-align: center;">
+                                    <p>Teléfono de emergencia: <?php echo $inscription->student->emergency_contact; ?></p>
+                                </div>
+                                <hr>
+                                <div style="text-align: center;">
+                                    <p>Dirreción: <?php echo $inscription->student->x_dir_llegada; ?></p>
+                                </div>
 
                             </div>
-                            <div class="col-lg-12 col-md-12">Estadística</div>
+                            <!-- <div class="col-lg-12 col-md-12">Estadística</div> -->
                         </div>
 
                     </div>
@@ -194,24 +239,20 @@ $this->params['breadcrumbs'][] = $this->title;
                         <div class="row" style="margin-bottom: 10px;">
                             <div class="col-lg-12 col-md-12">
                                 <div id="div_promedio_general"></div>
-                            </div>
 
-                            <div class="row" style="margin-bottom: 10px;">
                                 <!-- Grafica Clases -->
-                                <div class="col-lg-6 col-md-6">
-                                    <div class="card shadow" id="div_clases" style="padding: 5px;"></div>
+                                <div class="col-lg-12 col-md-12" style="margin-top: 5px;">
+                                    <div class="card shadow " id="div_clases" style="padding: 5px;"></div>
                                 </div>
 
-                                <div class="col-lg-6 col-md-6">
+                                <!-- <div class="col-lg-6 col-md-6">
                                     <div id=""></div>
-                                </div>
+                                </div> -->
 
                             </div>
 
                         </div>
                     </div>
-
-
 
                 </div>
 

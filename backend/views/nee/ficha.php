@@ -8,12 +8,10 @@ use yii\widgets\ActiveForm;
 /* @var $this yii\web\View */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-//echo '<pre>';
-//print_r($age_family['student']);
-//die();
+
 
 $estudiante = $student->data_student[0];
-//print_r($estudiante);
+// print_r($estudiante);
 $padres = $student->data_parents;
 
 $nombreCompletoEstudiante = $estudiante->first_name . ' ' . $estudiante->middle_name . ' ' . $estudiante->last_name;
@@ -161,6 +159,7 @@ function getIniciales($nombre)
                                 ]);
                                 ?>
                             </div>
+
                             <!-- RENDERIZA A LA VISTA fecha_elab -->
                             <div class="tab-pane fade <?= $showFechaElabActive ?>" id="v-pills-messages" role="tabpanel" aria-labelledby="v-pills-messages-tab">
                                 <?php
@@ -171,6 +170,7 @@ function getIniciales($nombre)
                                 ])
                                 ?>
                             </div>
+
                             <!-- RENDERIZA A LA VISTA profesionales_implicados -->
                             <div class="tab-pane fade" id="v-pills-settings" role="tabpanel" aria-labelledby="v-pills-settings-tab">
                                 <?php
@@ -180,6 +180,7 @@ function getIniciales($nombre)
                                 ])
                                 ?>
                             </div>
+
                             <!-- RENDERIZA A LA VISTA informe_psicopedagogico -->
                             <div class="tab-pane fade <?= $showInformePsicoActive ?>" id="v-pills-5" role="tabpanel" aria-labelledby="v-pills-5-tab">
                                 <?php

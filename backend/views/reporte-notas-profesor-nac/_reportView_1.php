@@ -16,17 +16,17 @@
             foreach ($tituloCriterios as $titulo) {
 
                 $insumo = nombreInsumo($titulo['grupo_numero']);
-                ?>
+            ?>
                 <th colspan="<?php echo $titulo['total'] ?>"><?php echo $insumo . $titulo['total'] ?></th>
-                <?php
+            <?php
             }
 
 
             foreach ($titulosSumativas as $suma) {
                 $insumo = insumoSumativa($suma['grupo_numero']);
-                ?>
+            ?>
                 <th colspan="<?php echo $suma['total'] ?>"><?php echo $insumo ?></th>
-                <?php
+            <?php
             }
             ?>
             <th clospan="">FINAL</th>
@@ -39,17 +39,17 @@
             <th>Descripción y aspectos evaluados</th>
             <?php
             $bandera = $actNoSumativas[0]['grupo_numero'];
-                                    
+
             foreach ($actNoSumativas as $actN) {
-                if($actN['grupo_numero'] == $bandera){
-                ?>                
-                <th colspan=""><?php echo $actN['title'] ?></th>
+                if ($actN['grupo_numero'] == $bandera) {
+            ?>
+                    <th colspan=""><?php echo $actN['title'] ?></th>
                 <?php
-                }else{
-                    ?>
-                <th colspan="">PROMEDIO</th>                
-                <?php
-                $bandera = $actN['grupo_numero'];
+                } else {
+                ?>
+                    <th colspan="">PROMEDIO</th>
+            <?php
+                    $bandera = $actN['grupo_numero'];
                 }
             }
             ?>
@@ -65,8 +65,9 @@
 
 <?php
 
-function nombreInsumo($grupo) {
-//        $insumo = $grupo;
+function nombreInsumo($grupo)
+{
+    //        $insumo = $grupo;
     if ($grupo == 1) {
         $insumo = 'Tareas - Criterio A';
     } elseif ($grupo == 2) {
@@ -82,7 +83,8 @@ function nombreInsumo($grupo) {
     return $insumo;
 }
 
-function insumoSumativa($grupo) {
+function insumoSumativa($grupo)
+{
     if ($grupo == 1) {
         $insumo = 'A';
     } elseif ($grupo == 2) {

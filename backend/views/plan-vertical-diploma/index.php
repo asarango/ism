@@ -17,7 +17,10 @@ $idioma = $cabecera->ismAreaMateria->idioma;
 ?>
 
 <!-- JS y CSS Ckeditor -->
-<script src="https://cdn.ckeditor.com/4.17.1/full/ckeditor.js"></script>
+<!-- <script src="https://cdn.ckeditor.com/4.17.1/full/ckeditor.js"></script> -->
+<!-- <script src="https://cdn.ckeditor.com/ckeditor5/40.0.0/classic/ckeditor.js"></script> -->
+<script src="https://cdn.ckeditor.com/ckeditor5/38.0.1/classic/ckeditor.js"></script>
+
 <style>
     a.current {
         background-color: yellow;
@@ -237,7 +240,7 @@ $idioma = $cabecera->ismAreaMateria->idioma;
                                 // $asignatura = search_data_text($plan, 'datos', 'colegio');
                                 // echo $asignatura['contenido'];
                                 echo $codigo
-                                    ?>
+                                ?>
                             </div>
                         </div>
                         <!-- Fin nombres y codigos del colegio -->
@@ -251,8 +254,7 @@ $idioma = $cabecera->ismAreaMateria->idioma;
                                 $data = search_data_select($plan, 'datos', 'nivel', 'Superior');
                                 $checked = $data['seleccion'] ? 'checked' : '';
                                 ?>
-                                <input class="select-cerrado" type="checkbox" name="datos_superior" <?= $checked ?>
-                                    onclick="change_select(<?= $data['id'] ?>)">
+                                <input class="select-cerrado" type="checkbox" name="datos_superior" <?= $checked ?> onclick="change_select(<?= $data['id'] ?>)">
                             </div>
 
                             <div class="col-lg-2 col-md-2 border-r">Medio completado en dos años</div>
@@ -261,8 +263,7 @@ $idioma = $cabecera->ismAreaMateria->idioma;
                                 $data = search_data_select($plan, 'datos', 'nivel', 'Medio completado en dos años');
                                 $checked = $data['seleccion'] ? 'checked' : '';
                                 ?>
-                                <input class="select-cerrado" type="checkbox" name="datos_superior" <?= $checked ?>
-                                    onclick="change_select(<?= $data['id'] ?>)">
+                                <input class="select-cerrado" type="checkbox" name="datos_superior" <?= $checked ?> onclick="change_select(<?= $data['id'] ?>)">
                             </div>
 
                             <div class="col-lg-2 col-md-2">Medio completado en un año *</div>
@@ -271,8 +272,7 @@ $idioma = $cabecera->ismAreaMateria->idioma;
                                 $data = search_data_select($plan, 'datos', 'nivel', 'Medio completado en un año *');
                                 $checked = $data['seleccion'] ? 'checked' : '';
                                 ?>
-                                <input class="select-cerrado" type="checkbox" name="datos_superior" <?= $checked ?>
-                                    onclick="change_select(<?= $data['id'] ?>)">
+                                <input class="select-cerrado" type="checkbox" name="datos_superior" <?= $checked ?> onclick="change_select(<?= $data['id'] ?>)">
                             </div>
                         </div>
                         <!-- Fin Nivel -->
@@ -280,7 +280,7 @@ $idioma = $cabecera->ismAreaMateria->idioma;
                         <!-- inicia Completar artes -->
                         <?php
                         if ($area == 'ARTES') {
-                            ?>
+                        ?>
                             <div class="row background-gray border-t border-b">
                                 <div class="col-lg-3 col-md-3 border-l border-r">Completar solo para artes</div>
                                 <div class="col-lg-5 col-md-5 border-r">
@@ -291,9 +291,7 @@ $idioma = $cabecera->ismAreaMateria->idioma;
                                         $data = search_data_text($plan, 'datos', 'artes_visuales');
 
                                         ?>
-                                        <textarea class="form-control text-cerrado class-input" name="artes-visuales"
-                                            id="artes-visuales"
-                                            onchange="update_text(<?= $data['id'] ?>, 'artes-visuales');"><?= $data['contenido']; ?></textarea>
+                                        <textarea class="form-control text-cerrado class-input" name="artes-visuales" id="artes-visuales" onchange="update_text(<?= $data['id'] ?>, 'artes-visuales');"><?= $data['contenido']; ?></textarea>
                                     </form-group>
                                 </div>
 
@@ -304,13 +302,11 @@ $idioma = $cabecera->ismAreaMateria->idioma;
                                         <?php
                                         $data = search_data_text($plan, 'datos', 'artes_musica');
                                         ?>
-                                        <textarea class="form-control text-cerrado class-input" id="artes-musica"
-                                            onchange="update_text(<?= $data['id'] ?>, 'artes-musica');"
-                                            name="artes-musica"><?= $data['contenido']; ?></textarea>
+                                        <textarea class="form-control text-cerrado class-input" id="artes-musica" onchange="update_text(<?= $data['id'] ?>, 'artes-musica');" name="artes-musica"><?= $data['contenido']; ?></textarea>
                                     </form-group>
                                 </div>
                             </div>
-                            <?php
+                        <?php
                         }
                         ?>
                         <!-- inicia Completar artes -->
@@ -335,9 +331,7 @@ $idioma = $cabecera->ismAreaMateria->idioma;
 
                             <div class="col-lg-3 col-md-2 response">
                                 <?php $data = search_data_text($plan, 'datos', 'fecha_cap'); ?>
-                                <input class="form-control text-cerrado class-input" type="date" name="fecha_cap"
-                                    id="fecha_cap" value="<?= $data['contenido'] ?>"
-                                    onchange="update_text(<?= $data['id'] ?>, 'fecha_cap');">
+                                <input class="form-control text-cerrado class-input" type="date" name="fecha_cap" id="fecha_cap" value="<?= $data['contenido'] ?>" onchange="update_text(<?= $data['id'] ?>, 'fecha_cap');">
                             </div>
                         </div>
                         <!-- FIN nombre de profesor y fecha de capacitación IB -->
@@ -352,9 +346,7 @@ $idioma = $cabecera->ismAreaMateria->idioma;
 
                             <div class="col-lg-3 col-md-3 response">
                                 <?php $data = search_data_text($plan, 'datos', 'fecha_completo'); ?>
-                                <input class="form-control text-cerrado class-input" type="date" name="fecha_completo"
-                                    id="fecha_completo" value="<?= $data['contenido'] ?>"
-                                    onchange="update_text(<?= $data['id'] ?>, 'fecha_completo');">
+                                <input class="form-control text-cerrado class-input" type="date" name="fecha_completo" id="fecha_completo" value="<?= $data['contenido'] ?>" onchange="update_text(<?= $data['id'] ?>, 'fecha_completo');">
                             </div>
 
                             <div class="col-lg-3 col-md-3 background-gray border-t">
@@ -363,9 +355,7 @@ $idioma = $cabecera->ismAreaMateria->idioma;
 
                             <div class="col-lg-3 col-md-3 response">
                                 <?php $data = search_data_text($plan, 'datos', 'taller'); ?>
-                                <input class="form-control text-cerrado class-input" type="text" name="taller"
-                                    id="taller" value="<?= $data['contenido'] ?>"
-                                    onchange="update_text(<?= $data['id'] ?>, 'taller');">
+                                <input class="form-control text-cerrado class-input" type="text" name="taller" id="taller" value="<?= $data['contenido'] ?>" onchange="update_text(<?= $data['id'] ?>, 'taller');">
                             </div>
                         </div>
                         <!-- FIN fecha que se completpo el esquem -->
@@ -379,9 +369,7 @@ $idioma = $cabecera->ismAreaMateria->idioma;
 
                             <div class="col-lg-3 col-md-3 response">
                                 <?php $data = search_data_text($plan, 'datos', 'clase_dura'); ?>
-                                <input class="form-control text-cerrado class-input" type="text" name="clase_dura"
-                                    id="clase_dura" value="<?= $data['contenido'] ?>"
-                                    onchange="update_text(<?= $data['id'] ?>, 'clase_dura');">
+                                <input class="form-control text-cerrado class-input" type="text" name="clase_dura" id="clase_dura" value="<?= $data['contenido'] ?>" onchange="update_text(<?= $data['id'] ?>, 'clase_dura');">
                             </div>
 
                             <div class="col-lg-3 col-md-3 background-gray border-t">
@@ -390,9 +378,7 @@ $idioma = $cabecera->ismAreaMateria->idioma;
 
                             <div class="col-lg-3 col-md-3 response">
                                 <?php $data = search_data_text($plan, 'datos', 'semana_hay'); ?>
-                                <input class="form-control text-cerrado class-input" type="text" name="semana_hay"
-                                    id="semana_hay" value="<?= $data['contenido'] ?>"
-                                    onchange="update_text(<?= $data['id'] ?>, 'semana_hay');">
+                                <input class="form-control text-cerrado class-input" type="text" name="semana_hay" id="semana_hay" value="<?= $data['contenido'] ?>" onchange="update_text(<?= $data['id'] ?>, 'semana_hay');">
                             </div>
                         </div>
                         <!-- una clase dura y en una semana hay -->
@@ -406,9 +392,7 @@ $idioma = $cabecera->ismAreaMateria->idioma;
 
                             <div class="col-lg-3 col-md-3 response">
                                 <?php $data = search_data_text($plan, 'datos', 'imprevisto'); ?>
-                                <input class="form-control text-cerrado class-input" type="text" name="imprevisto"
-                                    id="imprevisto" value="<?= $data['contenido'] ?>"
-                                    onchange="update_text(<?= $data['id'] ?>, 'imprevisto');">
+                                <input class="form-control text-cerrado class-input" type="text" name="imprevisto" id="imprevisto" value="<?= $data['contenido'] ?>" onchange="update_text(<?= $data['id'] ?>, 'imprevisto');">
                             </div>
 
                             <div class="col-lg-3 col-md-3 background-gray border-t">
@@ -417,9 +401,7 @@ $idioma = $cabecera->ismAreaMateria->idioma;
 
                             <div class="col-lg-3 col-md-3 response">
                                 <?php $data = search_data_text($plan, 'datos', 'semanas_total'); ?>
-                                <input class="form-control text-cerrado class-input" type="text" name="semanas_total"
-                                    id="semanas_total" value="<?= $data['contenido'] ?>"
-                                    onchange="update_text(<?= $data['id'] ?>, 'semanas_total');">
+                                <input class="form-control text-cerrado class-input" type="text" name="semanas_total" id="semanas_total" value="<?= $data['contenido'] ?>" onchange="update_text(<?= $data['id'] ?>, 'semanas_total');">
                             </div>
                         </div>
                         <!-- una clase dura y en una semana hay -->
@@ -433,9 +415,7 @@ $idioma = $cabecera->ismAreaMateria->idioma;
 
                             <div class="col-lg-9 col-md-9 response">
                                 <?php $data = search_data_text($plan, 'datos', 'ejes'); ?>
-                                <input class="form-control text-cerrado class-input" type="text" name="ejes" id="ejes"
-                                    value="<?= $data['contenido'] ?>"
-                                    onchange="update_text(<?= $data['id'] ?>, 'ejes');">
+                                <input class="form-control text-cerrado class-input" type="text" name="ejes" id="ejes" value="<?= $data['contenido'] ?>" onchange="update_text(<?= $data['id'] ?>, 'ejes');">
                             </div>
                         </div>
                         <!-- Fin Ejes trasversales -->
@@ -446,10 +426,10 @@ $idioma = $cabecera->ismAreaMateria->idioma;
                     <!-- inicio de la sección 1) esquemas del curso -->
                     <div id="esquemas" style="margin-top: 10px; scroll-behavior: smooth;">
                         <?=
-                            $this->render('_unidades', [
-                                'unidades' => $unidades
-                            ])
-                            ?>
+                        $this->render('_unidades', [
+                            'unidades' => $unidades
+                        ])
+                        ?>
                     </div>
                     <!-- fin de la sección 1) esquemas del curso -->
 
@@ -457,11 +437,11 @@ $idioma = $cabecera->ismAreaMateria->idioma;
                     <!-- inicio de componentes internos y externos -->
                     <div id="componentes" style="margin-top: 10px; scroll-behavior: smooth;">
                         <?=
-                            $this->render('_componentes', [
-                                'componentes' => $componentes,
-                                'cabecera_id' => $cabecera->id
-                            ])
-                            ?>
+                        $this->render('_componentes', [
+                            'componentes' => $componentes,
+                            'cabecera_id' => $cabecera->id
+                        ])
+                        ?>
                     </div>
                     <!-- fin de componentes internos y externos -->
 
@@ -470,11 +450,11 @@ $idioma = $cabecera->ismAreaMateria->idioma;
                     <!-- inicio de vínculos con Teoría del conocimiento -->
                     <div id="vinculos" style="margin-top: 10px; scroll-behavior: smooth;">
                         <?=
-                            $this->render('_vinculo', [
-                                'plan' => $plan,
-                                'cabecera_id' => $cabecera->id
-                            ])
-                            ?>
+                        $this->render('_vinculo', [
+                            'plan' => $plan,
+                            'cabecera_id' => $cabecera->id
+                        ])
+                        ?>
                     </div>
                     <!-- fin de vínculos con Teoría del conocimiento -->
 
@@ -482,11 +462,11 @@ $idioma = $cabecera->ismAreaMateria->idioma;
                     <!-- 4.- inicio enfoques de aprendizaje -->
                     <div id="enfoques" style="margin-top: 10px; scroll-behavior: smooth;">
                         <?=
-                            $this->render('_enfoques', [
-                                'plan' => $plan,
-                                'cabecera_id' => $cabecera->id
-                            ])
-                            ?>
+                        $this->render('_enfoques', [
+                            'plan' => $plan,
+                            'cabecera_id' => $cabecera->id
+                        ])
+                        ?>
                     </div>
                     <!-- 4.- Fin enfoques de aprendizaje -->
 
@@ -494,33 +474,33 @@ $idioma = $cabecera->ismAreaMateria->idioma;
                     <!-- 5.- inicio mentalidad internacional -->
                     <div id="mentalidad" style="margin-top: 10px; scroll-behavior: smooth;">
                         <?=
-                            $this->render('_mentalidad', [
-                                'plan' => $plan,
-                                'cabecera_id' => $cabecera->id
-                            ])
-                            ?>
+                        $this->render('_mentalidad', [
+                            'plan' => $plan,
+                            'cabecera_id' => $cabecera->id
+                        ])
+                        ?>
                     </div>
                     <!-- 5.- Fin mentalidad internacional -->
 
                     <!-- 6.- Desarrollo perfil de la comunidad -->
                     <div id="perfil" style="margin-top: 10px; scroll-behavior: smooth;">
                         <?=
-                            $this->render('_perfil', [
-                                'plan' => $plan,
-                                'cabecera_id' => $cabecera->id
-                            ])
-                            ?>
+                        $this->render('_perfil', [
+                            'plan' => $plan,
+                            'cabecera_id' => $cabecera->id
+                        ])
+                        ?>
                     </div>
                     <!-- 6.- Fin Desarrollo perfil de la comunidad -->
 
                     <!-- 7.- Instalaciones y equipos -->
                     <div id="equipos" style="margin-top: 10px; scroll-behavior: smooth;">
                         <?=
-                            $this->render('_equipos', [
-                                'plan' => $plan,
-                                'cabecera_id' => $cabecera->id
-                            ])
-                            ?>
+                        $this->render('_equipos', [
+                            'plan' => $plan,
+                            'cabecera_id' => $cabecera->id
+                        ])
+                        ?>
                     </div>
                     <!-- 7.- Fin Instalaciones y equipos -->
 
@@ -528,23 +508,23 @@ $idioma = $cabecera->ismAreaMateria->idioma;
                     <!-- 8.- Otros recursos -->
                     <div id="otros" style="margin-top: 10px; scroll-behavior: smooth;">
                         <?=
-                            $this->render('_otros', [
-                                'plan' => $plan,
-                                'cabecera_id' => $cabecera->id
-                            ])
-                            ?>
+                        $this->render('_otros', [
+                            'plan' => $plan,
+                            'cabecera_id' => $cabecera->id
+                        ])
+                        ?>
                     </div>
                     <!-- 8.- Fin Otros recursos -->
 
-                    
+
                     <!-- 9.- Bibliografía -->
                     <div id="bibliografia" style="margin-top: 10px; scroll-behavior: smooth;">
                         <?=
-                            $this->render('_bibliografia', [
-                                'plan' => $plan,
-                                'cabecera_id' => $cabecera->id
-                            ])
-                            ?>
+                        $this->render('_bibliografia', [
+                            'plan' => $plan,
+                            'cabecera_id' => $cabecera->id
+                        ])
+                        ?>
                     </div>
                     <!-- 9.- Fin Bibliografía -->
 
@@ -586,16 +566,18 @@ function search_data_select($plan, $section, $typeField, $option)
 ?>
 
 <script>
-    window.addEventListener('scroll', function () {
+    // alert('prueba')
+
+    window.addEventListener('scroll', function() {
         let currentSection = '';
-        document.querySelectorAll('section').forEach(function (section) {
+        document.querySelectorAll('section').forEach(function(section) {
             const sectionTop = section.offsetTop;
             if (scrollY >= sectionTop - 100) {
                 currentSection = section.getAttribute('id');
             }
         });
 
-        document.querySelectorAll('a').forEach(function (link) {
+        document.querySelectorAll('a').forEach(function(link) {
             link.classList.remove('current');
             if (link.getAttribute('href').substring(1) === currentSection) {
                 link.classList.add('current');
@@ -614,16 +596,17 @@ function search_data_select($plan, $section, $typeField, $option)
             data: params,
             url: url,
             type: 'POST',
-            beforeSend: function () { },
-            success: function (response) {
+            beforeSend: function() {},
+            success: function(response) {
                 //location.reload();
             }
         });
     }
 
 
-    function update_text(planId, elementId) {
-        let content = $('#' + elementId).val();
+    function update_text(planId, content) {
+        // let content = $('#' + elementId).val();
+        // alert(content)
 
         var url = '<?= Url::to(['update']) ?>';
         params = {
@@ -635,8 +618,8 @@ function search_data_select($plan, $section, $typeField, $option)
             data: params,
             url: url,
             type: 'POST',
-            beforeSend: function () { },
-            success: function (response) {
+            beforeSend: function() {},
+            success: function(response) {
                 //location.reload();
             }
         });

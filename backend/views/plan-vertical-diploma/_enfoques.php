@@ -27,11 +27,8 @@ use yii\helpers\Url;
             <div>
                 <b>Tema</b>
                 <form-group>
-                    <?php $data = search_data_text($plan, 'datos', 'tema_enfoque'); ?>
-
-                    <textarea class="form-control text-cerrado " id="tema-enfoque"
-                        onchange="update_text(<?= $data['id'] ?>, 'tema-enfoque');"
-                        name="tema-enfoque"><?= $data['contenido']; ?></textarea>
+                    <?php $dataTemaEnfoque = search_data_text($plan, 'datos', 'tema_enfoque'); ?>
+                    <textarea name="tema-enfoque-tdc" id="tema-enfoque-tdc"><?= $dataTemaEnfoque['contenido']; ?></textarea>
                 </form-group>
 
             </div>
@@ -44,11 +41,8 @@ use yii\helpers\Url;
                 </b>
 
                 <form-group>
-                    <?php $data = search_data_text($plan, 'datos', 'contibu_enfoque'); ?>
-
-                    <textarea class="form-control text-cerrado " id="contibu-enfoque"
-                        onchange="update_text(<?= $data['id'] ?>, 'contibu-enfoque')"
-                        name="tema-tdc"><?= $data['contenido']; ?></textarea>
+                    <?php $dataCont = search_data_text($plan, 'datos', 'contibu_enfoque'); ?>
+                    <textarea name="cont-tdc" id="cont-tdc"><?= $dataCont['contenido']; ?></textarea>
                 </form-group>
 
             </div>
@@ -58,6 +52,38 @@ use yii\helpers\Url;
 </div>
 
 <script>
+    ClassicEditor
+        .create(document.querySelector('#tema-enfoque-tdc'))
+        .then(editor => {
+            editor.model.document.on('change:data', () => {
+                // Esta función se ejecutará cuando cambie el contenido del editor.
+                let tema = editor.getData();
+                console.log(tema);
+                let temaId = '<?= $dataTemaEnfoque['id'] ?>';
+                update_text(temaId, tema);
+            });
+        })
+        .catch(error => {
+            console.error(error);
+        });
+
+    ClassicEditor
+        .create(document.querySelector('#cont-tdc'))
+        .then(editor => {
+            editor.model.document.on('change:data', () => {
+                // Esta función se ejecutará cuando cambie el contenido del editor.
+                let tema = editor.getData();
+                console.log(tema);
+                let temaId = '<?= $dataCont['id'] ?>';
+                update_text(temaId, tema);
+            });
+        })
+        .catch(error => {
+            console.error(error);
+        });
+</script>
+
+<!-- <script>
     CKEDITOR.replace("tema-enfoque");
     CKEDITOR.replace("contibu-enfoque");
-</script>
+</script> -->

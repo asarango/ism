@@ -21,10 +21,8 @@ use yii\helpers\Url;
         <div class="row">
             <div class="col-lg-12 col-md-12">
                 <form-group>
-                    <?php $data = search_data_text($plan, 'datos', 'equipos'); ?>
-                    <textarea class="form-control text-cerrado " id="div-equipos"
-                        onchange="update_text(<?= $data['id'] ?>, 'div-equipos');"
-                        name="div-equipos"><?= $data['contenido']; ?></textarea>
+                    <?php $dataEquipos = search_data_text($plan, 'datos', 'equipos'); ?>
+                    <textarea name="equipos-tema" id="equipos-tema"><?= $dataEquipos['contenido']; ?></textarea>
                 </form-group>
 
             </div>
@@ -33,6 +31,20 @@ use yii\helpers\Url;
     </div>
 </div>
 
+
 <script>
-    CKEDITOR.replace("div-equipos");
+    ClassicEditor
+        .create(document.querySelector('#equipos-tema'))
+        .then(editor => {
+            editor.model.document.on('change:data', () => {
+                // Esta función se ejecutará cuando cambie el contenido del editor.
+                let tema = editor.getData();
+                console.log(tema);
+                let temaId = '<?= $dataEquipos['id'] ?>';
+                update_text(temaId, tema);
+            });
+        })
+        .catch(error => {
+            console.error(error);
+        });
 </script>

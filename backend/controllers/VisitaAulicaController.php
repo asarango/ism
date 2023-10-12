@@ -2,6 +2,8 @@
 
 namespace backend\controllers;
 
+use backend\models\ViewListaVisitaAulica;
+use backend\models\ViewListaVisitaAulicaSearch;
 use Yii;
 use backend\models\VisitaAulica;
 use backend\models\VisitaAulicaSearch;
@@ -65,8 +67,14 @@ class VisitaAulicaController extends Controller
      */
     public function actionIndex()
     {
-        $searchModel = new VisitaAulicaSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $usuario = Yii::$app->user->identity->usuario;
+        $periodoId = Yii::$app->user->identity->periodo_id;
+
+        $searchModel = new ViewListaVisitaAulicaSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams, $usuario, $periodoId);
+
+        // print_r($dataProvider);
+        // die();
 
         return $this->render('index', [
             'searchModel' => $searchModel,
@@ -80,11 +88,9 @@ class VisitaAulicaController extends Controller
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionView($id)
+    public function actionView($clase_id)
     {
-        return $this->render('view', [
-            'model' => $this->findModel($id),
-        ]);
+        print_r($clase_id);
     }
 
     /**

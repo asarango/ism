@@ -540,6 +540,17 @@ order by c.name, p.name;";
         $model->usuario = $usuario;
         $model->save();
     }
+
+
+    /**
+     *  ACCION PARA REALIZAR EL CAMBIO DE HORARIO DE UNA CLASE
+     *  DE UN DIA Y HORA A OTRO DIA Y HORA
+     */
+    public function actionCambiarHorario() {
+        $claseId = $_GET['id'];
+
+        
+    }
     
     
 

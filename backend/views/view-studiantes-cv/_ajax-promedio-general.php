@@ -99,33 +99,38 @@
     }
 </style> -->
 
+<style>
+    .cards {
+        padding: 10px;
+    }
+</style>
 
 
-<div class="row" style="color: black;">
+<div class="row" style="color: black;text-align: center">
 
     <div class="col-md-3 col-sm-3">
-        <div class="card shadow">
+        <div class="card cards shadow">
             <?= $promedios[0]['bloque'] ?>
             <br>
-            Promedio: <?= $promedios[0]['nota'] ?>
+            <?= $promedios[0]['nota'] ?>
         </div>
     </div>
     <div class="col-md-3 col-sm-3">
-        <div class="card shadow">
+        <div class="card cards shadow">
             <?= $promedios[1]['bloque'] ?>
             <br>
-            Promedio: <?= $promedios[1]['nota'] ?>
+            <?= $promedios[1]['nota'] ?>
         </div>
     </div>
     <div class="col-md-3 col-sm-3">
-        <div class="card shadow">
+        <div class="card cards shadow">
             <?= $promedios[2]['bloque'] ?>
             <br>
-            Promedio: <?= $promedios[2]['nota'] ?>
+            <?= $promedios[2]['nota'] ?>
         </div>
     </div>
     <div class="col-md-3 col-sm-3">
-        <div class="card shadow">
+        <div class="card cards shadow">
             Promedio general:
             <?= $promedios[3]['general'] ?>
         </div>

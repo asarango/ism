@@ -33,6 +33,51 @@ foreach ($detalle->tareas as $key => $det) {
 // die();
 ?>
 
+<style>
+    .custom-table {
+        border-collapse: collapse;
+        width: 100%;
+        /* border-radius: 10px; */
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+        color: black;
+        font-weight: bold;
+    }
+
+    .custom-table th,
+    .custom-table td {
+        padding: 15px;
+        text-align: center;
+        /* border: 1px solid #333; */
+
+    }
+
+    .custom-table th {
+        background-color: #1b325f;
+        color: white;
+    }
+
+    .custom-table tr:nth-child(even) {
+        background-color: #eee;
+        color: black;
+    }
+
+    .custom-table th:first-child,
+    .custom-table td:first-child {
+        border-top-left-radius: 10px;
+        border-bottom-left-radius: 10px;
+        text-align: left;
+        color: black;
+    }
+
+    .custom-table th:last-child,
+    .custom-table td:last-child {
+        border-top-right-radius: 10px;
+        border-bottom-right-radius: 10px;
+        text-align: right;
+        color: black;
+    }
+</style>
 
 <div class="row">
     <div class="col-lg-12 col-md-12">
@@ -40,21 +85,23 @@ foreach ($detalle->tareas as $key => $det) {
             <?php
             foreach ($aDistrib as $keyTri => $trimestre) {
             ?>
-                <table class="table table-hover table-small table-stripped table-bordered">
+                <table class="table custom-table table-small table-stripped table-responsive">
                     <tbody>
+
                         <tr>
-                            <td><?= $trimestre ?></td>
-                            <td>Promedio: <?= $aPromedioTrimestre[$keyTri] ?></td>
+                            <td style="background-color: #1b325f;color: white;">Promedio <?= $trimestre ?>:</td>
+                            <td style="background-color: #1b325f;color: white;"><?= $aPromedioTrimestre[$keyTri] ?></td>
                         </tr>
+
                         <tr>
-                            <td colspan="2" >
-                                <table class="table table-bordered">
+                            <td colspan="2">
+                                <table class="table table-stripped table-small table-hover">
                                     <thead>
                                         <tr>
-                                            <th>INSUMO</th>
+                                            <th style="color: white;">INSUMO</th>
                                             <th>APORTE</th>
                                             <th>TÍTULO</th>
-                                            <th>CALIFICACIÓN</th>
+                                            <th style="color: white;">CALIFICACIÓN</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -63,19 +110,19 @@ foreach ($detalle->tareas as $key => $det) {
                                             foreach ($promedio["tareas"] as $keyTarea => $tarea) {
                                         ?>
                                                 <tr>
-                                                    <td><?= $tarea["nombre_nacional"] ?></td>
-                                                    <td><?= $tarea["tipo_aporte"] ?></td>
-                                                    <td><?= $tarea["titulo"] ?></td>
+                                                    <td style="font-weight: normal;"><?= $tarea["nombre_nacional"] ?></td>
+                                                    <td style="font-weight: normal;"><?= $tarea["tipo_aporte"] ?></td>
+                                                    <td style="font-weight: normal;"><?= $tarea["titulo"] ?></td>
                                                     <td><?= $tarea["calificacion"] ?></td>
                                                 </tr>
                                             <?php
                                             }
                                             ?>
                                             <tr>
-                                                <td></td>
-                                                <td></td>
-                                                <td>Promedio:</td>
-                                                <td><?= $promedio["promedio"]  ?></td>
+                                                <td style="background-color: #1b325f;color: white;">Promedio:</td>
+                                                <td style="background-color: #1b325f;"></td>
+                                                <td style="background-color: #1b325f;"></td>
+                                                <td style="background-color: #1b325f;color: white;"><?= $promedio["promedio"]  ?></td>
                                             </tr>
                                         <?php
                                         }

@@ -83,7 +83,9 @@ class ViewActividadCrearController extends Controller
         $model = new ScholarisActividad();
 
 
-        $tipoActividades = ScholarisTipoActividad::find()->where([
+        $tipoActividades = ScholarisTipoActividad::find()
+            ->select(["id", "CONCAT(nombre_nacional, ' (', tipo_aporte, ')') as nombre_nacional"])
+            ->where([
                         'activo' => true
                     ])
             ->orderBy('orden')

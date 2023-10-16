@@ -11,7 +11,7 @@ $this->title = 'Reporte Notas Profesor';
 $this->params['breadcrumbs'][] = $this->title;
 
 // echo "<pre>";
-// print_r($trimestre);
+// print_r($notasProfesor->actividades);
 // die();
 
 ?>
@@ -133,9 +133,19 @@ $this->params['breadcrumbs'][] = $this->title;
 
 
 <table class="table" border="1" cellpadding="1" cellspacing="1">
+    <tr>
+        <td rowspan="2">#</td>
+        <td rowspan="2" width="300px">Estudiantes - <?php echo $trimestre->name ?> </td>
+        <?php
+        foreach ($notasProfesor->tipoAporte as $tipoApo) {
+            echo '<td colspan="'.$tipoApo['total'].'">' . $tipoApo['tipo_aporte'] . '</td>';
+        }
+
+        ?>
+        <td></td>
+    </tr>
     <tr clas>
-        <td>#</td>
-        <td width="300px">Estudiantes - <?php echo $trimestre->name ?> </td>
+        
         <?php
         foreach ($notasProfesor->cabecera as $cabecera) {
             echo '<td title="' . $cabecera['title'] . '">';

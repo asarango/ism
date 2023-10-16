@@ -10,8 +10,22 @@ use yii\helpers\ArrayHelper;
 
 
 // echo "<pre>";
-// print_r($actividad);
+// print_r($listaActividades);
 // die();
+// $listaActividades = array(
+//     'Lecciones de revisión' => 'Lecciones de revisión ( APORTES / INDIVIDUAL )',
+//     'Pruebas de base estructuradas' => 'Pruebas de base estructuradas ( APORTES / INDIVIDUAL )',
+//     'Tareas en clase' =>  'Tareas en clase ( APORTES / INDIVIDUAL )',
+//     'Proyectos y/o investigaciones i' => 'Proyectos y/o investigaciones i ( APORTES / INDIVIDUAL )',
+//     'Proyectos y/o investigaciones' => 'Proyectos y/o investigaciones ( APORTES / GRUPAL )',
+//     'Exposiciones foros' => 'Exposiciones foros ( APORTES / GRUPAL )',
+//     'Talleres' => 'Talleres ( APORTES / GRUPAL )',
+//     'Desarrollo de productos' => 'Desarrollo de productos ( APORTES / GRUPAL )',
+//     'Se aplica metodología ABP' => 'Se aplica metodología ABP ( PROYECTO INTERDISCIPLINARIO / PROYECTO )',
+//     'Evaluación de base estructurada' => 'Evaluación de base estructurada ( EVALUACIÓN DE PERIODO / EVALUACION )'
+// );
+
+
 
 ?>
 
@@ -148,3 +162,4 @@ use yii\helpers\ArrayHelper;
             });
         });
     });
+</script>

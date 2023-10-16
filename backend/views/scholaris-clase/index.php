@@ -5,6 +5,10 @@ use yii\helpers\Url;
 use yii\grid\GridView;
 
 $this->title = 'Configuración de clases';
+
+// echo "<pre>";
+// print_r($clase);
+// die();
 ?>
 
 <!-- JS y CSS Ckeditor -->

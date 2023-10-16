@@ -37,7 +37,7 @@ class NotasProfesor
                 // $this->trimestre        = ScholarisBloqueActividad::findOne($bloqueId);
 
 
-                $this->get_tipo_aportes();
+                // $this->get_tipo_aportes();
                 $this->get_grupo();
                 $this->get_tipos_actividades();
                 $this->get_actividades();
@@ -46,11 +46,13 @@ class NotasProfesor
                 $this->get_promedios_finales();
 
                 $this->generate_cabecera();
+                $this->get_tipo_aportes();
 
                 $this->generate_matriz();
 
 
         }
+
 
         private function get_promedios_finales(){
                 $con = Yii::$app->db;
@@ -88,15 +90,26 @@ class NotasProfesor
         private function get_tipo_aportes()
         {
                 $con = Yii::$app->db;
-                $query = "select 	tip.tipo_aporte  
-                        from 	scholaris_actividad act
-                                        inner join scholaris_tipo_actividad tip on tip.id = act.tipo_actividad_id 
-                                        inner join scholaris_grupo_orden_calificacion ord on ord.codigo_tipo_actividad = tip.id
-                        where 	act.paralelo_id = $this->claseId
-                                        and act.calificado = 'true'
-                        group by tip.tipo_aporte
-                        order by tip.tipo_aporte desc;";
+                $query = "select 	sum(total) as total
+                                                ,tipo_aporte
+                                from(
+                                select 	tip.tipo_aporte 
+                                                ,tip.nombre_nacional 
+                                                ,count(tip.id)+1 as total
+                                from 	scholaris_actividad act 
+                                                inner join scholaris_tipo_actividad tip on tip.id = act.tipo_actividad_id 
+                                                inner join scholaris_grupo_orden_calificacion ord on ord.codigo_tipo_actividad = tip.id 
+                                where 	act.paralelo_id = $this->claseId 
+                                                and act.calificado = 'true' 
+                                group by tip.tipo_aporte
+                                                , tip.nombre_nacional 
+                                order by tip.tipo_aporte desc
+                                ) as total
+                                group by tipo_aporte;";
+                // echo $query;
+                // die();
                 $this->tipoAporte = $con->createCommand($query)->queryAll();
+
         }
 
         private function get_grupo()
@@ -141,6 +154,7 @@ class NotasProfesor
                         ,act.id as actividad_id
                         ,act.title
                         ,ord.grupo_numero  
+                        ,tip.tipo_aporte
                 from 	scholaris_actividad act
                         inner join scholaris_tipo_actividad tip on tip.id = act.tipo_actividad_id 
                         inner join scholaris_grupo_orden_calificacion ord on ord.codigo_tipo_actividad = tip.id
@@ -149,7 +163,7 @@ class NotasProfesor
                         and act.calificado = 'true'
                 order by ord.grupo_numero;";
                 $this->actividades = $con->createCommand($query)->queryAll();
-        }
+        }        
 
 
         private function get_notas_x_actividad()

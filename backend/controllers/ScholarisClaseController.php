@@ -2,9 +2,14 @@
 
 namespace backend\controllers;
 
+use backend\models\PlanificacionSemanal;
+use backend\models\ScholarisAsistenciaProfesor;
 use Yii;
 use backend\models\ScholarisClase;
 use backend\models\ScholarisClaseSearch;
+use backend\models\ScholarisHorariov2Detalle;
+use backend\models\ScholarisHorariov2Dia;
+use backend\models\ScholarisHorariov2Horario;
 use backend\models\ScholarisPeriodo;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -549,9 +554,225 @@ order by c.name, p.name;";
     public function actionCambiarHorario() {
         $claseId = $_GET['id'];
 
-        
+        $clase = ScholarisClase::findOne($claseId);
+        $horarioActual = $this->get_horario_clase($claseId); //Toma el horario de la clase
+        $tipoHorario = $clase->asignado_horario;
+        $listaHorario = $this->get_lista_horario($tipoHorario);
+
+
+        return $this->render('cambiar-horario',[ 
+            'clase' => $clase,
+            'horarioActual' => $horarioActual,
+            'listaHorario' => $listaHorario
+        ]);
+
     }
     
-    
+    //Metodo que retorna el horario de una clase
+    //se llama desde la accion cambiar-horario
+    private function get_horario_clase($claseId){
+        $con = Yii::$app->db;
+        $query = "select 	det.id as detalle_id 
+                        ,dia.id as dia_id
+                        ,dia.nombre as dia
+                        ,hor.id as hora_id
+                        ,hor.nombre as hora
+                from 	scholaris_horariov2_horario hhh 
+                        inner join scholaris_horariov2_detalle det on det.id = hhh.detalle_id 
+                        inner join scholaris_horariov2_hora hor on hor.id = det.hora_id 
+                        inner join scholaris_horariov2_dia dia on dia.id = det.dia_id 
+                where 	hhh.clase_id = $claseId
+                order by dia.numero, hor.numero;";
+        $res = $con->createCommand($query)->queryAll();
+        return $res;
+    }
+
+    // Retorna la lista de horarios de una clase para el nuevo horario
+    private function get_lista_horario($cabeceraId){
+        $con = Yii::$app->db;
+        $query = "select 	det.id as detalle_id
+                            ,concat(dia.nombre, ' | ', hor.nombre) as horario
+                    from 	scholaris_horariov2_detalle det
+                            inner join scholaris_horariov2_dia dia on dia.id = det.dia_id
+                            inner join scholaris_horariov2_hora hor on hor.id = det.hora_id
+                    where	det.cabecera_id = $cabeceraId
+                    order by dia.numero, hor.numero";
+        return $con->createCommand($query)->queryAll();
+    }
+
+
+    /**
+     * ACCION PARA MOSTRAR LOS CAMBIOS DE HORARIO DE UNA CLASE
+     */
+    public function actionMostrarCambiosHorario(){
+        $desde = $_POST['detalleId'];
+        $hasta = $_POST['horaNueva'];
+        $clase = $_POST['clase_id'];
+
+        $detalleDesde = ScholarisHorariov2Detalle::findOne($desde);
+        $detalleHasta = ScholarisHorariov2Detalle::findOne($hasta);
+
+        if($detalleHasta->dia->numero > $detalleDesde->dia->numero){
+            $operador  = '+';
+            $diferencia = $detalleHasta->dia->numero - $detalleDesde->dia->numero;
+        }elseif($detalleHasta->dia->numero < $detalleDesde->dia->numero){
+            $operador  = '-';
+            $diferencia = $detalleDesde->dia->numero - $detalleHasta->dia->numero;
+        }else{
+            $operador  = '+';
+            $diferencia = 0;
+        }
+
+        $detalle = $this->consulta_asistencias_clase($clase, $detalleDesde->hora_id,$detalleDesde->dia->numero, 
+                    $detalleHasta->hora->id, $detalleHasta->hora->nombre, 
+                    $diferencia, $operador);
+
+        $detallePlanes = $this->consulta_planes_semanales($clase, $detalleDesde->hora_id,$detalleDesde->dia->numero, 
+                    $detalleHasta->hora->id, $detalleHasta->hora->nombre, 
+                    $diferencia, $operador);
+
+        
+        return $this->renderPartial('_mostrar-cambios-horario',[
+            'detalle' => $detalle,
+            'detallePlanes' => $detallePlanes,
+            'claseId' => $clase,
+            'detalleDesde' => $detalleDesde,
+            'detalleHasta' => $detalleHasta
+        ]);
+    }
+
+    private function consulta_planes_semanales($claseId, $desdeHoraId, $numeroDia, $nuevaHoraId, $nuevaHora, $diasDiferencia, $operador){
+        $con = Yii::$app->db;
+        $query = "select  id 
+                            ,hora_id 
+                            ,fecha 
+                            ,$numeroDia as numero_dia
+                            ,(fecha $operador interval '$diasDiferencia d')::date as nueva_fecha
+                            ,$nuevaHoraId as nueva_hora_id
+                            ,'$nuevaHora' as hora
+                    from 	planificacion_semanal
+                    where 	clase_id = $claseId 
+                            and EXTRACT(DOW FROM fecha::date) = $numeroDia
+                            and hora_id = $desdeHoraId;";
+
+        // echo $query;
+        // die();
+        
+        return $con->createCommand($query)->queryAll();
+    }
+
+    private function consulta_asistencias_clase($claseId, $desdeHoraId, $numeroDia, $nuevaHoraId, $nuevaHora, $diasDiferencia, $operador){
+        $con = Yii::$app->db;
+        $query = "select 	id
+                            ,hora_id 
+                            ,hora_ingresa 
+                            ,fecha 
+                            ,$numeroDia as numero_dia
+                            ,(fecha $operador interval '$diasDiferencia d')::date as nueva_fecha
+                            ,$nuevaHoraId as nueva_hora_id
+                            ,'$nuevaHora' as hora
+                    from 	scholaris_asistencia_profesor 
+                    where 	clase_id = $claseId and EXTRACT(DOW FROM fecha::date) = $numeroDia 
+                            and hora_id = $desdeHoraId;";
+        
+        return $con->createCommand($query)->queryAll();
+
+    }
+
+    /***
+     * PROCESAR LOS CAMBIOS DE HORARIO
+     */
+    public function actionProcesarCambios(){
+        // print_r($_POST);
+        $dataJson = $_POST['data'];
+        $claseId = $_POST['claseId'];
+        $detalleDesdeID = $_POST['detalleDesdeID'];
+        $detalleHastaID = $_POST['detalleHastaID'];
+        $dataJsonPlan = $_POST['dataPlan'];
+
+        $data = json_decode($dataJson); //decodifica la data de las asistencias a rreglo php
+        $dataPlan = json_decode($dataJsonPlan);  //decodifica la data del plan semanal a rreglo php
+
+        $this->cambia_horario($claseId, $detalleDesdeID, $detalleHastaID); //realiza el cambio de la data a la tabla scholaris_horariov2_horario
+        $this->cambia_novedades($data); //realiza el cambio de la data a la tabla scholaris_asistencia_profesor
+        $this->cambia_plan_semanal($dataPlan);
+        $this->actualizar_horas_semana_plan_semanal($claseId);
+        
+    } 
+
+    private function cambia_horario($claseId, $detalleDesdeID, $detalleHastaID){
+        $con = Yii::$app->db;
+        $queryDelete = "delete from scholaris_horariov2_horario where clase_id = $claseId and detalle_id = $detalleDesdeID;";
+        $con->createCommand($queryDelete)->execute();
+
+        $queryInsertNuevo = "insert into scholaris_horariov2_horario (detalle_id, clase_id) values($detalleHastaID, $claseId);";
+        $con->createCommand($queryInsertNuevo)->execute();
+    }
+
+    private function cambia_novedades($data){
+        foreach ($data as $key => $d){
+           $model = ScholarisAsistenciaProfesor::findOne($d->id);
+           $model->hora_id = $d->nueva_hora_id;
+           $model->fecha = $d->nueva_fecha;
+           $model->modificado = date('Y-m-d');
+           $model->save();
+        }
+    }
+
+    private function cambia_plan_semanal($data){
+
+        foreach ($data as $key => $d){
+            $model = PlanificacionSemanal::findOne($d->id);
+            $model->fecha = $d->nueva_fecha;
+            $model->hora_id = $d->nueva_hora_id;
+            $model->updated_at = date('Y-m-d');
+            $model->updated = Yii::$app->user->identity->usuario;
+            $model->save();
+         }
+    }
+
+
+    private function actualizar_horas_semana_plan_semanal($claseId){
+        $con = Yii::$app->db;
+        $query = "select 	pla.id 
+                            ,pla.hora_id 
+                            ,extract (dow from fecha::date) as dia_numero
+                    from 	planificacion_semanal pla
+                            inner join scholaris_horariov2_hora hor on hor.id = pla.hora_id  
+                    where 	pla.clase_id = $claseId
+                    order by 3,pla.fecha,hor.numero;";
+        $planes = $con->createCommand($query)->queryAll();
+
+        foreach ($planes as $key => $p){
+            $nuevoOrden = $this->encuentra_numero_semana($claseId, $p['hora_id'], $p['dia_numero']);
+            $model = PlanificacionSemanal::findOne($p['id']);
+            $model->orden_hora_semana = $nuevoOrden;
+            $model->save();
+        }
+    }
+
+
+    private function encuentra_numero_semana($claseId, $horaId, $diaNumero){
+        $con = Yii::$app->db;
+        $query = "select 	hor.id 
+                            ,hor.numero 
+                            ,extract (dow from fecha::date) as numero_dia
+                    from 	planificacion_semanal pla
+                            inner join scholaris_horariov2_hora hor on hor.id = pla.hora_id 
+                    where 	pla.clase_id = $claseId
+                    group by hor.id, hor.numero, 3
+                    order by 3,hor.numero;";
+
+        $data = $con->createCommand($query)->queryAll();
+        
+        $i = 0;
+        foreach ($data as $key => $d){
+            $i++;
+            if($d['id'] == $horaId && $d['numero_dia'] == $diaNumero){
+                return $i;
+            }
+        }
+
+    }
 
 }

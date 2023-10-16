@@ -9,10 +9,13 @@ use yii\grid\GridView;
 
 $this->title = 'CV - Estudiantes';
 $this->params['breadcrumbs'][] = $this->title;
+// echo "<pre>";
+// print_r($searchModel);
+// die();
+
 ?>
 
 <style>
-   
     body {
         background-color: #f5f5f5;
         margin: 0;
@@ -119,7 +122,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         'buttons' => [
                             'detalle' => function ($url, $model) {
                                 return Html::a('<i class="fas fa-edit"></i>', $url, [
-                                    'title' => 'Ver Detalle', 'data-toggle' => 'tooltip', 
+                                    'title' => 'Ver Detalle', 'data-toggle' => 'tooltip',
                                     'role' => 'modal-remote', 'data-pjax' => "0", 'class' => 'hand'
                                 ]);
                             }

@@ -3,6 +3,12 @@
 use yii\helpers\Url;
 
 ?>
+<div class="row text-center">
+    <div class="col">
+        <h4 class="card-title"><i class="fas fa-book"></i> &nbsp; Materias</h3>
+    </div>
+</div>
+
 
 <!-- <php print_r($chartClases); ?> -->
 <div class="row">
@@ -10,8 +16,6 @@ use yii\helpers\Url;
         <canvas id="myChart"></canvas>
     </div>
 </div>
-
-
 
 <!-- Modal -->
 <div class="modal fade" id="claseModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -22,6 +26,7 @@ use yii\helpers\Url;
                 <!-- <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button> -->
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <div id="div-detalle-clase"></div>
@@ -56,6 +61,8 @@ use yii\helpers\Url;
             }]
         },
         options: {
+            // maintainAspectRatio: false, // Desactiva el mantenimiento automático del aspecto
+            responsive: true, // Activa la capacidad de respuesta
             scales: {
                 y: {
                     beginAtZero: true

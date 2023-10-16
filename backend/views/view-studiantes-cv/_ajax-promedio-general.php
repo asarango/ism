@@ -99,41 +99,111 @@
     }
 </style> -->
 
+<?php
+
+// echo "<pre>";
+// print_r($promedios);
+// die();
+
+?>
+
+
+
 <style>
-    .cards {
+    .card-promedios {
+        border: 1px solid #ccc;
+        margin: 10px;
+        border-radius: 10px;
+    }
+
+    .card-header {
+        background-color: #9cc4e4;
+        font-weight: bold;
         padding: 10px;
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+        color: white;
+    }
+
+    .card-body {
+        background-color: #e9f2f9;
+        padding: 10px;
+        border-bottom-left-radius: 10px;
+        border-bottom-right-radius: 10px;
+    }
+
+    .promedios {
+        transition: transform 0.2s;
+    }
+
+    .promedios:hover {
+        transform: scale(1.1);
     }
 </style>
 
 
 <div class="row" style="color: black;text-align: center">
 
+
+
     <div class="col-md-3 col-sm-3">
-        <div class="card cards shadow">
-            <?= $promedios[0]['bloque'] ?>
-            <br>
-            <?= $promedios[0]['nota'] ?>
+        <div class="card promedios card-promedios cards shadow">
+            <div class="card-header">
+                <?= $promedios[0]['bloque'] ?>
+            </div>
+            <div class="card-body">
+                <?php
+                if ($promedios[0]['nota'] == null) {
+                    echo "Sin Nota";
+                } else {
+                    echo $promedios[0]['nota'];
+                }
+                ?>
+            </div>
         </div>
     </div>
     <div class="col-md-3 col-sm-3">
-        <div class="card cards shadow">
-            <?= $promedios[1]['bloque'] ?>
-            <br>
-            <?= $promedios[1]['nota'] ?>
+        <div class="card promedios card-promedios cards shadow">
+            <div class="card-header">
+                <?= $promedios[1]['bloque'] ?>
+            </div>
+            <div class="card-body">
+                <?php
+                if ($promedios[1]['nota'] == null) {
+                    echo "Sin Nota";
+                } else {
+                    echo  $promedios[1]['nota'];
+                }
+                ?>
+            </div>
         </div>
     </div>
     <div class="col-md-3 col-sm-3">
-        <div class="card cards shadow">
-            <?= $promedios[2]['bloque'] ?>
-            <br>
-            <?= $promedios[2]['nota'] ?>
+        <div class="card promedios card-promedios cards shadow">
+            <div class="card-header">
+                <?= $promedios[2]['bloque'] ?>
+            </div>
+            <div class="card-body">
+                <?php
+                if ($promedios[2]['nota'] == null) {
+                    echo "Sin Nota";
+                } else {
+                    echo $promedios[2]['nota'];
+                }
+                ?>
+            </div>
         </div>
     </div>
     <div class="col-md-3 col-sm-3">
-        <div class="card cards shadow">
-            Promedio general:
-            <?= $promedios[3]['general'] ?>
+        <div class="card promedios card-promedios cards shadow">
+            <div class="card-header">
+                Promedio general:
+            </div>
+            <div class="card-body">
+                <?= $promedios[3]['general'] ?>
+            </div>
         </div>
     </div>
+
 
 </div>

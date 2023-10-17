@@ -10,6 +10,9 @@ use yii\grid\GridView;
 
 $this->title = 'Visita Aulicas';
 $this->params['breadcrumbs'][] = $this->title;
+
+
+
 ?>
 <div class="visita-aulica-index">
 
@@ -31,10 +34,14 @@ $this->params['breadcrumbs'][] = $this->title;
                 'docente',
                 'materia',
                 'total',
+                'bloque',
                 [
                     'label' => 'Crear',
                     'format' => 'raw',
                     'value' => function ($model) {
+                        // echo "<pre>";
+                        // print_r($model);
+                        // die();
                         return Html::a(
                             '<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-player-play-filled" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#00abfb" fill="none" stroke-linecap="round" stroke-linejoin="round">
                         <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
@@ -43,6 +50,8 @@ $this->params['breadcrumbs'][] = $this->title;
                             [
                                 'view',
                                 'clase_id' => $model->clase_id,
+                                'bloque_id' => $model->bloque_id,
+                                // 'id' => $model->id,
                                 // 'id' => $model->id
                             ],
                             [

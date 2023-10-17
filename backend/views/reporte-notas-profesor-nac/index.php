@@ -104,7 +104,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
 <!-- para los botones de navegacion de los trimestres -->
 <div style="display: flex; justify-content: space-evenly;margin-bottom: -40px">
-    <?php foreach ($trimestres as $tri): ?>
+    <?php foreach ($trimestres as $tri) : ?>
         <div class="trimestre" style="margin-right: 10px;">
             <?php
             echo Html::a($tri['trimestre'], [
@@ -138,14 +138,14 @@ $this->params['breadcrumbs'][] = $this->title;
         <td rowspan="2" width="300px">Estudiantes - <?php echo $trimestre->name ?> </td>
         <?php
         foreach ($notasProfesor->tipoAporte as $tipoApo) {
-            echo '<td colspan="'.$tipoApo['total'].'">' . $tipoApo['tipo_aporte'] . '</td>';
+            echo '<td colspan="' . $tipoApo['total'] . '">' . $tipoApo['tipo_aporte'] . '</td>';
         }
 
         ?>
         <td></td>
     </tr>
     <tr clas>
-        
+
         <?php
         foreach ($notasProfesor->cabecera as $cabecera) {
             echo '<td title="' . $cabecera['title'] . '">';
@@ -187,7 +187,11 @@ function abreviar($titulo)
     $abreviatura = '';
 
     foreach ($palabras as $palabra) {
-        $abreviatura .= strtoupper($palabra[0]);
+        if (isset($palabra[0])) {
+            $abreviatura .= strtoupper($palabra[0]);
+        } else {
+            $abreviatura .= strtoupper($palabra);
+        }
     }
 
     return $abreviatura;

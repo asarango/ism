@@ -17,8 +17,8 @@ class ViewListaVisitaAulicaSearch extends ViewListaVisitaAulica
     public function rules()
     {
         return [
-            [['id', 'clase_id', 'periodo_id', 'total'], 'integer'],
-            [['curso', 'paralelo', 'docente', 'materia', 'usuario_dece', 'periodo_codigo'], 'safe'],
+            [['id', 'clase_id', 'periodo_id', 'bloque_id', 'total'], 'integer'],
+            [['curso', 'paralelo', 'docente', 'materia', 'usuario_dece', 'periodo_codigo', 'bloque'], 'safe'],
         ];
     }
 
@@ -38,13 +38,9 @@ class ViewListaVisitaAulicaSearch extends ViewListaVisitaAulica
      *
      * @return ActiveDataProvider
      */
-    public function search($params, $usuarioPsicologo, $periodoId)
+    public function search($params)
     {
-        $query = ViewListaVisitaAulica::find()
-                ->where([
-                    'periodo_id' => $periodoId,
-                    'usuario_dece' => $usuarioPsicologo
-                ]);
+        $query = ViewListaVisitaAulica::find();
 
         // add conditions that should always apply here
 
@@ -65,6 +61,7 @@ class ViewListaVisitaAulicaSearch extends ViewListaVisitaAulica
             'id' => $this->id,
             'clase_id' => $this->clase_id,
             'periodo_id' => $this->periodo_id,
+            'bloque_id' => $this->bloque_id,
             'total' => $this->total,
         ]);
 
@@ -73,7 +70,8 @@ class ViewListaVisitaAulicaSearch extends ViewListaVisitaAulica
             ->andFilterWhere(['ilike', 'docente', $this->docente])
             ->andFilterWhere(['ilike', 'materia', $this->materia])
             ->andFilterWhere(['ilike', 'usuario_dece', $this->usuario_dece])
-            ->andFilterWhere(['ilike', 'periodo_codigo', $this->periodo_codigo]);
+            ->andFilterWhere(['ilike', 'periodo_codigo', $this->periodo_codigo])
+            ->andFilterWhere(['ilike', 'bloque', $this->bloque]);
 
         return $dataProvider;
     }

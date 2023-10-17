@@ -16,6 +16,8 @@ use Yii;
  * @property string $usuario_dece
  * @property string $periodo_codigo
  * @property int $periodo_id
+ * @property int $bloque_id
+ * @property string $bloque
  * @property int $total
  */
 class ViewListaVisitaAulica extends \yii\db\ActiveRecord
@@ -42,13 +44,14 @@ class ViewListaVisitaAulica extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id', 'clase_id', 'periodo_id', 'total'], 'default', 'value' => null],
-            [['id', 'clase_id', 'periodo_id', 'total'], 'integer'],
+            [['id', 'clase_id', 'periodo_id', 'bloque_id', 'total'], 'default', 'value' => null],
+            [['id', 'clase_id', 'periodo_id', 'bloque_id', 'total'], 'integer'],
             [['paralelo', 'docente'], 'string'],
             [['curso'], 'string', 'max' => 32],
             [['materia'], 'string', 'max' => 100],
             [['usuario_dece'], 'string', 'max' => 200],
             [['periodo_codigo'], 'string', 'max' => 20],
+            [['bloque'], 'string', 'max' => 50],
         ];
     }
 
@@ -67,6 +70,8 @@ class ViewListaVisitaAulica extends \yii\db\ActiveRecord
             'usuario_dece' => 'Usuario Dece',
             'periodo_codigo' => 'Periodo Codigo',
             'periodo_id' => 'Periodo ID',
+            'bloque_id' => 'Bloque ID',
+            'bloque' => 'Bloque',
             'total' => 'Total',
         ];
     }

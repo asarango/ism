@@ -1,4 +1,5 @@
 <?php
+
 namespace backend\models\dece;
 
 use backend\models\DeceRegistroSeguimiento;
@@ -102,11 +103,9 @@ class DeceAcompaniamientoPdf extends \yii\db\ActiveRecord
     }
     private function piePagina()
     {
-
     }
     private function firmas()
     {
-
     }
     private function acuerdos()
     {
@@ -142,7 +141,6 @@ class DeceAcompaniamientoPdf extends \yii\db\ActiveRecord
                             <td align="left" style="font-size:10"> ' . substr($acuerdo->fecha_max_cumplimiento, 0, 10) . ' </td>';
             if ($acuerdo->cumplio) {
                 $html .= '<td align="left" style="font-size:10"> SI </td>';
-
             } else {
                 $html .= '<td align="left" style="font-size:10"> </td>';
             }
@@ -179,12 +177,13 @@ class DeceAcompaniamientoPdf extends \yii\db\ActiveRecord
                 <td align="left" style="font-size:10" width="40%"> <b>Firma</b> </td>             
             </tr>';
         foreach ($modelSegFirmas as $firma) {
+            $siglasNombre = obtenerSiglasNombre($firma->nombre);
             $html .= '<tr> 
                             <td align="left" style="font-size:10"> ' . $firma->nombre . ' </td>
                             <td align="left" style="font-size:10"> ' . $firma->cedula . ' </td>
                             <td align="left" style="font-size:10"> ' . $firma->parentesco . ' </td>
                             <td align="left" style="font-size:10"> ' . $firma->cargo . ' </td>
-                            <td align="left" style="font-size:10"> </td>                
+                            <td align="left" style="font-size:10"> ' . $siglasNombre . ' </td>                  
                         </tr>';
         }
 
@@ -339,5 +338,15 @@ class DeceAcompaniamientoPdf extends \yii\db\ActiveRecord
         $html .= '</style>';
         return $html;
     }
+}
 
+// funcion que da siglas del nombre
+function obtenerSiglasNombre($nombre)
+{
+    $nombres = explode(' ', $nombre);
+    $siglas = '';
+    foreach ($nombres as $nombre) {
+        $siglas .= str_replace(' ', '', $nombre[0]) . '. ';
+    }
+    return rtrim($siglas, '. ');
 }

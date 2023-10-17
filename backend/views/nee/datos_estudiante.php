@@ -6,7 +6,7 @@ use yii\widgets\ActiveForm;
 
 
 //print_r($age_family);
-//die();
+//die();z
 ?>
 
 <div class="row">

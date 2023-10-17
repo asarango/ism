@@ -103,14 +103,6 @@ class ReporteNotasProfesorNacController extends Controller {
         // $notasProfesor->promediosFinales 'CONTIENE LOS PROMEDIOS GENERALES'
         $notasProfesor = new NotasProfesor($claseId, $trimestre->id);
 
-        // echo '<pre>';
-         //print_r($notasProfesor->tipoActividades);
-         //print_r($notasProfesor->grupo);
-         //print_r($notasProfesor->notas_x_actividad);
-        //  print_r($notasProfesor->cabecera);
-         
-        // die();
-
 
         return $this->render('index', [
             'trimestres' => $trimestres,

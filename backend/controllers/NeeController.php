@@ -189,6 +189,7 @@ class NeeController extends Controller
         $odooService = new WebServicesUrls('odoo');
         $dataJson = $odooService->consumir_servicio($odooService->url.'/nee/'.$model->student_id);
         $student = json_decode($dataJson);
+
         				
         //fin obtenida desde el web service
 

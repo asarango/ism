@@ -52,10 +52,8 @@
 <script>
     <?php
 
-
-
     use yii\helpers\Url;
-
+    
     $labelNuevo = [
         'total_casos' => 'Casos',
         'total_derivacion' => 'Derivación',
@@ -79,7 +77,6 @@
     echo "var labelsWithPercentage = " . json_encode($labelsWithPercentage) . ";"; // Etiquetas con el porcentaje
     echo "var dataS = " . json_encode($chartDece["valores"]) . ";";
     ?>
-
 
     const ctxF = document.getElementById('chartDece');
 
@@ -108,13 +105,11 @@
                     var value = dataS[index];
                     var total = dataS.reduce((a, b) => a + b, 0);
                     var percentage = ((value / total) * 100).toFixed(2);
-                    alert(label + ' '+ percentage + '%');
+                    alert(label + ' ' + percentage + '%');
                 }
             }
         }
     });
-
-
 
     //Funcion para mostrar detalle del DECE
     function show_dece_detalle() {

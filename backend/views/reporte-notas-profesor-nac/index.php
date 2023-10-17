@@ -117,7 +117,6 @@ $this->params['breadcrumbs'][] = $this->title;
     <?php endforeach; ?>
 </div>
 
-
 <div style="margin-bottom: 5px">
     <?php
 
@@ -127,11 +126,7 @@ $this->params['breadcrumbs'][] = $this->title;
     ]);
     ?>
 </div>
-
-
 <!-- fin para los botones de navegacion de los trimestres -->
-
-
 <table class="table" border="1" cellpadding="1" cellspacing="1">
     <tr>
         <td rowspan="2">#</td>
@@ -140,7 +135,6 @@ $this->params['breadcrumbs'][] = $this->title;
         foreach ($notasProfesor->tipoAporte as $tipoApo) {
             echo '<td colspan="' . $tipoApo['total'] . '">' . $tipoApo['tipo_aporte'] . '</td>';
         }
-
         ?>
         <td></td>
     </tr>
@@ -160,11 +154,11 @@ $this->params['breadcrumbs'][] = $this->title;
     foreach ($notasProfesor->notas as $estudiante) {
         $i++;
         echo "<tr>";
-        echo "<td>" . $i . "</td>";
-        echo "<td>" . $estudiante['estudiante'] . "</td>";
+        echo "<td style='font-weight: normal'>" . $i . "</td>";
+        echo "<td style='font-weight: normal'>" . $estudiante['estudiante'] . "</td>";
 
         foreach ($estudiante['notas'] as $notas) {
-            echo "<td>" . $notas['nota'] . "</td>";
+            echo "<td style='font-weight: normal'>" . $notas['nota'] . "</td>";
         }
         echo '</tr>';
     }

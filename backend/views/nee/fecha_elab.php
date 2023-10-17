@@ -88,7 +88,7 @@ use backend\models\NeexClase;
                         echo '<td>' . $materia['materia'] . '</td>';
                         echo '<td style="text-align: center;">';
 
-                        if ($materia['grado'] == 1) {
+                        if ($materia['grado'] == 1 || $materia['grado'] == 2 || $materia['grado'] == 3) {
                             echo '<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-circle-check" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="#7bc62d" fill="none" stroke-linecap="round" stroke-linejoin="round">
                         <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
                         <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" />
@@ -97,9 +97,9 @@ use backend\models\NeexClase;
                         } else {
                             echo  '<input type="checkbox" 
                         onclick="ajaxInsertaMateria(' . $materia['clase_id'] . ')" name="clase_id" 
-                        value="' . $materia['clase_id'] . ' checked"></td>';;
+                        value="' . $materia['clase_id'] . ' checked">';
                         }
-
+                        echo '</td>';
                         echo '</tr>';
                     }
                     ?>

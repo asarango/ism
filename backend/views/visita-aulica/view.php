@@ -11,7 +11,7 @@ $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
 $this->title = 'Visitas áulicas';
 // echo "<pre>";
-// print_r($visitas);
+// print_r($visita);
 // die();
 $codEStud = json_encode($estudiantes)
 ?>

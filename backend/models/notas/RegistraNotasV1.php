@@ -32,6 +32,9 @@ class RegistraNotasV1{
         private $porcentaje;
         private $areaId;
 
+
+        private $claseId;
+
     
         public function __construct($grupoId, $calificacionId, $nota) {        
             $this->user         = Yii::$app->user->identity->usuario;
@@ -45,6 +48,8 @@ class RegistraNotasV1{
             
             
             $grupo = ScholarisGrupoAlumnoClase::findOne($grupoId);
+            $this->claseId = $grupo->clase_id;
+
             $this->studentId = $grupo->estudiante_id;
             $this->promedia = $grupo->clase->ismAreaMateria->promedia;
             $this->imprime  = $grupo->clase->ismAreaMateria->imprime_libreta;
@@ -69,41 +74,55 @@ class RegistraNotasV1{
         // Funcion para sentar los promedios de los insumos por grupo del estudiantes
         private function sienta_insumos(){            
             $con = Yii::$app->db;
-            $query = "select 	trunc(avg(cal.calificacion),2) as promedio
+            // $query = "select 	trunc(avg(cal.calificacion),2) as promedio
+            //             from 	scholaris_calificaciones cal
+            //                     inner join scholaris_actividad act on act.id = cal.idactividad 
+            //             where	cal.idalumno = $this->alumnoId
+            //                     and act.paralelo_id = $this->claseId
+            //                     and act.bloque_actividad_id = $this->bloqueId
+            //                     and cal.grupo_numero = $this->grupoCalificacion;";
+            $query = "select 	cal.grupo_numero  
+                                ,trunc(avg(cal.calificacion),2) as promedio
                         from 	scholaris_calificaciones cal
                                 inner join scholaris_actividad act on act.id = cal.idactividad 
                         where	cal.idalumno = $this->alumnoId
+                                and act.paralelo_id = $this->claseId
                                 and act.bloque_actividad_id = $this->bloqueId
-                                and cal.grupo_numero = $this->grupoCalificacion;";          
+                        group by cal.grupo_numero;";              
             
-            $res = $con->createCommand($query)->queryOne();
+            $res = $con->createCommand($query)->queryAll();
 
-            $model = LibPromediosInsumos::find()->where([
-                        'grupo_id'  => $this->grupoId,
-                        'bloque_id' => $this->bloqueId,
-                        'grupo_calificacion' => $this->grupoCalificacion
-                    ])
-                    ->one(); 
 
-            if($model){  
-                $model->nota = $res['promedio'];
-                $model->updated_at = $this->ahora;
-                $model->updated = $this->user;               
-                $model->save();
-            }else{
-                $insert = new LibPromediosInsumos();
-                $insert->grupo_id       = $this->grupoId;
-                $insert->bloque_id      = $this->bloqueId;
-                $insert->grupo_calificacion = $this->grupoCalificacion;
-                $insert->nota           = $this->nota;
-                $insert->created_at     = $this->ahora;
-                $insert->created        = $this->user;
-                $insert->updated_at     = $this->ahora;
-                $insert->updated        = $this->user;
-                $insert->periodo_id     = $this->periodId;
-                
-                $insert->save();
+            foreach ($res as $r) {
+                $model = LibPromediosInsumos::find()->where([
+                    'grupo_id'  => $this->grupoId,
+                    'bloque_id' => $this->bloqueId,
+                    'grupo_calificacion' => $r['grupo_numero']
+                ])
+                ->one(); 
+
+                if($model){  
+                    $model->nota = $r['promedio'];
+                    $model->updated_at = $this->ahora;
+                    $model->updated = $this->user;               
+                    $model->save();
+                }else{
+                    $insert = new LibPromediosInsumos();
+                    $insert->grupo_id       = $this->grupoId;
+                    $insert->bloque_id      = $this->bloqueId;
+                    $insert->grupo_calificacion = $r['grupo_numero'];
+                    $insert->nota           = $r['promedio'];
+                    $insert->created_at     = $this->ahora;
+                    $insert->created        = $this->user;
+                    $insert->updated_at     = $this->ahora;
+                    $insert->updated        = $this->user;
+                    $insert->periodo_id     = $this->periodId;
+                    
+                    $insert->save();
+                }
             }
+
+            
         }
         /**** Termina ingreso de insumos del grupo  */
 

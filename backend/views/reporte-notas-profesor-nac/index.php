@@ -127,17 +127,32 @@ $this->params['breadcrumbs'][] = $this->title;
     ?>
 </div>
 <!-- fin para los botones de navegacion de los trimestres -->
-<table class="table" border="1" cellpadding="1" cellspacing="1">
+<table class="table" border="1" cellpadding="1" cellspacing="1">    
+    <!-- INICIO TITULOS DE TIPO DE APORTE -->
     <tr>
-        <td rowspan="2">#</td>
-        <td rowspan="2" width="300px">Estudiantes - <?php echo $trimestre->name ?> </td>
-        <?php
+        <td rowspan="3">#</td>
+        <td rowspan="3" width="300px">Estudiantes - <?php echo $trimestre->name ?> </td>
+        <?php // Para el tipo de aporte INDIVIDUAL y GRUPAL
         foreach ($notasProfesor->tipoAporte as $tipoApo) {
             echo '<td colspan="' . $tipoApo['total'] . '">' . $tipoApo['tipo_aporte'] . '</td>';
         }
         ?>
         <td></td>
     </tr>
+    <!-- FIN TITULOS DE TIPO DE APORTE -->
+
+
+    <!-- INICIO DE TIPOS DE ACTIVIDADES -->
+    <tr>
+        <?php
+            foreach ($notasProfesor->tipoActividades as $tipo) {
+                echo '<td colspan="' . $tipo['total_tipo_insumo'] . '">' . $tipo['tipo_actividad'] . '</td>';
+            }
+
+        ?>
+        <td></td>
+    </tr>
+    <!-- FIN DE TIPOS DE ACTIVIDADES -->
     <tr clas>
 
         <?php
@@ -151,6 +166,9 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <?php
     $i = 0;
+    // echo '<pre>';
+    // print_r($notasProfesor->notas);
+    // die();
     foreach ($notasProfesor->notas as $estudiante) {
         $i++;
         echo "<tr>";

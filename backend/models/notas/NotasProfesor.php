@@ -81,9 +81,7 @@ class NotasProfesor
                                                 and gru.clase_id = $this->claseId;";
                 $this->promediosInsumos = $con->createCommand($query)->queryAll();
 
-                // echo '<pre>';
-                // print_r($this->promediosInsumos);
-                // die();
+        
         }
 
 
@@ -131,18 +129,20 @@ class NotasProfesor
         {
                 $con = Yii::$app->db;
                 $query = "select 	tip.id as tipo_actividad_id
-                        ,tip.nombre_nacional as tipo_actividad
-                        ,tip.tipo_aporte
-                        ,ord.grupo_numero  
-                from 	scholaris_actividad act
-                        inner join scholaris_tipo_actividad tip on tip.id = act.tipo_actividad_id 
-                        inner join scholaris_grupo_orden_calificacion ord on ord.codigo_tipo_actividad = tip.id
-                where 	act.paralelo_id = $this->claseId 
-                        and act.bloque_actividad_id = $this->bloqueId
-                        and act.calificado = 'true'
-                group by tip.id ,tip.nombre_nacional ,ord.grupo_numero
-                order by ord.grupo_numero;";
+                                        ,tip.nombre_nacional as tipo_actividad    
+                                        ,ord.grupo_numero  
+                                        ,count(ord.grupo_numero)+1 as total_tipo_insumo
+                                from 	scholaris_actividad act
+                                        inner join scholaris_tipo_actividad tip on tip.id = act.tipo_actividad_id 
+                                        inner join scholaris_grupo_orden_calificacion ord on ord.codigo_tipo_actividad = tip.id
+                                where 	act.paralelo_id = $this->claseId 
+                                        and act.bloque_actividad_id = $this->bloqueId
+                                        and act.calificado = 'true'
+                                group by tip.id ,tip.nombre_nacional ,ord.grupo_numero
+                                order by ord.grupo_numero;";
+
                 $this->tipoActividades = $con->createCommand($query)->queryAll();
+
         }
 
 
@@ -259,19 +259,23 @@ class NotasProfesor
 
         private function recorre_notas($grupoId, $estudianteId){
                 $arrayNotas = array();
-                $notax = 0;
+                
 
-                foreach($this->cabecera as $cabecera){
+                // echo '<pre>';
+                // print_r($this->cabecera);       
+                // die();
 
-                        if($cabecera['actividad_id'] == 0 && $cabecera['title'] == 'Promedio'){
-                                
-                                foreach($this->promediosInsumos as $promedioInsumo){
+                foreach($this->cabecera as $cabecera){       
+                        $notax = 0;                 
+                        if($cabecera['actividad_id'] == 0 && $cabecera['title'] == 'Promedio'){                                
+
+                                foreach($this->promediosInsumos as $promedioInsumo){                                        
                                         if($promedioInsumo['estudiante_id'] == $estudianteId && $cabecera['grupo_numero'] == $promedioInsumo['grupo_calificacion']){
                                                 $notax = $promedioInsumo['nota'];
                                         }
                                 }
                                 
-                        }elseif($cabecera['actividad_id'] == 0 && $cabecera['title'] == 'Final'){
+                        }elseif($cabecera['actividad_id'] == 0 && $cabecera['title'] == 'Final'){                                
                                 foreach($this->promediosFinales as $promedioFinal){
                                         if($promedioFinal['estudiante_id'] == $estudianteId){
                                                 $notax = $promedioFinal['nota'];
@@ -282,6 +286,7 @@ class NotasProfesor
                                 foreach($this->notas_x_actividad as $nota){
                                         if($nota['grupo_id'] == $grupoId && $nota['actividad_id'] == $cabecera['actividad_id']){
                                                 $notax = $nota['calificacion'];
+                                                // $notax = 1000;
                                         }
                                 }
                         }

@@ -228,6 +228,7 @@ class CalculoV1{
         $notaNoApor = isset($resNo['promedio_aporte']) ? $resNo['promedio_aporte'] : 0;
 
         $nota = $notaAporte + $notaNoApor;
+        
 
         if($nota != 0){
             $model = LibBloquesGrupoClase::find()->where([

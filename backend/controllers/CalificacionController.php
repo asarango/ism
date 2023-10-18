@@ -88,7 +88,10 @@ class CalificacionController extends Controller {
             ->one();
 
         /*** toma el deber */
-        $deber = ScholarisActividadDeber::find()->where(['alumno_id' => $grupoId, 'actividad_id' => $actividadId])->one();
+        print_r($grupoId);
+        // $deber = ScholarisActividadDeber::find()->where(['alumno_id' => $grupoId, 'actividad_id' => $actividadId])->one();
+        // $deber = ScholarisActividadDeber::find()->where(['alumno_id' => $group->estudiante_id, 'actividad_id' => $actividadId])->one();
+        $deber = ScholarisActividadDeber::find()->where(['alumno_id' => $group->estudiante_id, 'actividad_id' => $actividadId])->all();
         /*** fin de toma el deber */
         
         $calificaciones = $this->get_scores($actividadId, $group->estudiante_id);

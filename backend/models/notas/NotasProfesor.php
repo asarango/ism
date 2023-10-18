@@ -103,7 +103,14 @@ class NotasProfesor
                                                 , tip.nombre_nacional 
                                 order by tip.tipo_aporte desc
                                 ) as total
-                                group by tipo_aporte;";
+                                group by tipo_aporte 
+                                order by 
+                                case 
+                                        when tipo_aporte like 'I%' then 1
+                                        when tipo_aporte like 'G%' then 2
+                                        when tipo_aporte like 'P%' then 3
+                                        when tipo_aporte like 'E%' then 4
+                                end;";
                 // echo $query;
                 // die();
                 $this->tipoAporte = $con->createCommand($query)->queryAll();

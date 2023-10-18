@@ -13,7 +13,9 @@ $this->title = 'Visitas áulicas';
 // echo "<pre>";
 // print_r($visita);
 // die();
-$codEStud = json_encode($estudiantes)
+
+$codEstud = json_encode($estudiantes);
+
 ?>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>

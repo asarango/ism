@@ -13,97 +13,18 @@ use yii\helpers\Url;
 $this->title = 'Actividad #: ' . $modelActividad->id . ' | ' . $modelActividad->title;
 
 // echo "<pre>";
-// print_r($modelActividad);
+// print_r($deber);
 // die();
-
-
 ?>
 
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
-<link rel="stylesheet" type="text/css" href="pdf_viewer.css">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://mozilla.github.io/pdf.js/build/pdf.js"></script>
-<!-- JS HTML2CANVAS  -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.5.0-beta4/html2canvas.min.js"></script>
-
-<style>
-    .row-calificacion {
-        margin: 20px auto;
-        max-width: 300px;
-        background-color: #f8f8f8;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-        padding: 10px;
-    }
-
-    .box {
-        margin: 20px auto;
-        max-width: 300px;
-        background-color: #f8f8f8;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-        padding: 10px;
-    }
-
-    .box-name {
-        /* margin: 20px auto; */
-        max-width: 800px;
-        background-color: #f8f8f8;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-        padding: 10px;
-
-    }
-
-    .box-name:hover {
-        background-color: #ab0a3d;
-        color: #ff9e18;
-        transform: translateY(-6px);
-        box-shadow: 0 6px 10px rgba(0, 0, 0, 0.4);
-    }
-
-    h5 {
-        text-align: center;
-        font-weight: bold;
-    }
-
-    .radio-label {
-        display: block;
-        margin-bottom: 10px;
-        font-weight: normal;
-    }
-
-    .radio-label input[type="radio"] {
-        margin-right: 5px;
-        display: none;
-        /* Oculta los radios */
-    }
-
-    .radio-button {
-        display: inline-block;
-        padding: 5px 10px;
-        /* border: 1px solid #ccc; */
-        border-radius: 4px;
-        cursor: pointer;
-    }
-
-    .radio-label input[type="radio"]:checked+.radio-button {
-        background-color: #ab0a3d;
-        color: #ff9e18;
-        /* border: 1px solid #007bff; */
-    }
-
-    .radio-label:hover {
-        background-color: #ab0a3d;
-        color: white;
-        border-radius: 10px;
-        transform: translateY(-6px);
-        box-shadow: 0 6px 10px rgba(0, 0, 0, 0.4);
-    }
-</style>
+<script src="https://cdn.ckeditor.com/ckeditor5/40.0.0/classic/ckeditor.js"></script>
 
 
 <div class="scholaris-actividad-index">
@@ -174,285 +95,230 @@ $this->title = 'Actividad #: ' . $modelActividad->id . ' | ' . $modelActividad->
 
             <!-- *****inicio pdf***** -->
 
-            <div class="row" style="padding: 1.2rem;margin-top: -1rem;">
-                <!-- inicia col de pdf -->
-                <div class="col-lg-9 col-md-9">
-                    <div class="row" style="margin-top: 0px;">
-                        <div class="box-name" style="text-align: center;">
-                            <?=
-                            '<h5>' . $group->alumno->last_name . " " . $group->alumno->first_name . " " .
-                                $group->alumno->middle_name . '</h5>';
-                            ?>
-                        </div>
-                        <div>
-                            <!-- **para subir archivo pdf simple** -->
-                            <div id="pdf-viewer-container">
-                                <!-- <canvas id="pdf-canvas"></canvas> -->
-                            </div>
+            <div class="row" style="padding: 1rem;margin-top: -2.3rem">
 
-                            <div id="target-element">
-                                <!-- Contenido de la etiqueta que deseas capturar -->
-                            </div>
+                <div class="card col-lg-6 col-md-6" style="padding: 1rem;">
+                    <?=
+                    '<h5 style="text-align: center;">' . $group->alumno->last_name . " " . $group->alumno->first_name . " " .
+                        $group->alumno->middle_name . '</h5>';
+                    echo '<hr>';
+                    ?>
+                    <!-- lista de tareas asignadas -->
+                    <?php
 
-                            <script>
-                                //llamado de ajax
+                    foreach ($deber as $tarea) {
+                        echo '<div class="card" style="padding: 1rem;margin-bottom: 5px;">';
+                        echo '<h6>' . $tarea->observacion . ' - ' . 'Fecha de envio:' . ' ' . $tarea->creado_fecha . '</h6>';
+                        echo '<p><a href="' . $tarea->archivo . '">' . $tarea->archivo . '</a></p>';
+                        $textId = 'editor_' . $tarea->id;
+                        echo '';
+                        echo '</div>';
+                    }
+                    ?>
 
-                                // URL del archivo PDF
-                                var pdfUrl = '/files/homeworks/introduccion.pdf';
-
-                                // Variables para el lienzo de dibujo
-                                var drawingCanvas = document.getElementById('pdf-canvas');
-                                var drawingContext = drawingCanvas.getContext('2d');
-                                var isDrawing = false;
-                                var lastX = 0;
-                                var lastY = 0;
-
-                                // Carga del archivo PDF
-                                pdfjsLib.getDocument(pdfUrl).promise.then(function(pdf) {
-                                    // Obtiene la primera página del PDF
-                                    pdf.getPage(1).then(function(page) {
-                                        var scale = 1.75;
-                                        var viewport = page.getViewport({
-                                            scale: scale
-                                        });
-
-                                        // Crea un lienzo en el elemento <canvas> para renderizar la página del PDF
-                                        var canvas = document.getElementById('pdf-canvas');
-                                        var context = canvas.getContext('2d');
-                                        canvas.width = viewport.width;
-                                        canvas.height = viewport.height;
-
-                                        // Renderiza la página en el lienzo
-                                        var renderContext = {
-                                            canvasContext: context,
-                                            viewport: viewport
-                                        };
-                                        page.render(renderContext);
-
-                                        // Agrega eventos para el dibujo en el lienzo de dibujo
-                                        drawingCanvas.addEventListener('mousedown', startDrawing);
-                                        drawingCanvas.addEventListener('mousemove', draw);
-                                        drawingCanvas.addEventListener('mouseup', endDrawing);
-                                        drawingCanvas.addEventListener('mouseout', endDrawing);
-                                    });
-                                });
-
-                                function startDrawing(e) {
-                                    isDrawing = true;
-                                    [lastX, lastY] = [e.offsetX, e.offsetY];
-                                }
-
-                                function draw(e) {
-                                    if (!isDrawing) return;
-                                    drawingContext.beginPath();
-                                    drawingContext.moveTo(lastX, lastY);
-                                    drawingContext.lineTo(e.offsetX, e.offsetY);
-                                    drawingContext.strokeStyle = 'red';
-                                    drawingContext.lineWidth = 2;
-                                    drawingContext.stroke();
-                                    [lastX, lastY] = [e.offsetX, e.offsetY];
-                                }
-
-                                function endDrawing() {
-                                    isDrawing = false;
-                                }
-
-                                // function capturar(){
-                                //     // alert('capturando');
-                                //     var targetElement = document.getElementById('target-element');
-                                //     var canvas = document.querySelector('#pdf-canvas');
-                                //     var context = canvas.getContext('2d');
-                                //     // Establecer el tamaño del lienzo igual al tamaño de la etiqueta
-                                //     canvas.width = targetElement.offsetWidth;
-                                //     canvas.height = targetElement.offsetHeight;
-                                //     // Dibujar la etiqueta en el lienzo
-                                //     context.drawImage(targetElement, 0, 0);
-
-                                //     var screenshotDataURL = canvas.toDataURL('image/jpeg',1.0);
-
-                                //     window.open(screenshotDataURL);
-                                // }
-
-                                //Para tomar foto del google maps    
-                                function capturar() {
-                                    //        alert('clicn en crear');
-
-                                    html2canvas($("#pdf-viewer-container"), {
-                                        useCORS: true,
-                                        onrendered: function(canvas) {
-                                            var myImage = canvas.toDataURL("image/png");
-                                            guarda_imagen_div(myImage);
-                                            // $("#mapa-google").hide();
-
-                                            //console.log(myImage);
-                                            // $("#txt_imagen64_div").val(myImage);
-                                        }
-                                    });
-                                }
-
-                                function guarda_imagen_div(myImage) {
-                                    var url = 'guardar_imagen.php';
-                                    var params = {
-                                        myImage
-                                    };
-                                    //console.log(params);return false;
-
-                                    $.ajax({
-                                        url: url,
-                                        data: params,
-                                        type: 'POST',
-                                        success: function() {
-                                            //alert('Imagen guardada!');
-                                        }
-                                    });
-                                }
-                            </script>
-                        </div>
-
-
-                        <!-- fin pdf -->
-                    </div>
-                </div>
-                <!-- fin de col de pdf -->
-
-                <!-- inicia col de formularios de calificaciones -->
-                <div class="col-lg-3 col-md-3 card" style="padding: 10px;">
-                    <div class="row">
+                    <script>
                         <?php
-                        $actividad = 0;
-                        $actividad = $actividad + 1;
-                        $fecha_hoy = date("Y-m-d");
-
-                        // if($fecha_hoy > $modelActividad->bloque->desde && $fecha_hoy < $modelActividad->bloque->hasta){
-                        if ($fecha_hoy < $modelActividad->bloque->hasta) {
-                            $estado = "ABIERTO";
-                        } else {
-                            $estado = "CERRADO";
+                        foreach ($deber as $tarea) {
+                            $textoId = 'editor_' . $tarea->id;
+                            echo 'ClassicEditor.create(document.querySelector
+                            ("#' . $textId . '")).catch(error => 
+                            { console.error(error); });';
                         }
+                        ?>
+                    </script>
+                </div>
 
-                        echo '<div style="text-align: center;">';
+                <div class="card col-lg-6 col-md-6">
+                    <div class="" style="text-align: center;padding: 1rem;">
 
-                        echo '<h6><b>Ingrese la calificación normal:</b></h6>';
+                        <h6>Observaciones</h6>
 
-                        echo '<h6><b>Actividad #: </b>' . $actividad . '</h6>';
+                        <div id="editor1">hgsfsd</div>
+                        <script>
+                            ClassicEditor
+                                .create(document.querySelector('#editor1'))
+                                .catch(error => {
+                                    console.error(error);
+                                });
+                        </script>
 
-                        foreach ($calificaciones as $calificar) {
-                            $calificacionId = $calificar['calificacion_id'];
-                            echo '<p><b>Insumo: </b>' . $calificar['nombre_nacional'] . '</p>';
-                            echo '<p>';
-                            if ($estado == "ABIERTO") {
-                                echo '<input type="text" class="form-control" style="text-align: center;" 
+
+                    </div>
+                    <div class="row">
+
+                        <div class="col-lg-12 col-md-12" style="text-align: right;margin-bottom: 5px;">
+                            <!-- MODAL TAREAS NORMAL-->
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#calificarTarea">
+                                Calificar Tarea
+                            </button>
+
+                            <div class="modal fade" id="calificarTarea" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <?php
+                                            $actividad = 0;
+                                            $actividad = $actividad + 1;
+                                            $fecha_hoy = date("Y-m-d");
+
+                                            // if($fecha_hoy > $modelActividad->bloque->desde && $fecha_hoy < $modelActividad->bloque->hasta){
+                                            if ($fecha_hoy < $modelActividad->bloque->hasta) {
+                                                $estado = "ABIERTO";
+                                            } else {
+                                                $estado = "CERRADO";
+                                            }
+
+                                            echo '<div style="text-align: center;">';
+
+                                            echo '<h6><b>Ingrese la calificación normal:</b></h6>';
+
+                                            echo '<h6><b>Actividad #: </b>' . $actividad . '</h6>';
+
+                                            foreach ($calificaciones as $calificar) {
+                                                $calificacionId = $calificar['calificacion_id'];
+                                                echo '<p><b>Insumo: </b>' . $calificar['nombre_nacional'] . '</p>';
+                                                echo '<p>';
+                                                if ($estado == "ABIERTO") {
+                                                    echo '<input type="text" class="form-control" style="text-align: center;" 
                                             id="al' . $calificacionId . '" 
                                             value="' . $calificar['calificacion'] . '" 
                                             placeholder="Ingrese la nota..." 
                                             onchange="cambiarNota(' . $calificar['calificacion_id'] . ')">';
-                            } else {
-                                echo $calificar['calificacion'];
-                            }
-                            echo '</p>';
+                                                } else {
+                                                    echo $calificar['calificacion'];
+                                                }
+                                                echo '</p>';
 
-                            echo '<p>';
-                            if ($estado == "ABIERTO") {
-                                // echo '<input type="text" class="form-control" 
-                                //         id="observacion' . $calificacionId . '" 
-                                //         value="' . $calificar['observacion'] . '"
-                                //         placeholder="Ingrese la observaciones ..."
-                                //         onchange="cambiarNota(' . $calificar['calificacion_id'] . ')">';
-                                echo '<textarea class="form-control" style="text-align: center;" 
+                                                echo '<p>';
+                                                if ($estado == "ABIERTO") {
+                                                    // echo '<input type="text" class="form-control" 
+                                                    //         id="observacion' . $calificacionId . '" 
+                                                    //         value="' . $calificar['observacion'] . '"
+                                                    //         placeholder="Ingrese la observaciones ..."
+                                                    //         onchange="cambiarNota(' . $calificar['calificacion_id'] . ')">';
+                                                    echo '<textarea class="form-control" style="text-align: center;" 
                                             id="observacion' . $calificacionId . '" 
                                             value="' . $calificar['observacion'] . '"
                                             placeholder="Ingrese la observaciones ..."
                                             onchange="cambiarNota(' . $calificar['calificacion_id'] . ')">' . $calificar['observacion'] . '</textarea>';
-                            } else {
-                                echo $calificar["observacion"];
-                            }
-                            echo '</p>';
+                                                } else {
+                                                    echo $calificar["observacion"];
+                                                }
+                                                echo '</p>';
 
-                            echo '</div>';
-                        }
-                        ?>
-                    </div>
-
-
-                    <hr>
-
-
-                    <div class="row" style="padding: 10px;text-align: center;margin-bottom: -30px;">
-
-
-                        <?php
-
-                        if ($modelActividad->ods_pud_dip_id > 0) {
-                            $ods = get_parametro_ods($modelActividad->ods_pud_dip_id);
-                            echo '<div class="box" style="margin-top: -10px">';
-                            echo $ods['categoria'] . '<br>';
-                            echo $ods['opcion'];
-                            echo '</div>'
-
-                        ?>
-
-                            <div class="row box" style="font-weight: bold;margin-top: -10px">
-                                <div class="" style="text-align: center;">
-                                    Calificacion obtenida:
-
-                                    <?php
-                                    $notaOds = valida_calificacion_ods($calificacionOds);
-
-                                    echo '<br>**************<br>';
-                                    echo $notaOds . '<br>';
-
-                                    echo '****************';
-
-                                    ?>
-
+                                                echo '</div>';
+                                            }
+                                            ?>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                            <button type="button" class="btn btn-primary">Save changes</button>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
+                            <!-- FIN  MODAL TAREAS NORMAL-->
 
 
-                            <div class="row row-calificacion" style="margin-top: -10px;">
-                                <div class="col-lg-12 col-md-12">
-                                    <h5 class="text-center font-weight-bold">Cambiar nota</h5>
-                                    <div class="radio-options" style="text-align: center">
-                                        <label class="radio-label">
-                                            <input type="radio" name="gender" value="0" onclick="changeOds(<?= $group->id ?>, <?= $modelActividad->id ?>, 0); changeRadioState(this);">
-                                            <span class="radio-button">NO EVALUADO</span>
-                                        </label>
+                            <!-- FIN  MODAL TAREAS ODS-->
+                            <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#calificarTareaOds">
+                                Calificar Tarea ODS
+                            </button>
 
-                                        <label class="radio-label">
-                                            <input type="radio" name="gender" value="1" onclick="changeOds(<?= $group->id ?>, <?= $modelActividad->id ?>, 1); changeRadioState(this);">
-                                            <span class="radio-button">INICIADO</span>
-                                        </label>
+                            <div class="modal fade" id="calificarTareaOds" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <?php
 
-                                        <label class="radio-label">
-                                            <input type="radio" name="gender" value="2" onclick="changeOds(<?= $group->id ?>, <?= $modelActividad->id ?>, 2); changeRadioState(this);">
-                                            <span class="radio-button">EN PROCESO</span>
-                                        </label>
+                                            if ($modelActividad->ods_pud_dip_id > 0) {
+                                                $ods = get_parametro_ods($modelActividad->ods_pud_dip_id);
+                                                echo '<div class="box" style="margin-top: -10px">';
+                                                echo $ods['categoria'] . '<br>';
+                                                echo $ods['opcion'];
+                                                echo '</div>'
 
-                                        <label class="radio-label">
-                                            <input type="radio" name="gender" value="3" onclick="changeOds(<?= $group->id ?>, <?= $modelActividad->id ?>, 3); changeRadioState(this);">
-                                            <span class="radio-button">ADQUIRIDO</span>
-                                        </label>
+                                            ?>
+
+                                                <div class="row box" style="font-weight: bold;margin-top: -10px">
+                                                    <div class="" style="text-align: center;">
+                                                        Calificacion obtenida:
+
+                                                        <?php
+                                                        $notaOds = valida_calificacion_ods($calificacionOds);
+
+                                                        echo '<br>**************<br>';
+                                                        echo $notaOds . '<br>';
+
+                                                        echo '****************';
+
+                                                        ?>
+
+                                                    </div>
+                                                </div>
+
+                                                <div class="row row-calificacion" style="margin-top: -10px;">
+                                                    <div class="col-lg-12 col-md-12">
+                                                        <h5 class="text-center font-weight-bold">Cambiar nota</h5>
+                                                        <div class="radio-options" style="text-align: center">
+                                                            <label class="radio-label">
+                                                                <input type="radio" name="gender" value="0" onclick="changeOds(<?= $group->id ?>, <?= $modelActividad->id ?>, 0); changeRadioState(this);">
+                                                                <span class="radio-button">NO EVALUADO</span>
+                                                            </label>
+
+                                                            <label class="radio-label">
+                                                                <input type="radio" name="gender" value="1" onclick="changeOds(<?= $group->id ?>, <?= $modelActividad->id ?>, 1); changeRadioState(this);">
+                                                                <span class="radio-button">INICIADO</span>
+                                                            </label>
+
+                                                            <label class="radio-label">
+                                                                <input type="radio" name="gender" value="2" onclick="changeOds(<?= $group->id ?>, <?= $modelActividad->id ?>, 2); changeRadioState(this);">
+                                                                <span class="radio-button">EN PROCESO</span>
+                                                            </label>
+
+                                                            <label class="radio-label">
+                                                                <input type="radio" name="gender" value="3" onclick="changeOds(<?= $group->id ?>, <?= $modelActividad->id ?>, 3); changeRadioState(this);">
+                                                                <span class="radio-button">ADQUIRIDO</span>
+                                                            </label>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+
+                                            <?php
+                                            } else {
+                                                echo '<p style="text-align: center;">No existe parámetros ODS para este insumo</p>';
+                                            }
+                                            ?>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                            <button type="button" class="btn btn-primary">Save changes</button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
 
+                        </div>
 
-                        <?php
-                        } else {
-                            echo 'No existe parámetros ODS para este insumo';
-                        }
-                        ?>
                     </div>
 
-
                 </div>
-                <!-- Finaliza el col de fomularios de calificaciones -->
+
 
             </div>
 
-
         </div>
     </div>
+
 
 
     <?php //FUNCIONES PHP

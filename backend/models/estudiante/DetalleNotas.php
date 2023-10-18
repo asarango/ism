@@ -62,6 +62,8 @@ class DetalleNotas
                                 where 	mat.nombre = '$this->claseNombre'
                                                 and ins.id = $this->inscriptionId
                                 order by blo.orden, tip.tipo_aporte desc, tip.orden ;";
+
+                
                 $this->tareas = $con->createCommand($query)->queryAll();
         }
 

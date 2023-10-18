@@ -124,6 +124,9 @@ class ViewStudiantesCvController extends Controller
 
             $detalle = new DetalleNotas($nombreClase, $inscriptionId);
 
+            // echo '<pre>';
+            // print_r($detalle);
+            // die();
             return $this->renderPartial('_ajax-detalle-clase', [
                 'detalle' => $detalle
             ]);

@@ -87,6 +87,8 @@ class Estudiante extends ActiveRecord{
                 where 	ins.id = $inscriptionId
                     and iam.promedia = true
                 order by mat.nombre;";
+    // echo $query;
+    // die();
       return $con->createCommand($query)->queryAll();   
     }
 

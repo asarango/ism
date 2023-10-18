@@ -18,9 +18,9 @@ foreach ($detalle->promediosInsumos as $keyPromIns => $promIns) {
 }
 
 $aDistrib = array();   //<- aqui tengo los trimestres o quimestre que se manejen en el anio lectivo
+
 foreach ($detalle->tareas as $key => $det) {
     $aDistrib[$det["trimestre_id"]] = $det['trimestre'];
-
 
     $atareasPromedios[$det["orden"]]['tareas'][$key]["nombre_nacional"] = $det["nombre_nacional"];
     $atareasPromedios[$det["orden"]]['tareas'][$key]["tipo_aporte"] = $det["tipo_aporte"];
@@ -29,8 +29,7 @@ foreach ($detalle->tareas as $key => $det) {
     $atareasPromedios[$det["orden"]]['tareas'][$key]["calificacion"] = $det["calificacion"];
 }
 
-// print_r($atareasPromedios);
-// die();
+
 ?>
 
 <style>
@@ -106,26 +105,39 @@ foreach ($detalle->tareas as $key => $det) {
                                     </thead>
                                     <tbody>
                                         <?php
+
                                         foreach ($atareasPromedios as $keyPromedio => $promedio) {
-                                            foreach ($promedio["tareas"] as $keyTarea => $tarea) {
+
+                                            if (isset($promedio["tareas"])) {
+                                                foreach ($promedio["tareas"] as $keyTarea => $tarea) {
                                         ?>
-                                                <tr>
-                                                    <td style="font-weight: normal;"><?= $tarea["nombre_nacional"] ?></td>
-                                                    <td style="font-weight: normal;"><?= $tarea["tipo_aporte"] ?></td>
-                                                    <td style="font-weight: normal;"><?= $tarea["titulo"] ?></td>
-                                                    <td><?= $tarea["calificacion"] ?></td>
-                                                </tr>
+                                                    <tr>
+                                                        <td style="font-weight: normal;"><?= $tarea["nombre_nacional"] ?></td>
+                                                        <td style="font-weight: normal;"><?= $tarea["tipo_aporte"] ?></td>
+                                                        <td style="font-weight: normal;"><?= $tarea["titulo"] ?></td>
+                                                        <td><?= $tarea["calificacion"] ?></td>
+                                                    </tr>
                                             <?php
+                                                }
                                             }
                                             ?>
                                             <tr>
                                                 <td style="background-color: #1b325f;color: white;">Promedio:</td>
                                                 <td style="background-color: #1b325f;"></td>
                                                 <td style="background-color: #1b325f;"></td>
-                                                <td style="background-color: #1b325f;color: white;"><?= $promedio["promedio"]  ?></td>
+                                                <td style="background-color: #1b325f;color: white;">
+                                                    <?php 
+                                                        if(isset($promedio["promedio"])){
+                                                            echo $promedio["promedio"];
+                                                        }else{
+                                                            echo "0";
+                                                        }
+                                                    ?>
+                                                </td>
                                             </tr>
                                         <?php
                                         }
+
                                         ?>
                                     </tbody>
                                 </table>

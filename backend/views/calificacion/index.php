@@ -27,6 +27,7 @@ $this->title = 'Actividad #: ' . $modelActividad->id . ' | ' . $modelActividad->
 <script src="https://cdn.ckeditor.com/ckeditor5/40.0.0/classic/ckeditor.js"></script>
 
 
+
 <div class="scholaris-actividad-index">
     <div class="m-0 vh-50 row justify-content-center align-items-center">
         <div class="card shadow col-lg-11 col-md-11">
@@ -94,8 +95,21 @@ $this->title = 'Actividad #: ' . $modelActividad->id . ' | ' . $modelActividad->
             <!-- comienza cuerpo  -->
 
             <!-- *****inicio pdf***** -->
+            <div class="row">
+                <div class="col-lg-6"><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#calificarTarea">
+                        Calificar Tarea
+                    </button>
 
-            <div class="row" style="padding: 1rem;margin-top: -2.3rem">
+                </div>
+                <div class="col-lg-6">
+                    <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#calificarTareaOds">
+                        Calificar Tarea ODS
+                    </button>
+                </div>
+            </div>
+
+            <div class="row" style="padding: 1rem;">
+
 
                 <div class="card col-lg-6 col-md-6" style="padding: 1rem;">
                     <?=
@@ -109,131 +123,97 @@ $this->title = 'Actividad #: ' . $modelActividad->id . ' | ' . $modelActividad->
                     foreach ($deber as $tarea) {
                         echo '<div class="card" style="padding: 1rem;margin-bottom: 5px;">';
                         echo '<h6>' . $tarea->observacion . ' - ' . 'Fecha de envio:' . ' ' . $tarea->creado_fecha . '</h6>';
-                        echo '<p><a href="' . $tarea->archivo . '">' . $tarea->archivo . '</a></p>';
-                        $textId = 'editor_' . $tarea->id;
+                        echo '<p><a href="' . $tarea->archivo . '" target="_blank">' . $tarea->archivo . '</a></p>';
+                        $textId = 'editor' . $tarea->id;
                         echo '';
                         echo '</div>';
                     }
                     ?>
 
-                    <script>
-                        <?php
-                        foreach ($deber as $tarea) {
-                            $textoId = 'editor_' . $tarea->id;
-                            echo 'ClassicEditor.create(document.querySelector
-                            ("#' . $textId . '")).catch(error => 
-                            { console.error(error); });';
-                        }
-                        ?>
-                    </script>
+
                 </div>
 
                 <div class="card col-lg-6 col-md-6">
-                    <div class="" style="text-align: center;padding: 1rem;">
+
+                    <div class="row" style="text-align: center;padding: 1rem;">
 
                         <h6>Observaciones</h6>
 
-                        <div id="editor1">hgsfsd</div>
-                        <script>
+                        <?php
+                        $actividad = 0;
+                        $actividad = $actividad + 1;
+                        $fecha_hoy = date("Y-m-d");
+
+                        // if($fecha_hoy > $modelActividad->bloque->desde && $fecha_hoy < $modelActividad->bloque->hasta){
+                        if ($fecha_hoy < $modelActividad->bloque->hasta) {
+                            $estado = "ABIERTO";
+                        } else {
+                            $estado = "CERRADO";
+                        }
+
+                        echo '<div style="text-align: center;">';
+
+                        echo '<h6><b>Ingrese la calificación normal:</b></h6>';
+
+                        echo '<h6><b>Actividad #: </b>' . $actividad . '</h6>';
+
+                        foreach ($calificaciones as $calificar) {
+                            $calificacionId = $calificar['calificacion_id'];
+                            echo '<p><b>Insumo: </b>' . $calificar['nombre_nacional'] . '</p>';
+                            echo '<p>';
+
+                            if ($estado == "ABIERTO") {
+                                echo '<textarea class="form-control" style="text-align: center;" 
+                                      id="observacion' . $calificacionId . '" 
+                                      placeholder="Ingrese la observaciones ..."
+                                      onchange="cambiarNota(' . $calificar['calificacion_id'] . ')">' . $calificar['observacion'] . '</textarea>';
+                            } else {
+                                echo $calificar["observacion"];
+                            }
+                            echo '</p>';
+                        }
+
+                        ?>
+
+                        <!-- <script>
                             ClassicEditor
-                                .create(document.querySelector('#editor1'))
+                                .create(document.querySelector("#observacion<?= $calificacionId ?>"));
+                            .then(editor => {
+                                editor.model.document.on("change:data", () => {
+                                    // Esta función se ejecutará cuando cambie el contenido del editor.
+                                    let observacion = editor.getData();
+                                    cambiarNota(<?= $calificar['calificacion_id'] ?>, observacion);
+                                    // console.log(<?= $calificar['calificacion_id'] ?>);
+                                });
+                            })
+                            .catch(error => {
+                                console.error(error);
+                            });
+                        </script> -->
+
+                        <!-- <script>
+                            ClassicEditor
+                                .create(document.querySelector('#edit'))
+                                .then(editor => {
+                                    editor.model.document.on('change:data', () => {
+                                        cambiarprueba();
+                                    });
+                                })
                                 .catch(error => {
                                     console.error(error);
                                 });
-                        </script>
-
+                        </script> -->
 
                     </div>
                     <div class="row">
 
                         <div class="col-lg-12 col-md-12" style="text-align: right;margin-bottom: 5px;">
-                            <!-- MODAL TAREAS NORMAL-->
-                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#calificarTarea">
-                                Calificar Tarea
-                            </button>
-
-                            <div class="modal fade" id="calificarTarea" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                <div class="modal-dialog">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <?php
-                                            $actividad = 0;
-                                            $actividad = $actividad + 1;
-                                            $fecha_hoy = date("Y-m-d");
-
-                                            // if($fecha_hoy > $modelActividad->bloque->desde && $fecha_hoy < $modelActividad->bloque->hasta){
-                                            if ($fecha_hoy < $modelActividad->bloque->hasta) {
-                                                $estado = "ABIERTO";
-                                            } else {
-                                                $estado = "CERRADO";
-                                            }
-
-                                            echo '<div style="text-align: center;">';
-
-                                            echo '<h6><b>Ingrese la calificación normal:</b></h6>';
-
-                                            echo '<h6><b>Actividad #: </b>' . $actividad . '</h6>';
-
-                                            foreach ($calificaciones as $calificar) {
-                                                $calificacionId = $calificar['calificacion_id'];
-                                                echo '<p><b>Insumo: </b>' . $calificar['nombre_nacional'] . '</p>';
-                                                echo '<p>';
-                                                if ($estado == "ABIERTO") {
-                                                    echo '<input type="text" class="form-control" style="text-align: center;" 
-                                            id="al' . $calificacionId . '" 
-                                            value="' . $calificar['calificacion'] . '" 
-                                            placeholder="Ingrese la nota..." 
-                                            onchange="cambiarNota(' . $calificar['calificacion_id'] . ')">';
-                                                } else {
-                                                    echo $calificar['calificacion'];
-                                                }
-                                                echo '</p>';
-
-                                                echo '<p>';
-                                                if ($estado == "ABIERTO") {
-                                                    // echo '<input type="text" class="form-control" 
-                                                    //         id="observacion' . $calificacionId . '" 
-                                                    //         value="' . $calificar['observacion'] . '"
-                                                    //         placeholder="Ingrese la observaciones ..."
-                                                    //         onchange="cambiarNota(' . $calificar['calificacion_id'] . ')">';
-                                                    echo '<textarea class="form-control" style="text-align: center;" 
-                                            id="observacion' . $calificacionId . '" 
-                                            value="' . $calificar['observacion'] . '"
-                                            placeholder="Ingrese la observaciones ..."
-                                            onchange="cambiarNota(' . $calificar['calificacion_id'] . ')">' . $calificar['observacion'] . '</textarea>';
-                                                } else {
-                                                    echo $calificar["observacion"];
-                                                }
-                                                echo '</p>';
-
-                                                echo '</div>';
-                                            }
-                                            ?>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                            <button type="button" class="btn btn-primary">Save changes</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- FIN  MODAL TAREAS NORMAL-->
-
-
-                            <!-- FIN  MODAL TAREAS ODS-->
-                            <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#calificarTareaOds">
-                                Calificar Tarea ODS
-                            </button>
 
                             <div class="modal fade" id="calificarTareaOds" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                 <div class="modal-dialog">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                                            <h5 class="modal-title" id="exampleModalLabel">Calificar Tarea (ODS)</h5>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
                                         <div class="modal-body">
@@ -245,7 +225,6 @@ $this->title = 'Actividad #: ' . $modelActividad->id . ' | ' . $modelActividad->
                                                 echo $ods['categoria'] . '<br>';
                                                 echo $ods['opcion'];
                                                 echo '</div>'
-
                                             ?>
 
                                                 <div class="row box" style="font-weight: bold;margin-top: -10px">
@@ -300,12 +279,70 @@ $this->title = 'Actividad #: ' . $modelActividad->id . ' | ' . $modelActividad->
                                             ?>
                                         </div>
                                         <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                            <button type="button" class="btn btn-primary">Save changes</button>
+                                            <!-- <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button> -->
+                                            <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
                                         </div>
                                     </div>
                                 </div>
                             </div>
+
+                            <div class="modal fade" id="calificarTarea" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="exampleModalLabel">Calificar Tarea (Normal)</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <?php
+                                            $actividad = 0;
+                                            $actividad = $actividad + 1;
+                                            $fecha_hoy = date("Y-m-d");
+
+                                            // if($fecha_hoy > $modelActividad->bloque->desde && $fecha_hoy < $modelActividad->bloque->hasta){
+                                            if ($fecha_hoy < $modelActividad->bloque->hasta) {
+                                                $estado = "ABIERTO";
+                                            } else {
+                                                $estado = "CERRADO";
+                                            }
+
+                                            echo '<div style="text-align: center;">';
+
+                                            echo '<h6><b>Ingrese la calificación normal:</b></h6>';
+
+                                            echo '<h6><b>Actividad #: </b>' . $actividad . '</h6>';
+
+                                            foreach ($calificaciones as $calificar) {
+                                                $calificacionId = $calificar['calificacion_id'];
+                                                echo '<p><b>Insumo: </b>' . $calificar['nombre_nacional'] . '</p>';
+                                                echo '<p>';
+                                                if ($estado == "ABIERTO") {
+                                                    echo '<input type="text" class="form-control" style="text-align: center;" 
+                                            id="al' . $calificacionId . '" 
+                                            value="' . $calificar['calificacion'] . '" 
+                                            placeholder="Ingrese la nota..." 
+                                            onchange="cambiarNota(' . $calificar['calificacion_id'] . ')">';
+                                                } else {
+                                                    echo $calificar['calificacion'];
+                                                }
+                                                echo '</p>';
+
+                                                echo '<p>';
+                                            }
+                                            ?>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <!-- <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button> -->
+                                            <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- FIN  MODAL TAREAS NORMAL-->
+
+
+                            <!-- FIN  MODAL TAREAS ODS-->
+
 
                         </div>
 
@@ -388,6 +425,7 @@ $this->title = 'Actividad #: ' . $modelActividad->id . ' | ' . $modelActividad->
             var obs = '#observacion' + id;
             var obs2 = $(obs).val();
             var group = <?= $group->id ?>;
+            console.log(obs2);
             // alert(group);
             var url = '<?= Url::to(['update-score']) ?>';
             params = {
@@ -402,12 +440,18 @@ $this->title = 'Actividad #: ' . $modelActividad->id . ' | ' . $modelActividad->
                 type: 'POST',
                 success: function() {
                     // alert("cambio exitoso");
-
                 }
             });
 
 
         }
+
+        function actualizaObservacion() {
+
+            alert('hola');
+
+        }
+
 
         function NumCheck(e, field) {
             key = e.keyCode ? e.keyCode : e.which

@@ -172,7 +172,6 @@ $this->title = 'Actividad #: ' . $modelActividad->id . ' | ' . $modelActividad->
                             }
                             echo '</p>';
                         }
-
                         ?>
 
                         <!-- <script>

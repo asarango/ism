@@ -109,9 +109,9 @@ $this->params['breadcrumbs'][] = $this->title;
 
                 <div class="row p-3">
                     <div class="col-lg-2 col-md-2"><b>Contenido</b></div>
-                    <div class="col-lg-10 col-md-10">                        
+                    <div class="col-lg-10 col-md-10">
                         <?= $form->field($modelPlanifVertDipl, 'contenido')->textarea(['rows' => 3, 'value' => $contenidoCk])->label(false) ?>
-                        
+
 
                         <script>
                             CKEDITOR.replace('planificacionverticaldiploma-contenido');

@@ -359,15 +359,19 @@ class NeeController extends Controller
 
         $grado      = 1;
         $diagnostico_inicia = 'Aquí su diagnóstico';
-        $fechaHoy   = date("Y-m-d");        
+        $fechaHoy   = date("Y-m-d");    
+        
+        $modelNXC = NeeXClase::find()->where(['nee_id' => $neeId, 'clase_id' => $claseId])->one();
 
-        $model = new NeeXClase();
-        $model->nee_id = $neeId;
-        $model->clase_id = $claseId;
-        $model->grado_nee = $nee->grado;
-        $model->fecha_inicia = $nee->fecha_diagnostico;
-        $model->diagnostico_inicia = $nee->diagnostico;
-        $model->save();
+        if(!$modelNXC){
+            $model = new NeeXClase();
+            $model->nee_id = $neeId;
+            $model->clase_id = $claseId;
+            $model->grado_nee = $nee->grado;
+            $model->fecha_inicia = $nee->fecha_diagnostico;
+            $model->diagnostico_inicia = $nee->diagnostico;
+            $model->save();
+        }
 
         return $this->redirect(['ficha', 
             'nee_id' => $neeId,

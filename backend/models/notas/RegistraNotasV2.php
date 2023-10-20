@@ -1,6 +1,7 @@
 <?php
 namespace backend\models\notas;
 use backend\models\LibBloquesGrupoClase;
+use backend\models\LibPromediosIndividualGrupal;
 use backend\models\LibPromediosInsumos;
 use backend\models\ScholarisBloqueActividad;
 use backend\models\ScholarisCalificaciones;
@@ -16,7 +17,7 @@ use Yii;
  * funciona haciendo promedios por cada insumo
  */
 
-class RegistraNotasV1{
+class RegistraNotasV2{
 
 
 
@@ -76,53 +77,56 @@ class RegistraNotasV1{
             $this->grupoCalificacion = $this->calificacion->grupo_numero;
             $this->ahora        = date('Y-m-d H:i:s');
                 
-            $this->sienta_insumos();
-            // $this->sienta_promedio_bloque_grupo();
+            $this->sienta_tipo_aporte();
             $this->calculo_notas();
             
         }
         
         // Funcion para sentar los promedios de los insumos por grupo del estudiantes
-        private function sienta_insumos(){            
+        private function sienta_tipo_aporte(){            
             $con = Yii::$app->db;
-            // $query = "select 	trunc(avg(cal.calificacion),2) as promedio
-            //             from 	scholaris_calificaciones cal
-            //                     inner join scholaris_actividad act on act.id = cal.idactividad 
-            //             where	cal.idalumno = $this->alumnoId
-            //                     and act.paralelo_id = $this->claseId
-            //                     and act.bloque_actividad_id = $this->bloqueId
-            //                     and cal.grupo_numero = $this->grupoCalificacion;";
-            $query = "select 	cal.grupo_numero  
-                                ,trunc(avg(cal.calificacion),2) as promedio
-                        from 	scholaris_calificaciones cal
+            
+            $query = "select 	tip.tipo_aporte 
+                                ,trunc(avg(cal.calificacion),2) as promedio_normal
+                                ,case 
+                                    when tip.tipo_aporte = 'INDIVIDUAL' then trunc((trunc(avg(cal.calificacion),2)*45)/100,2)
+                                    when tip.tipo_aporte = 'GRUPAL' then trunc((trunc(avg(cal.calificacion),2)*45)/100,2)
+                                    when tip.tipo_aporte = 'EVALUACION' then trunc((trunc(avg(cal.calificacion),2)*5)/100,2)
+                                    when tip.tipo_aporte = 'PROYECTO' then trunc((trunc(avg(cal.calificacion),2)*5)/100,2)
+                                end as promedio_transformado
+                        from 	scholaris_calificaciones cal 
                                 inner join scholaris_actividad act on act.id = cal.idactividad 
-                        where	cal.idalumno = $this->alumnoId
+                                inner join scholaris_tipo_actividad tip on tip.id = act.tipo_actividad_id 
+                        where 	cal.idalumno = $this->alumnoId
                                 and act.paralelo_id = $this->claseId
                                 and act.bloque_actividad_id = $this->bloqueId
-                        group by cal.grupo_numero;";              
+                        group by tip.tipo_aporte ;";       
             
             $res = $con->createCommand($query)->queryAll();
 
 
             foreach ($res as $r) {
-                $model = LibPromediosInsumos::find()->where([
-                    'grupo_id'  => $this->grupoId,
+
+                $model = LibPromediosIndividualGrupal::find()->where([
+                    'grupo_id' => $this->grupoId,
                     'bloque_id' => $this->bloqueId,
-                    'grupo_calificacion' => $r['grupo_numero']
-                ])
-                ->one(); 
+                    'tipo_aporte' => $r['tipo_aporte']
+                ])->one();
+ 
 
                 if($model){  
-                    $model->nota = $r['promedio'];
+                    $model->promedio_normal = $r['promedio_normal'];
+                    $model->promedio_transformado = $r['promedio_transformado'];
                     $model->updated_at = $this->ahora;
                     $model->updated = $this->user;               
                     $model->save();
                 }else{
-                    $insert = new LibPromediosInsumos();
+                    $insert = new LibPromediosIndividualGrupal();
                     $insert->grupo_id       = $this->grupoId;
                     $insert->bloque_id      = $this->bloqueId;
-                    $insert->grupo_calificacion = $r['grupo_numero'];
-                    $insert->nota           = $r['promedio'];
+                    $insert->tipo_aporte    = $r['tipo_aporte'];
+                    $insert->promedio_normal = $r['promedio_normal'];
+                    $insert->promedio_transformado = $r['promedio_transformado'];
                     $insert->created_at     = $this->ahora;
                     $insert->created        = $this->user;
                     $insert->updated_at     = $this->ahora;
@@ -136,60 +140,6 @@ class RegistraNotasV1{
             
         }
         /**** Termina ingreso de insumos del grupo  */
-
-        /**
-         * MÉTODO PARA PROMEDIAR LOS INSUMOS DEL GRUPO ID 
-         */
-        // private function sienta_promedio_bloque_grupo(){
-            
-        //     $con = Yii::$app->db;
-        //     $query = "select 	trunc(avg(nota),2) as nota
-        //     from 	lib_promedios_insumos
-        //     where 	grupo_id = $this->grupoId
-        //             and bloque_id = $this->bloqueId;";
-        //     // $query = "select 	sum(lib.nota*(tip.porcentaje/100)) as nota 
-        //     // from 	lib_promedios_insumos lib 
-        //     //         inner join scholaris_tipo_actividad tip on tip.orden = lib.grupo_calificacion 
-        //     // where 	lib.grupo_id = $this->grupoId 
-        //     //         and lib.bloque_id = $this->bloqueId ;";
-
-        //     $res = $con->createCommand($query)->queryOne();
-
-        //     $model = LibBloquesGrupoClase::find()
-        //     ->where([
-        //             'grupo_id'      => $this->grupoId,
-        //             'bloque_id'     => $this->bloqueId  
-        //             ])
-        //     ->one();
-
-        //     if( $model ){
-        //         $model->nota        = $res['nota'];
-        //         $model->updated_at  = $this->ahora;
-        //         $model->updated     = $this->user;
-        //         $model->bloque_id   = $this->bloqueId;
-        //         $model->save();
-        //     }else{
-        //         $insert = new LibBloquesGrupoClase();
-        //         $insert->grupo_id       = $this->grupoId;
-        //         $insert->bloque_id      = $this->bloqueId;
-        //         $insert->nota           = $this->nota;
-        //         $insert->created_at     = $this->ahora;
-        //         $insert->created        = $this->user;
-        //         $insert->updated_at     = $this->ahora;
-        //         $insert->updated        = $this->user;
-        //         $insert->periodo_id     = $this->periodId;
-        //         $insert->abreviatura    = $this->modelBloque->codigo;
-        //         $insert->promedia       = $this->promedia;
-        //         $insert->imprime        = $this->imprime;
-        //         $insert->tipo           = $this->tipo;
-        //         $insert->porcentaje     = $this->porcentaje;
-
-        //         $insert->save();
-        //     }
-
-        // }
-         /** FIN MÉTODO PARA PROMEDIAR LOS INSUMOS DEL GRUPO ID */
-
 
          /**
           * MÉTODO QUE BUSCA EL CALCULO DE LOS BLOQUES SEGUN LA VERSIÓN QUE TIENE EL PERÍODO
@@ -211,6 +161,21 @@ class RegistraNotasV1{
                                     $this->areaId,
                                     $this->studentId
                                     );
+                    break;
+
+                case 'V2':
+                    new CalculoV2($this->periodId, 
+                                    $this->grupoId, 
+                                    $this->bloqueId, 
+                                    $this->uso, 
+                                    $this->quimestreId,
+                                    $this->promedia,
+                                    $this->imprime,
+                                    $this->porcentaje,
+                                    $this->tipo, 
+                                    $this->areaId,
+                                    $this->studentId);
+                    break;
             }
         }
         

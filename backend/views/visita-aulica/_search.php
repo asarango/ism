@@ -19,11 +19,13 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'clase_id') ?>
 
+    <?= $form->field($model, 'bloque_id') ?>
+
     <?= $form->field($model, 'estudiantes_asistidos') ?>
 
     <?= $form->field($model, 'aplica_grupal')->checkbox() ?>
 
-    <?= $form->field($model, 'psicologo_usuario') ?>
+    <?php // echo $form->field($model, 'psicologo_usuario') ?>
 
     <?php // echo $form->field($model, 'fecha') ?>
 

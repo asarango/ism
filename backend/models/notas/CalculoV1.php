@@ -8,6 +8,11 @@ use backend\models\ScholarisGrupoAlumnoClase;
 use backend\models\ScholarisQuimestre;
 use Yii;
 
+
+/**
+ * Esta clase realiza los calulos de notas para tomar en cuenta los promedios de los isumos que se realizan en la clase RegistraNotasV1
+ */
+
 class CalculoV1{
 
     private $periodId;

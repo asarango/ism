@@ -9,6 +9,7 @@ use Yii;
  *
  * @property int $id
  * @property int $clase_id
+ * @property int $bloque_id
  * @property int $estudiantes_asistidos
  * @property bool $aplica_grupal
  * @property string $psicologo_usuario
@@ -19,6 +20,7 @@ use Yii;
  * @property string $fecha_firma_dece
  * @property string $fecha_firma_docente
  *
+ * @property ScholarisBloqueActividad $bloque
  * @property ScholarisClase $clase
  * @property ScholarisClase $clase0
  * @property VisitasAulicasEstudiantes[] $visitasAulicasEstudiantes
@@ -40,13 +42,14 @@ class VisitaAulica extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['clase_id', 'estudiantes_asistidos', 'psicologo_usuario', 'fecha', 'hora_inicio', 'hora_finalizacion'], 'required'],
-            [['clase_id', 'estudiantes_asistidos'], 'default', 'value' => null],
-            [['clase_id', 'estudiantes_asistidos'], 'integer'],
+            [['clase_id', 'bloque_id', 'estudiantes_asistidos', 'psicologo_usuario', 'fecha', 'hora_inicio', 'hora_finalizacion'], 'required'],
+            [['clase_id', 'bloque_id', 'estudiantes_asistidos'], 'default', 'value' => null],
+            [['clase_id', 'bloque_id', 'estudiantes_asistidos'], 'integer'],
             [['aplica_grupal'], 'boolean'],
             [['fecha', 'hora_inicio', 'hora_finalizacion', 'fecha_firma_dece', 'fecha_firma_docente'], 'safe'],
             [['observaciones_al_docente'], 'string'],
             [['psicologo_usuario'], 'string', 'max' => 200],
+            [['bloque_id'], 'exist', 'skipOnError' => true, 'targetClass' => ScholarisBloqueActividad::className(), 'targetAttribute' => ['bloque_id' => 'id']],
             [['clase_id'], 'exist', 'skipOnError' => true, 'targetClass' => ScholarisClase::className(), 'targetAttribute' => ['clase_id' => 'id']],
             [['clase_id'], 'exist', 'skipOnError' => true, 'targetClass' => ScholarisClase::className(), 'targetAttribute' => ['clase_id' => 'id']],
         ];
@@ -60,6 +63,7 @@ class VisitaAulica extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'clase_id' => 'Clase ID',
+            'bloque_id' => 'Bloque ID',
             'estudiantes_asistidos' => 'Estudiantes Asistidos',
             'aplica_grupal' => 'Aplica Grupal',
             'psicologo_usuario' => 'Psicologo Usuario',
@@ -70,6 +74,14 @@ class VisitaAulica extends \yii\db\ActiveRecord
             'fecha_firma_dece' => 'Fecha Firma Dece',
             'fecha_firma_docente' => 'Fecha Firma Docente',
         ];
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getBloque()
+    {
+        return $this->hasOne(ScholarisBloqueActividad::className(), ['id' => 'bloque_id']);
     }
 
     /**

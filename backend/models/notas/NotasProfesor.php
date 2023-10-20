@@ -33,16 +33,12 @@ class NotasProfesor
                 $this->claseId = $claseId;
                 $this->bloqueId = $bloqueId;
 
-                // $this->clase            = ScholarisClase::findOne($claseId);
-                // $this->trimestre        = ScholarisBloqueActividad::findOne($bloqueId);
-
-
-                // $this->get_tipo_aportes();
+                
                 $this->get_grupo();
                 $this->get_tipos_actividades();
                 $this->get_actividades();
                 $this->get_notas_x_actividad();
-                $this->get_promedios_insumos();
+                // $this->get_promedios_insumos();
                 $this->get_promedios_finales();
 
                 $this->generate_cabecera();
@@ -69,20 +65,20 @@ class NotasProfesor
         }
 
 
-        private function get_promedios_insumos()
-        {
-                $con = Yii::$app->db;
-                $query = "select 	gru.estudiante_id 
-                                                ,ins.nota
-                                                ,ins.grupo_calificacion 
-                                from 	lib_promedios_insumos ins
-                                                inner join scholaris_grupo_alumno_clase gru on gru.id = ins.grupo_id
-                                where 	ins.bloque_id = $this->bloqueId
-                                                and gru.clase_id = $this->claseId;";
-                $this->promediosInsumos = $con->createCommand($query)->queryAll();
+        // private function get_promedios_insumos()
+        // {
+        //         $con = Yii::$app->db;
+        //         $query = "select 	gru.estudiante_id 
+        //                                         ,ins.nota
+        //                                         ,ins.grupo_calificacion 
+        //                         from 	lib_promedios_insumos ins
+        //                                         inner join scholaris_grupo_alumno_clase gru on gru.id = ins.grupo_id
+        //                         where 	ins.bloque_id = $this->bloqueId
+        //                                         and gru.clase_id = $this->claseId;";
+        //         $this->promediosInsumos = $con->createCommand($query)->queryAll();
 
         
-        }
+        // }
 
 
         private function get_tipo_aportes()
@@ -93,7 +89,7 @@ class NotasProfesor
                                 from(
                                 select 	tip.tipo_aporte 
                                                 ,tip.nombre_nacional 
-                                                ,count(tip.id)+1 as total
+                                                ,count(tip.id) as total
                                 from 	scholaris_actividad act 
                                                 inner join scholaris_tipo_actividad tip on tip.id = act.tipo_actividad_id 
                                                 inner join scholaris_grupo_orden_calificacion ord on ord.codigo_tipo_actividad = tip.id 
@@ -138,7 +134,7 @@ class NotasProfesor
                 $query = "select 	tip.id as tipo_actividad_id
                                         ,tip.nombre_nacional as tipo_actividad    
                                         ,ord.grupo_numero  
-                                        ,count(ord.grupo_numero)+1 as total_tipo_insumo
+                                        ,count(ord.grupo_numero) as total_tipo_insumo
                                 from 	scholaris_actividad act
                                         inner join scholaris_tipo_actividad tip on tip.id = act.tipo_actividad_id 
                                         inner join scholaris_grupo_orden_calificacion ord on ord.codigo_tipo_actividad = tip.id
@@ -197,10 +193,6 @@ class NotasProfesor
         private function generate_cabecera()
         {
                 $arrayCabecera = array();
-
-                // echo '<pre>';
-                // print_r($this->actividades[0+10]['title']);
-                // die();
                 
                 for($i=0; $i<count($this->actividades); $i++){
                         array_push($arrayCabecera, [
@@ -210,8 +202,8 @@ class NotasProfesor
                                 'tipo_actividad_id' => $this->actividades[$i]['tipo_actividad_id'],
                         ]);
                         
-                        if(isset($this->actividades[$i+1]['grupo_numero'])){
-                                if($this->actividades[$i+1]['grupo_numero'] != $this->actividades[$i]['grupo_numero']){
+                        if(isset($this->actividades[$i]['grupo_numero'])){
+                                if($this->actividades[$i]['grupo_numero'] != $this->actividades[$i]['grupo_numero']){
                                         array_push($arrayCabecera, [
                                                 'title' => 'Promedio',
                                                 'actividad_id' => 0,

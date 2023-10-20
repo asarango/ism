@@ -8,6 +8,7 @@ use backend\models\LmsActividadXArchivo;
 use backend\models\messages\Messages;
 use backend\models\notas\RegistraNotas;
 use backend\models\notas\RegistraNotasV1;
+use backend\models\notas\RegistraNotasV2;
 use backend\models\PlanificacionSemanal;
 use backend\models\ResUsers;
 use backend\models\ScholarisActividadDescriptor;
@@ -1119,6 +1120,8 @@ class ScholarisActividadController extends Controller
         $periodo = ScholarisPeriodo::findOne($idPeriodo);
         if($periodo->version_calculo_notas == 'V1'){
             $scores = new RegistraNotasV1($grupoId, $notaId, $nota);
+        }elseif($periodo->version_calculo_notas == 'V2'){
+            $scores = new RegistraNotasV2($grupoId, $notaId, $nota);
         }
         
         /***Fin de proceso mediante clases para registrar notas en los reportes */

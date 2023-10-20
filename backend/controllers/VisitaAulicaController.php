@@ -186,14 +186,22 @@ class VisitaAulicaController extends Controller
      */
     public function actionCreate()
     {
+        $clase_id = $_GET['clase_id'];
+        $bloqueId = $_GET['bloque_id'];
+
+        $clase      = ScholarisClase::findOne($clase_id);
+        $trimestre  = ScholarisBloqueActividad::findOne($bloqueId);
+
         $model = new VisitaAulica();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+            return $this->redirect(['update', 'id' => $model->id]);
         }
 
         return $this->render('create', [
             'model' => $model,
+            'clase' => $clase,
+            'trimestre' => $trimestre
         ]);
     }
 
@@ -208,12 +216,17 @@ class VisitaAulicaController extends Controller
     {
         $model = $this->findModel($id);
 
+        $clase = ScholarisClase::findOne($model->clase_id);
+        $trimestre = ScholarisBloqueActividad::findOne($model->bloque_id); 
+
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
         return $this->render('update', [
             'model' => $model,
+            'clase' => $clase,
+            'trimestre' => $trimestre
         ]);
     }
 

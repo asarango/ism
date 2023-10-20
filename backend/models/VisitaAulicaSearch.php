@@ -17,7 +17,7 @@ class VisitaAulicaSearch extends VisitaAulica
     public function rules()
     {
         return [
-            [['id', 'clase_id', 'estudiantes_asistidos'], 'integer'],
+            [['id', 'clase_id', 'bloque_id', 'estudiantes_asistidos'], 'integer'],
             [['aplica_grupal'], 'boolean'],
             [['psicologo_usuario', 'fecha', 'hora_inicio', 'hora_finalizacion', 'observaciones_al_docente', 'fecha_firma_dece', 'fecha_firma_docente'], 'safe'],
         ];
@@ -61,6 +61,7 @@ class VisitaAulicaSearch extends VisitaAulica
         $query->andFilterWhere([
             'id' => $this->id,
             'clase_id' => $this->clase_id,
+            'bloque_id' => $this->bloque_id,
             'estudiantes_asistidos' => $this->estudiantes_asistidos,
             'aplica_grupal' => $this->aplica_grupal,
             'fecha' => $this->fecha,

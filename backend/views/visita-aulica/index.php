@@ -16,10 +16,8 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="visita-aulica-index">
 
-
     <?php // echo $this->render('_search', ['model' => $searchModel]); 
     ?>
-
 
     <div class=" card table-responsive" style="padding: 1.5rem;">
         <h1><?= Html::encode($this->title) ?></h1>

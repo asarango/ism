@@ -127,17 +127,18 @@ $this->params['breadcrumbs'][] = $this->title;
     ?>
 </div>
 <!-- fin para los botones de navegacion de los trimestres -->
-<table class="table" border="1" cellpadding="1" cellspacing="1">    
+<table class="table" border="1" cellpadding="1" cellspacing="1" style="font-size: 10px;">    
     <!-- INICIO TITULOS DE TIPO DE APORTE -->
     <tr>
         <td rowspan="3">#</td>
-        <td rowspan="3" width="300px">Estudiantes - <?php echo $trimestre->name ?> </td>
+        <td rowspan="3" width="200px">Estudiantes - <?php echo $trimestre->name ?> </td>
         <?php // Para el tipo de aporte INDIVIDUAL y GRUPAL
         foreach ($notasProfesor->tipoAporte as $tipoApo) {
             echo '<td colspan="' . $tipoApo['total'] . '">' . $tipoApo['tipo_aporte'] . '</td>';
         }
         ?>
         <td></td>
+        <td colspan="9">RESUMEN CALIFICACIONES</td>
     </tr>
     <!-- FIN TITULOS DE TIPO DE APORTE -->
 
@@ -151,6 +152,11 @@ $this->params['breadcrumbs'][] = $this->title;
 
         ?>
         <td></td>
+        <td colspan="2">Individual</td>
+        <td colspan="2">Grupal</td>
+        <td colspan="2">Proyecto</td>
+        <td colspan="2">Evaluación</td>
+        <td rowspan="2">Final</td>
     </tr>
     <!-- FIN DE TIPOS DE ACTIVIDADES -->
     <tr clas>
@@ -162,22 +168,35 @@ $this->params['breadcrumbs'][] = $this->title;
             echo '</td>';
         }
         ?>
+        <td>100%</td>
+        <td>45%</td>
+        <td>100%</td>
+        <td>45%</td>
+        <td>100%</td>
+        <td>5%</td>
+        <td>100%</td>
+        <td>5%</td>
     </tr>
 
     <?php
     $i = 0;
-    // echo '<pre>';
-    // print_r($notasProfesor->notas);
-    // die();
+    
     foreach ($notasProfesor->notas as $estudiante) {
+        
         $i++;
         echo "<tr>";
         echo "<td style='font-weight: normal'>" . $i . "</td>";
-        echo "<td style='font-weight: normal'>" . $estudiante['estudiante'] . "</td>";
+        echo "<td style='font-weight: normal; text-align: left'>" . $estudiante['estudiante'] . "</td>";
 
         foreach ($estudiante['notas'] as $notas) {
-            echo "<td style='font-weight: normal'>" . $notas['nota'] . "</td>";
+            echo "<td style='font-weight: normal'>" . $notas['nota'] . "</td>";            
         }
+
+    
+        // $notas = buscar_resumen($notasProfesor->promediosIndividualGrupal, $estudiante['grupo_id'], 'INDIVIDUAL', $resumen['bloque_id']);   
+        // echo "<td style='font-weight: normal'>1000</td>";
+        
+        
         echo '</tr>';
     }
     ?>
@@ -208,4 +227,25 @@ function abreviar($titulo)
 
     return $abreviatura;
 }
+
+
+
+function buscar_resumen($arrayResumen, $grupoId, $tipoAporte, $bloqueId){
+
+    $promedioNormal = 0;
+    $promedioTransf = 0;
+
+    foreach($arrayResumen as $resumen){
+        if($resumen['grupo_id'] == $grupoId && $resumen['tipo_aporte'] == $tipoAporte && $resumen['bloque_id'] == $bloqueId){
+            $promedioNormal = $resumen['promedio_normal'];
+            $promedioTransf = $resumen['promedio_transformado'];
+        }
+    }
+
+    return [
+        'promedio_normal' => $promedioNormal,
+        'promedio_transformado' => $promedioTransf
+    ];
+}
+
 ?>

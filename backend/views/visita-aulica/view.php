@@ -70,9 +70,9 @@ $this->title = 'Visitas áulicas';
 <div class="visita-aulica-view">
 
     <div class="m-0 vh-50 row justify-content-center align-items-center">
-        <div class="card shadow col-lg-10 overflow-auto" style="height: 800px;">
+        <div class="card shadow col-lg-10 overflow-auto" style="height: 600px;">
             <!-- INICIO ENCABEZADO -->
-            <div class="row align-items-center p-2 position-sticky top-0">
+            <div class="row align-items-center p-2 position-sticky top-0" style="background-color: white;margin-bottom: 10px">
                 <div class="col-lg-1">
                     <h3><img src="../ISM/main/images/submenu/retroalimentacion.png" width="64px" class="img-thumbnail">
                     </h3>
@@ -133,7 +133,7 @@ $this->title = 'Visitas áulicas';
                     );
                     ?>
                 </div>
-                <hr>
+                <!-- <hr> -->
             </div>
 
             <!-- FIN ENCABEZADO -->
@@ -188,7 +188,7 @@ $this->title = 'Visitas áulicas';
                                         <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
                                         <path d="M13.5 6.5l4 4" />
                                       </svg>
-                                                    </span>',
+                                    </span>',
                                     [
                                         'update',
                                         'id' => $visita->id

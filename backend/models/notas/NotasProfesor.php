@@ -20,6 +20,7 @@ class NotasProfesor
 
         public $calificaciones;
         private $promediosInsumos;
+        public $promediosIndividualGrupal;
         public $notas_x_actividad;
         public $cabecera;
 
@@ -38,7 +39,8 @@ class NotasProfesor
                 $this->get_tipos_actividades();
                 $this->get_actividades();
                 $this->get_notas_x_actividad();
-                // $this->get_promedios_insumos();
+                $this->get_promedios_individual_grupal();
+
                 $this->get_promedios_finales();
 
                 $this->generate_cabecera();
@@ -47,6 +49,26 @@ class NotasProfesor
                 $this->generate_matriz();
 
 
+        }
+
+
+        private function get_promedios_individual_grupal(){
+                $con = Yii::$app->db;
+                $query ="select 	lib.grupo_id 
+                                                ,lib.tipo_aporte 
+                                                ,lib.bloque_id 
+                                                ,lib.promedio_normal 
+                                                ,lib.promedio_transformado 
+                                from 	lib_promedios_individual_grupal lib
+                                                inner join scholaris_grupo_alumno_clase gru on gru.id = lib.grupo_id 
+                                where	gru.clase_id = $this->claseId
+                                                and lib.bloque_id = $this->bloqueId
+                                order by lib.grupo_id, lib.tipo_aporte;";
+                $this->promediosIndividualGrupal = $con->createCommand($query)->queryAll();
+
+                // echo '<pre>';
+                // print_r($this->promediosIndividualGrupal);
+                // die();
         }
 
 
@@ -65,20 +87,7 @@ class NotasProfesor
         }
 
 
-        // private function get_promedios_insumos()
-        // {
-        //         $con = Yii::$app->db;
-        //         $query = "select 	gru.estudiante_id 
-        //                                         ,ins.nota
-        //                                         ,ins.grupo_calificacion 
-        //                         from 	lib_promedios_insumos ins
-        //                                         inner join scholaris_grupo_alumno_clase gru on gru.id = ins.grupo_id
-        //                         where 	ins.bloque_id = $this->bloqueId
-        //                                         and gru.clase_id = $this->claseId;";
-        //         $this->promediosInsumos = $con->createCommand($query)->queryAll();
-
-        
-        // }
+       
 
 
         private function get_tipo_aportes()
@@ -229,6 +238,8 @@ class NotasProfesor
                         'tipo_actividad_id' => 0,
                 ]);
                 $this->cabecera = $arrayCabecera;
+
+                
         }
 
         private function generate_matriz(){
@@ -258,11 +269,6 @@ class NotasProfesor
 
         private function recorre_notas($grupoId, $estudianteId){
                 $arrayNotas = array();
-                
-
-                // echo '<pre>';
-                // print_r($this->cabecera);       
-                // die();
 
                 foreach($this->cabecera as $cabecera){       
                         $notax = 0;                 
@@ -298,11 +304,11 @@ class NotasProfesor
                            'grupo_numero' => $cabecera['grupo_numero'],
                            'nota' => $notax
                         ]);
-
-
-
-
                 }
+
+                // echo '<pre>';
+                // print_r($arrayNotas);       
+                // die();
 
                 return $arrayNotas;
         }

@@ -234,7 +234,7 @@ $this->title = 'Visitas áulicas';
                     'estudiantes' => $estudiantes,
                     'clase' => $clase,
                     'trimestre' => $trimestre,
-                    'visita' => $visita
+                    'visita' => $visitas
                 ]);
 
                 ?>

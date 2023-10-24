@@ -1,5 +1,6 @@
 <?php
 
+use kartik\form\ActiveForm;
 use yii\helpers\Html;
 
 /* @var $this yii\web\View */
@@ -11,7 +12,7 @@ $this->params['breadcrumbs'][] = ['label' => $model->id, 'url' => ['view', 'id' 
 $this->params['breadcrumbs'][] = 'Update';
 
 // echo "<pre>";
-// print_r($model);
+// print_r($estudiantes);
 // die();
 ?>
 
@@ -134,33 +135,58 @@ $this->params['breadcrumbs'][] = 'Update';
                         ?>
                             <!-- GRUPALES -->
                             <h3 style="text-align: center">GRUPAL</h3>
+                            <hr>
                             <h6 style="text-align: center">Observación al docente</h6>
-                            <table class="table custom-table table-hover table-responsive">
-                                <thead>
-                                    <tr style="text-align: center;">
-                                        <th style="border-bottom: none;color: white;">Descripción</th>
-                                        <th style="border-bottom: 1px solid #ab0a3d;">SI</th>
-                                        <th style="border-bottom: 1px solid #ab0a3d;">NO</th>
-                                        <th style="border-bottom: none;color: white;">Comentarios</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr style="text-align: center;">
-                                        <!-- foreach -->
-                                        <td></td>
-                                        <td><input type="checkbox"></td>
-                                        <td><input type="checkbox"></td>
-                                        <td><textarea style="border: none; width: 100%;" rows="4" cols="30"></textarea></td>
-                                    </tr>
-                                    <tr style="text-align: center;">
-                                        <th colspan="4" style="color: white;text-align: center">Observación para el docente</th>
-                                    </tr>
-                                    <tr style="text-align: center;">
-                                        <td colspan="4"><textarea style="border: none; width: 100%;" rows="4" cols="30"></textarea></td>
-                                    </tr>
-                                </tbody>
+
+                            <table class="table custom-table table-responsive">
+                                <?php foreach ($observacionesDocente as $key => $obsDoc) { ?>
+                                    <?= Html::beginForm(['acciones-update'], 'post') ?>
+                                    <table class="table custom-table table-responsive">
+
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    <div style="background-color: #ff9e18;color: white;padding: 15px;border-radius: 10px;text-align: center">
+                                                        <strong>Descripción:</strong>
+                                                        <?php if ($obsDoc) {
+                                                            echo $obsDoc->visitaCatalogo->opcion;
+                                                        } ?>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <div class="row" style="margin-top: 10px">
+                                                        <div class="col-lg-2 col-md-2" style="text-align: center;">
+                                                            <strong>¿Se cumple?</strong>
+                                                            <?= Html::input('checkbox', "ObsDoc[$key][se_hace]", $obsDoc->se_hace, ['id' => "checkbox$key", 'class' => 'form-check-input', 'label' => false]) ?>
+                                                            <?= Html::input('hidden', "ObsDoc[$key][id]", $obsDoc->id) ?>
+                                                            <?= Html::input('hidden', 'bandera', 'docentes') ?>
+                                                        </div>
+                                                        <div class="col-lg-10 col-md-10" style="text-align: center;">
+                                                            <!-- <strong>Comentarios:</strong> -->
+                                                            <?= Html::textarea("ObsDoc[$key][comentarios]", $obsDoc->comentarios, [
+                                                                'rows' => 4,
+                                                                'cols' => 30,
+                                                                'class' => 'form-control',
+                                                                'style' => 'resize: vertical;'
+                                                            ]) ?>
+                                                        </div>
+                                                    </div>
+                                                    <div style="margin-top: 5px;text-align: center; margin-bottom: 10px;">
+                                                        <?= Html::submitButton('Guardar', ['class' => 'btn btn-primary']) ?>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <hr>
+                                        </tbody>
+
+                                    </table>
+                                    <?= Html::endForm() ?>
+                                <?php } ?>
                             </table>
-                            <!-- GRUPALES -->
+
+                            <!-- FIN GRUPALES -->
                         <?php
                         } else {
                         ?>
@@ -168,7 +194,29 @@ $this->params['breadcrumbs'][] = 'Update';
                             <h3 style="text-align: center">INDIVIDUAL</h3>
                             <h6 style="text-align: center">Observación al docente</h6>
                             <table class="table custom-table table-hover table-responsive">
-                                <thead>
+
+                                <?php
+                                foreach ($var1 as $var) {
+                                ?>
+                                    <?= Html::beginForm(['order/update', 'id' => $id], 'post', ['enctype' => 'multipart/form-data']) ?>
+
+                                    <div class="row">
+                                        <div class="col-lg-6 col-md-6">
+
+                                        </div>
+                                        <div class="col-lg-6 col-md-6">
+
+                                        </div>
+                                    </div>
+
+                                    <?= Html::submitButton('Submit', ['class' => 'submit']) ?>
+                                    <?= Html::endForm() ?>
+                                <?php
+                                }
+
+
+                                ?>
+                                <!-- <thead>
                                     <tr style="text-align: center;">
                                         <th style="border-bottom: none;color: white;">Descripción</th>
                                         <th style="border-bottom: 1px solid #ab0a3d;">SI</th>
@@ -178,7 +226,7 @@ $this->params['breadcrumbs'][] = 'Update';
                                 </thead>
                                 <tbody>
                                     <tr style="text-align: center;">
-                                        <!-- foreach -->
+                                        
                                         <td></td>
                                         <td><input type="checkbox"></td>
                                         <td><input type="checkbox"></td>
@@ -190,9 +238,9 @@ $this->params['breadcrumbs'][] = 'Update';
                                     <tr style="text-align: center;">
                                         <td colspan="4"><textarea style="border: none; width: 100%;" rows="4" cols="30"></textarea></td>
                                     </tr>
-                                </tbody>
+                                </tbody> -->
                             </table>
-                            <!-- INDIVIDUALES -->
+                            <!-- FIN INDIVIDUALES -->
                         <?php
                         }
                         ?>
@@ -205,32 +253,54 @@ $this->params['breadcrumbs'][] = 'Update';
 
                 <!-- CONDICIONAL PARA GRUPAL E INDIVIDUAL 2 -->
 
-                <div class="card col-lg-6 col-md-6 visita-aulica-update overflow-auto" style="height: 500px;">
+                <div class="card col-lg-6 col-md-6 visita-aulica-update overflow-auto" style="height: 700px;">
                     <?php
                     if ($model['aplica_grupal'] > 0) {
                     ?>
                         <!-- GRUPAL -->
-                        <div class="visita-aulica-update">
+                        <div class="visita-aulica-update" style="padding: 1rem;">
 
                             <h6 style="text-align: center">Observación a estudiantes</h6>
+
+                            <p>
+
+                                <?php
+                                $numeroDeEstudiantes = count($estudiantes);
+                                echo "Número de estudiantes: $numeroDeEstudiantes";
+                                ?>
+
+                            </p>
+
                             <table class="table custom-table table-hover table-responsive">
                                 <thead>
                                     <tr style="text-align: center;">
-                                        <th style="border-bottom: none;color: white;">Nómina completa</th>
-                                        <th colspan="2" style="border-bottom: 1px solid #ab0a3d;">Asiste a clase</th>
+                                        <th style="border-bottom: none;color: white;text-align: center">Nómina completa</th>
+                                        <th style="border-bottom: 1px solid #ab0a3d;">Asiste a clase</th>
                                         <th style="border-bottom: none;color: white;">Observaciones</th>
                                     </tr>
                                 </thead>
+
                                 <tbody>
-                                    <tr style="text-align: center;">
-                                        <!-- foreach -->
-                                        <td></td>
-                                        <td>SI <input type="checkbox"></td>
-                                        <td>NO <input type="checkbox"></td>
-                                        <td><textarea style="border: none; width: 100%;" rows="4" cols="30"></textarea></td>
-                                    </tr>
+                                    <?php
+                                    $contador = 1;
+                                    foreach ($estudiantes as $estud) {
+                                        echo '<tr style="text-align: center;">';
+                                        echo '<td>' . $contador . '. ' . $estud['estudiante'] . '</td>';
+                                        echo '<td><input type="checkbox" id="checkbox' . '" ' . ($estud['es_presente'] == 1 ? 'checked' : '') . '></td>';
+                                        echo '<td>';
+                                        if ($estud['observaciones']) {
+                                            echo $estud['observaciones'];
+                                        } else {
+                                            echo 'Sin observación';
+                                        }
+                                        echo '</td>';
+                                        echo '</tr>';
+                                        $contador++;
+                                    }
+                                    ?>
                                 </tbody>
                             </table>
+
                         </div>
                         <!-- GRUPAL -->
                     <?php
@@ -241,14 +311,19 @@ $this->params['breadcrumbs'][] = 'Update';
 
                             <h6 style="text-align: center">Observación a estudiantes</h6>
                             <table class="table custom-table table-hover table-responsive">
+
                                 <thead>
+
                                     <tr style="text-align: center;">
                                         <th style="border-bottom: none;color: white;text-align: center">Descripción</th>
                                         <th style="border-bottom: 1px solid #ab0a3d;" colspan="2">Asiste a clase</th>
                                         <th style="border-bottom: none;color: white;text-align: center;">Observaciones</th>
                                     </tr>
+
                                 </thead>
+
                                 <tbody>
+
                                     <tr style="text-align: center;">
                                         <!-- foreach -->
                                         <td></td>
@@ -256,7 +331,9 @@ $this->params['breadcrumbs'][] = 'Update';
                                         <td>NO <input type="checkbox"></td>
                                         <td><textarea style="border: none; width: 100%;" rows="4" cols="30"></textarea></td>
                                     </tr>
+
                                 </tbody>
+
                             </table>
 
                         </div>

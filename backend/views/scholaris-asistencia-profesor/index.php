@@ -50,7 +50,7 @@ $this->title = '¡Mis Actividades!';
                                 ['class' => 'link']
                             );
 
-                            echo ' | ';
+                            // echo ' | ';
                         }
 
                         if ($tieneOtras) {
@@ -65,13 +65,13 @@ $this->title = '¡Mis Actividades!';
 
                         }
                         ?>
-                        <?=
+                        <!-- <?=
                             Html::a(
                                 '<span class="badge rounded-pill" style="background-color: black"><i class="fa fa-briefcase" aria-hidden="true"></i> Reporte </span>',
                                 ['reporte'],
                                 ['class' => 'link', 'target' => '_blanck']
                             );
-                        ?>
+                        ?> -->
 
                         
                         |

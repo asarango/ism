@@ -7,6 +7,7 @@ use backend\models\ScholarisBloqueActividad;
 use backend\models\ScholarisClase as ModelsScholarisClase;
 use backend\models\ViewListaVisitaAulica;
 use backend\models\ViewListaVisitaAulicaSearch;
+use backend\models\VisitasAulicasObservacionesDocente;
 use Yii;
 use backend\models\VisitaAulica;
 use backend\models\VisitaAulicaSearch;
@@ -90,11 +91,8 @@ class VisitaAulicaController extends Controller
      */
     public function actionView($clase_id, $bloque_id)
     {
-
         $periodoId = Yii::$app->user->identity->periodo_id;
-
         $clase = ScholarisClase::findOne($clase_id);
-
         $visitas = VisitaAulica::find()->where([
             'clase_id' => $clase_id
         ])->all();
@@ -223,11 +221,67 @@ class VisitaAulicaController extends Controller
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
+        /** Se ingresan las observaciones del docente */
+        $this->ingresar_observaciones_docente($id);
+        $this->ingresar_estudiantes($id, $clase->id);
+
+        $observacionesDocente = VisitasAulicasObservacionesDocente::find()->where([
+            'visita_id' => $id
+        ])->all();
+
+        $estudiantes = $this->consultar_estudiantes($id);
+
         return $this->render('update', [
             'model' => $model,
             'clase' => $clase,
-            'trimestre' => $trimestre
+            'trimestre' => $trimestre,
+            'observacionesDocente' => $observacionesDocente,
+            'estudiantes' => $estudiantes
         ]);
+    }
+
+
+    private function consultar_estudiantes($visitaId){
+        $con = Yii::$app->db;
+        $query = "select 	vae.id 
+                            ,vae.grupo_id 
+                            ,vae.es_presente 
+                            ,vae.observaciones 
+                            ,concat(est.last_name, ' ', est.first_name, ' ', est.middle_name) as estudiante 
+                    from 	visitas_aulicas_estudiantes	vae
+                            inner join scholaris_grupo_alumno_clase gru on gru.id = vae.grupo_id 
+                            inner join op_student est on est.id = gru.estudiante_id 
+                    where 	vae.visita_id = $visitaId
+                    order by 5;";
+        return $con->createCommand($query)->queryAll();
+    }
+
+
+
+    private function ingresar_observaciones_docente($visitaId){
+        $con = Yii::$app->db;
+        $query = "insert into visitas_aulicas_observaciones_docente (visita_id, visita_catalogo_id, se_hace)
+                    select 	$visitaId, id, true  
+                    from 	visitas_aulicas_catalogo cat
+                    where 	cat.tipo = 'DOCENTE' 
+                            and cat.id not in (select 	visita_catalogo_id  
+                                            from 	visitas_aulicas_observaciones_docente 
+                                            where 	visita_id = $visitaId
+                                                    and visita_catalogo_id = cat.id);";
+        $con->createCommand($query)->execute();
+    }
+
+
+
+    private function ingresar_estudiantes($visitaId, $claseId){
+        $con = Yii::$app->db;
+        $query = "insert into visitas_aulicas_estudiantes(visita_id, grupo_id, es_presente)
+        select 	$visitaId, gru.id, true
+        from 	scholaris_grupo_alumno_clase gru
+        where 	gru.id not in(select grupo_id from visitas_aulicas_estudiantes where visita_id = $visitaId and grupo_id = gru.id)
+                and gru.clase_id = $claseId;";
+
+        $con->createCommand($query)->execute();
     }
 
     /**
@@ -258,5 +312,27 @@ class VisitaAulicaController extends Controller
         }
 
         throw new NotFoundHttpException('The requested page does not exist.');
+    }
+
+
+    public function actionAccionesUpdate(){
+        // echo '<pre>';
+        // print_r($_POST['VisitasAulicasObservacionesDocente']);
+
+        if($_POST['bandera'] == 'docentes'){
+            $seHace = $_POST['se_hace'];
+            $id     = $_POST['id'];
+            $comentarios = $_POST['comentarios'];
+
+            $model = VisitasAulicasObservacionesDocente::findOne($id);
+            $model->se_hace = $seHace;
+            $model->comentarios = $comentarios;
+            print_r($model);
+            die();
+            $model->save();
+        }
+
+
+        // return $this->redirect(['update', 'id' => $id]);
     }
 }

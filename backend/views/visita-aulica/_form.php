@@ -32,7 +32,7 @@ $hora_nueva = date('H:i', strtotime($hora_actual . ' +30 minutes'));
     <!-- capturar desde variable X-->
 
     <div class="row">
-        <div class="col-lg-6">
+        <div class="col-lg-12">
             <?= $form->field($model, 'psicologo_usuario')->textInput([
                 'maxlength' => true,
                 'value' => $clase->paralelo->dece_nombre,
@@ -42,27 +42,27 @@ $hora_nueva = date('H:i', strtotime($hora_actual . ' +30 minutes'));
         </div>
         <!-- poner fecha actual por defecto X-->
 
-        <div class="col-lg-6">
-            <?= $form->field($model, 'fecha')->textInput(['value' => date('Y-m-d')]) ?>
-        </div>
     </div>
 
     <div class="row">
-        <div class="col-lg-6 col-md-6">
+        <div class="col-lg-4 col-md-4">
             <!-- poner fecha actual por defecto -->
 
             <?= $form->field($model, 'hora_inicio')->textInput(['value' => date('H:i')]) ?>
         </div>
-        <div class="col-lg-6 col-md-6">
+        <div class="col-lg-4 col-md-4">
             <!-- se agrega media hora mas de la actual por defecto -->
 
             <?= $form->field($model, 'hora_finalizacion')->textInput(['value' => $hora_nueva]) ?>
+        </div>
+        <div class="col-lg-4">
+            <?= $form->field($model, 'fecha')->textInput(['value' => date('Y-m-d')]) ?>
         </div>
     </div>
 
     <!-- se deja momentáneamente -->
 
-    <?= $form->field($model, 'observaciones_al_docente')->textarea(['rows' => 6]) ?>
+    <?= $form->field($model, 'observaciones_al_docente')->textarea(['rows' => 3]) ?>
 
     <?= $form->field($model, 'fecha_firma_dece')->hiddenInput()->label(false) ?>
 

@@ -11,6 +11,8 @@ use backend\models\VisitasAulicasObservacionesDocente;
 use Yii;
 use backend\models\VisitaAulica;
 use backend\models\VisitaAulicaSearch;
+use backend\models\VisitasAulicasEstudiantes;
+use backend\models\VisitasAulicasIndividual;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -21,7 +23,8 @@ use yii\filters\AccessControl;
  */
 class VisitaAulicaController extends Controller
 {
-    public function behaviors() {
+    public function behaviors()
+    {
         return [
             'access' => [
                 'class' => AccessControl::className(),
@@ -41,7 +44,8 @@ class VisitaAulicaController extends Controller
         ];
     }
 
-    public function beforeAction($action) {
+    public function beforeAction($action)
+    {
         if (!parent::beforeAction($action)) {
             return false;
         }
@@ -108,12 +112,12 @@ class VisitaAulicaController extends Controller
             'trimestre' => $trimestre,
             'estudiantes' => $estudiantes
         ]);
-
     }
 
 
 
-    private function consulta_estudiantes_nee($cursoId, $periodoId){
+    private function consulta_estudiantes_nee($cursoId, $periodoId)
+    {
         $con = Yii::$app->db;
         $sql = "select 	nee.student_id 
                         ,concat(est.last_name, ' ', est.first_name ) as estudiante
@@ -143,11 +147,11 @@ class VisitaAulicaController extends Controller
         }
 
         return $arregloEstudiantes;
-
     }
 
 
-    private function consulta_clases_nee($studentId, $periodoId){
+    private function consulta_clases_nee($studentId, $periodoId)
+    {
         $con = Yii::$app->db;
         $query = "select 	cla.id 
                             ,mat.nombre as materia
@@ -215,7 +219,7 @@ class VisitaAulicaController extends Controller
         $model = $this->findModel($id);
 
         $clase = ScholarisClase::findOne($model->clase_id);
-        $trimestre = ScholarisBloqueActividad::findOne($model->bloque_id); 
+        $trimestre = ScholarisBloqueActividad::findOne($model->bloque_id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
@@ -241,24 +245,37 @@ class VisitaAulicaController extends Controller
     }
 
 
-    private function consultar_estudiantes($visitaId){
+    private function consultar_estudiantes($visitaId)
+    {
         $con = Yii::$app->db;
         $query = "select 	vae.id 
                             ,vae.grupo_id 
                             ,vae.es_presente 
                             ,vae.observaciones 
                             ,concat(est.last_name, ' ', est.first_name, ' ', est.middle_name) as estudiante 
+                            ,(
+                                select 	nee.grado  
+                                from 	nee_x_clase c
+                                        inner join nee on nee.id = c.nee_id 
+                                        inner join scholaris_grupo_alumno_clase g on g.estudiante_id = nee.student_id 
+                                where 	g.id = vae.grupo_id 
+                                limit 1
+                            ) as grado
                     from 	visitas_aulicas_estudiantes	vae
                             inner join scholaris_grupo_alumno_clase gru on gru.id = vae.grupo_id 
                             inner join op_student est on est.id = gru.estudiante_id 
                     where 	vae.visita_id = $visitaId
                     order by 5;";
+
+        // echo $query;
+        // die();
         return $con->createCommand($query)->queryAll();
     }
 
 
 
-    private function ingresar_observaciones_docente($visitaId){
+    private function ingresar_observaciones_docente($visitaId)
+    {
         $con = Yii::$app->db;
         $query = "insert into visitas_aulicas_observaciones_docente (visita_id, visita_catalogo_id, se_hace)
                     select 	$visitaId, id, true  
@@ -268,12 +285,15 @@ class VisitaAulicaController extends Controller
                                             from 	visitas_aulicas_observaciones_docente 
                                             where 	visita_id = $visitaId
                                                     and visita_catalogo_id = cat.id);";
+
+
         $con->createCommand($query)->execute();
     }
 
 
 
-    private function ingresar_estudiantes($visitaId, $claseId){
+    private function ingresar_estudiantes($visitaId, $claseId)
+    {
         $con = Yii::$app->db;
         $query = "insert into visitas_aulicas_estudiantes(visita_id, grupo_id, es_presente)
         select 	$visitaId, gru.id, true
@@ -315,24 +335,77 @@ class VisitaAulicaController extends Controller
     }
 
 
-    public function actionAccionesUpdate(){
+    public function actionAccionesUpdate()
+    {
         // echo '<pre>';
         // print_r($_POST['VisitasAulicasObservacionesDocente']);
 
-        if($_POST['bandera'] == 'docentes'){
-            $seHace = $_POST['se_hace'];
+        if ($_POST['bandera'] == 'docentes') {
+            $seHace = isset($_POST['se_hace']) ? true : false;
             $id     = $_POST['id'];
             $comentarios = $_POST['comentarios'];
 
             $model = VisitasAulicasObservacionesDocente::findOne($id);
             $model->se_hace = $seHace;
             $model->comentarios = $comentarios;
-            print_r($model);
-            die();
             $model->save();
+        } elseif ($_POST['bandera'] == 'asistencia') {
+            $esPresente = isset($_POST['es_presente']) ? true : false;
+            $id         = $_POST['id'];
+            $observaciones = $_POST['observaciones'];
+
+            $model = VisitasAulicasEstudiantes::findOne($id);
+            $model->es_presente     = $esPresente;
+            $model->observaciones   = $observaciones;
+            $model->save();
+        } elseif ($_POST['bandera'] == 'individual') {
+            
+            $respuesta = isset($_POST['respuesta']) ? true : false;
+            $id         = $_POST['id'];
+            $observaciones = $_POST['observaciones'];
+
+            $model = VisitasAulicasIndividual::findOne($id);
+            $model->respuesta = $respuesta;
+            $model->observaciones = $observaciones;
+            $model->save();
+            return $this->redirect(['individual', 'id' => $model->visita_estudiante_id]);
         }
 
 
-        // return $this->redirect(['update', 'id' => $id]);
+        return $this->redirect(['update', 'id' => $model->visita_id]);
+    }
+
+
+    public function actionIndividual()
+    {
+        $observacionEstudianteId = $_GET['id'];
+        $this->inserta_novedades_individuales($observacionEstudianteId);
+
+        $observacionEstudiante = VisitasAulicasEstudiantes::findOne($observacionEstudianteId);
+        $novedades = VisitasAulicasIndividual::find()->where([
+            'visita_estudiante_id' => $observacionEstudianteId
+        ])
+            ->orderBy('id')
+            ->all();
+
+        return $this->render('individual', [
+            'novedades' => $novedades,
+            'observacionEstudiante' => $observacionEstudiante
+        ]);
+    }
+
+
+    private function inserta_novedades_individuales($observacionEstudianteId)
+    {
+        $con = Yii::$app->db;
+        $query = "insert into visitas_aulicas_individual (visita_estudiante_id, catalogo_id, respuesta)
+                    select 	$observacionEstudianteId, cat.id, false
+                    from 	visitas_aulicas_catalogo cat
+                    where 	cat.tipo = 'ESTUDIANTE' 
+                            and cat.id not in (select catalogo_id from visitas_aulicas_individual 
+                                                where  visita_estudiante_id = $observacionEstudianteId 
+                                                    and catalogo_id = cat.id)
+                    order by id;";
+        return $con->createCommand($query)->execute();
     }
 }

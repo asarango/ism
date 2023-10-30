@@ -134,207 +134,241 @@ $this->params['breadcrumbs'][] = 'Update';
                         if ($model['aplica_grupal'] > 0) {
                         ?>
                             <!-- GRUPALES -->
-                            <h3 style="text-align: center">GRUPAL</h3>
-                            <hr>
-                            <h6 style="text-align: center">Observación al docente</h6>
 
-                            <table class="table custom-table table-responsive">
-                                <?php foreach ($observacionesDocente as $key => $obsDoc) { ?>
-                                    <?= Html::beginForm(['acciones-update'], 'post') ?>
-                                    <table class="table custom-table table-responsive">
+                            <h6 style="text-align: center">Observación al docente (GRUPALES)</h6>
 
-                                        <tbody>
-                                            <tr>
-                                                <td>
-                                                    <div style="background-color: #ff9e18;color: white;padding: 15px;border-radius: 10px;text-align: center">
-                                                        <strong>Descripción:</strong>
-                                                        <?php if ($obsDoc) {
-                                                            echo $obsDoc->visitaCatalogo->opcion;
-                                                        } ?>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td>
-                                                    <div class="row" style="margin-top: 10px">
-                                                        <div class="col-lg-2 col-md-2" style="text-align: center;">
-                                                            <strong>¿Se cumple?</strong>
-                                                            <?= Html::input('checkbox', "ObsDoc[$key][se_hace]", $obsDoc->se_hace, ['id' => "checkbox$key", 'class' => 'form-check-input', 'label' => false]) ?>
-                                                            <?= Html::input('hidden', "ObsDoc[$key][id]", $obsDoc->id) ?>
-                                                            <?= Html::input('hidden', 'bandera', 'docentes') ?>
-                                                        </div>
-                                                        <div class="col-lg-10 col-md-10" style="text-align: center;">
-                                                            <!-- <strong>Comentarios:</strong> -->
-                                                            <?= Html::textarea("ObsDoc[$key][comentarios]", $obsDoc->comentarios, [
-                                                                'rows' => 4,
-                                                                'cols' => 30,
-                                                                'class' => 'form-control',
-                                                                'style' => 'resize: vertical;'
-                                                            ]) ?>
-                                                        </div>
-                                                    </div>
-                                                    <div style="margin-top: 5px;text-align: center; margin-bottom: 10px;">
-                                                        <?= Html::submitButton('Guardar', ['class' => 'btn btn-primary']) ?>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                            <hr>
-                                        </tbody>
+                            <?php
+                            // echo "<pre>";
+                            // print_r($observacionesDocente);
+                            // die();
+                            ?>
+                            <?php foreach ($observacionesDocente as $obsDoc) { ?>
+                                <?= Html::beginForm(['acciones-update'], 'post') ?>
 
-                                    </table>
-                                    <?= Html::endForm() ?>
-                                <?php } ?>
-                            </table>
+                                <div style="background-color: #ff9e18; color: white; padding: 15px; border-radius: 10px; text-align: center;">
+                                    <strong>Descripción:</strong>
+                                    <?php if ($obsDoc) {
+                                        echo $obsDoc->visitaCatalogo->opcion;
+                                    } ?>
+                                </div>
+
+                                <div class="row" style="margin-top: 10px;margin-bottom: 10px">
+                                    <div class="col-lg-3 col-md-3" style="text-align: center;margin-top: 15px;">
+                                        <strong>¿Se cumple?</strong>
+                                        <input type="hidden" name="id" value="<?= $obsDoc->id ?>">
+
+                                        <?php
+                                        if ($obsDoc->se_hace == 1) {
+                                            echo '<input type="checkbox" name="se_hace" checked>';
+                                        } else {
+                                            echo '<input type="checkbox" name="se_hace">';
+                                        }
+                                        ?>
+
+                                        <input type="hidden" name="bandera" value="docentes">
+                                    </div>
+                                    <div class="col-lg-6 col-md-6" style="text-align: center;">
+                                        <!-- <input type="text" name="comentarios" value="<?= $obsDoc->comentarios ?>"> -->
+                                        <textarea name="comentarios" cols="30" rows="3"><?= $obsDoc->comentarios ?></textarea>
+
+                                        <!-- <strong>Comentarios:</strong> -->
+                                    </div>
+                                    <div class="col-lg-3 col-md-3" style="margin-top: 5px; text-align: center; margin-bottom: 10px;margin-top: 15px;">
+                                        <?= Html::submitButton('<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-device-floppy" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ffffff" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                            <path d="M6 4h10l4 4v10a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2" />
+                                            <path d="M12 14m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+                                            <path d="M14 4l0 4l-6 0l0 -4" />
+                                            </svg>', ['class' => 'btn btn-primary']) ?>
+                                    </div>
+                                </div>
+
+                                <?= Html::endForm() ?>
+                            <?php } ?>
+
 
                             <!-- FIN GRUPALES -->
                         <?php
                         } else {
-                        ?>
-                            <!-- INDIVIDUALES -->
-                            <h3 style="text-align: center">INDIVIDUAL</h3>
-                            <h6 style="text-align: center">Observación al docente</h6>
-                            <table class="table custom-table table-hover table-responsive">
-
-                                <?php
-                                foreach ($var1 as $var) {
-                                ?>
-                                    <?= Html::beginForm(['order/update', 'id' => $id], 'post', ['enctype' => 'multipart/form-data']) ?>
-
-                                    <div class="row">
-                                        <div class="col-lg-6 col-md-6">
-
-                                        </div>
-                                        <div class="col-lg-6 col-md-6">
-
-                                        </div>
-                                    </div>
-
-                                    <?= Html::submitButton('Submit', ['class' => 'submit']) ?>
-                                    <?= Html::endForm() ?>
-                                <?php
-                                }
-
-
-                                ?>
-                                <!-- <thead>
-                                    <tr style="text-align: center;">
-                                        <th style="border-bottom: none;color: white;">Descripción</th>
-                                        <th style="border-bottom: 1px solid #ab0a3d;">SI</th>
-                                        <th style="border-bottom: 1px solid #ab0a3d;">NO</th>
-                                        <th style="border-bottom: none;color: white;text-align: center;">Comentarios</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr style="text-align: center;">
-                                        
-                                        <td></td>
-                                        <td><input type="checkbox"></td>
-                                        <td><input type="checkbox"></td>
-                                        <td><textarea style="border: none; width: 100%;" rows="4" cols="30"></textarea></td>
-                                    </tr>
-                                    <tr style="text-align: center;">
-                                        <th colspan="4" style="color: white;text-align: center">Observación para el docente</th>
-                                    </tr>
-                                    <tr style="text-align: center;">
-                                        <td colspan="4"><textarea style="border: none; width: 100%;" rows="4" cols="30"></textarea></td>
-                                    </tr>
-                                </tbody> -->
-                            </table>
-                            <!-- FIN INDIVIDUALES -->
-                        <?php
                         }
                         ?>
                     </div>
 
                 </div>
 
-                <!-- FIN CONDICIONAL PARA MOSTRAR TABLAS GRUPALES O INDIVIDUAL 1-->
-
+                <!-- FIN CONDICIONAL PARA MOSTRAR TABLAS GRUPALES-->
 
                 <!-- CONDICIONAL PARA GRUPAL E INDIVIDUAL 2 -->
 
                 <div class="card col-lg-6 col-md-6 visita-aulica-update overflow-auto" style="height: 700px;">
+
                     <?php
                     if ($model['aplica_grupal'] > 0) {
                     ?>
                         <!-- GRUPAL -->
                         <div class="visita-aulica-update" style="padding: 1rem;">
-
                             <h6 style="text-align: center">Observación a estudiantes</h6>
 
                             <p>
-
                                 <?php
                                 $numeroDeEstudiantes = count($estudiantes);
                                 echo "Número de estudiantes: $numeroDeEstudiantes";
                                 ?>
-
                             </p>
 
                             <table class="table custom-table table-hover table-responsive">
+
                                 <thead>
+
                                     <tr style="text-align: center;">
                                         <th style="border-bottom: none;color: white;text-align: center">Nómina completa</th>
+                                        <th style="border-bottom: 1px solid #ab0a3d;"></th>
                                         <th style="border-bottom: 1px solid #ab0a3d;">Asiste a clase</th>
-                                        <th style="border-bottom: none;color: white;">Observaciones</th>
+                                        <th style="border-bottom: 1px solid #ab0a3d;">Observaciones</th>
+                                        <th style="border-bottom: none;color: white;">Acción</th>
                                     </tr>
+
                                 </thead>
 
                                 <tbody>
                                     <?php
                                     $contador = 1;
-                                    foreach ($estudiantes as $estud) {
+                                    foreach ($estudiantes as $estud) { ?>
+                                        <?= Html::beginForm(['acciones-update'], 'post') ?>
+                                    <?php
+                                        echo '<input type="hidden" name="bandera" value="asistencia">';
+                                        echo '<input type="hidden" name="id" value="' . $estud['id'] . '">';
                                         echo '<tr style="text-align: center;">';
-                                        echo '<td>' . $contador . '. ' . $estud['estudiante'] . '</td>';
-                                        echo '<td><input type="checkbox" id="checkbox' . '" ' . ($estud['es_presente'] == 1 ? 'checked' : '') . '></td>';
                                         echo '<td>';
-                                        if ($estud['observaciones']) {
-                                            echo $estud['observaciones'];
-                                        } else {
-                                            echo 'Sin observación';
-                                        }
+                                        echo $contador . '. ' . $estud['estudiante'];
+                                        echo '</td>';
+                                        echo '<td>';
+                                        if ($estud['grado'] == 1) {
+                                            echo '<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-circle-dot-filled" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="#6f32be" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                            <path d="M17 3.34a10 10 0 1 1 -14.995 8.984l-.005 -.324l.005 -.324a10 10 0 0 1 14.995 -8.336zm-5 6.66a2 2 0 0 0 -1.977 1.697l-.018 .154l-.005 .149l.005 .15a2 2 0 1 0 1.995 -2.15" stroke-width="0" fill="green" />
+                                          </svg>';
+                                        } elseif ($estud['grado'] == 2) {
+                                            echo '<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-circle-dot-filled" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="#6f32be" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                            <path d="M17 3.34a10 10 0 1 1 -14.995 8.984l-.005 -.324l.005 -.324a10 10 0 0 1 14.995 -8.336zm-5 6.66a2 2 0 0 0 -1.977 1.697l-.018 .154l-.005 .149l.005 .15a2 2 0 1 0 1.995 -2.15" stroke-width="0" fill="#ff9e18" />
+                                          </svg>';
+                                        } elseif ($estud['grado'] == 3) {
+                                            echo '<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-circle-dot-filled" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="#6f32be" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                            <path d="M17 3.34a10 10 0 1 1 -14.995 8.984l-.005 -.324l.005 -.324a10 10 0 0 1 14.995 -8.336zm-5 6.66a2 2 0 0 0 -1.977 1.697l-.018 .154l-.005 .149l.005 .15a2 2 0 1 0 1.995 -2.15" stroke-width="0" fill="#ab0a3d" />
+                                          </svg>';
+                                        };
+                                        echo '</td>';
+                                        echo '<td><input type="checkbox" name="es_presente" ' . ($estud['es_presente'] == 1 ? 'checked' : '') . '></td>';
+                                        echo '<td>';
+                                        echo '<textarea name="observaciones">' . $estud['observaciones'] . '</textarea>';
+                                        echo '</td>';
+                                        echo '<td>';
+                                        echo Html::submitButton('<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-device-floppy" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ffffff" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                        <path d="M6 4h10l4 4v10a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2" />
+                                        <path d="M12 14m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+                                        <path d="M14 4l0 4l-6 0l0 -4" />
+                                        </svg>', ['class' => 'btn btn-primary']);
                                         echo '</td>';
                                         echo '</tr>';
                                         $contador++;
+                                        echo Html::endForm();
                                     }
+
                                     ?>
                                 </tbody>
+
                             </table>
 
                         </div>
-                        <!-- GRUPAL -->
+
+                        <!-- FIN GRUPAL -->
                     <?php
+
                     } else {
                     ?>
                         <!-- INDIVIDUAL -->
                         <div class=" visita-aulica-update">
 
                             <h6 style="text-align: center">Observación a estudiantes</h6>
+
                             <table class="table custom-table table-hover table-responsive">
 
                                 <thead>
 
                                     <tr style="text-align: center;">
-                                        <th style="border-bottom: none;color: white;text-align: center">Descripción</th>
-                                        <th style="border-bottom: 1px solid #ab0a3d;" colspan="2">Asiste a clase</th>
-                                        <th style="border-bottom: none;color: white;text-align: center;">Observaciones</th>
+                                        <th style="border-bottom: none;color: white;text-align: center">Nómina completa</th>
+                                        <th style="border-bottom: 1px solid #ab0a3d;"></th>
+                                        <th style="border-bottom: 1px solid #ab0a3d;">Asiste a clase</th>
+                                        <th style="border-bottom: 1px solid #ab0a3d;">Observaciones</th>
+                                        <th style="border-bottom: none;color: white;">Acción</th>
                                     </tr>
 
                                 </thead>
 
                                 <tbody>
 
-                                    <tr style="text-align: center;">
-                                        <!-- foreach -->
-                                        <td></td>
-                                        <td>SI <input type="checkbox"></td>
-                                        <td>NO <input type="checkbox"></td>
-                                        <td><textarea style="border: none; width: 100%;" rows="4" cols="30"></textarea></td>
-                                    </tr>
+                                    <?php
+                                    $contador = 1;
+                                    foreach ($estudiantes as $estud) { ?>
+                                        <?= Html::beginForm(['acciones-update'], 'post') ?>
+                                    <?php
+                                        echo '<input type="hidden" name="bandera" value="asistencia">';
+                                        echo '<input type="hidden" name="id" value="' . $estud['id'] . '">';
+                                        echo '<tr style="text-align: center;">';
+                                        echo '<td>';
+                                        // echo $contador . '.' . '<a href="">' . $estud['estudiante'] . '</a>';
+                                        echo Html::a(
+                                            $contador . '.' . '' . $estud['estudiante'],
+                                            [
+                                                'individual',
+                                                'id' => $estud['id'],
+                                            ]
+                                        );
+                                        echo '</td>';
+                                        echo '<td>';
+                                        if ($estud['grado'] == 1) {
+                                            echo '<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-circle-dot-filled" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="#6f32be" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                            <path d="M17 3.34a10 10 0 1 1 -14.995 8.984l-.005 -.324l.005 -.324a10 10 0 0 1 14.995 -8.336zm-5 6.66a2 2 0 0 0 -1.977 1.697l-.018 .154l-.005 .149l.005 .15a2 2 0 1 0 1.995 -2.15" stroke-width="0" fill="green" />
+                                          </svg>';
+                                        } elseif ($estud['grado'] == 2) {
+                                            echo '<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-circle-dot-filled" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="#6f32be" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                            <path d="M17 3.34a10 10 0 1 1 -14.995 8.984l-.005 -.324l.005 -.324a10 10 0 0 1 14.995 -8.336zm-5 6.66a2 2 0 0 0 -1.977 1.697l-.018 .154l-.005 .149l.005 .15a2 2 0 1 0 1.995 -2.15" stroke-width="0" fill="#ff9e18" />
+                                          </svg>';
+                                        } elseif ($estud['grado'] == 3) {
+                                            echo '<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-circle-dot-filled" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="#6f32be" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                            <path d="M17 3.34a10 10 0 1 1 -14.995 8.984l-.005 -.324l.005 -.324a10 10 0 0 1 14.995 -8.336zm-5 6.66a2 2 0 0 0 -1.977 1.697l-.018 .154l-.005 .149l.005 .15a2 2 0 1 0 1.995 -2.15" stroke-width="0" fill="#ab0a3d" />
+                                          </svg>';
+                                        };
+                                        echo '</td>';
+                                        echo '<td><input type="checkbox" name="es_presente" ' . ($estud['es_presente'] == 1 ? 'checked' : '') . '></td>';
+                                        echo '<td>';
+                                        echo '<textarea name="observaciones">' . $estud['observaciones'] . '</textarea>';
+                                        echo '</td>';
+                                        echo '<td>';
+                                        echo Html::submitButton('<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-device-floppy" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ffffff" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                        <path d="M6 4h10l4 4v10a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2" />
+                                        <path d="M12 14m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+                                        <path d="M14 4l0 4l-6 0l0 -4" />
+                                        </svg>', ['class' => 'btn btn-primary']);
+                                        echo '</td>';
+                                        echo '</tr>';
+                                        $contador++;
+                                        echo Html::endForm();
+                                    }
+
+                                    ?>
 
                                 </tbody>
 
                             </table>
+
 
                         </div>
                         <!-- INDIVIDUALES -->

@@ -4,7 +4,9 @@ use yii\helpers\Html;
 use yii\widgets\DetailView;
 
 
-
+// echo "<pre>";
+// print_r($visita);
+// die();
 
 ?>
 
@@ -25,8 +27,8 @@ foreach ($estudiantes as $estudiante) {
                         <th style="background-color: #ff9e18;" scope="col">Materia</th>
                         <th style="background-color: #ff9e18;" scope="col" style="text-align: center;">Total Visitas</th>
                         <th style="background-color: #ff9e18;" scope="col">Progreso</th>
-                        <th style="background-color: #ff9e18;" scope="col">Editar</th>
-                        <th style="border-bottom: none;color: white;background-color: #ff9e18;"> PDF</th>
+                        <th style="border-bottom: none;color: white;background-color: #ff9e18;" scope="col">Editar</th>
+                        <!-- <th style="border-bottom: none;color: white;background-color: #ff9e18;"> PDF</th> -->
                     </tr>
                 </thead>
                 <tbody>
@@ -65,14 +67,14 @@ foreach ($estudiantes as $estudiante) {
                                         </span>',
                                         [
                                             'update',
-                                            'id' => $visita->id
+                                            'id' => $visita[0]->id
 
                                         ]
                                     );
                                 }
                                 ?>
                             </td>
-                            <td style="text-align: center;">
+                            <!-- <td style="text-align: center;">
                                 <?php
                                 if ($materia['total_visitas'] > 0) {
                                     echo Html::a(
@@ -96,7 +98,7 @@ foreach ($estudiantes as $estudiante) {
                                     );
                                 }
                                 ?>
-                            </td>
+                            </td> -->
                         </tr>
                     <?php
                         $contador++; // Incrementa el contador en cada iteración

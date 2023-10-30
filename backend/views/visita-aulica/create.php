@@ -32,21 +32,21 @@ $this->params['breadcrumbs'][] = ['label' => 'Visita Aulicas', 'url' => ['index'
                         . '(Clase: '
                         . $clase->id . ')'
 
-                        ?>
+                    ?>
                 </p>
             </div>
 
             <div class="col-lg-4" style="text-align: right;font-size: 13px">
                 <?=
-                    Html::a(
-                        '<span class="badge rounded-pill" style="background-color: #ab0a3d;color: #fff"><i class="fa fa-briefcase" aria-hidden="true"></i> Regresar</span>',
-                        [
-                            'view',
-                            'clase_id' => $clase->id,
-                            'bloque_id' => $trimestre->id
-                        ],
-                        ['class' => 'link']
-                    );
+                Html::a(
+                    '<span class="badge rounded-pill" style="background-color: #ab0a3d;color: #fff"><i class="fa fa-briefcase" aria-hidden="true"></i> Regresar</span>',
+                    [
+                        'view',
+                        'clase_id' => $clase->id,
+                        'bloque_id' => $trimestre->id
+                    ],
+                    ['class' => 'link']
+                );
                 ?>
             </div>
             <hr>

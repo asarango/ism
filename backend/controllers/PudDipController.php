@@ -1869,7 +1869,12 @@ class PudDipController extends Controller {
     // metodos genericos
     private function mostrar_campo_simple($idPlanifVertDipl, $texto_a_mostrar, $titulo, $accion_update, $text_intro_cab) {
 
-        $activarModalGenerico = $this->consultaRespuestaEnvio($idPlanifVertDipl);
+        if($accion_update == '7.1.-' || $accion_update == '7.2.-' || $accion_update == '7.3.-'){
+            $activarModalGenerico = true;
+        }else{
+            $activarModalGenerico = $this->consultaRespuestaEnvio($idPlanifVertDipl);
+        }
+        
 
         $html = '';
         $html .= '<div class="" style="align-items: center; display: flex; justify-content: center;">';

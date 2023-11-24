@@ -24,7 +24,9 @@ use DateTime;
 use backend\models\helpers\HelperGeneral;
 use backend\models\helpers\Scripts;
 use backend\models\lms\LmsColaborativo;
+use backend\models\PudAprobacionBitacora;
 use backend\models\PudDip;
+use backend\models\ResUsers;
 use backend\models\ScholarisClase;
 
 class Pdf extends \yii\db\ActiveRecord{
@@ -32,12 +34,15 @@ class Pdf extends \yii\db\ActiveRecord{
     private $planVertDipl;
     private $IdCabecera;    
     private $planBloqueUnidadId;
+    private $userLogId;
 
     public function __construct($idPlanUniBloque){    
         $this->planBloqueUnidadId = $idPlanUniBloque;    
         $this->planVertDipl = PlanificacionVerticalDiploma::find()->where([
             'planificacion_bloque_unidad_id' => $idPlanUniBloque
         ])->one(); 
+
+        $this->userLogId = Yii::$app->user->identity->usuario;
 
         if($this->planVertDipl){
             $this->IdCabecera = $this->planVertDipl->planificacionBloqueUnidad->plan_cabecera_id; 
@@ -97,6 +102,7 @@ class Pdf extends \yii\db\ActiveRecord{
         $mpdf->WriteHTML($html); 
         
         $piePagina=$this->pie_pagina();
+        // $mpdf->SetFooter($piePagina);           
         $mpdf->SetFooter($piePagina);           
 
         //$mpdf->Output('Planificacion-de-unidad' . "curso" . '.pdf', 'D');
@@ -186,23 +192,50 @@ class Pdf extends \yii\db\ActiveRecord{
     }
     private function firmas()
     {
+
+        $resUser = ResUsers::find()->where(['login' => $this->userLogId])->one();
+        $user = $resUser->partner->name;
+
+        $plan = PlanificacionBloquesUnidad::find()->where(['id' => $this->planBloqueUnidadId])->one();
+        
+
+        $bitacora = PudAprobacionBitacora::find()->where([
+            'unidad_id' => $this->planBloqueUnidadId
+        ])
+        ->orderBy(['id' => SORT_ASC])
+        ->one();
+
+        if(isset($bitacora->fecha_notifica)){
+            $fechaDocente = substr($bitacora->fecha_notifica,0,10);
+        }else{
+            $fechaDocente = 'No firmado!!!';
+        }
+
+
+        if(isset($plan->planCabecera->fecha_envio_coordinador)){
+            $fecha = substr($plan->planCabecera->fecha_envio_coordinador,0,10);
+        }else{
+            $fecha = 'No firmado!!!';
+        }
+
+
+
         $html = <<<EOD
         <br>
         <br>
         <table width="100%" cellspacing="0" cellpadding="5">         
             <tr> 
-                <td colspan="2"  align="left" style="font-size:10">
-                    Elaborado Por:_________________________________________________________________________________________
+                <td align="left" style="font-size:10">
+                    <b>Elaborado por: </b> $user
                 </td>
-                <td colspan="2"  align="left" style="font-size:10">
-                    Aprobado Por:__________________________________________________________________________________________
+                <td align="left" style="font-size:10">
+                    <b>Aprobado por: </b> Carlos Pauta
                 </td>                
             </tr> 
             <tr> 
-                <td align="left" style="font-size:10">Fecha:_________________________________________________________________</td>
-                <td align="left" style="font-size:10">Firma:_________________________________________________________________</td>
-                <td align="left" style="font-size:10">Fecha:_________________________________________________________________</td>
-                <td align="left" style="font-size:10">Firma:_________________________________________________________________</td>
+                <td align="left" style="font-size:10"><b>Fecha: </b>$fechaDocente</td>
+                
+                <td align="left" style="font-size:10"><b>Fecha: </b> $fecha</td>
             </tr> 
         </table> 
         EOD;      

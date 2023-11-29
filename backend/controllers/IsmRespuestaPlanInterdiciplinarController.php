@@ -212,9 +212,9 @@ class IsmRespuestaPlanInterdiciplinarController extends Controller
     public function actionMostrarPantallas()
     {
         $html = '';
-        $planUnidadId = $_POST['plan_unidad_id'];
-        $pestana = $_POST['pestana'];
-        $idGrupoInter = $_POST['idgrupointer'];
+        $planUnidadId = $_GET['plan_unidad_id'];
+        $pestana = $_GET['pestana'];
+        $idGrupoInter = $_GET['idgrupointer'];
 
 
         switch ($pestana) {
@@ -2153,6 +2153,10 @@ class IsmRespuestaPlanInterdiciplinarController extends Controller
             ->andWhere(['activo' => true])
             ->andWhere(['heredado' => false])
             ->one();
+
+
+            // print_r($modelPreguntaContenido);
+            // die();
 
 
         //Extraemos la respuesta

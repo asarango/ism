@@ -198,7 +198,7 @@ $iconoColor = '#ffffff';
         $.ajax({
             data: params,
             url: url,
-            type: 'POST',
+            type: 'GET',
             beforeSend: function() {                
                     $("#div-detalle").html("Procesando....");              
             },

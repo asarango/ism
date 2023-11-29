@@ -1,5 +1,8 @@
 <?php
 
+use backend\models\ScholarisBloqueActividad;
+use backend\models\ScholarisBloqueSemanas;
+use backend\models\ScholarisClase;
 use yii\helpers\Html;
 
 // echo '<pre>';
@@ -67,6 +70,7 @@ use yii\helpers\Html;
             <th>Curso</th>
             <th>Paralelo</th>
             <th>Ver lista de estudiantes</th>
+            <th>Plan semanal</th>
             <th>Reporte Notas</th>
         </tr>
     </thead>
@@ -110,6 +114,39 @@ use yii\helpers\Html;
                     ?>
                 </td>
 
+                <!-- Plan semanal -->
+                <td class="font">
+
+                    <?php
+                        $datosPlanSemanal = datos_plan_semanal($clase['clase_id']);
+                    ?>
+
+                    <?= Html::a(
+                        '<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-event" width="45" 
+                                height="45" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" 
+                                stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                <path d="M4 5m0 2a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z" />
+                                <path d="M16 3l0 4" /><path d="M8 3l0 4" />
+                                <path d="M4 11l16 0" />
+                                <path d="M8 15h2v2h-2z" />
+                        </svg>',
+                        [
+                            'planificacion-semanal/index1',
+                            'bloque_id' => $datosPlanSemanal['bloque_id'],
+                            'clase_id' => $clase['clase_id'],
+                            'semana_defecto' => $datosPlanSemanal['semana_defecto'],
+                            'pud_origen' => $datosPlanSemanal['pud_origen'],
+                            'plan_bloque_unidad_id' => $datosPlanSemanal['plan_bloque_unidad_id']
+                        ],
+                        [
+                            'title' => 'Plan semanal',
+                        ]
+                    );
+                    ?>
+                </td>
+                <!-- Fin plan semanal -->
+
+
                 <td class="font">
                     <?= Html::a(
                         '<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chart-bar" width="45" height="45" viewBox="0 0 24 24" stroke-width="1.5" stroke="#00b341" fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -138,6 +175,42 @@ use yii\helpers\Html;
 </table>
 
 
+<?php
+    function datos_plan_semanal($claseId){
+        $clase = ScholarisClase::findOne($claseId);
+        $uso = $clase->tipo_usu_bloque;
+        $bloque = ScholarisBloqueActividad::find()->where([
+            'tipo_uso' => $uso,
+            'orden' => 1
+        ])->one();
+
+        $planBloqueUnidadId = consulta_semana($claseId);
+
+        return array(
+            'bloque_id'         => $bloque->id,
+            'semana_defecto'    => 1,
+            'pud_origen'        => 'mis-clases',
+            'plan_bloque_unidad_id' => $planBloqueUnidadId
+        );
+        
+    }
+
+
+    function consulta_semana($claseId){
+        $con = Yii::$app->db;
+        $query = "select 	pu.id  
+                    from 	planificacion_bloques_unidad pu
+                            inner join planificacion_desagregacion_cabecera cab on cab.id = pu.plan_cabecera_id 
+                            inner join ism_area_materia iam on iam.id = cab.ism_area_materia_id 
+                            inner join scholaris_clase cla on cla.ism_area_materia_id = iam.id 
+                            inner join curriculo_mec_bloque cmb on cmb.id = pu.curriculo_bloque_id 
+                    where 	cla.id = $claseId
+                            and cmb.code = 1;";
+        $res = $con->createCommand($query)->queryOne();
+        return $res['id'];
+    }
+
+?>
 
 
 <!----------------------------->

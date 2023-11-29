@@ -75,19 +75,16 @@ class IsmGrupoPlanInterdiciplinarController extends Controller
      */
     public function actionIndex()
     {
-        // $searchModel = new IsmGrupoPlanInterdiciplinarSearch();
-        // $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         $seleccion_a_buscar ="PAI";
         $cursos = $this->obtener_cursos($seleccion_a_buscar);
+
         $listaBloques = ScholarisBloqueActividad::find()
-        ->where(['ILIKE','name','BLOQUE'])
-        ->andWhere(['ILIKE','name','PAI'])
+        ->where(['ILIKE','name','Trimestre'])
+        // ->andWhere(['ILIKE','name','PAI'])
         ->all();        
 
         return $this->render('index', [
-            // 'searchModel' => $searchModel,
-            // 'dataProvider' => $dataProvider,
             'cursos'=>$cursos,
             'listaBloques'=>$listaBloques,
         ]);

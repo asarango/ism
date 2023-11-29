@@ -192,8 +192,8 @@ class PudPaiController extends Controller{
     //10.1
     public function actionGuardarCompetencias()
     {
-        $planUnidadId = $_POST['planUnidadId'];
-        $id_pregunta = $_POST['id_pregunta'];             
+        $planUnidadId = $_GET['planUnidadId'];
+        $id_pregunta = $_GET['id_pregunta'];             
      
         $this->guardar_competencias($id_pregunta, $planUnidadId);
         $html = $this->mostrar_competencias_disponibles($planUnidadId);

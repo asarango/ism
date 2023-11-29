@@ -259,7 +259,7 @@ $colorNotOk = 'red';
         $.ajax({
             data: params,
             url: url,
-            type: 'POST',
+            type: 'GET',
             beforeSend: function() {},
             success: function(response) {
                 $("#table-competencia-disponibless").html(response);

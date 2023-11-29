@@ -158,6 +158,9 @@ class ObjetivosDesarrollo extends ActiveRecord
                         select id_contenido_pai from ism_contenido_pai_planificacion i
                         where planificacion_bloque_unidad_id =$planUnidad->id and tipo ='competencia_pai_inter'
                     ) and tipo = 'competencia_pai_inter' ;";  
+
+        // echo $query;
+        // die();
         
         $arraylPlanOpciones = $con->createCommand($query)->queryAll();              
         
